@@ -1,0 +1,67 @@
+{
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.65,
+          41.012
+        ]
+      },
+      "properties": {
+        "day": 0,
+        "name": "Burney Falls (Demo)",
+        "distance": 0,
+        "type": "Camp"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.7,
+          40.95
+        ]
+      },
+      "properties": {
+        "day": 1,
+        "name": "Round Valley (Demo)",
+        "distance": 10,
+        "type": "Camp"
+      }
+    }
+  ],
+  "route": {
+    "path": [
+      [
+        -121.65,
+        41.012,
+        900
+      ],
+      [
+        -121.7,
+        40.95,
+        1200
+      ]
+    ],
+    "properties": {
+      "segments": [
+        {
+          "day": 1,
+          "distance": 10,
+          "start": "Burney Falls (Demo)",
+          "end": "Round Valley (Demo)",
+          "focus": "Demo Segment",
+          "gain": 300,
+          "loss": 0
+        }
+      ]
+    }
+  },
+  "driveSegments": [],
+  "townPins": [],
+  "transportPoints": [],
+  "waterSources": []
+}

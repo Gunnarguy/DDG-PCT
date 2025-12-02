@@ -3,8 +3,11 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "postinstall": "node scripts/setup_repo.js",
+    "setup": "node scripts/setup_repo.js",
     "dev:viz": "npm --prefix pct-hike-viz run dev -- --host 127.0.0.1 --port 4173",
-    "build:viz": "npm --prefix pct-hike-viz run build"
+    "build:viz": "npm --prefix pct-hike-viz run build",
+    "fetch:pct": "npm --prefix pct-hike-viz run fetch:pct"
   },
   "dependencies": {
     "xml2js": "^0.6.2"

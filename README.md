@@ -68,7 +68,10 @@ python scripts/snap_camps_to_route.py # Snap camp coords to trail
 3. **UI content**: `planContent.js` + `resourcesIndex.js` (hand-curated)
 4. **Map render**: `App.jsx` → `TrailMap` + `Sidebar` + `ElevationProfile`
 
-**⚠️ Never hand-edit `hike_data.json` coordinates** — use scripts only.
+**⚠️ Note on Public Repo:**
+To keep this repository lightweight, the raw high-resolution GPX files and the generated `hike_data.json` (48k+ lines) are **excluded** from git.
+- **Cloning**: When you clone this repo, `npm install` will automatically copy a **placeholder** dataset so the app builds and runs in "Demo Mode".
+- **Real Data**: To generate the full dataset, you need the source Garmin GPX files (not included) and must run `python scripts/snap_camps_to_route.py`.
 
 ## 🔧 Cache Busting
 
