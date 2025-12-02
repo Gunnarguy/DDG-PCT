@@ -28,7 +28,7 @@ dist-ssr/
 pct-hike-viz/src/hike_data.json
 *.gpx
 Section*/
-Garmin-compatible GPX files/
+Garmin-compatible GPX files*/
 
 # Environment
 .env
