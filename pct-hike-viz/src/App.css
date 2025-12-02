@@ -95,6 +95,33 @@
   margin: 0;
 }
 
+.loading-bar-container {
+  width: 300px;
+  height: 6px;
+  background: var(--sand-200);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  background: var(--pine-500);
+  transition: width 0.2s ease-out;
+}
+
+.loading-status {
+  font-size: 0.9rem;
+  color: var(--pine-700);
+  margin-bottom: 0.25rem;
+}
+
+.loading-percent {
+  font-size: 0.8rem;
+  color: var(--sand-500);
+  font-variant-numeric: tabular-nums;
+}
+
 .map-panel {
   position: relative;
   flex: 1 1 0%;

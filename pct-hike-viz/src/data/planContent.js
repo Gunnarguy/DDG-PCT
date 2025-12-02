@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // PCT SECTION O: BURNEY FALLS → CASTLE CRAGS
 // ═══════════════════════════════════════════════════════════════════════════════
-// Official PCT mile markers: 1420.7 (Burney Falls) → 1502.0 (Castle Crags)
+// Official PCT mile markers: 1420.7 (Burney Falls) → 1472.7 (Castle Crags 6-day plan) | Full Section O to 1502.0 (Dunsmuir)
 // GPS-measured distance (Burney → Castle Crags plan): 52.0 miles | Full Section O track (Burney → Dunsmuir): 82.9 miles
 // Region: Shasta-Trinity National Forest, NorCal
 // Wilderness: Castle Crags Wilderness (no quota permits needed)
@@ -994,7 +994,7 @@ export const dayItinerary = [
     distance: 8.0, // GPS-measured; PDF estimate was ~8mi
     pdfEstimate: 8,
     type: 'hike',
-    elevation: { start: 5642, end: 3083, gain: 400, loss: 3000 },
+    elevation: { start: 5642, end: 3083, gain: 0, loss: 2552 },
     terrain: 'Long descent on switchbacks, knees beware',
     waterSources: ['Bobs Hat Trail junction (2.0mi)', 'Park water (5.5mi)'],
     waterCarry: '2L - final push',
@@ -1028,8 +1028,8 @@ export const tripStats = {
   gpsCalculated: true, // Flag: actual value comes from routeSegments in App.jsx
   segmentRange: '52 (Burney → Castle Crags)',
   pdfEstimates: 52, // Matches
-  totalGain: 6710,
-  totalLoss: 6645,
+  totalGain: 6419,
+  totalLoss: 6360,
   avgMilesPerDay: 8.7, // 52 miles / 6 hiking days
   targetPace: '8-10', // "8-10 mile hiking days suitable for someone not in great shape"
   paceNote: 'Mileage stays at 8-10mi/day, but expect sustained 5,300-5,600 ft elevations rather than the 3,500 ft noted in the PDF.',

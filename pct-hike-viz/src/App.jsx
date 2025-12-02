@@ -97,6 +97,53 @@ const mapStyles = {
   }
 };
 
+function MapLoadingFallback() {
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState('Initializing mission control...');
+
+  useEffect(() => {
+    const stages = [
+      { pct: 10, msg: 'Loading map engine...' },
+      { pct: 30, msg: 'Parsing GPS tracks...' },
+      { pct: 50, msg: 'Hydrating camp waypoints...' },
+      { pct: 70, msg: 'Calculating elevation profiles...' },
+      { pct: 90, msg: 'Rendering 3D terrain...' },
+      { pct: 99, msg: 'Finalizing display...' }
+    ];
+
+    let currentStage = 0;
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 99) return 99;
+        // Accelerate early, slow down late
+        const increment = Math.max(1, Math.floor((100 - prev) / 10));
+        const next = prev + increment;
+        
+        // Update status text based on thresholds
+        if (currentStage < stages.length && next >= stages[currentStage].pct) {
+          setStatus(stages[currentStage].msg);
+          currentStage++;
+        }
+        return next;
+      });
+    }, 150);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="map-panel">
+      <div className="loading-screen">
+        <div className="loading-bar-container">
+          <div className="loading-bar-fill" style={{ width: `${progress}%` }} />
+        </div>
+        <p className="loading-status">{status}</p>
+        <p className="loading-percent">{progress}%</p>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [popupInfo, setPopupInfo] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState('topo');
@@ -255,7 +302,7 @@ function App() {
   const waterSourceMeta = useMemo(() => ({
     count: waterSources.length,
     sourceLabel: 'PCT Water Report (pctwater.com)',
-    mileRange: 'Mile 1420.7 – 1502.0',
+    mileRange: 'Mile 1420.7 – 1472.7',
     lastSynced: '2025-11-23'
   }), [waterSources.length]);
 
@@ -302,14 +349,7 @@ function App() {
         aria-label="Resize sidebar"
       />
       <div className="map-column">
-        <Suspense fallback={(
-          <div className="map-panel">
-            <div className="loading-screen">
-              <div className="loading-spinner" />
-              <p>Loading map intelligence…</p>
-            </div>
-          </div>
-        )}>
+        <Suspense fallback={<MapLoadingFallback />}>
           <TrailMap
             mapStyles={mapStyles}
             selectedStyle={selectedStyle}

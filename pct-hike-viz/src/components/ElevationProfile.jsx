@@ -1107,7 +1107,7 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
           </svg>
         ) : (
           <div className="elevation-profile-empty">
-            <p className="note">Loading Section O elevation data (Mile 1420.7 → 1502.0)...</p>
+            <p className="note">Loading Section O elevation data (Mile 1420.7 → 1472.7)...</p>
           </div>
         )}
       </div>

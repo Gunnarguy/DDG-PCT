@@ -73,11 +73,11 @@ function TrailMap({
     <div className="map-panel">
       <div className="map-hud">
         <div>
-          <p className="eyebrow">PCT Section O · Mile 1420.7 → 1502.0</p>
+          <p className="eyebrow">PCT Section O · Mile 1420.7 → 1472.7</p>
           <h2>Burney Falls → Castle Crags</h2>
           <p className="route-stats">
-            <strong>{totalMiles} miles</strong> GPS-measured · <strong>6 days</strong> hiking · 
-            <strong>~14 mi/day</strong> avg · Shasta-Trinity NF
+            <strong>{totalMiles.toFixed(1)} miles</strong> GPS-measured · <strong>6 days</strong> hiking · 
+            <strong>~{(totalMiles / 6).toFixed(1)} mi/day</strong> avg · Shasta-Trinity NF
           </p>
           <p className="map-note">
             Topo layers from <strong>osm-liberty-topo</strong> (openmaptiles + terrain + NAIP + fstopo)
