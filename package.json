@@ -1,0 +1,12 @@
+{
+  "name": "ddg-pct-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev:viz": "npm --prefix pct-hike-viz run dev -- --host 127.0.0.1 --port 4173",
+    "build:viz": "npm --prefix pct-hike-viz run build"
+  },
+  "dependencies": {
+    "xml2js": "^0.6.2"
+  }
+}

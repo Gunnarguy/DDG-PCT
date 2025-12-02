@@ -1,0 +1,46 @@
+:root {
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.4;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --sand-25: #fdfbf7;
+  --sand-50: #f8f5ee;
+  --sand-200: #e3dacf;
+  --ink-400: #6f7787;
+  --ink-500: #52586a;
+  --ink-600: #303446;
+  --pine-50: #edf6f1;
+  --pine-500: #4c8c72;
+  --pine-600: #2e6750;
+  --pine-700: #1f4b3a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--sand-50);
+  color: var(--ink-600);
+}
+
+a {
+  color: var(--pine-600);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: inherit;
+}
