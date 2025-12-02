@@ -21,7 +21,7 @@ export const sectionOMeta = {
   permitType: 'Self-issued (free, no quota)',
   bestSeason: 'Late August - Early September',
   highlights: [
-    '⚠️ ELEVATION WARNING: PDF underestimates altitude by ~1500ft',
+    '⚠️ ELEVATION WARNING: PDF underestimates altitude by 500-1,775ft throughout. Days 2-5 are at 5,000-5,600ft, NOT 3,500-4,800ft.',
     'Burney Falls - "The 8th Wonder of the World"',
     'Castle Crags granite spires',
     'Mt. Shasta views',
@@ -1030,10 +1030,10 @@ export const tripStats = {
   pdfEstimates: 52, // Matches
   totalGain: 6419,
   totalLoss: 6360,
-  avgMilesPerDay: 8.7, // 52 miles / 6 hiking days
+  avgMilesPerDay: 8.67, // 52 miles / 6 hiking days
   targetPace: '8-10', // "8-10 mile hiking days suitable for someone not in great shape"
   paceNote: 'Mileage stays at 8-10mi/day, but expect sustained 5,300-5,600 ft elevations rather than the 3,500 ft noted in the PDF.',
-  highPoint: { elevation: 5850, location: 'Castle Crags Vista', day: 5 },
+  highPoint: { elevation: 5642, location: 'Castle Crags Vista Camp', day: 5 },
   lowPoint: { elevation: 3020, location: 'Burney Falls', day: 0 },
   waterSourceCount: 17,
   connectivityBlackoutMiles: 35, // Approximate based on daily connectivity data

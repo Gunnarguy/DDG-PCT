@@ -8,7 +8,7 @@ _Compiled from Original-DDG-PCT narrative notes + supporting resources_
 
 - **Primary window:** Sat **29 Aug** → Sun **6 Sep** (Labor Day homecoming)
 - **Alternate detox window:** Sat **22 Aug** → Sun **6 Sep** (16 days, slower & more restorative)
-- **Mileage focus:** 78–90 mi across PCT Section O with 8–10 mi/day pacing to keep climbs manageable.
+- **Mileage focus:** 52 mi (Burney Falls → Castle Crags, 6-day plan) with 8–10 mi/day pacing. Full Section O to Dunsmuir is 82.9 mi.
 - **Team plan:** Gunnar drives, scoops everyone at Sacramento (SMF), stages car near Burney Falls, and arranges shuttle/Uber back from Castle Crags.
 - **Support roles:** Mom coordinates parallel women’s adventures; budget sharing limited, so keep plans cash-aware.
 
@@ -25,14 +25,16 @@ _Compiled from Original-DDG-PCT narrative notes + supporting resources_
 
 ## 3. Day-by-Day Trail Plan (Burney Falls → Castle Crags)
 
+⚠️ **CRITICAL ELEVATION CORRECTION:** Dad's original PDF underestimated elevations by 500-1,700 feet. The table below shows GPS-calculated reality. You'll be hiking at **5,000-5,600 ft** for most of the trip (Days 2-5), NOT the 3,500-4,800 ft range in the PDF. Plan for higher altitude effects.
+
 | Day | Segment | Dist. | Start → End Elev. | Highlights |
 | --- | --- | --- | --- | --- |
-| 1 | Burney Falls SP → Round Valley CG | ~10 mi | 2,300’ → 3,200’ | Waterfall send-off, mellow climb, peaceful camp |
-| 2 | Round Valley → Black Rock Camp | ~9 mi | 3,200’ → 3,650’ | Forested rolling terrain, well-known campsite |
-| 3 | Black Rock → Horse Camp | ~8 mi | 3,650’ → 4,000’ | Scenic woods, Horse Camp PCT staple |
-| 4 | Horse Camp → Indian Springs | ~9 mi | 4,000’ → 4,800’ | Springs + reliable water, moderate climb |
-| 5 | Indian Springs → Castle Crags Vista | ~8 mi | 4,800’ → 5,850’ | Vista views of Crags & Mt. Shasta, prime camp |
-| 6 | Castle Crags Vista → Castle Crags SP | ~8 mi | 5,850’ → 3,600’ | Descent to State Park, resupply & rest point |
+| 1 | Burney Falls SP → Round Valley CG | ~10 mi | 3,020' → 3,765' | Waterfall send-off, moderate climb (+1,389' gain), peaceful camp |
+| 2 | Round Valley → Black Rock Camp | ~9 mi | 3,765' → 5,425' | Forested rolling terrain (+1,960' gain), well-known campsite |
+| 3 | Black Rock → Horse Camp | ~8 mi | 5,425' → 5,297' | Scenic woods, mild descent (-128' net), Horse Camp PCT staple |
+| 4 | Horse Camp → Indian Springs | ~9 mi | 5,297' → 5,605' | Springs + reliable water, moderate climb (+1,304' gain) |
+| 5 | Indian Springs → Castle Crags Vista | ~8 mi | 5,605' → 5,642' | Vista views of Crags & Mt. Shasta, minimal elevation change |
+| 6 | Castle Crags Vista → Castle Crags SP | ~8 mi | 5,642' → 3,083' | Long descent (-2,552' loss), knees beware, State Park finish |
 | 7–9 (flex) | Side trips / zeros | variable | — | Use for Dunsmuir resupply, Mt. Shasta visit, or scenic layovers |
 
 > **Mapping tools:** Guthook/FarOut, OnX Maps, NST Guide map viewer (this repo’s `pct-hike-viz`).
