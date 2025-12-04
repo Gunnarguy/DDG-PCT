@@ -35,10 +35,45 @@
         animation: spin 1s linear infinite;
         margin-bottom: 1rem;
       }
+      #initial-loader .status-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        color: #d3d3d3;
+        margin-top: 0.75rem;
+      }
       #initial-loader .status {
-        font-size: 0.9rem;
-        color: #aaa;
-        margin-top: 0.5rem;
+        flex: 1;
+        color: #e5e5e5;
+        font-weight: 500;
+      }
+      #initial-loader .percent {
+        font-variant-numeric: tabular-nums;
+        color: #9ad6b5;
+      }
+      #initial-loader .hint {
+        font-size: 0.85rem;
+        color: #8a8a8a;
+        margin-top: 0.35rem;
+      }
+      #initial-loader .meter {
+        width: 280px;
+        max-width: 80vw;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        overflow: hidden;
+        margin-top: 0.75rem;
+      }
+      #initial-loader .meter-fill {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, #4CAF50, #7fe6c2);
+        transition: width 0.25s ease-out;
+      }
+      #initial-loader.is-complete {
+        pointer-events: none;
       }
       @keyframes spin {
         to { transform: rotate(360deg); }
@@ -49,7 +84,7 @@
     <div id="initial-loader">
       <div class="spinner"></div>
       <h2>Loading Mission Control</h2>
-      <div class="status">Bundling trail data (48k coordinates)...</div>
+      <p class="hint">Preparing trail data...</p>
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>

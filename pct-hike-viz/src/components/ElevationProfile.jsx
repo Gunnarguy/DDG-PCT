@@ -549,7 +549,14 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
 
   return (
     <section className="elevation-profile-shell elevation-profile--ddg" aria-label="Elevation profile">
-      {/* DDG Team Header */}
+      {/* Compact inline title bar */}
+      <div className="elevation-compact-bar">
+        <span className="elevation-compact-title">📈 Elevation Profile</span>
+        <span className="elevation-compact-stats">
+          {formatMile(stats.totalMiles)} • +{Math.round(stats.totalGain).toLocaleString()}' / -{Math.round(stats.totalLoss).toLocaleString()}'
+        </span>
+      </div>
+      {/* DDG Team Header (hidden in compact mode) */}
       <header className="elevation-profile-header">
         <div className="elevation-profile-title-block">
           <div className="elevation-profile-badge">

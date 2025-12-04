@@ -42,11 +42,17 @@ function TrailMap({
   setPopupInfo,
   hoverHighlight
 }) {
+  // Strip elevation (3rd coordinate) so Deck.gl doesn't render the trail floating in 3D space
+  const flatTrail = useMemo(() => {
+    if (!hikingTrail?.length) return [];
+    return hikingTrail.map((coord) => [coord[0], coord[1]]);
+  }, [hikingTrail]);
+
   const deckLayers = useMemo(
     () => [
       new PathLayer({
         id: 'hiking-trail',
-        data: [{ path: hikingTrail }],
+        data: [{ path: flatTrail }],
         getPath: (d) => d.path,
         getColor: [255, 94, 105, 255],
         widthUnits: 'pixels',
@@ -66,7 +72,7 @@ function TrailMap({
         extensions: []
       })
     ],
-    [hikingTrail, driveSegments]
+    [flatTrail, driveSegments]
   );
 
   return (

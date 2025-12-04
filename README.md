@@ -59,6 +59,7 @@ npm run dev:viz                       # Dev server (remote preview)
 npm run build:viz                     # Production build
 npm run fetch:pct                     # Update USFS PCT route data
 python scripts/snap_camps_to_route.py # Snap camp coords to trail
+node scripts/validate_water_sources.mjs # Compare itinerary vs PCT Water Report
 ```
 
 ## 📊 Data Pipeline
@@ -80,6 +81,17 @@ After modifying `hike_data.json`, bump `VITE_HIKE_DATA_VERSION` in `.env`:
 ```bash
 echo "VITE_HIKE_DATA_VERSION=$(date +%s)" >> pct-hike-viz/.env
 ```
+
+## 🔐 Environment Variables
+
+All environment variables live in `pct-hike-viz/.env`:
+
+| Variable | Purpose |
+|----------|---------|
+| `VITE_HIKE_DATA_VERSION` | Cache-busts `hike_data.json` so browsers pull the latest mission geometry. |
+| `VITE_EPA_AIRNOW_API_KEY` | Required for live AQI polling via the EPA AirNow API inside `WildfireMonitor`. Without it, the UI falls back to placeholder values. |
+
+The repository ships with placeholder values—replace them with your own keys before production. Free AirNow API keys are available at [AirNow.gov](https://docs.airnowapi.org/). 
 
 ## 🎨 Component Patterns
 

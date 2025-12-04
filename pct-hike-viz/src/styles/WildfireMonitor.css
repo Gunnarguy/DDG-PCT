@@ -1,0 +1,303 @@
+.wildfire-monitor {
+  padding: 1rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a1a1a 100%);
+  border-radius: 8px;
+  color: #e0e0e0;
+}
+
+.monitor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #ff6347;
+}
+
+.monitor-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #ff6347;
+}
+
+.monitor-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.refresh-btn {
+  background: transparent;
+  border: 1px solid #ff6347;
+  color: #ff6347;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.2s;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background: #ff6347;
+  color: white;
+  transform: rotate(180deg);
+}
+
+.refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.auto-refresh-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.auto-refresh-toggle input {
+  cursor: pointer;
+}
+
+.last-update {
+  font-size: 0.875rem;
+  color: #999;
+  margin: 0 0 1rem 0;
+  font-style: italic;
+}
+
+/* Safety Assessment */
+.safety-assessment {
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.safety-assessment.safe {
+  background: rgba(76, 175, 80, 0.15);
+  border: 1px solid #4CAF50;
+}
+
+.safety-assessment.warning {
+  background: rgba(255, 152, 0, 0.15);
+  border: 1px solid #FF9800;
+}
+
+.safety-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.safety-icon {
+  font-size: 1.5rem;
+}
+
+.warnings {
+  margin-bottom: 1rem;
+}
+
+.warnings h4,
+.recommendations h4 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+  color: #ffb74d;
+}
+
+.warnings ul,
+.recommendations ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.warnings li,
+.recommendations li {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+/* Wildfire Section */
+.wildfire-section,
+.air-quality-section {
+  margin-bottom: 1.5rem;
+}
+
+.wildfire-section h4,
+.air-quality-section h4 {
+  color: #ff6347;
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.no-fires {
+  color: #4CAF50;
+  font-weight: 500;
+  padding: 0.75rem;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 4px;
+}
+
+.fire-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fire-card {
+  background: rgba(255, 99, 71, 0.1);
+  border: 1px solid #ff6347;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.fire-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.fire-header strong {
+  color: #ff6347;
+  font-size: 1rem;
+}
+
+.distance-badge {
+  background: #ff6347;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.fire-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.fire-details span {
+  font-size: 0.875rem;
+  color: #ccc;
+}
+
+.fire-date {
+  font-size: 0.875rem;
+  color: #999;
+  margin: 0.5rem 0 0 0;
+}
+
+/* Air Quality */
+.aqi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.aqi-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.aqi-location {
+  font-size: 0.875rem;
+  color: #999;
+  margin-bottom: 0.5rem;
+}
+
+.aqi-value {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0.5rem 0;
+}
+
+.aqi-category {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.aqi-detail {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.aqi-unavailable {
+  color: #666;
+  font-style: italic;
+  padding: 1rem 0;
+}
+
+.aqi-note {
+  font-size: 0.875rem;
+  color: #ffb74d;
+  background: rgba(255, 183, 77, 0.1);
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+/* AQI Legend */
+.aqi-legend {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+}
+
+.aqi-legend h5 {
+  margin: 0 0 0.75rem 0;
+  color: #ffb74d;
+  font-size: 0.9rem;
+}
+
+.legend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.legend-grid span {
+  padding: 0.25rem;
+}
+
+/* Footer */
+.monitor-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.data-sources,
+.monitoring-note {
+  font-size: 0.75rem;
+  color: #666;
+  margin: 0.25rem 0;
+  text-align: center;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .monitor-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .aqi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .legend-grid {
+    grid-template-columns: 1fr;
+  }
+}

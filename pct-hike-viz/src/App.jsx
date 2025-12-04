@@ -188,10 +188,8 @@ function App() {
     };
   }, [isDragging]);
 
-  // Persist bundled data to cache for offline use
-  useEffect(() => {
-    persistCachedHikeData(hikeDataBundle);
-  }, []);
+  // Note: localStorage caching disabled - 48k coords too large, blocks main thread
+
 
   useEffect(() => {
     let isMounted = true;
@@ -263,6 +261,8 @@ function App() {
     // Use the actual trail path from the data
     return hikeData.route?.path ?? hikeData.route?.geometry?.coordinates ?? [];
   }, [hikeData]);
+
+
 
   const routeSegments = useMemo(() => {
     if (!hikeData) return [];

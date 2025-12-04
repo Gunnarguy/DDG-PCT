@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import GearPlanner from './GearPlanner';
 import TripReadinessPanel from './TripReadinessPanel';
 import SourceChips from './SourceChips';
+import WildfireMonitor from './WildfireMonitor';
+import TerrainAnalysis from './TerrainAnalysis';
+import TransitPanel from './TransitPanel';
 import { connectivityZones, satelliteDevices, getSignalBadgeClass, getSignalEmoji } from '../data/connectivityData';
 import { ddgTeam, dayItinerary, tripStats, sectionOMeta, dataSources } from '../data/planContent';
 
@@ -78,6 +81,7 @@ function Sidebar({
   const tabs = [
     { id: 'mission', label: 'Mission' },
     { id: 'itinerary', label: 'Itinerary' },
+    { id: 'safety', label: 'Safety' },
     { id: 'gear', label: 'Gear' },
     { id: 'logistics', label: 'Logistics' },
     { id: 'risks', label: 'Risks' },
@@ -197,6 +201,24 @@ function Sidebar({
       </section>
     );
   };
+
+  const renderSafety = () => (
+    <>
+      <section className="sidebar-card sidebar-card--full">
+        <div className="section-header">
+          <h2>Real-Time Safety Monitoring</h2>
+          <span className="section-subtitle">Wildfire + air quality intel for Section O</span>
+        </div>
+        <p className="lede">
+          Live wildfire perimeters and air quality monitoring across Section O. Data refreshes every 4 hours 
+          from NIFC (National Interagency Fire Center) and EPA AirNow. Critical for trip go/no-go decisions 
+          during fire season (July-October).
+        </p>
+      </section>
+      
+      <WildfireMonitor />
+    </>
+  );
 
   const renderMission = () => (
     <>
@@ -377,6 +399,18 @@ function Sidebar({
     }
   };
 
+  const formatJurisdictionLabel = (label = '') => label
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
+  const formatNearbyDistance = (distance) => {
+    if (typeof distance !== 'number' || Number.isNaN(distance)) return null;
+    if (distance >= 1) return `${distance.toFixed(1)} mi`;
+    return `${Math.round(distance * 5280)} ft`;
+  };
+
   const renderItinerary = () => (
     <>
       {/* Trip Stats Overview */}
@@ -487,6 +521,37 @@ function Sidebar({
               {/* Terrain */}
               <p className="day-card__terrain">{day.terrain}</p>
 
+              {/* Land Management Context */}
+              {day.landManagement && (
+                <div className="day-card__land">
+                  <span className="land-chip">🗺️ {day.landManagement.zone}</span>
+                  <span className="land-meta">
+                    {day.landManagement.agency}
+                    {day.landManagement.jurisdiction && (
+                      <> · {formatJurisdictionLabel(day.landManagement.jurisdiction)}</>
+                    )}
+                  </span>
+                </div>
+              )}
+
+              {/* Nearby Wikipedia intel */}
+              {day.wikiNearby && day.wikiNearby.length > 0 && (
+                <div className="day-card__wiki">
+                  <span className="wiki-label">Nearby intel</span>
+                  <ul className="wiki-list">
+                    {day.wikiNearby.slice(0, 2).map((article) => (
+                      <li key={article.title}>
+                        <span className="wiki-topic">{article.title}</span>
+                        {article.topic && <span className="wiki-detail"> · {article.topic}</span>}
+                        {typeof article.distance === 'number' && (
+                          <span className="wiki-distance">{formatNearbyDistance(article.distance)}</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {/* Water Intel */}
               {day.waterSources && day.waterSources.length > 0 && (
                 <div className="day-card__water">
@@ -573,6 +638,9 @@ function Sidebar({
           Synced from {waterSourceMeta.sourceLabel}; last checked {waterSourceMeta.lastSynced}. Tap a source to drop the 💧 marker on the map.
         </p>
       </section>
+
+      {/* Terrain Analysis - Slope-angle breakdown */}
+      <TerrainAnalysis />
     </>
   );
 
@@ -610,6 +678,10 @@ function Sidebar({
   const renderLogistics = () => (
     <>
       {renderLiveSatelliteIntel()}
+      
+      {/* Transit & Access Panel - NEW */}
+      <TransitPanel />
+
       <section className="sidebar-card">
         <h2>Travel &amp; Shuttle Playbook</h2>
         {travelPlan.sourceIds && <SourceChips sourceIds={travelPlan.sourceIds} size="small" maxShow={3} />}
@@ -850,6 +922,7 @@ function Sidebar({
       <div className="sidebar__sections">
         {activeTab === 'mission' && renderMission()}
         {activeTab === 'itinerary' && renderItinerary()}
+        {activeTab === 'safety' && renderSafety()}
         {activeTab === 'gear' && renderGear()}
         {activeTab === 'logistics' && renderLogistics()}
         {activeTab === 'risks' && renderRisks()}

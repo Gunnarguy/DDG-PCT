@@ -1,23 +1,26 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import App from './App.jsx';
 
-// Hide the initial loading screen once React mounts
-const hideInitialLoader = () => {
+// Hide loader as soon as React renders
+const hideLoader = () => {
   const loader = document.getElementById('initial-loader');
   if (loader) {
-    loader.style.opacity = '0';
     loader.style.transition = 'opacity 0.3s ease-out';
-    setTimeout(() => loader.remove(), 300);
+    loader.style.opacity = '0';
+    setTimeout(() => loader.remove(), 350);
   }
 };
 
-createRoot(document.getElementById('root')).render(
+const root = createRoot(document.getElementById('root'));
+root.render(
   <StrictMode>
     <App />
-  </StrictMode>,
-)
+  </StrictMode>
+);
 
-// Remove loader after React has rendered
-setTimeout(hideInitialLoader, 100);
+// Give React a moment to paint, then hide the loader
+requestAnimationFrame(() => {
+  requestAnimationFrame(hideLoader);
+});

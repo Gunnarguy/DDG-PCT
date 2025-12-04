@@ -1,0 +1,468 @@
+.transit-panel {
+  padding: 1rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #1a1a2a 100%);
+  border-radius: 8px;
+  color: #e0e0e0;
+}
+
+.panel-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #4898ff;
+}
+
+.panel-header h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  color: #4898ff;
+}
+
+.panel-subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #999;
+}
+
+/* Access Summary */
+.access-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.summary-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(72, 152, 255, 0.3);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.summary-card.recommended {
+  background: rgba(76, 175, 80, 0.1);
+  border-color: #4CAF50;
+}
+
+.summary-card h4 {
+  margin: 0 0 0.75rem 0;
+  color: #4898ff;
+  font-size: 1rem;
+}
+
+.summary-card.recommended h4 {
+  color: #4CAF50;
+}
+
+.summary-card p {
+  margin: 0;
+  line-height: 1.5;
+  color: #ccc;
+}
+
+.contact-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  color: #4898ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.contact-link:hover {
+  text-decoration: underline;
+}
+
+/* Transit Routes */
+.transit-routes-section,
+.shuttle-section,
+.rental-car-section,
+.resupply-section {
+  margin-bottom: 2rem;
+}
+
+.transit-routes-section h4,
+.shuttle-section h4,
+.rental-car-section h4,
+.resupply-section h4 {
+  color: #4898ff;
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.route-list,
+.shuttle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.route-card,
+.shuttle-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.route-header,
+.shuttle-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.route-icon,
+.shuttle-icon {
+  font-size: 1.5rem;
+}
+
+.route-title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.route-title strong {
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.route-agency {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.route-details {
+  padding-left: 2.25rem;
+}
+
+.route-info,
+.shuttle-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  color: #aaa;
+}
+
+.route-stops {
+  font-size: 0.875rem;
+  color: #ccc;
+  margin-bottom: 0.75rem;
+}
+
+.route-stops strong {
+  color: #ffb74d;
+}
+
+.route-notes,
+.shuttle-notes {
+  font-size: 0.875rem;
+  color: #bbb;
+  line-height: 1.5;
+  margin: 0.75rem 0;
+}
+
+.route-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #4898ff;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.route-link:hover {
+  text-decoration: underline;
+}
+
+/* Rental Car Section */
+.airport-options,
+.parking-options {
+  margin-bottom: 1.5rem;
+}
+
+.airport-options h5,
+.parking-options h5 {
+  color: #ffb74d;
+  margin: 0 0 0.75rem 0;
+  font-size: 0.95rem;
+}
+
+.airport-card,
+.parking-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.airport-card.recommended {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.05);
+}
+
+.airport-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.airport-header strong {
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.rec-badge {
+  background: #4CAF50;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.airport-distance,
+.airport-agencies,
+.airport-notes,
+.parking-address,
+.parking-notes {
+  font-size: 0.875rem;
+  color: #ccc;
+  margin: 0.5rem 0;
+  line-height: 1.4;
+}
+
+.parking-card strong {
+  color: #4898ff;
+  font-size: 0.95rem;
+}
+
+.parking-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0.75rem 0;
+  font-size: 0.875rem;
+  color: #aaa;
+}
+
+/* Resupply Section */
+.resupply-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.resupply-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.resupply-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.resupply-header strong {
+  color: #4898ff;
+  font-size: 0.95rem;
+}
+
+.trail-distance {
+  font-size: 0.8rem;
+  color: #999;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+}
+
+.resupply-services {
+  margin-bottom: 0.75rem;
+}
+
+.resupply-services strong {
+  color: #ffb74d;
+  font-size: 0.875rem;
+}
+
+.service-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.service-tag {
+  background: rgba(72, 152, 255, 0.2);
+  color: #4898ff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.resupply-transit,
+.resupply-notes {
+  font-size: 0.875rem;
+  color: #ccc;
+  margin: 0.5rem 0;
+  line-height: 1.4;
+}
+
+/* Transit Plans */
+.transit-plans {
+  margin-bottom: 2rem;
+}
+
+.transit-plans h4 {
+  color: #4898ff;
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.plan-accordion {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.plan-accordion summary {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #fff;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.plan-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.plan-accordion summary::before {
+  content: '▶';
+  display: inline-block;
+  transition: transform 0.2s;
+  font-size: 0.75rem;
+  color: #4898ff;
+}
+
+.plan-accordion[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.plan-accordion summary:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.plan-content {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.plan-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #ffb74d;
+}
+
+.plan-steps {
+  margin: 0 0 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.plan-steps li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+  color: #ccc;
+}
+
+.plan-notes {
+  font-size: 0.875rem;
+  color: #999;
+  margin: 0;
+  padding: 0.75rem;
+  background: rgba(255, 183, 77, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid #ffb74d;
+}
+
+/* Important Notes */
+.transit-notes {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 152, 0, 0.1);
+  border: 1px solid #FF9800;
+  border-radius: 6px;
+}
+
+.transit-notes h4 {
+  margin: 0 0 1rem 0;
+  color: #FF9800;
+  font-size: 1.05rem;
+}
+
+.transit-notes ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.transit-notes li {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+  color: #ccc;
+}
+
+.transit-notes strong {
+  color: #fff;
+}
+
+/* Footer */
+.panel-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.data-sources {
+  font-size: 0.75rem;
+  color: #666;
+  margin: 0;
+  text-align: center;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .airport-header,
+  .resupply-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .route-info,
+  .shuttle-details,
+  .parking-details {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .service-tags {
+    flex-direction: column;
+  }
+}
