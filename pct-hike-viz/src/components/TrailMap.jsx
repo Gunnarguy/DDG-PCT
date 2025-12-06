@@ -75,18 +75,20 @@ function TrailMap({
     [flatTrail, driveSegments]
   );
 
+  // 6-day plan distance (from planContent.js itinerary: 10+9+8+9+8+8 = 52 miles)
+  const plannedMiles = 52.0;
+
   return (
     <div className="map-panel">
       <div className="map-hud">
         <div>
-          <p className="eyebrow">PCT Section O · Mile 1420.7 → 1472.7</p>
+          <p className="eyebrow">PCT Section O · Mile 1420.7 → 1502.0 (Full Section)</p>
           <h2>Burney Falls → Castle Crags</h2>
           <p className="route-stats">
-            <strong>{totalMiles.toFixed(1)} miles</strong> GPS-measured · <strong>6 days</strong> hiking · 
-            <strong>~{(totalMiles / 6).toFixed(1)} mi/day</strong> avg · Shasta-Trinity NF
+            <strong>{plannedMiles} mi</strong> planned (6-day hike) · <strong>{totalMiles.toFixed(1)} mi</strong> full Section O · Shasta-Trinity NF
           </p>
           <p className="map-note">
-            Topo layers from <strong>osm-liberty-topo</strong> (openmaptiles + terrain + NAIP + fstopo)
+            Map shows full Section O to Dunsmuir · <strong>Our route ends at Castle Crags (mile ~1472)</strong>
           </p>
         </div>
         <div className="style-switcher" role="group" aria-label="Basemap style toggles">

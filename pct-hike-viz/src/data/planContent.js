@@ -259,8 +259,8 @@ export const gearBlueprint = {
     {
       name: 'Cooking & Hydration',
       items: [
-        'SOTO WindMaster stove w/ campfire permit, titanium pot (750ml+)',
-        'Smartwater bottles + Sawyer Squeeze + CNOC Vecto 2L for dirty water',
+        'Small canister stove + titanium pot (750ml+), campfire permit in CA',
+        'Smartwater bottles + Sawyer Squeeze filter + CNOC Vecto 2L dirty bag',
         'Bear hang kit + collapsible bucket for camp chores'
       ]
     },
@@ -305,40 +305,40 @@ export const packPlanner = {
       items: [
         {
           id: 'tent',
-          name: 'Zpacks Plex Solo / Durston X-Mid',
-          detail: 'Freestanding or trekking pole tent. Vista Camp can get windy.',
+          name: '1-person backpacking tent',
+          detail: 'Ultralight tent that sets up with trekking poles or on its own. Keeps you dry in rain and blocks wind.',
           weight: '1.5 lb',
           defaultPacked: true,
           sourceIds: ['doc-day-plan', 'reddit-gear-recs']
         },
         {
           id: 'quilt',
-          name: 'Enlightened Equipment Revelation 20°F',
-          detail: 'Quilt system for August nights at 5800ft.',
+          name: 'Sleeping bag/quilt (rated to 20°F)',
+          detail: 'Lightweight down blanket that wraps around you like a sleeping bag. Keeps you warm on cold mountain nights.',
           weight: '1.4 lb',
           defaultPacked: true,
           sourceIds: ['reddit-gear-recs', 'reddit-shakedown-2025']
         },
         {
           id: 'pad',
-          name: 'Therm-a-Rest NeoAir XLite NXT',
-          detail: 'R-value 4.5+ for mountain camps. Pack in dry bag.',
+          name: 'Inflatable sleeping pad',
+          detail: 'Air mattress for sleeping outdoors—cushions you from rocks and insulates from cold ground. Packs small.',
           weight: '0.9 lb',
           defaultPacked: true,
           sourceIds: ['reddit-gear-recs']
         },
         {
           id: 'pillow',
-          name: 'Sea to Summit Aeros UL Pillow',
-          detail: 'Comfort boost for recovery sleep.',
+          name: 'Inflatable camp pillow',
+          detail: 'Small inflatable pillow for better sleep. Optional comfort item—some hikers just use a stuffed jacket instead.',
           weight: '0.2 lb',
           defaultPacked: false,
           sourceIds: ['reddit-shakedown-2025']
         },
         {
           id: 'groundsheet',
-          name: 'Polycro Groundsheet',
-          detail: 'Protects tent floor on volcanic pumice.',
+          name: 'Thin plastic groundsheet',
+          detail: 'Sheet of plastic that goes under your tent to protect it from sharp rocks and moisture.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['norcal-hiking-castle-crags']
@@ -356,72 +356,72 @@ export const packPlanner = {
       items: [
         {
           id: 'stove',
-          name: 'SOTO WindMaster Stove',
-          detail: 'Wind-resistant for exposed camps. CA Campfire Permit required!',
+          name: 'Lightweight canister stove (SOTO WindMaster)',
+          detail: 'Fast-boil stove for threaded fuel canisters; wind-resistant. CA Campfire Permit required!',
           weight: '0.2 lb',
           defaultPacked: true,
           sourceIds: ['permit-pcta-campfire', 'doc-permits-overview']
         },
         {
           id: 'pot',
-          name: 'TOAKS 750ml Titanium Pot',
-          detail: 'Lightweight titanium cook pot with lid.',
+          name: 'Small cooking pot (750ml)',
+          detail: 'Lightweight metal pot for boiling water and cooking meals. Holds about 3 cups—enough for one person.',
           weight: '0.3 lb',
           defaultPacked: true,
           sourceIds: ['reddit-shakedown-2025']
         },
         {
           id: 'fuel',
-          name: 'Isobutane Canister (100g)',
-          detail: 'One per ~4 days of hot meals.',
+          name: 'Small fuel canister (isobutane 100g)',
+          detail: 'Fuel for the canister stove; roughly 4 days of hot meals.',
           weight: '0.4 lb',
           defaultPacked: true,
           sourceIds: ['bikehikesafari-resupply', 'longdistancehiker-resupply']
         },
         {
           id: 'filter',
-          name: 'Sawyer Squeeze Filter',
-          detail: 'Main water filtration. Backflush daily.',
+          name: 'Water filter (Sawyer Squeeze)',
+          detail: 'Squeeze-style 0.1µm filter for streams; backflush daily to keep flow.',
           weight: '0.2 lb',
           defaultPacked: true,
           sourceIds: ['wv-2017-log', 'reddit-shakedown-2025', 'halfway-anywhere']
         },
         {
           id: 'dirty-bag',
-          name: 'CNOC Vecto 2L Dirty Bag',
-          detail: 'Collapsible dirty water collection. Trail life hack.',
+          name: 'Dirty water bag (CNOC Vecto 2L)',
+          detail: 'Collapsible dirty-water collection bag for filtering.',
           weight: '0.2 lb',
           defaultPacked: true,
           sourceIds: ['reddit-shakedown-2025']
         },
         {
           id: 'smartwater',
-          name: 'Smartwater Bottles (3x 1L)',
-          detail: 'Standard PCT hydration. Replace at Dunsmuir resupply.',
+          name: 'Water bottles (3 liters total)',
+          detail: 'Lightweight plastic bottles for carrying drinking water. Three 1-liter bottles = 3 liters capacity.',
           weight: '0.3 lb',
           defaultPacked: true,
           sourceIds: ['doc-transport-dunsmuir', 'pcta-resupply', 'erin-exploring-resupply']
         },
         {
           id: 'platypus',
-          name: 'Platypus 2L Collapsible Bladder',
-          detail: 'Extra capacity for dry sections (per Wilderness Vagabond beta).',
+          name: 'Extra collapsible water bag (2L)',
+          detail: 'Soft bag that rolls up when empty. Use for extra water capacity when crossing long dry stretches.',
           weight: '0.2 lb',
           defaultPacked: false,
           sourceIds: ['wv-2017-log', 'doc-water-hat-creek']
         },
         {
           id: 'bear-hang',
-          name: 'Bear Hang Kit (Ursack + cord)',
-          detail: 'Required for food storage. Black Rock Camp has active bears.',
+          name: 'Bear-proof food bag + rope',
+          detail: 'Special bag and rope to hang your food from a tree at night. Keeps bears from eating your supplies.',
           weight: '0.8 lb',
           defaultPacked: true,
           sourceIds: ['doc-day-plan', 'norcal-hiking-castle-crags', 'usfs-castle-crags']
         },
         {
           id: 'spork',
-          name: 'Titanium Long-Handle Spork',
-          detail: 'Reach the bottom of freeze-dried bags.',
+          name: 'Long-handled spoon',
+          detail: 'Long spoon to eat out of deep food bags. Lightweight metal version lasts forever.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: []
@@ -439,56 +439,56 @@ export const packPlanner = {
       items: [
         {
           id: 'inreach',
-          name: 'Garmin InReach Mini 2',
-          detail: 'Satellite comms for daily check-ins. Pre-loaded with itinerary.',
+          name: 'Satellite messenger (Garmin InReach)',
+          detail: 'Device that sends text messages via satellite when there\'s no cell service. Can call for rescue in emergencies.',
           weight: '0.2 lb',
           defaultPacked: true,
           sourceIds: ['doc-day-plan', 'reddit-norcal-tips']
         },
         {
           id: 'phone',
-          name: 'iPhone with Offline Maps',
-          detail: 'FarOut/Guthook + onX offline. Case rated for dust.',
+          name: 'Smartphone with downloaded maps',
+          detail: 'Your phone with trail maps downloaded for offline use. Works even without cell service.',
           weight: '0.5 lb',
           defaultPacked: true,
           sourceIds: ['farout-pct', 'onxmaps-section-n', 'hiiker-norcal']
         },
         {
           id: 'power-bank',
-          name: 'Nitecore NB10000 Power Bank',
-          detail: '10000mAh. Enough for 6 days with airplane mode discipline.',
+          name: 'Portable battery charger (10,000mAh)',
+          detail: 'Rechargeable battery pack to charge your phone and devices. Lasts about 6 days if you\'re careful.',
           weight: '0.3 lb',
           defaultPacked: true,
           sourceIds: ['reddit-shakedown-2025', 'doc-detox-trip']
         },
         {
           id: 'cables',
-          name: 'Charging Cables + Adapter',
-          detail: 'USB-C multi-port for phone + InReach.',
+          name: 'Charging cables',
+          detail: 'Cables to charge your phone and satellite messenger from the battery pack.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['reddit-shakedown-2025']
         },
         {
           id: 'headlamp',
-          name: 'Nitecore NU25 UL Headlamp',
-          detail: 'Ultralight rechargeable. Red mode for camp.',
+          name: 'Rechargeable headlamp',
+          detail: 'Flashlight that straps to your head, leaving hands free. Has a red light mode that won\'t blind your campmates.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['reddit-gear-recs']
         },
         {
           id: 'backup-nav',
-          name: 'Paper Map + Compass',
-          detail: 'Analog backup. Halfmile PDFs printed.',
+          name: 'Paper map + compass',
+          detail: 'Old-school backup navigation in case electronics die. Print trail maps before the trip.',
           weight: '0.1 lb',
           defaultPacked: false,
           sourceIds: ['doc-day-plan', 'farout-pct', 'backpackers-section']
         },
         {
           id: 'watch',
-          name: 'GPS Watch (Garmin Fenix/Instinct)',
-          detail: 'Breadcrumb trail and altimeter backup.',
+          name: 'GPS watch (optional)',
+          detail: 'Wristwatch with built-in GPS that tracks your route and shows elevation. Nice backup but not essential.',
           weight: '0.2 lb',
           defaultPacked: false,
           sourceIds: []
@@ -506,96 +506,96 @@ export const packPlanner = {
       items: [
         {
           id: 'rain-jacket',
-          name: 'Montbell Versalite / Frogg Toggs',
-          detail: 'Storm shell. Late summer can bring sudden cells.',
+          name: 'Lightweight rain jacket',
+          detail: 'Waterproof jacket that packs small. Storms can pop up suddenly in the mountains.',
           weight: '0.5 lb',
           defaultPacked: true,
           sourceIds: ['adventurehacks-guide', 'reddit-gear-recs', 'reddit-shakedown-2025']
         },
         {
           id: 'wind-pants',
-          name: 'Wind Pants / Rain Skirt',
-          detail: 'Rain skirt per r/PacificCrestTrail shakedown debate.',
+          name: 'Rain pants or rain skirt',
+          detail: 'Waterproof lower-body layer. Rain skirts are lighter; rain pants offer more coverage.',
           weight: '0.3 lb',
           defaultPacked: true,
           sourceIds: ['reddit-shakedown-2025', 'reddit-gear-recs']
         },
         {
           id: 'sun-hoodie',
-          name: 'Sun Hoodie (Arcteryx/JollyGear)',
-          detail: 'UPF 50+ sun protection. Ticks + poison oak are prevalent per Adventure Hacks.',
+          name: 'Long-sleeve sun shirt with hood',
+          detail: 'Thin breathable shirt that protects from sunburn and also helps block ticks and poison oak.',
           weight: '0.4 lb',
           defaultPacked: true,
           sourceIds: ['adventurehacks-guide', 'reddit-gear-recs', 'wv-2017-log']
         },
         {
           id: 'base-layer',
-          name: 'Merino Base Layer Top',
-          detail: 'Warm layer for mountain nights at Vista Camp (5850ft).',
+          name: 'Warm long-sleeve undershirt (wool or synthetic)',
+          detail: 'Thin warm layer to wear under your jacket. Wool stays warm even when damp and doesn\'t get stinky.',
           weight: '0.4 lb',
           defaultPacked: true,
           sourceIds: ['doc-day-plan', 'reddit-gear-recs']
         },
         {
           id: 'puffy',
-          name: 'Down Puffy Jacket',
-          detail: 'Camp warmth. Temps can drop dramatically per Adventure Hacks.',
+          name: 'Insulated down jacket',
+          detail: 'Puffy jacket filled with down feathers. Super warm and compresses small. Essential for cold camp evenings.',
           weight: '0.6 lb',
           defaultPacked: true,
           sourceIds: ['adventurehacks-guide']
         },
         {
           id: 'hiking-pants',
-          name: 'Hiking Pants (convertible)',
-          detail: 'Long pants for tick country. Can zip to shorts.',
+          name: 'Zip-off hiking pants',
+          detail: 'Long pants that convert to shorts by unzipping the legs. Protects from ticks and brush.',
           weight: '0.5 lb',
           defaultPacked: true,
           sourceIds: ['adventurehacks-guide', 'reddit-gear-recs']
         },
         {
           id: 'socks',
-          name: 'Darn Tough Socks (3 pairs)',
-          detail: 'Merino cushion. Rotate daily. Leukotape blister backup.',
+          name: 'Hiking socks (3 pairs)',
+          detail: 'Wool hiking socks with cushioning. Rotate daily to prevent blisters. Wool dries fast and fights odor.',
           weight: '0.3 lb',
           defaultPacked: true,
           sourceIds: ['doc-day-plan', 'reddit-gear-recs', 'wv-2017-log']
         },
         {
           id: 'gaiters',
-          name: 'Dirty Girl Gaiters',
-          detail: 'Keep volcanic pumice out of trail runners.',
+          name: 'Ankle gaiters',
+          detail: 'Fabric sleeves that cover the gap between your shoe and pants to keep rocks and dirt out.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['norcal-hiking-castle-crags']
         },
         {
           id: 'hat',
-          name: 'Wide-Brim Sun Hat',
-          detail: 'Full coverage for exposed ridges.',
+          name: 'Wide-brim sun hat',
+          detail: 'Hat with a brim all around to shade your face, ears, and neck from intense mountain sun.',
           weight: '0.2 lb',
           defaultPacked: true,
           sourceIds: ['adventurehacks-guide', 'reddit-gear-recs']
         },
         {
           id: 'buff',
-          name: 'Buff / Neck Gaiter',
-          detail: 'Sun protection + dust filter + warmth.',
+          name: 'Neck tube (bandana alternative)',
+          detail: 'Stretchy fabric tube you wear around your neck. Pull it up to cover your face from sun or dust.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: []
         },
         {
           id: 'gloves',
-          name: 'Lightweight Gloves',
-          detail: 'Fleece gloves for cold mornings.',
+          name: 'Thin fleece gloves',
+          detail: 'Lightweight gloves for chilly mornings. Optional but nice when breaking camp in the cold.',
           weight: '0.1 lb',
           defaultPacked: false,
           sourceIds: ['reddit-gear-recs']
         },
         {
           id: 'camp-shoes',
-          name: 'Camp Shoes (Xero/Crocs)',
-          detail: 'Let feet breathe at camp. Recovery aid.',
+          name: 'Lightweight sandals or camp shoes',
+          detail: 'Something easy to slip on at camp so your feet can rest after hiking all day. Optional luxury item.',
           weight: '0.4 lb',
           defaultPacked: false,
           sourceIds: ['doc-day-plan', 'reddit-shakedown-2025']
@@ -613,72 +613,72 @@ export const packPlanner = {
       items: [
         {
           id: 'first-aid',
-          name: 'First Aid Kit',
-          detail: 'Blister pads, bandages, ibuprofen, antihistamines.',
+          name: 'First aid kit',
+          detail: 'Basic medical supplies: bandages, blister pads, pain relievers (ibuprofen), allergy pills.',
           weight: '0.5 lb',
           defaultPacked: true,
           sourceIds: ['doc-day-plan', 'wv-2017-log']
         },
         {
           id: 'leukotape',
-          name: 'Leukotape P',
-          detail: 'THE blister prevention. Apply to hot spots early.',
+          name: 'Medical tape for blisters (Leukotape)',
+          detail: 'Super-sticky tape that stays on sweaty feet. Put it on "hot spots" BEFORE they become blisters.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['doc-day-plan', 'reddit-gear-recs', 'wv-2017-log']
         },
         {
           id: 'sunscreen',
-          name: 'Sunscreen SPF 50+',
-          detail: 'Zinc-based for high UV at altitude.',
+          name: 'Sunscreen (SPF 50+)',
+          detail: 'High-protection sunscreen. The sun is stronger at high elevations—you\'ll burn faster up there.',
           weight: '0.2 lb',
           defaultPacked: true,
           sourceIds: ['adventurehacks-guide']
         },
         {
           id: 'bug-spray',
-          name: 'Permethrin + Picaridin',
-          detail: 'Pre-treat clothes with permethrin. Picaridin for skin.',
+          name: 'Bug repellent (clothes treatment + skin spray)',
+          detail: 'Spray your clothes with permethrin at home (lasts weeks). Bring picaridin spray for your skin.',
           weight: '0.2 lb',
           defaultPacked: true,
           sourceIds: ['adventurehacks-guide', 'reddit-norcal-tips']
         },
         {
           id: 'trowel',
-          name: 'Lightweight Trowel',
-          detail: 'LNT catholes. Required in wilderness.',
+          name: 'Small digging trowel',
+          detail: 'For digging holes when you need to go to the bathroom in the woods. Required wilderness practice.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['usfs-castle-crags', 'parks-castle-crags']
         },
         {
           id: 'tp-kit',
-          name: 'TP + Hand Sanitizer',
-          detail: 'Backcountry hygiene essentials.',
+          name: 'Toilet paper + hand sanitizer',
+          detail: 'Pack it in, pack it out. Bring a ziplock bag for used TP.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['wv-2017-log']
         },
         {
           id: 'toothbrush',
-          name: 'Toothbrush + Paste',
-          detail: 'Cut handle for weight savings.',
+          name: 'Toothbrush + small toothpaste',
+          detail: 'Basic hygiene. A travel-size toothpaste tube is plenty for a week.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: []
         },
         {
           id: 'whistle',
-          name: 'Emergency Whistle',
-          detail: 'Attached to pack strap. Three blasts = SOS.',
+          name: 'Emergency whistle',
+          detail: 'Loud whistle for signaling if you get lost or hurt. Three short blasts is the universal distress signal.',
           weight: '0.0 lb',
           defaultPacked: true,
           sourceIds: ['doc-day-plan']
         },
         {
           id: 'knife',
-          name: 'Victorinox Classic SD',
-          detail: 'Tiny knife for gear repairs + food prep.',
+          name: 'Small pocket knife or multitool',
+          detail: 'Tiny knife for cutting tape, trimming moleskin, opening food packages, or fixing gear.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: []
@@ -696,67 +696,342 @@ export const packPlanner = {
       items: [
         {
           id: 'camera',
-          name: 'Lightweight Camera',
-          detail: 'Document the trek. Vista Camp sunrise is mandatory.',
+          name: 'Camera (optional)',
+          detail: 'For better photos than your phone. The sunrise at Vista Camp is spectacular.',
           weight: '0.5 lb',
           defaultPacked: false,
           sourceIds: ['youtube-section-o', 'entranced-wilderness']
         },
         {
           id: 'book',
-          name: 'Paperback Book / Kindle',
-          detail: 'Detox trip entertainment per Dad\'s April experience.',
+          name: 'Book or e-reader (optional)',
+          detail: 'Something to read at camp. Good for winding down and unplugging.',
           weight: '0.3 lb',
           defaultPacked: false,
           sourceIds: ['doc-detox-trip']
         },
         {
           id: 'journal',
-          name: 'Trail Journal + Pen',
-          detail: 'Document the DDG mission. Future trip beta.',
+          name: 'Small notebook + pen (optional)',
+          detail: 'Write down memories, thoughts, and trail notes. Nice keepsake from the trip.',
           weight: '0.2 lb',
           defaultPacked: false,
           sourceIds: ['doc-detox-trip', 'wv-2017-log']
         },
         {
           id: 'trekking-poles',
-          name: 'Trekking Poles (carbon)',
-          detail: 'Essential for 3500ft descent on Day 6.',
+          name: 'Trekking poles (pair)',
+          detail: 'Adjustable hiking poles that save your knees on downhills and help balance on rough terrain. Highly recommended.',
           weight: '0.8 lb',
           defaultPacked: true,
           sourceIds: ['doc-day-plan', 'reddit-gear-recs']
         },
         {
           id: 'pack-liner',
-          name: 'Pack Liner (trash compactor bag)',
-          detail: 'Waterproof your sleep system.',
+          name: 'Waterproof bag liner',
+          detail: 'Heavy-duty plastic bag that lines your backpack to keep everything dry if it rains.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['reddit-shakedown-2025']
         },
         {
           id: 'sit-pad',
-          name: 'Sit Pad (closed cell foam)',
-          detail: 'Lunch breaks on rocky terrain.',
+          name: 'Foam sit pad (optional)',
+          detail: 'Small foam square to sit on during breaks. Keeps your butt dry and insulated from cold ground.',
           weight: '0.1 lb',
           defaultPacked: false,
           sourceIds: []
         },
         {
           id: 'wallet',
-          name: 'Cash + Cards',
-          detail: 'Ready for Dunsmuir/Mt. Shasta resupply.',
+          name: 'Cash and credit cards',
+          detail: 'Money for buying food and supplies in town. Some small shops are cash-only.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['doc-transport-dunsmuir', 'unexpected-occurrence']
         },
         {
           id: 'permits',
-          name: 'Permits Bundle (printed)',
-          detail: 'Self-issued overnight + CA Campfire Permit. All 3 DDG hikers.',
+          name: 'Printed permits (required!)',
+          detail: 'Your wilderness camping permit and California campfire permit. Each person needs their own copies.',
           weight: '0.0 lb',
           defaultPacked: true,
           sourceIds: ['doc-permits-overview', 'pcta-permits', 'permit-pcta-campfire', 'reddit-permits-ca']
+        }
+      ]
+    },
+    {
+      id: 'secret-weapons',
+      label: 'Secret Weapons (The Nuance)',
+      weightLbs: 1.5,
+      volumeLiters: 2,
+      readiness: 'game-changers',
+      focus: 'The tiny things that make or break a trip. Experienced hikers know.',
+      sourceIds: ['reddit-shakedown-2025', 'reddit-gear-recs', 'wv-2017-log'],
+      items: [
+        {
+          id: 'earplugs',
+          name: 'Foam earplugs (2-3 pairs)',
+          detail: 'Sleep through snoring tentmates, wind flapping your tent, and 5am bird concerts. $2 life-saver.',
+          weight: '0.0 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-shakedown-2025']
+        },
+        {
+          id: 'sleep-mask',
+          name: 'Sleep mask',
+          detail: 'Blocks early sunrise (5:30am in summer) so you can actually sleep in. Game changer for recovery.',
+          weight: '0.0 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-gear-recs']
+        },
+        {
+          id: 'mini-bic',
+          name: 'Mini Bic lighter',
+          detail: 'Backup for your stove igniter. They WILL fail. Costs $1, weighs nothing, saves dinner.',
+          weight: '0.0 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-shakedown-2025']
+        },
+        {
+          id: 'duct-tape',
+          name: 'Duct tape (wrapped around trekking pole)',
+          detail: 'Fixes torn gear, blisters (in emergencies), broken poles, ripped shoes. Wrap 3ft around your pole.',
+          weight: '0.0 lb',
+          defaultPacked: true,
+          sourceIds: ['wv-2017-log']
+        },
+        {
+          id: 'safety-pins',
+          name: 'Safety pins (3-4)',
+          detail: 'Hang wet socks on your pack while hiking. Fix zipper pulls. Attach stuff. Weighs nothing.',
+          weight: '0.0 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-shakedown-2025']
+        },
+        {
+          id: 'ziplock-bags',
+          name: 'Ziploc bags (assorted sizes)',
+          detail: 'Organize small items, protect phone from rain, store used TP, keep snacks fresh. Bring 5-6.',
+          weight: '0.1 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-gear-recs']
+        },
+        {
+          id: 'bandana',
+          name: 'Cotton bandana',
+          detail: 'Pot holder, sweat rag, pre-filter for silty water, napkin, signal flag, washcloth. One item, 20 uses.',
+          weight: '0.1 lb',
+          defaultPacked: true,
+          sourceIds: ['wv-2017-log']
+        },
+        {
+          id: 'aquaphor',
+          name: 'Small tub of Aquaphor or Vaseline',
+          detail: 'Prevents chafing on thighs and underarms. Heals cracked lips and dry hands. Apply before it hurts.',
+          weight: '0.1 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-shakedown-2025']
+        },
+        {
+          id: 'body-glide',
+          name: 'Body Glide anti-chafe stick',
+          detail: 'Rub on inner thighs, feet, anywhere that rubs. Prevents the painful chafing that ruins trips.',
+          weight: '0.1 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-gear-recs']
+        },
+        {
+          id: 'nail-clippers',
+          name: 'Tiny nail clippers',
+          detail: 'Long toenails + hiking = black toenails and lost nails. Trim before and during the trip.',
+          weight: '0.0 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-shakedown-2025']
+        },
+        {
+          id: 'tweezers',
+          name: 'Tweezers (pointed tip)',
+          detail: 'For splinters, thorns, and TICK REMOVAL. Section O has ticks. Check yourself daily.',
+          weight: '0.0 lb',
+          defaultPacked: true,
+          sourceIds: ['adventurehacks-guide']
+        },
+        {
+          id: 'spare-laces',
+          name: 'Spare shoelaces or paracord (3ft)',
+          detail: 'Laces break at the worst times. Paracord works as backup laces, clothesline, or gear repair.',
+          weight: '0.1 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-gear-recs']
+        },
+        {
+          id: 'tenacious-tape',
+          name: 'Tenacious Tape (gear repair patches)',
+          detail: 'Fixes holes in tents, sleeping pads, and jackets. Sticks even when wet. Bring 2-3 patches.',
+          weight: '0.0 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-shakedown-2025']
+        },
+        {
+          id: 'seam-grip',
+          name: 'Tiny tube of Seam Grip or Shoe Goo',
+          detail: 'Glue for when your shoe sole starts peeling off (it happens). Saves a trip-ending disaster.',
+          weight: '0.1 lb',
+          defaultPacked: false,
+          sourceIds: ['reddit-gear-recs']
+        },
+        {
+          id: 'cord-tensioners',
+          name: 'Guyline tensioners (if your tent needs them)',
+          detail: 'Tiny plastic clips that keep tent lines tight. Lose one and your tent flaps all night.',
+          weight: '0.0 lb',
+          defaultPacked: false,
+          sourceIds: []
+        },
+        {
+          id: 'electrolytes',
+          name: 'Electrolyte powder packets (6-10)',
+          detail: 'Add to water on hot days. Prevents muscle cramps and headaches from sweating out salts.',
+          weight: '0.2 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-shakedown-2025', 'adventurehacks-guide']
+        },
+        {
+          id: 'caffeine-pills',
+          name: 'Caffeine pills (optional)',
+          detail: 'Lighter than carrying coffee. One pill = one cup. Good for early morning starts without stove time.',
+          weight: '0.0 lb',
+          defaultPacked: false,
+          sourceIds: ['reddit-gear-recs']
+        },
+        {
+          id: 'antihistamine',
+          name: 'Benadryl (4-6 pills)',
+          detail: 'For allergic reactions to bee stings, plants, or unknown triggers. Also helps you sleep.',
+          weight: '0.0 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-shakedown-2025']
+        },
+        {
+          id: 'imodium',
+          name: 'Imodium (anti-diarrhea pills)',
+          detail: 'Trail food + water changes = stomach issues. This stops them FAST. Do not skip this.',
+          weight: '0.0 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-gear-recs', 'wv-2017-log']
+        },
+        {
+          id: 'pepto-tabs',
+          name: 'Pepto-Bismol tablets',
+          detail: 'For nausea and upset stomach. Chewable tabs are easier than liquid. Stomach issues are common.',
+          weight: '0.0 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-shakedown-2025']
+        },
+        {
+          id: 'mini-dropper',
+          name: 'Backup water treatment (Aquamira drops or tablets)',
+          detail: 'If your filter clogs or breaks, you NEED a backup. Tablets weigh nothing. Bring 10+.',
+          weight: '0.1 lb',
+          defaultPacked: true,
+          sourceIds: ['wv-2017-log', 'reddit-gear-recs']
+        },
+        {
+          id: 'sewing-kit',
+          name: 'Tiny sewing kit (needle + thread)',
+          detail: 'Fix torn clothes, backpack straps, or tent mesh. Dental floss works as strong thread.',
+          weight: '0.0 lb',
+          defaultPacked: false,
+          sourceIds: ['reddit-shakedown-2025']
+        },
+        {
+          id: 'head-net',
+          name: 'Bug head net',
+          detail: 'When mosquitoes are BAD, this is the only thing that works. Weighs 1oz, saves your sanity.',
+          weight: '0.1 lb',
+          defaultPacked: false,
+          sourceIds: ['adventurehacks-guide']
+        },
+        {
+          id: 'sleep-socks',
+          name: 'Dedicated sleep socks (clean & dry)',
+          detail: 'Never hike in these. Keep them in your sleeping bag. Dry feet at night = warm feet = good sleep.',
+          weight: '0.1 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-gear-recs']
+        },
+        {
+          id: 'pee-rag',
+          name: 'Pee rag (for those who squat)',
+          detail: 'Bandana that clips to outside of pack to dry. Saves TP and is more sustainable. Antimicrobial ones exist.',
+          weight: '0.0 lb',
+          defaultPacked: false,
+          sourceIds: ['reddit-shakedown-2025']
+        },
+        {
+          id: 'pee-bottle',
+          name: 'Wide-mouth bottle for night pee (optional)',
+          detail: 'Avoids leaving your tent at 2am in the cold. Label it clearly. Gatorade bottles work.',
+          weight: '0.1 lb',
+          defaultPacked: false,
+          sourceIds: ['reddit-gear-recs']
+        },
+        {
+          id: 'mini-carabiner',
+          name: 'Small carabiner (non-climbing)',
+          detail: 'Clip water bottles to your pack, hang stuff to dry, organize gear. Bring 2-3 tiny ones.',
+          weight: '0.0 lb',
+          defaultPacked: true,
+          sourceIds: []
+        },
+        {
+          id: 'rubber-bands',
+          name: 'A few thick rubber bands',
+          detail: 'Secure rolled items, bundle trekking poles, keep bags closed. Stupid simple, surprisingly useful.',
+          weight: '0.0 lb',
+          defaultPacked: true,
+          sourceIds: ['reddit-shakedown-2025']
+        },
+        {
+          id: 'mirrror',
+          name: 'Tiny signal mirror or compact mirror',
+          detail: 'Check for ticks in hard-to-see places. Signal for help in emergencies. Doubles for personal care.',
+          weight: '0.0 lb',
+          defaultPacked: false,
+          sourceIds: ['adventurehacks-guide']
+        },
+        {
+          id: 'pack-cover',
+          name: 'Pack rain cover (if your pack needs one)',
+          detail: 'Some packs are water-resistant, some aren\'t. Test yours before the trip. Cover or liner—pick one.',
+          weight: '0.2 lb',
+          defaultPacked: false,
+          sourceIds: ['reddit-gear-recs']
+        },
+        {
+          id: 'pillow-stuff',
+          name: 'Use your clothes bag as a pillow',
+          detail: 'Stuff your puffy + extra clothes into a stuff sack = free pillow. Skip the inflatable.',
+          weight: '0.0 lb',
+          defaultPacked: false,
+          sourceIds: ['reddit-shakedown-2025']
+        },
+        {
+          id: 'gummy-vitamins',
+          name: 'Multivitamin gummies (optional)',
+          detail: 'Trail diet lacks nutrients. A few gummies a day might help. At minimum, they taste good.',
+          weight: '0.1 lb',
+          defaultPacked: false,
+          sourceIds: ['reddit-gear-recs']
+        },
+        {
+          id: 'olive-oil',
+          name: 'Tiny bottle of olive oil',
+          detail: 'Add calories to any meal. Helps with calorie-dense eating when you\'re burning 3000+/day.',
+          weight: '0.2 lb',
+          defaultPacked: false,
+          sourceIds: ['reddit-shakedown-2025']
         }
       ]
     }
