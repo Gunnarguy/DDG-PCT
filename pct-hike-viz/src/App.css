@@ -208,6 +208,12 @@
   touch-action: pan-y;
 }
 
+/* Force MapLibre container to fill the panel */
+.map-panel .maplibregl-map {
+  height: 100% !important;
+  width: 100% !important;
+}
+
 /* Prevent the map canvas from hijacking vertical scroll on mobile */
 .maplibregl-canvas {
   touch-action: pan-y !important;
