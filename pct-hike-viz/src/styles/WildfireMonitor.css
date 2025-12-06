@@ -301,3 +301,49 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Enhanced mobile for phones */
+@media (max-width: 479px) {
+  .wildfire-monitor {
+    padding: 0.875rem;
+    border-radius: 0.75rem;
+  }
+
+  .monitor-header h3 {
+    font-size: 1rem;
+  }
+
+  .monitor-status {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .aqi-card {
+    padding: 0.75rem;
+  }
+
+  .aqi-value {
+    font-size: 1.75rem;
+  }
+
+  .aqi-label {
+    font-size: 0.7rem;
+  }
+
+  .fire-card {
+    padding: 0.75rem;
+  }
+
+  .fire-card h4 {
+    font-size: 0.9rem;
+  }
+
+  .fire-stat {
+    font-size: 0.75rem;
+  }
+
+  .legend-item {
+    padding: 0.4rem;
+    font-size: 0.75rem;
+  }
+}

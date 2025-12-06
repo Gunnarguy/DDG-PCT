@@ -381,3 +381,48 @@
     height: 20px;
   }
 }
+
+/* Enhanced mobile for phones */
+@media (max-width: 479px) {
+  .terrain-analysis {
+    padding: 0.875rem;
+    border-radius: 0.75rem;
+  }
+
+  .terrain-header h3 {
+    font-size: 1rem;
+  }
+
+  .terrain-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .stat-card {
+    padding: 0.75rem;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+  }
+
+  .segment-card {
+    padding: 0.75rem;
+  }
+
+  .segment-card h4 {
+    font-size: 0.9rem;
+  }
+
+  .segment-stats {
+    gap: 0.5rem;
+  }
+
+  .segment-stat {
+    font-size: 0.75rem;
+  }
+}

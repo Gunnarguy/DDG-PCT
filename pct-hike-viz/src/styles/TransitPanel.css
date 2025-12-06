@@ -466,3 +466,57 @@
     flex-direction: column;
   }
 }
+
+/* Enhanced mobile for phones */
+@media (max-width: 479px) {
+  .transit-panel {
+    padding: 0.875rem;
+  }
+
+  .transit-tabs {
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .transit-tab {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    min-height: 44px;
+  }
+
+  .shuttle-card,
+  .parking-card {
+    padding: 0.875rem;
+  }
+
+  .shuttle-card h4,
+  .parking-card h4 {
+    font-size: 0.95rem;
+  }
+
+  .contact-info {
+    font-size: 0.8rem;
+  }
+
+  .service-tag {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .airport-card {
+    padding: 0.875rem;
+  }
+
+  .flight-info {
+    font-size: 0.85rem;
+  }
+
+  .resupply-card {
+    padding: 0.875rem;
+  }
+
+  .store-hours,
+  .store-note {
+    font-size: 0.75rem;
+  }
+}

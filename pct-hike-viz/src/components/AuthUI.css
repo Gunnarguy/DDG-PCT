@@ -438,6 +438,7 @@
   pointer-events: none;
 }
 
+
 .login-bg-art .mountain {
   font-size: 4rem;
 }
@@ -458,5 +459,74 @@
   
   .login-bg-art .mountain {
     font-size: 3rem;
+  }
+}
+
+/* Enhanced mobile */
+@media (max-width: 767px) {
+  .login-screen {
+    padding: 1rem;
+  }
+
+  .login-card {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    max-width: 100%;
+  }
+
+  .login-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .login-header .tagline {
+    font-size: 0.9rem;
+  }
+
+  .email-input {
+    padding: 0.875rem;
+    font-size: 1rem;
+    min-height: 48px;
+  }
+
+  .auth-btn {
+    padding: 0.875rem;
+    font-size: 1rem;
+    min-height: 48px;
+  }
+
+  .auth-modal {
+    margin: 1rem;
+    padding: 1.5rem;
+    max-width: calc(100vw - 2rem);
+  }
+
+  .modal-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .modal-header p {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .login-card {
+    padding: 1.25rem;
+  }
+
+  .login-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .auth-btn {
+    font-size: 0.9rem;
+  }
+}
+
+/* Safe area for notch devices */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .login-screen {
+    padding-top: calc(1rem + env(safe-area-inset-top));
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
   }
 }

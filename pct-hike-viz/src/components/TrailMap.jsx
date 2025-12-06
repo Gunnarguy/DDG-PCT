@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import Map, {
   Marker,
@@ -77,11 +77,25 @@ function TrailMap({
 
   // 6-day plan distance (from planContent.js itinerary: 10+9+8+9+8+8 = 52 miles)
   const plannedMiles = 52.0;
+  
+  // Mobile: collapsible HUD
+  const [hudExpanded, setHudExpanded] = useState(false);
 
   return (
     <div className="map-panel">
-      <div className="map-hud">
-        <div>
+      <div className={`map-hud ${hudExpanded ? 'map-hud--expanded' : ''}`}>
+        {/* Mobile toggle button */}
+        <button 
+          className="hud-toggle"
+          onClick={() => setHudExpanded(!hudExpanded)}
+          aria-expanded={hudExpanded}
+          aria-label={hudExpanded ? 'Collapse map info' : 'Expand map info'}
+        >
+          <span className="hud-toggle-icon">{hudExpanded ? '▼' : '▶'}</span>
+          <span className="hud-toggle-title">Section O · {plannedMiles} mi</span>
+        </button>
+        
+        <div className="hud-content">
           <p className="eyebrow">PCT Section O · Mile 1420.7 → 1502.0 (Full Section)</p>
           <h2>Burney Falls → Castle Crags</h2>
           <p className="route-stats">

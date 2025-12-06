@@ -221,6 +221,15 @@
   max-width: 400px;
 }
 
+/* HUD toggle button - hidden on desktop */
+.hud-toggle {
+  display: none;
+}
+
+.hud-content {
+  display: block;
+}
+
 .map-hud h2 {
   margin: 0;
   font-size: 1.1rem;
@@ -4188,3 +4197,656 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MOBILE-FIRST RESPONSIVE OVERHAUL
+   Complete touch-friendly experience for phones and tablets
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MOBILE BREAKPOINTS
+   - xs: 0-479px (small phones)
+   - sm: 480-767px (large phones)
+   - md: 768-1023px (tablets)
+   - lg: 1024+ (desktop)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* === TABLET AND BELOW (< 1024px) === */
+@media (max-width: 1023px) {
+  /* Stack layout vertically */
+  .app-shell {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  /* Hide resize handle on touch */
+  .resize-handle {
+    display: none;
+  }
+
+  /* Map takes less vertical space */
+  .map-column {
+    height: 50vh;
+    min-height: 350px;
+    max-height: 500px;
+    width: 100%;
+    flex: none;
+  }
+
+  /* Sidebar becomes full-width scrollable */
+  .sidebar {
+    width: 100% !important;
+    max-width: 100%;
+    min-width: unset;
+    height: auto;
+    min-height: 50vh;
+    border-left: none;
+    border-top: 1px solid var(--sand-200);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    padding: 1rem 1rem 2rem;
+  }
+
+  /* Horizontal scrolling tabs */
+  .sidebar__tabs {
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.5rem;
+    margin: 0 -1rem 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .sidebar__tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  /* Elevation profile adjustments */
+  .elevation-profile-shell {
+    padding: 0.75rem 1rem;
+  }
+
+  .elevation-profile-title {
+    font-size: 0.85rem;
+  }
+
+  /* Cards need breathing room */
+  .sidebar-card {
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+
+  /* Gear grid single column */
+  .gear-rpg-interface {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Team cards stack */
+  .ddg-team-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Section facts 2 columns still */
+  .section-o-facts .fact-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem 1rem;
+  }
+}
+
+/* === PHONE (< 768px) === */
+@media (max-width: 767px) {
+  /* Even smaller map */
+  .map-column {
+    height: 45vh;
+    min-height: 280px;
+    max-height: 400px;
+  }
+
+  /* Compact sidebar */
+  .sidebar {
+    padding: 0.75rem 0.75rem 2rem;
+  }
+
+  .sidebar-card {
+    padding: 0.875rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Hero card adjustments */
+  .hero-card h1 {
+    font-size: 1.35rem;
+    line-height: 1.3;
+  }
+
+  .hero-card .lede {
+    font-size: 0.9rem;
+  }
+
+  .eyebrow {
+    font-size: 0.7rem;
+  }
+
+  /* Section header */
+  .section-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.75rem;
+  }
+
+  /* Tab styling for touch */
+  .tab-btn {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.8rem;
+    min-height: 44px; /* iOS touch target */
+  }
+
+  /* Gear items bigger touch targets */
+  .rpg-item-row {
+    padding: 0.75rem;
+    min-height: 56px;
+    gap: 0.6rem;
+  }
+
+  .item-name {
+    font-size: 0.9rem;
+  }
+
+  .item-detail {
+    font-size: 0.75rem;
+  }
+
+  .item-weight {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  /* Stats in gear panel */
+  .gear-rpg-stats {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .gear-rpg-stat {
+    flex: 1 1 45%;
+    font-size: 0.85rem;
+  }
+
+  /* Loadout selector compact */
+  .loadout-switcher {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .loadout-avatar-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+  }
+
+  /* Team member cards */
+  .ddg-member-card {
+    padding: 1rem;
+  }
+
+  .member-avatar {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+  }
+
+  .member-info h3 {
+    font-size: 1rem;
+  }
+
+  .member-bio {
+    font-size: 0.8rem;
+  }
+
+  .member-experience {
+    font-size: 0.75rem;
+  }
+
+  .responsibility-chip {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  /* Water sources compact */
+  .water-source-card {
+    padding: 0.875rem;
+  }
+
+  /* Live satellite grid */
+  .live-sat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .live-sat-card {
+    padding: 1rem;
+  }
+
+  /* Schedule cards */
+  .schedule-option-card {
+    padding: 1rem;
+  }
+
+  .schedule-option-card h4 {
+    font-size: 1rem;
+  }
+
+  /* Itinerary table */
+  .itinerary-table {
+    font-size: 0.8rem;
+  }
+
+  .itinerary-table th,
+  .itinerary-table td {
+    padding: 0.5rem 0.4rem;
+  }
+
+  /* Elevation profile smaller */
+  .elevation-chart-container {
+    height: 100px;
+  }
+
+  /* Access denied screen mobile */
+  .access-denied-screen {
+    padding: 1rem;
+  }
+
+  .access-denied-screen h1 {
+    font-size: 1.5rem;
+  }
+
+  .access-denied-card {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+
+  .access-denied-card .access-icon {
+    font-size: 2.5rem;
+  }
+
+  .access-denied-card h2 {
+    font-size: 1.25rem;
+  }
+
+  /* Loading screen mobile */
+  .loading-bar-container {
+    width: 80%;
+    max-width: 280px;
+  }
+
+  /* Checklist items */
+  .checklist-item {
+    padding: 0.6rem 0;
+    font-size: 0.85rem;
+  }
+
+  /* Permit cards */
+  .permit-card {
+    padding: 1rem;
+  }
+
+  /* Risk playbook */
+  .risk-card {
+    padding: 1rem;
+  }
+
+  /* Reference library */
+  .reference-card {
+    padding: 1rem;
+  }
+
+  /* Trip readiness */
+  .readiness-meter {
+    height: 8px;
+  }
+
+  /* Transit panel */
+  .transit-option {
+    padding: 0.875rem;
+  }
+
+  /* Connectivity zones */
+  .connectivity-zone-card {
+    padding: 1rem;
+  }
+
+  /* Popups on map */
+  .maplibregl-popup-content {
+    padding: 0.75rem;
+    max-width: 280px;
+    font-size: 0.85rem;
+  }
+
+  /* Map HUD mobile - collapsible */
+  .map-hud {
+    top: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    max-width: none;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  /* Show toggle button on mobile */
+  .hud-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    color: var(--ink-700);
+  }
+
+  .hud-toggle-icon {
+    font-size: 0.7rem;
+    color: var(--ink-400);
+    transition: transform 0.2s;
+  }
+
+  .hud-toggle-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  /* Collapsed state - hide content */
+  .map-hud:not(.map-hud--expanded) .hud-content,
+  .map-hud:not(.map-hud--expanded) .style-switcher {
+    display: none;
+  }
+
+  /* Expanded state */
+  .map-hud--expanded {
+    gap: 0.75rem;
+  }
+
+  .map-hud--expanded .hud-toggle-icon {
+    transform: rotate(90deg);
+  }
+
+  .map-hud h2 {
+    font-size: 0.95rem;
+  }
+
+  .map-hud .route-stats {
+    font-size: 0.8rem;
+  }
+
+  .map-hud .map-note {
+    font-size: 0.7rem;
+  }
+
+  /* Style switcher as horizontal scroll */
+  .style-switcher {
+    display: flex;
+    gap: 0.4rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+    margin: 0 -0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .style-btn {
+    flex-shrink: 0;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    min-height: 36px;
+  }
+
+  /* Map controls */
+  .maplibregl-ctrl-group {
+    margin: 0.5rem !important;
+  }
+
+  .maplibregl-ctrl-group button {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}
+
+/* === SMALL PHONE (< 480px) === */
+@media (max-width: 479px) {
+  /* Minimal map */
+  .map-column {
+    height: 40vh;
+    min-height: 240px;
+  }
+
+  /* Super compact sidebar */
+  .sidebar {
+    padding: 0.5rem 0.5rem 1.5rem;
+  }
+
+  .sidebar__tabs {
+    gap: 0.4rem;
+  }
+
+  .tab-btn {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.75rem;
+  }
+
+  .sidebar-card {
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+  }
+
+  /* Hero text smaller */
+  .hero-card h1 {
+    font-size: 1.15rem;
+  }
+
+  .hero-card .lede {
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  /* Section facts single column */
+  .section-o-facts .fact-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .fact-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Highlight chips wrap */
+  .section-highlights {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .highlight-chip {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  /* Gear items super compact */
+  .rpg-item-row {
+    padding: 0.6rem 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .item-icon {
+    font-size: 1rem;
+  }
+
+  .item-name {
+    font-size: 0.8rem;
+  }
+
+  .item-detail {
+    font-size: 0.7rem;
+  }
+
+  /* Team cards super compact */
+  .ddg-member-card {
+    padding: 0.875rem;
+  }
+
+  .member-avatar {
+    font-size: 1.75rem;
+    width: 44px;
+    height: 44px;
+  }
+
+  /* Section headers */
+  .section-header h2 {
+    font-size: 1rem;
+  }
+
+  /* Buttons min touch size */
+  button, 
+  .btn,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Custom item form */
+  .custom-item-form input,
+  .custom-item-form button {
+    font-size: 0.85rem;
+    padding: 0.6rem;
+  }
+
+  /* Schedule comparison */
+  .schedule-comparison {
+    gap: 0.75rem;
+  }
+
+  /* Profile switcher */
+  .profile-switcher {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* === LANDSCAPE PHONE === */
+@media (max-width: 767px) and (orientation: landscape) {
+  .app-shell {
+    flex-direction: row;
+  }
+
+  .map-column {
+    height: 100vh;
+    width: 50%;
+    max-height: none;
+  }
+
+  .sidebar {
+    width: 50% !important;
+    height: 100vh;
+    overflow-y: auto;
+    border-top: none;
+    border-left: 1px solid var(--sand-200);
+  }
+}
+
+/* === TOUCH-SPECIFIC ENHANCEMENTS === */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects that don't work on touch */
+  .rpg-item-row:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Add active states instead */
+  .rpg-item-row:active {
+    background: #fff;
+    border-color: var(--pine-400);
+    transform: scale(0.98);
+  }
+
+  .tab-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* Bigger touch targets for checkboxes */
+  .checkbox-wrapper {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Scroll momentum */
+  .sidebar,
+  .sidebar__tabs,
+  .inventory-list {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* === SAFE AREA INSETS (notch, home indicator) === */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .sidebar {
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  }
+
+  .app-shell {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* === HIGH CONTRAST / ACCESSIBILITY === */
+@media (prefers-contrast: high) {
+  .tab-btn {
+    border-width: 2px;
+  }
+
+  .rpg-item-row {
+    border-width: 2px;
+  }
+
+  .sidebar-card {
+    border-width: 2px;
+  }
+}
+
+/* === REDUCED MOTION === */
+@media (prefers-reduced-motion: reduce) {
+  .rpg-item-row,
+  .tab-btn,
+  .loading-spinner {
+    animation: none;
+    transition: none;
+  }
+
+  .loading-bar-fill {
+    transition: none;
+  }
+}
+
+/* === DARK MODE MOBILE (future) === */
+@media (prefers-color-scheme: dark) {
+  /* Placeholder for dark mode if needed */
+}
