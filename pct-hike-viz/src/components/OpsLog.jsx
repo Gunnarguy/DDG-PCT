@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import supabase, { supabaseReady } from '../lib/supabaseClient';
+import supabase, { supabaseReady } from '../lib/supabase';
 import './OpsLog.css';
 
 const normalizeEntry = (entry) => ({

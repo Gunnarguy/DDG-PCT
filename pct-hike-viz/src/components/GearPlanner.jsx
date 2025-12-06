@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { resourcesById } from '../data/resourcesIndex';
 import { ddgTeam } from '../data/planContent';
-import supabase, { supabaseReady } from '../lib/supabaseClient';
+import supabase, { supabaseReady } from '../lib/supabase';
 
 // Category metadata for RPG-style gear slots
 // Maps module labels to icons and stat names for the loadout UI

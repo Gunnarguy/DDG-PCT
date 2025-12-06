@@ -13,6 +13,9 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://tnqvxjtqvmmacrfqpelj.supabase.co';
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRucXZ4anRxdm1tYWNyZnFwZWxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ4OTk5ODQsImV4cCI6MjA4MDQ3NTk4NH0.zikr2QDr5OdLrZTkNZv-rF9rPCh2DlY_XCW2pZDnCD4';
 
+/** Whether Supabase is configured and ready */
+export const supabaseReady = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+
 /**
  * Main Supabase client instance
  * Handles auth state automatically via localStorage

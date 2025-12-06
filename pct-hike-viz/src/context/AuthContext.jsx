@@ -51,10 +51,57 @@ export function AuthProvider({ children }) {
   // Initialize auth state on mount
   useEffect(() => {
     let mounted = true;
+    let timeoutId;
 
     const initAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        // Set a timeout to prevent infinite spinning
+        timeoutId = setTimeout(() => {
+          if (mounted && loading) {
+            console.warn('Auth init timed out, setting loading to false');
+            setLoading(false);
+          }
+        }, 5000);
+
+        // Check if we have auth tokens in the URL hash (from magic link redirect)
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        
+        if (accessToken && refreshToken) {
+          console.log('Found tokens in URL, setting session...');
+          // Manually set the session from URL params
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+          
+          if (error) {
+            console.error('Error setting session from URL:', error);
+          } else if (data.session) {
+            console.log('Session set successfully from URL');
+            // Clear the hash from URL
+            window.history.replaceState(null, '', window.location.pathname);
+            if (mounted) {
+              setUser(data.session.user);
+              await fetchProfile(data.session.user);
+              setLoading(false);
+            }
+            return;
+          }
+        }
+
+        // Clear hash if present but empty/incomplete
+        if (window.location.hash) {
+          window.history.replaceState(null, '', window.location.pathname);
+        }
+
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error('Session error:', sessionError);
+        }
+        
         if (mounted) {
           setUser(session?.user ?? null);
           if (session?.user) {
@@ -73,7 +120,16 @@ export function AuthProvider({ children }) {
 
     initAuth();
 
-    // Listen for auth state changes
+    return () => {
+      mounted = false;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, []);
+
+  // Listen for auth state changes
+  useEffect(() => {
+    let mounted = true;
+    
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (mounted) {
