@@ -77,6 +77,73 @@
   color: var(--pine-700);
 }
 
+/* Access Denied / Pending Screen */
+.access-denied-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, var(--sand-50) 0%, var(--sand-100) 100%);
+  color: var(--pine-700);
+  padding: 2rem;
+}
+
+.access-denied-screen h1 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: var(--pine-700);
+}
+
+.access-denied-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+}
+
+.access-denied-card .access-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.access-denied-card h2 {
+  margin: 0 0 1rem;
+  color: var(--amber-600, #d97706);
+}
+
+.access-denied-card p {
+  margin: 0.5rem 0;
+  color: var(--sand-600);
+}
+
+.access-denied-card .access-message {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--sand-500);
+}
+
+.access-denied-card .sign-out-btn {
+  margin-top: 2rem;
+  padding: 0.75rem 2rem;
+  background: var(--sand-200);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--pine-700);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.access-denied-card .sign-out-btn:hover {
+  background: var(--sand-300);
+}
+
 .loading-spinner {
   width: 40px;
   height: 40px;

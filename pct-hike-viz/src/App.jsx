@@ -449,10 +449,11 @@ function App() {
 }
 
 /**
- * Auth-gated wrapper - shows login screen if not authenticated
+ * Auth-gated wrapper - shows login screen if not authenticated,
+ * access denied if not a DDG team member
  */
 function AuthGatedApp() {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, isTeamMember, loading, user, signOut } = useAuth();
 
   if (loading) {
     return (
@@ -467,6 +468,32 @@ function AuthGatedApp() {
 
   if (!isAuthenticated) {
     return <LoginScreen />;
+  }
+
+  // Authenticated but NOT a team member - show access pending screen
+  if (!isTeamMember) {
+    return (
+      <div className="app-shell">
+        <div className="access-denied-screen">
+          <h1>🏔️ DDG Mission Control</h1>
+          <div className="access-denied-card">
+            <span className="access-icon">⏳</span>
+            <h2>Access Pending</h2>
+            <p>
+              Signed in as <strong>{user?.email}</strong>
+            </p>
+            <p className="access-message">
+              This mission control is for Dan, Drew, and Gunnar only.
+              <br />
+              Your access request has been logged. Gunnar will review it.
+            </p>
+            <button onClick={signOut} className="sign-out-btn">
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return <App />;
