@@ -4,8 +4,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import Sidebar from './components/Sidebar';
 const TrailMap = React.lazy(() => import('./components/TrailMap'));
 import ElevationProfile from './components/ElevationProfile';
-import { UserBadge } from './components/AuthUI';
-import { AuthProvider } from './context/AuthContext';
+import { LoginScreen } from './components/AuthUI';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import {
   scheduleOptions,
   travelPlan,
@@ -388,16 +388,11 @@ function App() {
   }
 
   return (
-    <AuthProvider>
-      <div className="app-shell">
-        {/* User auth badge - top left corner */}
-        <div className="auth-badge-container">
-          <UserBadge />
-        </div>
-        <div 
-          className={`resize-handle ${isDragging ? 'dragging' : ''}`}
-          onMouseDown={handleResizeStart}
-          style={{ right: `${sidebarWidth}vw` }}
+    <div className="app-shell">
+      <div 
+        className={`resize-handle ${isDragging ? 'dragging' : ''}`}
+        onMouseDown={handleResizeStart}
+        style={{ right: `${sidebarWidth}vw` }}
           aria-label="Resize sidebar"
         />
         <div className="map-column">
@@ -450,8 +445,42 @@ function App() {
         onUserChange={setCurrentUserId}
       />
       </div>
+  );
+}
+
+/**
+ * Auth-gated wrapper - shows login screen if not authenticated
+ */
+function AuthGatedApp() {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="app-shell">
+        <div className="loading-screen">
+          <div className="loading-spinner"></div>
+          <p>Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <LoginScreen />;
+  }
+
+  return <App />;
+}
+
+/**
+ * Root component with AuthProvider wrapper
+ */
+function Root() {
+  return (
+    <AuthProvider>
+      <AuthGatedApp />
     </AuthProvider>
   );
 }
 
-export default App;
+export default Root;
