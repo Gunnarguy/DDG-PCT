@@ -1,0 +1,150 @@
+/**
+ * Access Gate Styles
+ */
+
+.access-gate {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  padding: 2rem;
+}
+
+.access-gate .gate-content {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 3rem;
+  max-width: 480px;
+  text-align: center;
+  color: #fff;
+}
+
+.access-gate .gate-icon,
+.access-gate .loading-icon {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.access-gate.loading .loading-icon {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+.access-gate h2 {
+  font-size: 1.75rem;
+  margin: 0 0 1rem 0;
+  color: #fff;
+}
+
+.access-gate .gate-email {
+  font-family: monospace;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.access-gate .gate-message {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin: 1rem 0;
+}
+
+.access-gate .gate-note {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  margin-top: 1.5rem;
+}
+
+.access-gate .allowed-emails {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  text-align: left;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.access-gate .allowed-emails li {
+  padding: 0.5rem 0;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.access-gate .gate-signout {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.access-gate .gate-signout:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Admin Panel */
+.admin-access-panel {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.admin-access-panel h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.95rem;
+  color: #ffc107;
+}
+
+.admin-access-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-access-panel li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-access-panel li:last-child {
+  border-bottom: none;
+}
+
+.admin-access-panel .req-email {
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.admin-access-panel .req-date {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.admin-access-panel .admin-note {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.75rem;
+  margin-bottom: 0;
+}

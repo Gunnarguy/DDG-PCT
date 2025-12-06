@@ -7,13 +7,14 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { supabase, getTeamProfile, DDG_TEAM } from '../lib/supabase';
+import { supabase, getTeamProfile, DDG_TEAM, isAllowedEmail, getHikerIdFromEmail, isAdminEmail } from '../lib/supabase';
 
 const AuthContext = createContext(null);
 
 /**
  * Hook to access auth context
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -124,6 +125,8 @@ export function AuthProvider({ children }) {
       mounted = false;
       if (timeoutId) clearTimeout(timeoutId);
     };
+    // Intentionally run only on mount - init effect
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Listen for auth state changes
@@ -226,25 +229,51 @@ export function AuthProvider({ children }) {
   const getDisplayInfo = useCallback(() => {
     if (!user) return null;
 
-    // Check if they have a team profile
-    if (profile?.hiker_name && DDG_TEAM[profile.hiker_name]) {
-      const teamInfo = DDG_TEAM[profile.hiker_name];
+    const email = user.email;
+    const isAllowed = isAllowedEmail(email);
+    const hikerId = getHikerIdFromEmail(email);
+    const isAdmin = isAdminEmail(email);
+
+    // Check if they're a whitelisted DDG team member
+    if (isAllowed && hikerId && DDG_TEAM[hikerId]) {
+      const teamInfo = DDG_TEAM[hikerId];
       return {
-        name: profile.display_name || teamInfo.name,
-        emoji: profile.avatar_emoji || teamInfo.emoji,
+        name: teamInfo.name,
+        emoji: teamInfo.emoji,
         role: teamInfo.role,
-        email: user.email,
+        email: email,
+        hikerId: hikerId,
         isTeamMember: true,
+        isAdmin: isAdmin,
+        accessStatus: 'approved',
       };
     }
 
-    // Fallback for authenticated but not yet profiled users
+    // Check if they have a team profile (from database)
+    if (profile?.hiker_id && DDG_TEAM[profile.hiker_id]) {
+      const teamInfo = DDG_TEAM[profile.hiker_id];
+      return {
+        name: profile.name || teamInfo.name,
+        emoji: teamInfo.emoji,
+        role: teamInfo.role,
+        email: email,
+        hikerId: profile.hiker_id,
+        isTeamMember: true,
+        isAdmin: profile.role === 'admin',
+        accessStatus: 'approved',
+      };
+    }
+
+    // Not whitelisted - access pending/denied
     return {
-      name: user.email?.split('@')[0] || 'Hiker',
-      emoji: '🥾',
-      role: 'Guest',
-      email: user.email,
+      name: email?.split('@')[0] || 'Visitor',
+      emoji: '🚫',
+      role: 'Access Pending',
+      email: email,
+      hikerId: null,
       isTeamMember: false,
+      isAdmin: false,
+      accessStatus: 'pending',
     };
   }, [user, profile]);
 
@@ -255,7 +284,8 @@ export function AuthProvider({ children }) {
     loading,
     error,
     isAuthenticated: !!user,
-    isTeamMember: !!profile,
+    isTeamMember: !!user && isAllowedEmail(user?.email),
+    isAdmin: !!user && isAdminEmail(user?.email),
 
     // Methods
     signInWithEmail,
@@ -265,6 +295,7 @@ export function AuthProvider({ children }) {
 
     // Utilities
     supabase,
+    isAllowedEmail,
   };
 
   return (

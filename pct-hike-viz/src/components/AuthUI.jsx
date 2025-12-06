@@ -93,12 +93,6 @@ function LoginModal({ onClose }) {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setIsLoading(true);
-    await signInWithGoogle();
-    // Will redirect, so no need to handle success
-  };
-
   return (
     <div className="auth-modal-overlay" onClick={onClose}>
       <div className="auth-modal" onClick={(e) => e.stopPropagation()}>

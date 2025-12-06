@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { resourcesById } from '../data/resourcesIndex';
 import { ddgTeam } from '../data/planContent';
-import supabase, { supabaseReady } from '../lib/supabase';
+import supabase, { supabaseReady, getHikerIdFromEmail } from '../lib/supabase';
+import { useAuth } from '../context/AuthContext';
 
 // Category metadata for RPG-style gear slots
 // Maps module labels to icons and stat names for the loadout UI
@@ -143,7 +144,12 @@ function GearPlanner({ data, currentUser }) {
   const [syncError, setSyncError] = useState(null);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const [activeHikerId, setActiveHikerId] = useState(currentUser || 'gunnar');
+  // Auto-detect hiker from auth
+  const { user } = useAuth();
+  const detectedHikerId = user?.email ? getHikerIdFromEmail(user.email) : null;
+  const effectiveCurrentUser = detectedHikerId || currentUser || 'gunnar';
+
+  const [activeHikerId, setActiveHikerId] = useState(effectiveCurrentUser);
   const activeHiker = HIKERS.find(h => h.id === activeHikerId);
 
   // Custom item form state

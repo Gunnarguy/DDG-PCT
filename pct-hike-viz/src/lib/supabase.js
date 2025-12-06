@@ -46,6 +46,46 @@ export const DDG_TEAM = {
 };
 
 /**
+ * Whitelisted DDG team emails
+ * Only these emails can access team features
+ */
+export const DDG_ALLOWED_EMAILS = [
+  'smileyguy@aol.com',        // Dan (Dad)
+  'andrew.d.hostetler@gmail.com', // Drew (Brother)
+  'gunnarguy@me.com',         // Gunnar
+  'gunnarguy@aol.com',        // Gunnar (alt)
+];
+
+/**
+ * Check if an email is whitelisted
+ */
+export const isAllowedEmail = (email) => {
+  if (!email) return false;
+  return DDG_ALLOWED_EMAILS.includes(email.toLowerCase());
+};
+
+/**
+ * Get hiker ID from email
+ */
+export const getHikerIdFromEmail = (email) => {
+  if (!email) return null;
+  const lower = email.toLowerCase();
+  if (lower === 'smileyguy@aol.com') return 'dan';
+  if (lower === 'andrew.d.hostetler@gmail.com') return 'drew';
+  if (lower === 'gunnarguy@me.com' || lower === 'gunnarguy@aol.com') return 'gunnar';
+  return null;
+};
+
+/**
+ * Check if email is admin (Gunnar)
+ */
+export const isAdminEmail = (email) => {
+  if (!email) return false;
+  const lower = email.toLowerCase();
+  return lower === 'gunnarguy@me.com' || lower === 'gunnarguy@aol.com';
+};
+
+/**
  * Helper to get current session
  */
 export const getSession = async () => {
