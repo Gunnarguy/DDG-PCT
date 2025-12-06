@@ -22,8 +22,6 @@ import {
 import { connectivityZones } from './data/connectivityData';
 import { fetchLiveSatelliteCoverage } from './services/liveSatelliteService';
 import './App.css';
-// Direct import for instant loading (Vite bundles this at build time)
-import hikeDataBundle from './hike_data.json';
 
 // Bump VITE_HIKE_DATA_VERSION whenever hike_data.json changes to invalidate cached copies.
 const DATASET_VERSION = import.meta.env.VITE_HIKE_DATA_VERSION ?? '2025-11-23-connectivity';
@@ -32,12 +30,11 @@ const HIKEDATA_CACHE_META_KEY = `${HIKEDATA_CACHE_KEY}::meta`;
 const USER_STORAGE_KEY = 'pct-hike-viz::current-user';
 const FALLBACK_TIMEOUT_MS = 6500;
 
-// NOTE: Kept for potential future remote-fetch mode
-const _buildDataUrl = () => {
+// Build URL to fetch hike data from public/data at runtime
+const buildDataUrl = () => {
   const basePath = (import.meta.env.BASE_URL ?? '/').replace(/\/?$/, '/');
   return `${basePath}data/hike_data.json`;
 };
-void _buildDataUrl; // suppress unused warning
 
 const getLocalStorage = () => {
   try {
@@ -49,8 +46,8 @@ const getLocalStorage = () => {
   }
 };
 
-// NOTE: Kept for potential future remote-fetch mode
-const _readCachedHikeData = () => {
+// Read cached hike data from localStorage if valid
+const readCachedHikeData = () => {
   const storage = getLocalStorage();
   if (!storage) return null;
   try {
@@ -66,7 +63,6 @@ const _readCachedHikeData = () => {
     return null;
   }
 };
-void _readCachedHikeData; // suppress unused warning
 
 const mapStyles = {
   topo: {
@@ -137,12 +133,11 @@ function MapLoadingFallback() {
 function App() {
   const [popupInfo, setPopupInfo] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState('topo');
-  // Initialize directly with bundled data for instant loading
-  const [hikeData, _setHikeData] = useState(hikeDataBundle);
-  const [isLoading, _setIsLoading] = useState(false);
-  const [loadingError, _setLoadingError] = useState(null);
-  const [loadingMessage, _setLoadingMessage] = useState('');
-  void _setHikeData; void _setIsLoading; void _setLoadingError; void _setLoadingMessage;
+  // Fetch hike data from public/data at runtime
+  const [hikeData, setHikeData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingError, setLoadingError] = useState(null);
+  const [loadingMessage, setLoadingMessage] = useState('Loading hike data...');
   const [currentUserId, setCurrentUserId] = useState(() => {
     const storage = getLocalStorage();
     const stored = storage?.getItem(USER_STORAGE_KEY);
@@ -154,6 +149,55 @@ function App() {
   const [profileHoverPoint, setProfileHoverPoint] = useState(null);
   const [sidebarWidth, setSidebarWidth] = useState(28); // percentage
   const [isDragging, setIsDragging] = useState(false);
+
+  // Fetch hike data on mount (from cache or network)
+  useEffect(() => {
+    const loadHikeData = async () => {
+      // Try cache first
+      const cached = readCachedHikeData();
+      if (cached) {
+        setHikeData(cached.data);
+        setIsLoading(false);
+        setLoadingMessage('');
+        return;
+      }
+
+      // Fetch from public/data
+      try {
+        setLoadingMessage('Fetching trail data...');
+        const url = buildDataUrl();
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch hike data: ${response.status}`);
+        }
+        const data = await response.json();
+        
+        // Cache for next time
+        const storage = getLocalStorage();
+        if (storage) {
+          try {
+            storage.setItem(HIKEDATA_CACHE_KEY, JSON.stringify(data));
+            storage.setItem(HIKEDATA_CACHE_META_KEY, JSON.stringify({
+              version: DATASET_VERSION,
+              fetchedAt: new Date().toISOString()
+            }));
+          } catch (e) {
+            console.warn('Failed to cache hike data:', e);
+          }
+        }
+        
+        setHikeData(data);
+        setIsLoading(false);
+        setLoadingMessage('');
+      } catch (error) {
+        console.error('Failed to load hike data:', error);
+        setLoadingError(error.message);
+        setIsLoading(false);
+      }
+    };
+
+    loadHikeData();
+  }, []);
 
   // Handle sidebar resizing
   const handleResizeStart = useCallback((e) => {
