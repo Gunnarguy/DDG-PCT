@@ -6,6 +6,7 @@ import SourceChips from './SourceChips';
 import WildfireMonitor from './WildfireMonitor';
 import TerrainAnalysis from './TerrainAnalysis';
 import TransitPanel from './TransitPanel';
+import OpsLog from './OpsLog';
 import { connectivityZones, satelliteDevices, getSignalBadgeClass, getSignalEmoji } from '../data/connectivityData';
 import { ddgTeam, dayItinerary, tripStats, sectionOMeta, dataSources } from '../data/planContent';
 
@@ -75,7 +76,9 @@ function Sidebar({
   liveSatelliteStatus,
   liveSatelliteError,
   onSelectPoint,
-  setPopupInfo
+  setPopupInfo,
+  currentUserId,
+  onUserChange
 }) {
   const [activeTab, setActiveTab] = useState('mission');
   const tabs = [
@@ -83,10 +86,14 @@ function Sidebar({
     { id: 'itinerary', label: 'Itinerary' },
     { id: 'safety', label: 'Safety' },
     { id: 'gear', label: 'Gear' },
+    { id: 'comms', label: 'Comms' },
     { id: 'logistics', label: 'Logistics' },
     { id: 'risks', label: 'Risks' },
     { id: 'library', label: 'Library' }
   ];
+
+  const activeUser = ddgTeam.find((member) => member.id === currentUserId) || ddgTeam[2];
+  const activeUserName = activeUser?.name || 'Gunnar';
 
   const liveStatusCopy = {
     idle: 'Awaiting Apple live feed…',
@@ -124,10 +131,6 @@ function Sidebar({
   };
 
   const renderCoverageList = (entries, label) => {
-    if (!entries || entries.length === 0) {
-      return null;
-    }
-
     return (
       <div className="live-sat-block">
         <p className="subhead">{label}</p>
@@ -670,7 +673,7 @@ function Sidebar({
       </section>
 
       <section className="sidebar-card sidebar-card--full">
-        <GearPlanner data={packPlanner} />
+        <GearPlanner key={currentUserId} data={packPlanner} currentUser={currentUserId} />
       </section>
     </>
   );
@@ -856,6 +859,26 @@ function Sidebar({
     </>
   );
 
+  const renderComms = () => (
+    <>
+      <section className="sidebar-card sidebar-card--full">
+        <div className="section-header">
+          <h2>Mission Control Log</h2>
+          <span className="section-subtitle">Live ops traffic for the DDG crew</span>
+        </div>
+        <OpsLog contextId="general" userName={activeUserName} />
+      </section>
+
+      <section className="sidebar-card sidebar-card--full">
+        <div className="section-header">
+          <h2>Tasking Channel</h2>
+          <span className="section-subtitle">Use /task to flag work and alerts</span>
+        </div>
+        <OpsLog contextId="tasks" userName={activeUserName} />
+      </section>
+    </>
+  );
+
   const renderRisks = () => (
     <section className="sidebar-card sidebar-card--full">
       <h2>Risk &amp; contingency planning</h2>
@@ -907,6 +930,25 @@ function Sidebar({
 
   return (
     <aside className="sidebar" style={style}>
+      <div className="identity-switcher" role="group" aria-label="Select mission control user">
+        {ddgTeam.map((member) => {
+          const isActive = member.id === activeUser.id;
+          return (
+            <button
+              key={member.id}
+              type="button"
+              className={`identity-chip ${isActive ? 'is-active' : ''}`}
+              style={{ '--identity-color': member.color }}
+              onClick={() => onUserChange(member.id)}
+            >
+              <span className="identity-emoji" aria-hidden="true">{member.emoji}</span>
+              <span className="identity-label">{member.name}</span>
+              <span className="identity-role">{member.role}</span>
+            </button>
+          );
+        })}
+      </div>
+
       <nav className="sidebar__tabs" aria-label="Mission control sections">
         {tabs.map((tab) => (
           <button
@@ -924,6 +966,7 @@ function Sidebar({
         {activeTab === 'itinerary' && renderItinerary()}
         {activeTab === 'safety' && renderSafety()}
         {activeTab === 'gear' && renderGear()}
+        {activeTab === 'comms' && renderComms()}
         {activeTab === 'logistics' && renderLogistics()}
         {activeTab === 'risks' && renderRisks()}
         {activeTab === 'library' && renderLibrary()}
@@ -1025,7 +1068,9 @@ Sidebar.propTypes = {
   liveSatelliteStatus: PropTypes.oneOf(['idle', 'loading', 'refreshing', 'success', 'error']).isRequired,
   liveSatelliteError: PropTypes.instanceOf(Error),
   onSelectPoint: PropTypes.func.isRequired,
-  setPopupInfo: PropTypes.func.isRequired
+  setPopupInfo: PropTypes.func.isRequired,
+  currentUserId: PropTypes.string.isRequired,
+  onUserChange: PropTypes.func.isRequired
 };
 
 Sidebar.defaultProps = {

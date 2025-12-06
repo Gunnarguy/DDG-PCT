@@ -8,13 +8,16 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "fetch:pct": "node ./scripts/fetch-pct-route.js"
+    "fetch:pct": "node ./scripts/fetch-pct-route.js",
+    "supabase:apply": "scripts/apply_supabase.sh",
+    "supabase:smoke": "node scripts/smoke_supabase.js"
   },
   "dependencies": {
     "@deck.gl/core": "^9.2.2",
     "@deck.gl/layers": "^9.2.2",
     "@deck.gl/mapbox": "^9.2.2",
     "@deck.gl/react": "^9.2.2",
+    "@supabase/supabase-js": "^2.86.2",
     "d3-scale": "^4.0.2",
     "maplibre-gl": "^5.13.0",
     "prop-types": "^15.8.1",

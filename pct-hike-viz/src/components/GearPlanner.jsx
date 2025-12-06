@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { resourcesById } from '../data/resourcesIndex';
 import { ddgTeam } from '../data/planContent';
+import supabase, { supabaseReady } from '../lib/supabaseClient';
 
 // Category metadata for RPG-style gear slots
 // Maps module labels to icons and stat names for the loadout UI
@@ -104,7 +105,19 @@ const renderSourceChips = (ids = []) => {
   );
 };
 
-function GearPlanner({ data }) {
+const normalizeCustomItem = (row) => ({
+  id: `custom-${row.id ?? row.localId ?? Date.now()}`,
+  name: row.name,
+  detail: row.detail || 'Custom added item',
+  weight: row.weight_label || (row.weight_val ? `${row.weight_val} lb` : '0 lb'),
+  weightVal: Number(row.weight_val ?? row.weightVal ?? 0),
+  category: row.category || 'Custom',
+  moduleId: row.module_id || 'custom',
+  isCustom: true,
+  sourceIds: row.source_ids || []
+});
+
+function GearPlanner({ data, currentUser }) {
   // 1. Initialize Master Inventory from the provided data
   const initialInventory = useMemo(() => {
     return data.modules.flatMap((module) =>
@@ -119,67 +132,250 @@ function GearPlanner({ data }) {
   }, [data]);
 
   const [inventory, setInventory] = useState(initialInventory);
-  
-  // 2. State for each hiker's loadout (Set of item IDs) - use ddgTeam IDs
-  const [loadouts, setLoadouts] = useState({
+  const defaultLoadouts = useMemo(() => ({
     dan: new Set(),
     drew: new Set(),
-    gunnar: new Set(initialInventory.filter(i => i.defaultPacked).map(i => i.id))
-  });
+    gunnar: new Set(initialInventory.filter((i) => i.defaultPacked).map((i) => i.id))
+  }), [initialInventory]);
 
-  const [activeHikerId, setActiveHikerId] = useState('gunnar');
+  // 2. State for each hiker's loadout (live synced)
+  const [loadouts, setLoadouts] = useState(defaultLoadouts);
+  const [syncError, setSyncError] = useState(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const [activeHikerId, setActiveHikerId] = useState(currentUser || 'gunnar');
   const activeHiker = HIKERS.find(h => h.id === activeHikerId);
 
   // Custom item form state
   const [newItemName, setNewItemName] = useState('');
   const [newItemWeight, setNewItemWeight] = useState('');
   const [newItemCategory, setNewItemCategory] = useState('Custom');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('All');
 
-  // Actions
-  const toggleItem = (itemId) => {
-    setLoadouts((prev) => {
-      const currentLoadout = new Set(prev[activeHikerId]);
-      if (currentLoadout.has(itemId)) {
-        currentLoadout.delete(itemId);
-      } else {
-        currentLoadout.add(itemId);
+  // Sync loadouts from Supabase and listen for realtime updates.
+  useEffect(() => {
+    let channel;
+    let isMounted = true;
+
+    if (!supabaseReady) {
+      return undefined;
+    }
+
+    const inflateLoadouts = (rows = []) => {
+      const next = { dan: new Set(), drew: new Set(), gunnar: new Set() };
+      rows.forEach((row) => {
+        if (next[row.hiker_id]) {
+          next[row.hiker_id] = new Set(row.item_ids || []);
+        }
+      });
+      // Preserve defaults if remote payload empty
+      return {
+        dan: next.dan.size ? next.dan : new Set(defaultLoadouts.dan),
+        drew: next.drew.size ? next.drew : new Set(defaultLoadouts.drew),
+        gunnar: next.gunnar.size ? next.gunnar : new Set(defaultLoadouts.gunnar)
+      };
+    };
+
+    const hydrate = async () => {
+      setIsSyncing(true);
+      const { data: remote, error } = await supabase.from('gear_loadouts').select('*');
+      if (!isMounted) return;
+      if (!error && remote) {
+        setLoadouts(inflateLoadouts(remote));
+        setSyncError(null);
+      } else if (error) {
+        setSyncError(error);
       }
-      return { ...prev, [activeHikerId]: currentLoadout };
+      setIsSyncing(false);
+    };
+
+    hydrate();
+
+    channel = supabase
+      .channel('gear_loadouts_sync')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'gear_loadouts' }, (payload) => {
+        setLoadouts((prev) => ({
+          ...prev,
+          [payload.new.hiker_id]: new Set(payload.new.item_ids || [])
+        }));
+      })
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [defaultLoadouts]);
+
+  // Custom items: fetch and live-sync shared inventory
+  useEffect(() => {
+    if (!supabaseReady) return undefined;
+    let channel;
+    let isMounted = true;
+
+    const upsertItem = (item) => {
+      setInventory((prev) => {
+        const filtered = prev.filter((i) => i.id !== item.id);
+        return [...filtered, item];
+      });
+    };
+
+    const removeItem = (id) => {
+      setInventory((prev) => prev.filter((i) => i.id !== id));
+    };
+
+    const hydrateCustom = async () => {
+      const { data, error } = await supabase.from('custom_items').select('*');
+      if (!isMounted) return;
+      if (!error && data) {
+        data.map(normalizeCustomItem).forEach(upsertItem);
+        setSyncError(null);
+      } else if (error) {
+        setSyncError(error);
+      }
+    };
+
+    hydrateCustom();
+
+    channel = supabase
+      .channel('custom_items_sync')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'custom_items' }, (payload) => {
+        const eventType = payload.eventType || payload.type;
+        if (eventType === 'DELETE') {
+          removeItem(`custom-${payload.old.id}`);
+          return;
+        }
+        const item = normalizeCustomItem(payload.new);
+        upsertItem(item);
+      })
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, []);
+  // Actions
+  const persistLoadout = async (nextSet, hikerId, previousSet) => {
+    if (!supabaseReady) {
+      setSyncError(new Error('Supabase not configured; changes are local only.'));
+      return;
+    }
+
+    const { error } = await supabase.from('gear_loadouts').upsert({
+      hiker_id: hikerId,
+      item_ids: Array.from(nextSet)
     });
+    if (error) {
+      setSyncError(error);
+      // rollback
+      setLoadouts((prev) => ({ ...prev, [hikerId]: new Set(previousSet) }));
+    } else {
+      setSyncError(null);
+    }
   };
 
-  const handleAddItem = (e) => {
+  const toggleItem = async (itemId) => {
+    const previous = loadouts[activeHikerId] || new Set();
+    const previousSnapshot = new Set(previous);
+    const updatedSet = new Set(previous);
+    if (updatedSet.has(itemId)) {
+      updatedSet.delete(itemId);
+    } else {
+      updatedSet.add(itemId);
+    }
+
+    setLoadouts((prev) => ({ ...prev, [activeHikerId]: updatedSet }));
+    await persistLoadout(updatedSet, activeHikerId, previousSnapshot);
+  };
+
+  const handleAddItem = async (e) => {
     e.preventDefault();
     if (!newItemName || !newItemWeight) return;
 
-    const newItem = {
-      id: `custom-${Date.now()}`,
+    const weightVal = parseFloat(newItemWeight) || 0;
+    const baseItem = {
       name: newItemName,
       detail: 'Custom added item',
-      weight: `${newItemWeight} lb`,
-      weightVal: parseFloat(newItemWeight),
+      weight: `${weightVal} lb`,
+      weightVal,
       category: newItemCategory,
       moduleId: 'custom',
-      isCustom: true
+      isCustom: true,
+      sourceIds: []
     };
 
-    setInventory((prev) => [...prev, newItem]);
-    // Auto-equip to current hiker
-    setLoadouts((prev) => {
-      const currentLoadout = new Set(prev[activeHikerId]);
-      currentLoadout.add(newItem.id);
-      return { ...prev, [activeHikerId]: currentLoadout };
-    });
-    
+    if (!supabaseReady) {
+      const localItem = { ...baseItem, id: `custom-local-${Date.now()}` };
+      setInventory((prev) => [...prev, localItem]);
+      setLoadouts((prev) => {
+        const currentLoadout = new Set(prev[activeHikerId]);
+        currentLoadout.add(localItem.id);
+        return { ...prev, [activeHikerId]: currentLoadout };
+      });
+      setNewItemName('');
+      setNewItemWeight('');
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('custom_items')
+      .insert([
+        {
+          name: baseItem.name,
+          detail: baseItem.detail,
+          weight_val: weightVal,
+          weight_label: baseItem.weight,
+          category: baseItem.category,
+          module_id: baseItem.moduleId,
+          created_by: currentUser,
+          source_ids: baseItem.sourceIds
+        }
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      setSyncError(error);
+      // fallback local
+      const localItem = { ...baseItem, id: `custom-local-${Date.now()}` };
+      setInventory((prev) => [...prev, localItem]);
+      setLoadouts((prev) => {
+        const currentLoadout = new Set(prev[activeHikerId]);
+        currentLoadout.add(localItem.id);
+        return { ...prev, [activeHikerId]: currentLoadout };
+      });
+    } else if (data) {
+      const saved = normalizeCustomItem(data);
+      setInventory((prev) => [...prev, saved]);
+      setLoadouts((prev) => {
+        const currentLoadout = new Set(prev[activeHikerId]);
+        currentLoadout.add(saved.id);
+        return { ...prev, [activeHikerId]: currentLoadout };
+      });
+      setSyncError(null);
+    }
+
     setNewItemName('');
     setNewItemWeight('');
   };
 
   // Derived Data for Active Hiker
-  const currentLoadoutIds = loadouts[activeHikerId];
+  const currentLoadoutIds = loadouts[activeHikerId] || new Set();
   const equippedItems = inventory.filter(item => currentLoadoutIds.has(item.id));
   const currentWeight = equippedItems.reduce((sum, item) => sum + item.weightVal, 0);
   const weightStatus = currentWeight <= activeHiker.baseWeightGoal ? 'good' : 'warn';
+  const isSelf = activeHikerId === currentUser;
+
+  const categories = useMemo(() => ['All', ...Object.keys(SLOT_METADATA)], []);
+
+  const matchesFilters = (item) => {
+    const term = searchTerm.trim().toLowerCase();
+    const matchesTerm = !term || item.name.toLowerCase().includes(term) || item.detail?.toLowerCase?.().includes(term);
+    const matchesCat = categoryFilter === 'All' || item.category === categoryFilter;
+    return matchesTerm && matchesCat;
+  };
 
   // Grouping for display
   const itemsByCategory = useMemo(() => {
@@ -225,6 +421,43 @@ function GearPlanner({ data }) {
         })}
       </div>
 
+      {/* Loadout Summary */}
+      <div className="gear-summary-grid">
+        <div className="summary-card">
+          <div className="summary-label">Current Weight</div>
+          <div className={`summary-value status-${weightStatus}`}>{currentWeight.toFixed(1)} lb</div>
+          <div className="summary-sub">Goal {activeHiker.baseWeightGoal} lb</div>
+        </div>
+        <div className="summary-card">
+          <div className="summary-label">Items Equipped</div>
+          <div className="summary-value">{equippedItems.length}</div>
+          <div className="summary-sub">Live synced</div>
+        </div>
+        <div className="summary-card">
+          <div className="summary-label">Sync</div>
+          <div className="summary-value">{supabaseReady ? 'Online' : 'Offline'}</div>
+          <div className="summary-sub">{syncError ? syncError.message : 'Supabase'}</div>
+        </div>
+        <div className="summary-card">
+          <div className="summary-label">Team Snapshot</div>
+          <div className="summary-tags">
+            {HIKERS.map((h) => {
+              const loadout = loadouts[h.id] || new Set();
+              const w = inventory.filter(i => loadout.has(i.id)).reduce((s, i) => s + i.weightVal, 0);
+              return (
+                <span
+                  key={h.id}
+                  className={`team-weight-chip ${h.id === activeHikerId ? 'active' : ''}`}
+                  style={{ '--chip-color': h.color }}
+                >
+                  {h.emoji} {w.toFixed(1)}lb
+                </span>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       {/* Active Hiker Stats Header - DDG Enhanced */}
       <header className="gear-rpg-header ddg-gear-header">
         <div className="gear-avatar-card" style={{ '--hiker-color': activeHiker.color }}>
@@ -243,12 +476,13 @@ function GearPlanner({ data }) {
             )}
           </div>
         </div>
-        
+
         {/* Team Weight Comparison */}
         <div className="ddg-team-weights">
           <span className="team-weights-label">Team Weights:</span>
           {HIKERS.map(h => {
-            const w = inventory.filter(i => loadouts[h.id].has(i.id)).reduce((s, i) => s + i.weightVal, 0);
+            const loadout = loadouts[h.id] || new Set();
+            const w = inventory.filter(i => loadout.has(i.id)).reduce((s, i) => s + i.weightVal, 0);
             return (
               <span 
                 key={h.id} 
@@ -262,17 +496,50 @@ function GearPlanner({ data }) {
         </div>
       </header>
 
+      {isSyncing && (
+        <p className="note" aria-live="polite">Syncing loadouts with mission control…</p>
+      )}
+      {syncError && (
+        <p className="error-text">Live sync offline: {syncError.message}</p>
+      )}
+
       <div className="gear-rpg-interface">
         {/* Left Column: The "Shed" (Available Gear) */}
         <div className="gear-panel gear-inventory">
           <div className="panel-header">
             <h4>🏚️ Gear Shed</h4>
-            <span className="panel-subtitle">Click to equip →</span>
+            <span className="panel-subtitle">
+              {isSelf ? 'Click to equip →' : `Editing ${activeHiker.name}'s pack`}
+            </span>
+          </div>
+          <div className="gear-filters">
+            <input
+              type="search"
+              className="rpg-input"
+              placeholder="Search gear..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div className="filter-pills" role="list">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  role="listitem"
+                  className={`pill ${categoryFilter === cat ? 'active' : ''}`}
+                  onClick={() => setCategoryFilter(cat)}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
           
           <div className="inventory-list">
             {Object.entries(itemsByCategory).map(([category, items]) => {
-              const availableItems = items.filter(i => !currentLoadoutIds.has(i.id));
+              const availableItems = items
+                .filter(i => !currentLoadoutIds.has(i.id))
+                .filter(matchesFilters);
               if (availableItems.length === 0) return null;
 
               return (
@@ -340,8 +607,8 @@ function GearPlanner({ data }) {
         {/* Right Column: Active Pack */}
         <div className="gear-panel gear-loadout">
           <div className="panel-header">
-            <h4>🎒 {activeHiker.name}'s Pack</h4>
-            <span className="panel-subtitle">{equippedItems.length} items • Click to unequip</span>
+            <h4>🎒 {activeHiker.name}'s Pack {isSelf ? '' : '(Remote view)'}</h4>
+            <span className="panel-subtitle">Live sync • {equippedItems.length} items</span>
           </div>
 
           <div className="loadout-grid">
@@ -395,7 +662,12 @@ function GearPlanner({ data }) {
 }
 
 GearPlanner.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  currentUser: PropTypes.string
+};
+
+GearPlanner.defaultProps = {
+  currentUser: 'gunnar'
 };
 
 export default GearPlanner;

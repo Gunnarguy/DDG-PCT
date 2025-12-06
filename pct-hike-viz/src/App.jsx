@@ -4,6 +4,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import Sidebar from './components/Sidebar';
 const TrailMap = React.lazy(() => import('./components/TrailMap'));
 import ElevationProfile from './components/ElevationProfile';
+import { UserBadge } from './components/AuthUI';
+import { AuthProvider } from './context/AuthContext';
 import {
   scheduleOptions,
   travelPlan,
@@ -14,7 +16,8 @@ import {
   gearBlueprint,
   packPlanner,
   riskPlaybook,
-  nextStepsChecklist
+  nextStepsChecklist,
+  ddgTeam
 } from './data/planContent';
 import { connectivityZones } from './data/connectivityData';
 import { fetchLiveSatelliteCoverage } from './services/liveSatelliteService';
@@ -26,6 +29,7 @@ import hikeDataBundle from './hike_data.json';
 const DATASET_VERSION = import.meta.env.VITE_HIKE_DATA_VERSION ?? '2025-11-23-connectivity';
 const HIKEDATA_CACHE_KEY = 'pct-hike-viz::hike-data';
 const HIKEDATA_CACHE_META_KEY = `${HIKEDATA_CACHE_KEY}::meta`;
+const USER_STORAGE_KEY = 'pct-hike-viz::current-user';
 const FALLBACK_TIMEOUT_MS = 6500;
 
 // NOTE: Kept for potential future remote-fetch mode
@@ -63,20 +67,6 @@ const _readCachedHikeData = () => {
   }
 };
 void _readCachedHikeData; // suppress unused warning
-
-const persistCachedHikeData = (payload) => {
-  const storage = getLocalStorage();
-  if (!storage) return;
-  try {
-    storage.setItem(HIKEDATA_CACHE_KEY, JSON.stringify(payload));
-    storage.setItem(HIKEDATA_CACHE_META_KEY, JSON.stringify({
-      version: DATASET_VERSION,
-      cachedAt: Date.now()
-    }));
-  } catch (error) {
-    console.warn('Unable to persist hike data cache.', error);
-  }
-};
 
 const mapStyles = {
   topo: {
@@ -153,6 +143,11 @@ function App() {
   const [loadingError, _setLoadingError] = useState(null);
   const [loadingMessage, _setLoadingMessage] = useState('');
   void _setHikeData; void _setIsLoading; void _setLoadingError; void _setLoadingMessage;
+  const [currentUserId, setCurrentUserId] = useState(() => {
+    const storage = getLocalStorage();
+    const stored = storage?.getItem(USER_STORAGE_KEY);
+    return stored || ddgTeam?.[2]?.id || 'gunnar';
+  });
   const [liveSatelliteData, setLiveSatelliteData] = useState(null);
   const [liveSatelliteStatus, setLiveSatelliteStatus] = useState('idle');
   const [liveSatelliteError, setLiveSatelliteError] = useState(null);
@@ -187,6 +182,13 @@ function App() {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isDragging]);
+
+  useEffect(() => {
+    const storage = getLocalStorage();
+    if (storage && currentUserId) {
+      storage.setItem(USER_STORAGE_KEY, currentUserId);
+    }
+  }, [currentUserId]);
 
   // Note: localStorage caching disabled - 48k coords too large, blocks main thread
 
@@ -258,8 +260,9 @@ function App() {
 
   const hikingTrail = useMemo(() => {
     if (!hikeData) return [];
-    // Use the actual trail path from the data
-    return hikeData.route?.path ?? hikeData.route?.geometry?.coordinates ?? [];
+    const rawPath = hikeData.route?.path ?? hikeData.route?.geometry?.coordinates ?? [];
+    // Filter out any malformed points to keep elevation profile rendering
+    return rawPath.filter((pt) => Array.isArray(pt) && pt.length >= 3 && pt[0] != null && pt[1] != null && pt[2] != null);
   }, [hikeData]);
 
 
@@ -341,16 +344,21 @@ function App() {
   }
 
   return (
-    <div className="app-shell">
-      <div 
-        className="resize-handle"
-        onMouseDown={handleResizeStart}
-        style={{ right: `${sidebarWidth}vw` }}
-        aria-label="Resize sidebar"
-      />
-      <div className="map-column">
-        <Suspense fallback={<MapLoadingFallback />}>
-          <TrailMap
+    <AuthProvider>
+      <div className="app-shell">
+        {/* User auth badge - top left corner */}
+        <div className="auth-badge-container">
+          <UserBadge />
+        </div>
+        <div 
+          className={`resize-handle ${isDragging ? 'dragging' : ''}`}
+          onMouseDown={handleResizeStart}
+          style={{ right: `${sidebarWidth}vw` }}
+          aria-label="Resize sidebar"
+        />
+        <div className="map-column">
+          <Suspense fallback={<MapLoadingFallback />}>
+            <TrailMap
             mapStyles={mapStyles}
             selectedStyle={selectedStyle}
             onStyleChange={setSelectedStyle}
@@ -394,8 +402,11 @@ function App() {
         liveSatelliteError={liveSatelliteError}
         onSelectPoint={handleSelectPoint}
         setPopupInfo={setPopupInfo}
+        currentUserId={currentUserId}
+        onUserChange={setCurrentUserId}
       />
-    </div>
+      </div>
+    </AuthProvider>
   );
 }
 

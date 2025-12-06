@@ -6,8 +6,10 @@
  * 
  * Data Sources:
  * - NIFC (National Interagency Fire Center) for active fire perimeters
- * - EPA AirNow API for air quality index
+ * - EPA AirNow API for air quality index (via Supabase Edge Function when authenticated)
  */
+
+import { supabase, EDGE_FUNCTIONS } from '../lib/supabase';
 
 const SECTION_O_BBOX = {
   west: -122.5,
@@ -16,6 +18,7 @@ const SECTION_O_BBOX = {
   north: 41.3
 };
 
+// Legacy direct API key (fallback for unauthenticated users)
 const EPA_API_KEY = import.meta.env.VITE_EPA_AIRNOW_API_KEY;
 const AIRNOW_ENDPOINT = 'https://www.airnowapi.org/aq/observation/latLong/current/';
 
@@ -24,6 +27,38 @@ let wildfireCache = null;
 let airQualityCache = null;
 let lastWildfireFetch = 0;
 let lastAirQualityFetch = 0;
+
+/**
+ * Fetch AQI via Supabase Edge Function (authenticated, API key server-side)
+ */
+const fetchAqiViaEdge = async (latitude, longitude, distance = 25) => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      return { error: 'Not authenticated', useDirectApi: true };
+    }
+
+    const response = await fetch(EDGE_FUNCTIONS.aqiProxy, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ latitude, longitude, distance }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return { error: errorData.error || `HTTP ${response.status}`, useDirectApi: true };
+    }
+
+    const result = await response.json();
+    return { data: result.data, via: 'edge-function' };
+  } catch (error) {
+    console.warn('Edge function AQI fetch failed, falling back:', error);
+    return { error: error.message, useDirectApi: true };
+  }
+};
 
 /**
  * Fetch active wildfires near Section O
@@ -90,7 +125,7 @@ export const fetchWildfires = async () => {
 
 /**
  * Fetch air quality data for Section O monitoring points
- * Uses EPA AirNow API for real-time AQI
+ * Uses EPA AirNow API via Supabase Edge Function (authenticated) or direct API (fallback)
  */
 export const fetchAirQuality = async () => {
   const now = Date.now();
@@ -106,10 +141,43 @@ export const fetchAirQuality = async () => {
       { name: 'Castle Crags', lat: 41.173, lon: -121.897 }
     ];
 
-    const usingLiveAqi = Boolean(EPA_API_KEY);
+    // Check if we can use the Edge Function (authenticated)
+    let useEdgeFunction = false;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      useEdgeFunction = !!session;
+    } catch {
+      useEdgeFunction = false;
+    }
+
     const readings = await Promise.all(
       monitoringPoints.map(async (point) => {
-        if (!usingLiveAqi) {
+        // Try Edge Function first if authenticated
+        if (useEdgeFunction) {
+          const edgeResult = await fetchAqiViaEdge(point.lat, point.lon);
+          if (!edgeResult.useDirectApi && edgeResult.data) {
+            const payload = edgeResult.data;
+            if (Array.isArray(payload) && payload.length > 0) {
+              const pm25Entry = payload.find(r => r.ParameterName === 'PM2.5');
+              const ozoneEntry = payload.find(r => r.ParameterName === 'O3');
+              const primary = payload[0];
+              return {
+                location: point.name,
+                aqi: primary?.AQI ?? null,
+                category: primary?.Category?.Name ?? 'Unknown',
+                pm25: pm25Entry?.AQI ?? null,
+                ozone: ozoneEntry?.AQI ?? null,
+                timestamp: primary?.DateObserved
+                  ? `${primary.DateObserved} ${primary.HourObserved}:00 ${primary.LocalTimeZone}`
+                  : new Date().toISOString(),
+                via: 'edge-function'
+              };
+            }
+          }
+        }
+
+        // Fallback to direct API (if key is set) or return placeholder
+        if (!EPA_API_KEY) {
           return {
             location: point.name,
             aqi: null,
@@ -161,7 +229,8 @@ export const fetchAirQuality = async () => {
             ozone: ozoneEntry?.AQI ?? null,
             timestamp: primary?.DateObserved
               ? `${primary.DateObserved} ${primary.HourObserved}:00 ${primary.LocalTimeZone}`
-              : new Date().toISOString()
+              : new Date().toISOString(),
+            via: 'direct-api'
           };
         } catch (error) {
           console.warn(`Failed to fetch AQI for ${point.name}:`, error);
@@ -178,12 +247,18 @@ export const fetchAirQuality = async () => {
       })
     );
 
+    // Determine source for note
+    const hasEdgeData = readings.some(r => r.via === 'edge-function');
+    const hasDirectData = readings.some(r => r.via === 'direct-api');
+
     airQualityCache = {
       readings,
       timestamp: new Date().toISOString(),
-      note: usingLiveAqi
-        ? 'Live AQI via EPA AirNow API'
-        : 'Set VITE_EPA_AIRNOW_API_KEY to enable live AQI polling'
+      note: hasEdgeData
+        ? 'Live AQI via Supabase Edge Function (authenticated)'
+        : hasDirectData
+          ? 'Live AQI via direct EPA AirNow API'
+          : 'Sign in for live AQI data'
     };
     lastAirQualityFetch = now;
     

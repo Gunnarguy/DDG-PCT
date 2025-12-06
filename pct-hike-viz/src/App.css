@@ -7,6 +7,14 @@
   position: relative;
 }
 
+/* Auth badge container - positioned over the map */
+.auth-badge-container {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 500;
+}
+
 .resize-handle {
   position: absolute;
   right: 28vw;
