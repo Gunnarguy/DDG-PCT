@@ -107,10 +107,15 @@ export function AuthProvider({ children }) {
    */
   const signInWithEmail = async (email) => {
     setError(null);
+    // Explicitly set the redirect URL to production site
+    const redirectUrl = import.meta.env.PROD 
+      ? 'https://gunnarguy.github.io/DDG-PCT'
+      : window.location.origin;
+    
     const { error: signInError } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: redirectUrl,
       },
     });
 
