@@ -202,7 +202,6 @@
   position: relative;
   flex: 1 1 auto;
   min-height: var(--map-panel-min, 320px);
-  height: var(--map-panel-min, 320px);
   min-width: 0;
   overflow: hidden;
   /* Allow natural vertical scrolling on touch devices while map is in view */
