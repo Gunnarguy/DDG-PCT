@@ -220,6 +220,37 @@ function Sidebar({
       </section>
       
       <WildfireMonitor />
+      
+      {/* Terrain Analysis - Slope-angle breakdown */}
+      <TerrainAnalysis />
+      
+      {/* Water Sources - tap to show on map */}
+      <section className="sidebar-card sidebar-card--full">
+        <div className="section-header">
+          <h2>Water Sources</h2>
+          <span className="section-subtitle">{waterSourceMeta.count} reliable sources · {waterSourceMeta.mileRange}</span>
+        </div>
+        <div className="water-list">
+          {waterSources.map((source) => (
+            <button
+              type="button"
+              key={source.waypoint || source.mile}
+              className="water-item"
+              onClick={() => setPopupInfo(source)}
+            >
+              <div className="water-item__meta">
+                <span className="water-icon">💧</span>
+                <span className="mile-marker">Mile {source.mile}</span>
+              </div>
+              <h4>{source.name}</h4>
+              <p className="note">{source.report}</p>
+            </button>
+          ))}
+        </div>
+        <p className="note water-source-note">
+          Synced from {waterSourceMeta.sourceLabel}; last checked {waterSourceMeta.lastSynced}. Tap a source to drop the 💧 marker on the map.
+        </p>
+      </section>
     </>
   );
 
@@ -402,18 +433,6 @@ function Sidebar({
     }
   };
 
-  const formatJurisdictionLabel = (label = '') => label
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-
-  const formatNearbyDistance = (distance) => {
-    if (typeof distance !== 'number' || Number.isNaN(distance)) return null;
-    if (distance >= 1) return `${distance.toFixed(1)} mi`;
-    return `${Math.round(distance * 5280)} ft`;
-  };
-
   const renderItinerary = () => (
     <>
       {/* Trip Stats Overview */}
@@ -471,7 +490,7 @@ function Sidebar({
       <section className="sidebar-card sidebar-card--full">
         <div className="section-header">
           <h2>Day-by-day plan</h2>
-          <span className="section-subtitle">Tap cards for map flyto + detailed intel</span>
+          <span className="section-subtitle">Tap cards to fly to location on map</span>
         </div>
         <div className="itinerary-list itinerary-list--detailed">
           {dayItinerary.map((day) => (
@@ -515,69 +534,30 @@ function Sidebar({
                   <span className="elev-stat elev-gain">
                     ↗️ +{day.elevation.gain.toLocaleString()}'
                   </span>
-                  <span className="elev-stat elev-loss">
-                    ↘️ -{day.elevation.loss.toLocaleString()}'
-                  </span>
                 </div>
               )}
 
               {/* Terrain */}
               <p className="day-card__terrain">{day.terrain}</p>
 
-              {/* Land Management Context */}
-              {day.landManagement && (
-                <div className="day-card__land">
-                  <span className="land-chip">🗺️ {day.landManagement.zone}</span>
-                  <span className="land-meta">
-                    {day.landManagement.agency}
-                    {day.landManagement.jurisdiction && (
-                      <> · {formatJurisdictionLabel(day.landManagement.jurisdiction)}</>
-                    )}
+              {/* Quick indicators row: water + connectivity */}
+              <div className="day-card__indicators">
+                {/* Water carry summary */}
+                {day.waterCarry && (
+                  <span className="indicator-chip indicator-water" title={day.waterCarry}>
+                    💧 {day.waterSources?.length || 0} sources
                   </span>
-                </div>
-              )}
-
-              {/* Nearby Wikipedia intel */}
-              {day.wikiNearby && day.wikiNearby.length > 0 && (
-                <div className="day-card__wiki">
-                  <span className="wiki-label">Nearby intel</span>
-                  <ul className="wiki-list">
-                    {day.wikiNearby.slice(0, 2).map((article) => (
-                      <li key={article.title}>
-                        <span className="wiki-topic">{article.title}</span>
-                        {article.topic && <span className="wiki-detail"> · {article.topic}</span>}
-                        {typeof article.distance === 'number' && (
-                          <span className="wiki-distance">{formatNearbyDistance(article.distance)}</span>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* Water Intel */}
-              {day.waterSources && day.waterSources.length > 0 && (
-                <div className="day-card__water">
-                  <div className="water-header">
-                    <span className="water-icon">💧</span>
-                    <span className="water-carry">{day.waterCarry}</span>
-                  </div>
-                  <ul className="water-sources-mini">
-                    {day.waterSources.map((src, i) => (
-                      <li key={i}>{src}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* Connectivity */}
-              <div className="day-card__connectivity">
-                <span className={`signal-dot ${day.connectivity.verizon !== 'none' ? 'has-signal' : 'no-signal'}`} title={`Verizon: ${day.connectivity.verizon}`}>V</span>
-                <span className={`signal-dot ${day.connectivity.att !== 'none' ? 'has-signal' : 'no-signal'}`} title={`AT&T: ${day.connectivity.att}`}>A</span>
-                <span className={`signal-dot ${day.connectivity.tmobile !== 'none' ? 'has-signal' : 'no-signal'}`} title={`T-Mobile: ${day.connectivity.tmobile}`}>T</span>
-                {day.connectivity.satellite && (
-                  <span className="satellite-icon" title="Satellite available">📡</span>
                 )}
+                
+                {/* Connectivity */}
+                <div className="day-card__connectivity">
+                  <span className={`signal-dot ${day.connectivity.verizon !== 'none' ? 'has-signal' : 'no-signal'}`} title={`Verizon: ${day.connectivity.verizon}`}>V</span>
+                  <span className={`signal-dot ${day.connectivity.att !== 'none' ? 'has-signal' : 'no-signal'}`} title={`AT&T: ${day.connectivity.att}`}>A</span>
+                  <span className={`signal-dot ${day.connectivity.tmobile !== 'none' ? 'has-signal' : 'no-signal'}`} title={`T-Mobile: ${day.connectivity.tmobile}`}>T</span>
+                  {day.connectivity.satellite && (
+                    <span className="satellite-icon" title="Satellite available">📡</span>
+                  )}
+                </div>
               </div>
 
               {/* Camp Features */}
@@ -592,58 +572,12 @@ function Sidebar({
                 </div>
               )}
 
-              {/* Timing */}
-              {day.timing && (
-                <div className="day-card__timing">
-                  <span>{day.timing.start} – {day.timing.end}</span>
-                  <span>⏱️ {day.timing.movingTime} moving</span>
-                </div>
-              )}
-
               {/* Notes */}
               <p className="day-card__notes">{day.notes}</p>
-              
-              {/* Source Citations */}
-              {day.sourceIds && day.sourceIds.length > 0 && (
-                <div className="day-card__sources" onClick={(e) => e.stopPropagation()}>
-                  <SourceChips sourceIds={day.sourceIds} size="small" maxShow={3} />
-                </div>
-              )}
             </button>
           ))}
         </div>
       </section>
-
-      {/* Water Sources - Detailed List */}
-      <section className="sidebar-card sidebar-card--full">
-        <div className="section-header">
-          <h2>Water Sources</h2>
-          <span className="section-subtitle">{waterSourceMeta.count} reliable sources · {waterSourceMeta.mileRange}</span>
-        </div>
-        <div className="water-list">
-          {waterSources.map((source) => (
-            <button
-              type="button"
-              key={source.waypoint || source.mile}
-              className="water-item"
-              onClick={() => setPopupInfo(source)}
-            >
-              <div className="water-item__meta">
-                <span className="water-icon">💧</span>
-                <span className="mile-marker">Mile {source.mile}</span>
-              </div>
-              <h4>{source.name}</h4>
-              <p className="note">{source.report}</p>
-            </button>
-          ))}
-        </div>
-        <p className="note water-source-note">
-          Synced from {waterSourceMeta.sourceLabel}; last checked {waterSourceMeta.lastSynced}. Tap a source to drop the 💧 marker on the map.
-        </p>
-      </section>
-
-      {/* Terrain Analysis - Slope-angle breakdown */}
-      <TerrainAnalysis />
     </>
   );
 

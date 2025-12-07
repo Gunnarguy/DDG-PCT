@@ -1023,11 +1023,36 @@
   margin: 0.15rem 0;
 }
 
+/* Indicators row: water + connectivity side by side */
+.day-card__indicators {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+  flex-wrap: wrap;
+}
+
+.indicator-chip {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: var(--sand-100);
+  color: var(--ink-600);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.indicator-water {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+}
+
 .day-card__connectivity {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  margin: 0.5rem 0;
 }
 
 .signal-dot {
