@@ -396,24 +396,26 @@ function App() {
           aria-label="Resize sidebar"
         />
         <div className="map-column">
-          <Suspense fallback={<MapLoadingFallback />}>
-            <TrailMap
-            mapStyles={mapStyles}
-            selectedStyle={selectedStyle}
-            onStyleChange={setSelectedStyle}
-            totalMiles={totalMiles}
-            hikingTrail={hikingTrail}
-            driveSegments={driveSegments}
-            campPoints={campPoints}
-            townPins={townPins}
-            transportPoints={transportPoints}
-            waterSources={waterSources}
-            connectivityZones={connectivityZones}
-            popupInfo={popupInfo}
-            setPopupInfo={setPopupInfo}
-            hoverHighlight={profileHoverPoint}
-          />
-        </Suspense>
+          <div className="map-panel">
+            <Suspense fallback={<MapLoadingFallback />}>
+              <TrailMap
+              mapStyles={mapStyles}
+              selectedStyle={selectedStyle}
+              onStyleChange={setSelectedStyle}
+              totalMiles={totalMiles}
+              hikingTrail={hikingTrail}
+              driveSegments={driveSegments}
+              campPoints={campPoints}
+              townPins={townPins}
+              transportPoints={transportPoints}
+              waterSources={waterSources}
+              connectivityZones={connectivityZones}
+              popupInfo={popupInfo}
+              setPopupInfo={setPopupInfo}
+              hoverHighlight={profileHoverPoint}
+            />
+          </Suspense>
+          </div>
 
         <ElevationProfile
           hikingTrail={hikingTrail}
