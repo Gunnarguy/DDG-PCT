@@ -1,7 +1,8 @@
 .app-shell {
   display: flex;
-  height: 100vh;
-  width: 100vw;
+  min-height: 100dvh;
+  height: 100dvh;
+  width: 100%;
   background: var(--sand-50);
   overflow: hidden;
   position: relative;
@@ -52,12 +53,13 @@
 }
 
 .map-column {
+  --map-panel-min: 320px;
   flex: 1;
   min-width: 300px;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  min-height: 0;
+  height: 100dvh;
+  min-height: 100dvh;
   overflow: hidden;
 }
 
@@ -71,8 +73,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  width: 100vw;
+  height: 100dvh;
+  width: 100%;
   background: var(--sand-50);
   color: var(--pine-700);
 }
@@ -83,8 +85,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  width: 100vw;
+  height: 100dvh;
+  width: 100%;
   background: linear-gradient(135deg, var(--sand-50) 0%, var(--sand-100) 100%);
   color: var(--pine-700);
   padding: 2rem;
@@ -199,9 +201,8 @@
 .map-panel {
   position: relative;
   flex: 1 1 0%;
-  min-height: 0;
+  min-height: var(--map-panel-min, 320px);
   height: 100%;
-  min-height: 320px;
   min-width: 0;
   overflow: hidden;
   /* Allow natural vertical scrolling on touch devices while map is in view */
@@ -375,7 +376,7 @@
 }
 
 .sidebar {
-  height: 100vh;
+  height: 100dvh;
   min-width: 320px;
   max-width: 50vw;
   overflow-y: auto;
@@ -3763,11 +3764,12 @@
   }
 
   .map-column {
+    --map-panel-min: 70vh;
     height: auto;
   }
 
   .map-panel {
-    min-height: 70vh;
+    min-height: var(--map-panel-min, 70vh);
   }
 
   .elevation-profile-shell {
@@ -4242,6 +4244,7 @@
 
   /* Map takes less vertical space */
   .map-column {
+    --map-panel-min: 340px;
     height: 50vh;
     min-height: 340px;
     max-height: 520px;
@@ -4323,6 +4326,7 @@
 @media (max-width: 767px) {
   /* Even smaller map */
   .map-column {
+    --map-panel-min: 300px;
     height: 48vh;
     min-height: 300px;
     max-height: 460px;
@@ -4645,6 +4649,7 @@
 @media (max-width: 479px) {
   /* Minimal map */
   .map-column {
+    --map-panel-min: 260px;
     height: 46vh;
     min-height: 260px;
   }
