@@ -70,7 +70,6 @@ export function AuthProvider({ children }) {
         const refreshToken = hashParams.get('refresh_token');
         
         if (accessToken && refreshToken) {
-          console.log('Found tokens in URL, setting session...');
           // Manually set the session from URL params
           const { data, error } = await supabase.auth.setSession({
             access_token: accessToken,
@@ -80,7 +79,6 @@ export function AuthProvider({ children }) {
           if (error) {
             console.error('Error setting session from URL:', error);
           } else if (data.session) {
-            console.log('Session set successfully from URL');
             // Clear the hash from URL
             window.history.replaceState(null, '', window.location.pathname);
             if (mounted) {

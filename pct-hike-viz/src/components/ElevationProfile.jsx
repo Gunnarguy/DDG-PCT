@@ -331,15 +331,6 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
     const grades = profileData.map(p => Math.abs(p.grade)).filter(g => !isNaN(g));
     const avgGrade = grades.length ? grades.reduce((a, b) => a + b, 0) / grades.length : 0;
     
-    console.log('Section O elevation range:', minElevation, 'to', maxElevation, 'ft');
-    if (activeOverlaySections.length) {
-      activeOverlaySections.forEach(sec => {
-        const secMin = Math.min(...sec.profile.map(p => p.ele));
-        const secMax = Math.max(...sec.profile.map(p => p.ele));
-        console.log(sec.name, 'elevation range:', secMin, 'to', secMax, 'ft');
-      });
-    }
-    
     return {
       totalMiles: totalDistance,
       totalGain: lastPoint.cumulativeGain,
@@ -348,7 +339,7 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
       lowPoint: minElevation,
       avgGrade: avgGrade
     };
-  }, [profileData, totalDistance, maxElevation, minElevation, activeOverlaySections]);
+  }, [profileData, totalDistance, maxElevation, minElevation]);
 
   // Estimated hiking time (Naismith's rule: 3 mph + 1 hr per 2000ft gain)
   const estimatedTime = useMemo(() => {
