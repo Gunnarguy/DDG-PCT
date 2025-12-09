@@ -57,7 +57,7 @@ function TrailMap({
         getColor: [255, 94, 105, 255],
         widthUnits: 'pixels',
         getWidth: 5,
-        rounded: true,
+        jointRounded: true,
         capRounded: true
       }),
       new PathLayer({
