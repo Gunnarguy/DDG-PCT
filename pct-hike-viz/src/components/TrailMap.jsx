@@ -13,7 +13,10 @@ import { PathLayer } from '@deck.gl/layers';
 
 function DeckOverlay({ layers }) {
   const overlay = useControl(() => new MapboxOverlay({ interleaved: true }));
-  overlay.setProps({ layers });
+  // Only set layers if we have valid data to prevent render errors
+  if (layers?.length) {
+    overlay.setProps({ layers });
+  }
   return null;
 }
 
@@ -49,29 +52,40 @@ function TrailMap({
   }, [hikingTrail]);
 
   const deckLayers = useMemo(
-    () => [
-      new PathLayer({
-        id: 'hiking-trail',
-        data: [{ path: flatTrail }],
-        getPath: (d) => d.path,
-        getColor: [255, 94, 105, 255],
-        widthUnits: 'pixels',
-        getWidth: 5,
-        jointRounded: true,
-        capRounded: true
-      }),
-      new PathLayer({
-        id: 'drive-routes',
-        data: driveSegments,
-        getPath: (d) => d.path,
-        getColor: (d) => (d.type === 'drive' ? [120, 120, 120, 180] : [82, 160, 126, 200]),
-        widthUnits: 'pixels',
-        getWidth: 4,
-        getDashArray: [8, 4],
-        dashJustified: true,
-        extensions: []
-      })
-    ],
+    () => {
+      const layers = [];
+      
+      // Only add hiking trail layer if we have path data
+      if (flatTrail.length > 1) {
+        layers.push(new PathLayer({
+          id: 'hiking-trail',
+          data: [{ path: flatTrail }],
+          getPath: (d) => d.path,
+          getColor: [255, 94, 105, 255],
+          widthUnits: 'pixels',
+          getWidth: 5,
+          jointRounded: true,
+          capRounded: true
+        }));
+      }
+      
+      // Only add drive routes if we have segments
+      if (driveSegments?.length) {
+        layers.push(new PathLayer({
+          id: 'drive-routes',
+          data: driveSegments,
+          getPath: (d) => d.path,
+          getColor: (d) => (d.type === 'drive' ? [120, 120, 120, 180] : [82, 160, 126, 200]),
+          widthUnits: 'pixels',
+          getWidth: 4,
+          getDashArray: [8, 4],
+          dashJustified: true,
+          extensions: []
+        }));
+      }
+      
+      return layers;
+    },
     [flatTrail, driveSegments]
   );
 
@@ -133,9 +147,9 @@ function TrailMap({
         <ScaleControl maxWidth={120} unit="imperial" position="bottom-left" />
         <FullscreenControl position="top-left" />
 
-        {campPoints.map((feature) => (
+        {campPoints.map((feature, idx) => (
           <Marker
-            key={feature.properties.name}
+            key={`camp-${feature.properties?.name || idx}`}
             longitude={feature.geometry.coordinates[0]}
             latitude={feature.geometry.coordinates[1]}
             anchor="bottom"
@@ -148,9 +162,9 @@ function TrailMap({
           </Marker>
         ))}
 
-        {townPins.map((town) => (
+        {townPins.map((town, idx) => (
           <Marker
-            key={town.name}
+            key={`town-${town.name || idx}`}
             longitude={town.coordinates[0]}
             latitude={town.coordinates[1]}
             anchor="bottom"
@@ -159,9 +173,9 @@ function TrailMap({
           </Marker>
         ))}
 
-        {transportPoints.map((point) => (
+        {transportPoints.map((point, idx) => (
           <Marker
-            key={point.name}
+            key={`transport-${point.name || idx}`}
             longitude={point.coordinates[0]}
             latitude={point.coordinates[1]}
             anchor="bottom"
@@ -174,9 +188,9 @@ function TrailMap({
           </Marker>
         ))}
 
-        {waterSources.map((source) => (
+        {waterSources.map((source, idx) => (
           <Marker
-            key={source.waypoint || source.mile}
+            key={`water-${source.waypoint || source.mile || idx}`}
             longitude={source.coordinates[0]}
             latitude={source.coordinates[1]}
             anchor="bottom"
@@ -199,9 +213,9 @@ function TrailMap({
           </Marker>
         )}
 
-        {connectivityZones.map((zone) => (
+        {connectivityZones.map((zone, idx) => (
           <Marker
-            key={zone.mile}
+            key={`conn-${zone.mile || idx}`}
             longitude={zone.coordinates[0]}
             latitude={zone.coordinates[1]}
             anchor="bottom"
