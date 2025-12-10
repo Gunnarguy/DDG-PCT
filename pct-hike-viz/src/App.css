@@ -56,16 +56,16 @@
   --map-panel-min: 320px;
   flex: 1;
   min-width: 300px;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 1fr auto;
   height: 100dvh;
   min-height: 100dvh;
   overflow: hidden;
 }
 
 .map-column .map-panel {
-  flex: 1 1 auto;
   min-height: 0;
+  position: relative;
 }
 
 .loading-screen {
@@ -202,6 +202,7 @@
   position: relative;
   flex: 1 1 auto;
   min-height: var(--map-panel-min, 320px);
+  height: 100%;
   min-width: 0;
   overflow: hidden;
   /* Allow natural vertical scrolling on touch devices while map is in view */
