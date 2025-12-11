@@ -398,6 +398,69 @@
   box-shadow: -24px 0 50px rgba(46, 55, 77, 0.08);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════════
+   IDENTITY SWITCHER - "Posting as" selector at top of sidebar
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.identity-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--sand-200);
+}
+
+.identity-label-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-400);
+  white-space: nowrap;
+}
+
+.identity-switcher {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.identity-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border: 2px solid var(--sand-200);
+  border-radius: 2rem;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ink-500);
+}
+
+.identity-chip:hover {
+  border-color: var(--identity-color, var(--pine-300));
+  background: var(--sand-50);
+}
+
+.identity-chip.is-active {
+  border-color: var(--identity-color, var(--pine-500));
+  background: color-mix(in srgb, var(--identity-color, var(--pine-500)) 10%, white);
+  color: var(--ink-700);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--identity-color, var(--pine-500)) 25%, transparent);
+}
+
+.identity-emoji {
+  font-size: 1rem;
+}
+
+.identity-label {
+  font-weight: 600;
+}
+
 .sidebar__tabs {
   position: sticky;
   top: 0;
@@ -3245,7 +3308,23 @@
   font-weight: 600;
 }
 
-/* Hiker Switcher */
+/* Hiker Switcher / Loadout Viewer */
+.loadout-viewer-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.loadout-viewer-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-400);
+  white-space: nowrap;
+}
+
 .hiker-switcher {
   display: flex;
   gap: 0.75rem;

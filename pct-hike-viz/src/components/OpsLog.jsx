@@ -104,29 +104,36 @@ function OpsLog({ contextId = 'general', userName }) {
     const classification = classifyEntry(trimmed);
 
     setIsSubmitting(true);
-    const { data, error } = await supabase
-      .from('ops_logs')
-      .insert([
-        {
-          context_id: contextId,
-          user_name: userName,
-          content: trimmed,
-          type: classification.type,
-          status: classification.status
-        }
-      ])
-      .select()
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('ops_logs')
+        .insert([
+          {
+            context_id: contextId,
+            user_name: userName,
+            content: trimmed,
+            type: classification.type,
+            status: classification.status
+          }
+        ])
+        .select()
+        .single();
 
-    if (error) {
-      setLogError(error);
-    } else if (data) {
-      const normalized = normalizeEntry(data);
-      setLogs((prev) => (prev.some((row) => row.id === normalized.id) ? prev : [...prev, normalized]));
-      setInput('');
-      setLogError(null);
+      if (error) {
+        console.error('OpsLog insert error:', error);
+        setLogError(error);
+      } else if (data) {
+        const normalized = normalizeEntry(data);
+        setLogs((prev) => (prev.some((row) => row.id === normalized.id) ? prev : [...prev, normalized]));
+        setInput('');
+        setLogError(null);
+      }
+    } catch (err) {
+      console.error('OpsLog submit exception:', err);
+      setLogError(err);
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   };
 
   const cycleStatus = (entry) => {

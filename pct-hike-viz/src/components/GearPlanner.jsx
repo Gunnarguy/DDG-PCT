@@ -395,9 +395,11 @@ function GearPlanner({ data, currentUser }) {
 
   return (
     <div className="gear-planner">
-      {/* Hiker Switcher - DDG Team Style */}
-      <div className="hiker-switcher ddg-hiker-switcher">
-        {HIKERS.map((hiker) => {
+      {/* Loadout Viewer - View any team member's gear */}
+      <div className="loadout-viewer-header">
+        <span className="loadout-viewer-label">View loadout:</span>
+        <div className="hiker-switcher ddg-hiker-switcher">
+          {HIKERS.map((hiker) => {
           const loadout = loadouts[hiker.id];
           const loadoutWeight = inventory
             .filter(i => loadout.has(i.id))
@@ -425,6 +427,7 @@ function GearPlanner({ data, currentUser }) {
             </button>
           );
         })}
+        </div>
       </div>
 
       {/* Loadout Summary */}

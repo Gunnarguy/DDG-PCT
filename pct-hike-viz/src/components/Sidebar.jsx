@@ -923,23 +923,27 @@ function Sidebar({
 
   return (
     <aside className="sidebar" style={style}>
-      <div className="identity-switcher" role="group" aria-label="Select mission control user">
-        {ddgTeam.map((member) => {
-          const isActive = member.id === activeUser.id;
-          return (
-            <button
-              key={member.id}
-              type="button"
-              className={`identity-chip ${isActive ? 'is-active' : ''}`}
-              style={{ '--identity-color': member.color }}
-              onClick={() => onUserChange(member.id)}
-            >
-              <span className="identity-emoji" aria-hidden="true">{member.emoji}</span>
-              <span className="identity-label">{member.name}</span>
-              <span className="identity-role">{member.role}</span>
-            </button>
-          );
-        })}
+      {/* Identity Switcher - Controls who you're posting as in Comms */}
+      <div className="identity-section">
+        <span className="identity-label-text">Posting as:</span>
+        <div className="identity-switcher" role="group" aria-label="Select your identity for comms">
+          {ddgTeam.map((member) => {
+            const isActive = member.id === activeUser.id;
+            return (
+              <button
+                key={member.id}
+                type="button"
+                className={`identity-chip ${isActive ? 'is-active' : ''}`}
+                style={{ '--identity-color': member.color }}
+                onClick={() => onUserChange(member.id)}
+                title={`Post and interact as ${member.name}`}
+              >
+                <span className="identity-emoji" aria-hidden="true">{member.emoji}</span>
+                <span className="identity-label">{member.name}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <nav className="sidebar__tabs" aria-label="Mission control sections">
