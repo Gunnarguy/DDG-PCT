@@ -1220,6 +1220,262 @@
   font-weight: 600;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MISSION TAB - Streamlined Dashboard Components
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Quick Reference Card */
+.quick-ref-card {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border: 1px solid #fcd34d;
+}
+
+.quick-ref-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.quick-ref-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.65rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(252, 211, 77, 0.4);
+}
+
+.quick-ref-item .ref-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.quick-ref-item .ref-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.quick-ref-item .ref-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-400);
+}
+
+.quick-ref-item .ref-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-700);
+}
+
+.quick-ref-item .ref-phone {
+  color: var(--pine-600);
+  text-decoration: none;
+}
+
+.quick-ref-item .ref-phone:hover {
+  text-decoration: underline;
+}
+
+.quick-ref-dates {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed rgba(252, 211, 77, 0.6);
+}
+
+.quick-ref-dates .date-badge {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink-700);
+}
+
+.quick-ref-dates .date-note {
+  font-size: 0.75rem;
+  color: var(--ink-400);
+}
+
+/* DDG Team Compact Layout */
+.ddg-team-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.ddg-member-compact {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  background: #fff;
+  border-radius: 0.75rem;
+  border: 1px solid var(--sand-200);
+  transition: all 0.2s ease;
+}
+
+.ddg-member-compact:hover {
+  border-color: var(--member-color);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--member-color) 15%, transparent);
+}
+
+.ddg-member-compact .member-avatar-sm {
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, 
+    color-mix(in srgb, var(--member-color) 15%, white),
+    color-mix(in srgb, var(--member-color) 25%, white)
+  );
+  flex-shrink: 0;
+}
+
+.ddg-member-compact .member-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.ddg-member-compact .member-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink-700);
+}
+
+.ddg-member-compact .member-role-sm {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--member-color);
+}
+
+.ddg-member-compact .member-tags {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.ddg-member-compact .tag-mini {
+  font-size: 0.6rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 999px;
+  background: var(--sand-100);
+  color: var(--ink-500);
+  white-space: nowrap;
+}
+
+/* Route Highlights Card */
+.highlights-card {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border: 1px solid #6ee7b7;
+}
+
+.highlights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(110, 231, 183, 0.4);
+}
+
+.highlight-item .highlight-icon {
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+.highlight-item .highlight-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.highlight-item .highlight-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink-700);
+}
+
+.highlight-item .highlight-desc {
+  font-size: 0.8rem;
+  color: var(--ink-500);
+}
+
+/* Critical Alerts Card */
+.alerts-card {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border: 1px solid #fca5a5;
+}
+
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.alert-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 0.75rem;
+}
+
+.alert-item.alert-warning {
+  border-left: 3px solid #f59e0b;
+}
+
+.alert-item.alert-info {
+  border-left: 3px solid #3b82f6;
+}
+
+.alert-item .alert-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.alert-item .alert-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.alert-item .alert-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-700);
+}
+
+.alert-item .alert-desc {
+  font-size: 0.8rem;
+  color: var(--ink-500);
+  line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
 /* Connectivity Timeline */
 .connectivity-timeline-card {
   background: linear-gradient(135deg, #1a237e08, #311b9208);
@@ -1699,6 +1955,198 @@
   margin: 0.5rem 0 0;
   padding-left: 1.1rem;
   color: var(--ink-500);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   GEAR TAB - New Interactive Layout
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Quick Stats Bar */
+.gear-stats-bar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 1rem !important;
+  background: linear-gradient(135deg, var(--pine-600), var(--pine-700)) !important;
+  border: none !important;
+}
+
+.gear-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.gear-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.gear-stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Core Gear Systems Grid */
+.gear-systems-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.gear-system-card {
+  background: #fff;
+  border: 1px solid var(--sand-200);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.gear-system-card[open] {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.gear-system-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  background: var(--sand-50);
+  transition: background 0.15s ease;
+  list-style: none;
+}
+
+.gear-system-header::-webkit-details-marker {
+  display: none;
+}
+
+.gear-system-header:hover {
+  background: var(--sand-100);
+}
+
+.gear-system-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.gear-system-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gear-system-count {
+  font-size: 0.7rem;
+  color: var(--ink-400);
+  background: var(--sand-200);
+  padding: 0.15rem 0.5rem;
+  border-radius: 1rem;
+  flex-shrink: 0;
+}
+
+.gear-system-items {
+  margin: 0;
+  padding: 0.5rem 0.75rem 0.75rem 2.5rem;
+  font-size: 0.8rem;
+  color: var(--ink-600);
+  border-top: 1px solid var(--sand-100);
+}
+
+.gear-system-items li {
+  padding: 0.25rem 0;
+  line-height: 1.35;
+}
+
+.gear-system-items li + li {
+  border-top: 1px dashed var(--sand-150, #e8e4dc);
+}
+
+/* Packing Priorities - Expandable Pills */
+.gear-priorities-card h2 {
+  margin-bottom: 0.75rem;
+}
+
+.priority-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.priority-pill {
+  background: var(--sand-100);
+  border: 1px solid var(--sand-200);
+  border-radius: 2rem;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.priority-pill[open] {
+  border-radius: 0.75rem;
+  flex-basis: 100%;
+  background: #fff;
+}
+
+.priority-pill summary {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ink-600);
+  transition: color 0.15s ease;
+}
+
+.priority-pill summary::-webkit-details-marker {
+  display: none;
+}
+
+.priority-pill summary:hover {
+  color: var(--pine-700);
+}
+
+.priority-icon {
+  font-size: 0.9rem;
+}
+
+.priority-label {
+  white-space: nowrap;
+}
+
+.priority-details {
+  margin: 0;
+  padding: 0 0.75rem 0.75rem 2rem;
+  font-size: 0.8rem;
+  color: var(--ink-500);
+  line-height: 1.45;
+}
+
+/* Responsive: Stack gear systems on narrow sidebar */
+@media (max-width: 500px) {
+  .gear-systems-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .gear-stats-bar {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  
+  .gear-stat {
+    flex: 1 1 40%;
+  }
 }
 
 .project-list {
@@ -4748,6 +5196,71 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  /* Quick Reference mobile layout */
+  .quick-ref-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .quick-ref-item {
+    padding: 0.5rem;
+  }
+
+  .quick-ref-item .ref-icon {
+    font-size: 1.1rem;
+  }
+
+  .quick-ref-dates {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  /* DDG Team compact mobile */
+  .ddg-team-compact {
+    gap: 0.5rem;
+  }
+
+  .ddg-member-compact {
+    padding: 0.5rem 0.65rem;
+  }
+
+  .ddg-member-compact .member-avatar-sm {
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+  }
+
+  .ddg-member-compact .member-tags {
+    display: none;
+  }
+
+  /* Route Highlights mobile */
+  .highlights-list {
+    gap: 0.5rem;
+  }
+
+  .highlight-item {
+    padding: 0.5rem 0.65rem;
+  }
+
+  .highlight-item .highlight-icon {
+    font-size: 1.1rem;
+  }
+
+  /* Alerts mobile */
+  .alerts-list {
+    gap: 0.5rem;
+  }
+
+  .alert-item {
+    padding: 0.55rem 0.65rem;
+  }
+
+  .alert-item .alert-icon {
+    font-size: 1.1rem;
   }
 
   /* Highlight chips wrap */

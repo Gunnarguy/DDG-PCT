@@ -8,13 +8,7 @@ import TerrainAnalysis from './TerrainAnalysis';
 import TransitPanel from './TransitPanel';
 import OpsLog from './OpsLog';
 import { connectivityZones, satelliteDevices, getSignalBadgeClass, getSignalEmoji } from '../data/connectivityData';
-import { ddgTeam, dayItinerary, tripStats, sectionOMeta, dataSources } from '../data/planContent';
-
-const formatStatusLabel = (status = '') => status
-  .split(/[\s-]+/)
-  .filter(Boolean)
-  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-  .join(' ');
+import { ddgTeam, dayItinerary, tripStats, sectionOMeta } from '../data/planContent';
 
 // Present readable timestamps next to live Apple data refresh events.
 const formatTimestamp = (isoString) => {
@@ -67,7 +61,6 @@ function Sidebar({
   resupplyPlan,
   permitChecklist,
   referenceLibrary,
-  prepGuideMeta,
   gearBlueprint,
   packPlanner,
   riskPlaybook,
@@ -256,167 +249,176 @@ function Sidebar({
 
   const renderMission = () => (
     <>
+      {/* Hero Card - Streamlined mission overview */}
       <section className="sidebar-card sidebar-card--full hero-card">
         <p className="eyebrow">PCT {sectionOMeta.name} · Mile {sectionOMeta.pctMileStart} → {sectionOMeta.pctMileEnd}</p>
         <h1>DDG Trail Mission Control</h1>
         <p className="lede">
-          All the intel from the family narrative plus the full NST Guide toolchain in one place. Use it to debate
-          9-day vs 16-day options, stress-test logistics, and drop pins directly on the map without leaving this view.
+          {tripStats.totalMiles} miles through {sectionOMeta.region}. {tripStats.hikingDays} days of hiking with 
+          {tripStats.connectivityBlackoutMiles}+ miles of satellite-only coverage.
         </p>
         
-        {/* Section O Quick Facts */}
+        {/* Section O Quick Facts - Condensed */}
         <div className="section-o-facts">
           <div className="fact-grid">
             <div className="fact-item">
-              <span className="fact-label">Route</span>
-              <span className="fact-value">{sectionOMeta.route}</span>
-            </div>
-            <div className="fact-item">
               <span className="fact-label">Distance</span>
-              <span className="fact-value">{sectionOMeta.gpsDistance} mi <span className="source-tag">GPS</span></span>
+              <span className="fact-value">{sectionOMeta.gpsDistance} mi</span>
             </div>
             <div className="fact-item">
-              <span className="fact-label">Region</span>
-              <span className="fact-value">{sectionOMeta.region}</span>
+              <span className="fact-label">Elevation</span>
+              <span className="fact-value">+{tripStats.totalGain.toLocaleString()}'</span>
+            </div>
+            <div className="fact-item">
+              <span className="fact-label">High Point</span>
+              <span className="fact-value">{tripStats.highPoint.elevation.toLocaleString()}'</span>
             </div>
             <div className="fact-item">
               <span className="fact-label">Permits</span>
-              <span className="fact-value">{sectionOMeta.permitType}</span>
+              <span className="fact-value">Self-issue</span>
             </div>
-          </div>
-          <div className="section-highlights">
-            <span className="highlights-label">Highlights:</span>
-            {sectionOMeta.highlights.slice(0, 3).map((h, i) => (
-              <span key={i} className="highlight-chip">{h}</span>
-            ))}
           </div>
         </div>
       </section>
 
-      {/* DDG Team Cards */}
+      {/* Quick Reference - Emergency contacts and key info */}
+      <section className="sidebar-card sidebar-card--full quick-ref-card">
+        <div className="section-header">
+          <h2>🚨 Quick Reference</h2>
+          <span className="section-subtitle">Emergency contacts & key info</span>
+        </div>
+        <div className="quick-ref-grid">
+          <div className="quick-ref-item">
+            <span className="ref-icon">📞</span>
+            <div className="ref-content">
+              <span className="ref-label">Mt. Shasta Taxi</span>
+              <a href="tel:+15306057950" className="ref-value ref-phone">+1 530-605-7950</a>
+            </div>
+          </div>
+          <div className="quick-ref-item">
+            <span className="ref-icon">🏕️</span>
+            <div className="ref-content">
+              <span className="ref-label">Burney Falls SP</span>
+              <a href="tel:+15303352777" className="ref-value ref-phone">+1 530-335-2777</a>
+            </div>
+          </div>
+          <div className="quick-ref-item">
+            <span className="ref-icon">🌲</span>
+            <div className="ref-content">
+              <span className="ref-label">Castle Crags SP</span>
+              <a href="tel:+15302354630" className="ref-value ref-phone">+1 530-235-4630</a>
+            </div>
+          </div>
+          <div className="quick-ref-item">
+            <span className="ref-icon">📡</span>
+            <div className="ref-content">
+              <span className="ref-label">Satellite Backup</span>
+              <span className="ref-value">InReach + iPhone 16</span>
+            </div>
+          </div>
+        </div>
+        <div className="quick-ref-dates">
+          <span className="date-badge">📅 {scheduleOptions[0].dates}</span>
+          <span className="date-note">9-day express schedule</span>
+        </div>
+      </section>
+
+      {/* DDG Team Cards - Compact version */}
       <section className="sidebar-card sidebar-card--full ddg-team-section">
         <div className="section-header">
           <h2>The DDG Crew</h2>
-          <span className="section-subtitle">Two generations, one trail: Dad + the boys</span>
+          <span className="section-subtitle">Two generations, one trail</span>
         </div>
-        <div className="ddg-team-grid">
+        <div className="ddg-team-compact">
           {ddgTeam.map((member) => (
-            <article key={member.id} className="ddg-member-card" style={{ '--member-color': member.color }}>
-              <div className="member-avatar">{member.emoji}</div>
-              <div className="member-info">
-                <h3>{member.name}</h3>
-                <span className="member-role">{member.role}</span>
-                <p className="member-bio">{member.bio}</p>
-                <div className="member-experience">
-                  <span className="exp-icon">🏔️</span>
-                  <span>{member.experience}</span>
-                </div>
-                <div className="member-responsibilities">
-                  {member.responsibilities.map((r, i) => (
-                    <span key={i} className="responsibility-chip">{r}</span>
-                  ))}
-                </div>
+            <div key={member.id} className="ddg-member-compact" style={{ '--member-color': member.color }}>
+              <span className="member-avatar-sm">{member.emoji}</span>
+              <div className="member-details">
+                <span className="member-name">{member.name}</span>
+                <span className="member-role-sm">{member.role}</span>
               </div>
-            </article>
+              <div className="member-tags">
+                {member.responsibilities.slice(0, 2).map((r, i) => (
+                  <span key={i} className="tag-mini">{r}</span>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </section>
 
+      {/* Trip Readiness Dashboard */}
       <TripReadinessPanel
         packPlanner={packPlanner}
         nextStepsChecklist={nextStepsChecklist}
         permitChecklist={permitChecklist}
       />
 
-      <section className="sidebar-card">
-        <h2>Prep guide sync</h2>
-        <p className="lede">
-          This dashboard mirrors <strong>{prepGuideMeta.filename}</strong> so the visuals never drift from the written plan.
-        </p>
-        <p className="note">{prepGuideMeta.summary}</p>
-        <p className="note">{prepGuideMeta.reminder}</p>
-      </section>
-
-      <section className="sidebar-card sidebar-card--full">
+      {/* Route Highlights - Key trail features */}
+      <section className="sidebar-card sidebar-card--full highlights-card">
         <div className="section-header">
-          <h2>Schedule Playbooks</h2>
-          <span className="section-subtitle">Tap whichever cadence fits the crew</span>
+          <h2>🎯 Route Highlights</h2>
+          <span className="section-subtitle">Don't miss these</span>
         </div>
-        <div className="schedule-grid">
-          {scheduleOptions.map((option) => (
-            <article key={option.title} className="schedule-card">
-              <h3>{option.title}</h3>
-              <p className="dates">{option.dates}</p>
-              <p className="vibe">{option.vibe}</p>
-              <ul>
-                {option.highlights.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
-              {option.sourceIds && <SourceChips sourceIds={option.sourceIds} size="small" maxShow={3} />}
-            </article>
-          ))}
+        <div className="highlights-list">
+          <div className="highlight-item">
+            <span className="highlight-icon">🌊</span>
+            <div className="highlight-content">
+              <span className="highlight-title">Burney Falls</span>
+              <span className="highlight-desc">"The 8th Wonder of the World" - Day 0 staging</span>
+            </div>
+          </div>
+          <div className="highlight-item">
+            <span className="highlight-icon">🌌</span>
+            <div className="highlight-content">
+              <span className="highlight-title">Black Rock Camp</span>
+              <span className="highlight-desc">Famous stargazing clearings - Day 2</span>
+            </div>
+          </div>
+          <div className="highlight-item">
+            <span className="highlight-icon">🏔️</span>
+            <div className="highlight-content">
+              <span className="highlight-title">Castle Crags Vista</span>
+              <span className="highlight-desc">Sunrise at 5,642' with Shasta views - Day 5</span>
+            </div>
+          </div>
+          <div className="highlight-item">
+            <span className="highlight-icon">🪨</span>
+            <div className="highlight-content">
+              <span className="highlight-title">Granite Spires</span>
+              <span className="highlight-desc">Castle Crags' iconic formations - Days 5-6</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="sidebar-card sidebar-card--full">
-        <h2>Next steps checklist</h2>
-        <p className="lede">Identical to the closing checklist in {prepGuideMeta.filename}.</p>
-        <ul className="checklist">
-          {nextStepsChecklist.map((item) => (
-            <li key={item.task}>
-              <div className="checklist__row">
-                <span className="checklist__task">{item.task}</span>
-                <span className={`status-pill status-${item.status.replace(/\s+/g, '-').toLowerCase()}`}>
-                  {formatStatusLabel(item.status)}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* Data Sources Reference */}
-      <section className="sidebar-card sidebar-card--full sources-card">
+      {/* Critical Alerts - What to watch */}
+      <section className="sidebar-card sidebar-card--full alerts-card">
         <div className="section-header">
-          <h2>📚 Data Sources</h2>
-          <span className="section-subtitle">Cross-reference the intel</span>
+          <h2>⚠️ Critical Alerts</h2>
+          <span className="section-subtitle">Know before you go</span>
         </div>
-        <div className="sources-grid">
-          <div className="source-category">
-            <h4>🗺️ Primary</h4>
-            <p className="source-item">
-              <strong>{dataSources.primary.name}</strong>
-              <span className="source-desc">{dataSources.primary.description}</span>
-            </p>
-            <p className="source-item">
-              <strong>{dataSources.gps.name}</strong>
-              <span className="source-desc">{dataSources.gps.distance} mi measured • {dataSources.gps.pointCount.toLocaleString()} GPS points</span>
-            </p>
+        <div className="alerts-list">
+          <div className="alert-item alert-warning">
+            <span className="alert-icon">📶</span>
+            <div className="alert-content">
+              <span className="alert-title">Cell Blackout Zone</span>
+              <span className="alert-desc">{tripStats.connectivityBlackoutMiles}+ miles with zero cell service. Satellite required.</span>
+            </div>
           </div>
-          <div className="source-category">
-            <h4>🥾 Route Guides</h4>
-            {dataSources.routes.slice(0, 4).map(src => (
-              <a key={src.id} href={src.url} target="_blank" rel="noopener noreferrer" className="source-link">
-                {src.name} ↗
-              </a>
-            ))}
+          <div className="alert-item alert-info">
+            <span className="alert-icon">⛰️</span>
+            <div className="alert-content">
+              <span className="alert-title">Elevation Notice</span>
+              <span className="alert-desc">Days 2-5 are at 5,000-5,600ft—pace accordingly and hydrate.</span>
+            </div>
           </div>
-          <div className="source-category">
-            <h4>💧 Water</h4>
-            {dataSources.water.map(src => (
-              <a key={src.id} href={src.url} target="_blank" rel="noopener noreferrer" className="source-link">
-                {src.name} ↗
-              </a>
-            ))}
-          </div>
-          <div className="source-category">
-            <h4>📋 Official</h4>
-            {dataSources.official.map(src => (
-              <a key={src.id} href={src.url} target="_blank" rel="noopener noreferrer" className="source-link">
-                {src.name} ↗
-              </a>
-            ))}
+          <div className="alert-item alert-info">
+            <span className="alert-icon">🔥</span>
+            <div className="alert-content">
+              <span className="alert-title">Fire Permit Required</span>
+              <span className="alert-desc">CA campfire permit needed for all stove use. Each hiker needs their own.</span>
+            </div>
           </div>
         </div>
       </section>
@@ -581,36 +583,91 @@ function Sidebar({
     </>
   );
 
-  const renderGear = () => (
-    <>
-      <section className="sidebar-card">
-        <h2>Gear &amp; equipment blueprint</h2>
-        <p className="lede">Matches the “Gear &amp; Equipment Blueprint” chapter inside {prepGuideMeta.filename}.</p>
-        <div className="gear-grid">
-          {gearBlueprint.core.map((kit) => (
-            <article key={kit.name} className="gear-card">
-              <h3>{kit.name}</h3>
-              <ul>
-                {kit.items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-        <h3 className="subhead">Personal packing priorities</h3>
-        <ol className="priority-list">
-          {gearBlueprint.personalPriorities.map((line) => (
-            <li key={line}>{line}</li>
-          ))}
-        </ol>
-      </section>
+  const renderGear = () => {
+    // Icon mapping for gear categories
+    const categoryIcons = {
+      'Navigation': '🧭',
+      'Shelter & Sleep': '⛺',
+      'Cooking & Hydration': '🍳',
+      'Lighting & Safety': '🔦'
+    };
 
-      <section className="sidebar-card sidebar-card--full">
-        <GearPlanner key={currentUserId} data={packPlanner} currentUser={currentUserId} />
-      </section>
-    </>
-  );
+    // Icon mapping for personal priorities
+    const priorityIcons = ['🦶', '☀️', '🌧️', '🔋', '💳'];
+
+    return (
+      <>
+        {/* Quick Stats Bar */}
+        <section className="sidebar-card gear-stats-bar">
+          <div className="gear-stat">
+            <span className="gear-stat-value">{packPlanner.baseWeightGoalLbs}</span>
+            <span className="gear-stat-label">lb base goal</span>
+          </div>
+          <div className="gear-stat">
+            <span className="gear-stat-value">{packPlanner.capacityLiters}</span>
+            <span className="gear-stat-label">L capacity</span>
+          </div>
+          <div className="gear-stat">
+            <span className="gear-stat-value">{gearBlueprint.core.length}</span>
+            <span className="gear-stat-label">core systems</span>
+          </div>
+          <div className="gear-stat">
+            <span className="gear-stat-value">{packPlanner.modules?.length || 8}</span>
+            <span className="gear-stat-label">modules</span>
+          </div>
+        </section>
+
+        {/* Core Systems - Compact Grid */}
+        <section className="sidebar-card">
+          <h2>Core Gear Systems</h2>
+          <div className="gear-systems-grid">
+            {gearBlueprint.core.map((kit) => (
+              <details key={kit.name} className="gear-system-card">
+                <summary className="gear-system-header">
+                  <span className="gear-system-icon">{categoryIcons[kit.name] || '📦'}</span>
+                  <span className="gear-system-name">{kit.name}</span>
+                  <span className="gear-system-count">{kit.items.length} items</span>
+                </summary>
+                <ul className="gear-system-items">
+                  {kit.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        {/* Personal Priorities - Horizontal Pills */}
+        <section className="sidebar-card gear-priorities-card">
+          <h2>Packing Priorities</h2>
+          <div className="priority-pills">
+            {gearBlueprint.personalPriorities.map((line, idx) => {
+              // Extract the category name (before the colon)
+              const colonIdx = line.indexOf(':');
+              const category = colonIdx > 0 ? line.substring(0, colonIdx) : `Priority ${idx + 1}`;
+              const details = colonIdx > 0 ? line.substring(colonIdx + 1).trim() : line;
+              
+              return (
+                <details key={line} className="priority-pill">
+                  <summary>
+                    <span className="priority-icon">{priorityIcons[idx] || '✓'}</span>
+                    <span className="priority-label">{category}</span>
+                  </summary>
+                  <p className="priority-details">{details}</p>
+                </details>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Interactive Gear Planner */}
+        <section className="sidebar-card sidebar-card--full">
+          <GearPlanner key={currentUserId} data={packPlanner} currentUser={currentUserId} />
+        </section>
+      </>
+    );
+  };
 
   const renderLogistics = () => (
     <>
@@ -815,8 +872,10 @@ function Sidebar({
 
   const renderRisks = () => (
     <section className="sidebar-card sidebar-card--full">
-      <h2>Risk &amp; contingency planning</h2>
-      <p className="lede">Direct pull from the matching section in {prepGuideMeta.filename}.</p>
+      <h2>Risk &amp; Contingency Planning</h2>
+      <p className="lede">
+        Pre-identified hazards and mitigation strategies for Section O. Know the risks before you hit the trail.
+      </p>
       <ul className="bullet-list">
         {riskPlaybook.map((risk) => (
           <li key={risk.title}>
@@ -940,12 +999,6 @@ Sidebar.propTypes = {
     routeResearch: PropTypes.arrayOf(PropTypes.object).isRequired,
     transportAndResupply: PropTypes.arrayOf(PropTypes.object).isRequired,
     permits: PropTypes.arrayOf(PropTypes.object).isRequired
-  }).isRequired,
-  prepGuideMeta: PropTypes.shape({
-    filename: PropTypes.string.isRequired,
-    repoLocation: PropTypes.string.isRequired,
-    summary: PropTypes.string.isRequired,
-    reminder: PropTypes.string.isRequired
   }).isRequired,
   gearBlueprint: PropTypes.shape({
     core: PropTypes.arrayOf(PropTypes.shape({

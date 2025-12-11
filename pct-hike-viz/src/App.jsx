@@ -12,7 +12,6 @@ import {
   resupplyPlan,
   permitChecklist,
   referenceLibrary,
-  prepGuideMeta,
   gearBlueprint,
   packPlanner,
   riskPlaybook,
@@ -433,7 +432,6 @@ function App() {
         resupplyPlan={resupplyPlan}
         permitChecklist={permitChecklist}
         referenceLibrary={referenceLibrary}
-        prepGuideMeta={prepGuideMeta}
         gearBlueprint={gearBlueprint}
         packPlanner={packPlanner}
         riskPlaybook={riskPlaybook}
