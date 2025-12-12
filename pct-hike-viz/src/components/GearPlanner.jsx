@@ -5,6 +5,82 @@ import { ddgTeam } from '../data/planContent';
 import supabase, { supabaseReady, getHikerIdFromEmail } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 
+// Weight helpers
+// - Built-in gear data is currently expressed as strings (e.g. "0.3 lb").
+// - To support more granular specs over time (oz/g) and reduce UI clunk,
+//   we parse + format weights consistently here.
+const parseWeightToLbs = (raw) => {
+  if (raw == null) return 0;
+  if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
+
+  const text = String(raw).trim().toLowerCase();
+  if (!text) return 0;
+
+  // Accept: "0.3", "0.3lb", "0.3 lb", "4 oz", "120g", "120 g"
+  const match = text.match(/([0-9]*\.?[0-9]+)\s*(lb|lbs|pound|pounds|oz|ounce|ounces|g|gram|grams)?/);
+  if (!match) return 0;
+
+  const value = Number(match[1]);
+  if (!Number.isFinite(value)) return 0;
+  const unit = match[2];
+
+  if (!unit || unit === 'lb' || unit === 'lbs' || unit === 'pound' || unit === 'pounds') return value;
+  if (unit === 'oz' || unit === 'ounce' || unit === 'ounces') return value / 16;
+  if (unit === 'g' || unit === 'gram' || unit === 'grams') return value / 453.59237;
+  return value;
+};
+
+const formatWeightLabel = (lbs) => {
+  const safe = Number.isFinite(lbs) ? lbs : 0;
+  if (safe <= 0) return '0';
+  // Show ounces for tiny items; pounds for everything else.
+  if (safe < 0.1) return `${(safe * 16).toFixed(1)} oz`;
+  return `${safe.toFixed(1)} lb`;
+};
+
+const getItemWeightMeta = (item) => {
+  // Optional fields for more granular lists:
+  // - qty: number
+  // - weightEachLbs: number (preferred), or weightEach (string) as fallback
+  const qty = Number(item?.qty ?? 1) || 1;
+  const eachLbs =
+    Number.isFinite(item?.weightEachLbs)
+      ? item.weightEachLbs
+      : parseWeightToLbs(item?.weightEach);
+
+  if (eachLbs > 0) {
+    const total = eachLbs * qty;
+    return {
+      qty,
+      totalLbs: total,
+      label: qty > 1 ? `${formatWeightLabel(eachLbs)} × ${qty} = ${formatWeightLabel(total)}` : formatWeightLabel(total)
+    };
+  }
+
+  const total = parseWeightToLbs(item?.weight);
+  return {
+    qty,
+    totalLbs: total,
+    label: item?.weight || formatWeightLabel(total)
+  };
+};
+
+// Weight accounting buckets (for more realistic base-weight comparisons).
+// - carried: counts against base-weight goal
+// - worn: shown separately (still "equipped", but not carried weight)
+// - consumable: shown separately (fuel/food/etc)
+const getWeightBucket = (item) => {
+  const explicit = item?.weightBucket;
+  if (explicit === 'carried' || explicit === 'worn' || explicit === 'consumable') return explicit;
+
+  // Heuristic fallback for legacy data: treat "Consumable" spec as consumable weight.
+  const specs = Array.isArray(item?.specs) ? item.specs : [];
+  const hasConsumableSpec = specs.some((s) => String(s).toLowerCase().includes('consumable'));
+  if (hasConsumableSpec) return 'consumable';
+
+  return 'carried';
+};
+
 // Category metadata for RPG-style gear slots
 // Maps module labels to icons and stat names for the loadout UI
 const SLOT_METADATA = {
@@ -112,6 +188,7 @@ const normalizeCustomItem = (row) => ({
   detail: row.detail || 'Custom added item',
   weight: row.weight_label || (row.weight_val ? `${row.weight_val} lb` : '0 lb'),
   weightVal: Number(row.weight_val ?? row.weightVal ?? 0),
+  weightLabel: row.weight_label || undefined,
   category: row.category || 'Custom',
   moduleId: row.module_id || 'custom',
   isCustom: true,
@@ -123,10 +200,18 @@ function GearPlanner({ data, currentUser }) {
   const initialInventory = useMemo(() => {
     return data.modules.flatMap((module) =>
       module.items.map((item) => ({
+        // Compute weight metadata once so we can display consistently.
+        // (This also supports optional qty/weightEachLbs fields.)
+        ...(() => {
+          const meta = getItemWeightMeta(item);
+          return {
+            weightVal: meta.totalLbs,
+            weightLabel: meta.label
+          };
+        })(),
         ...item,
         category: module.label,
         moduleId: module.id,
-        weightVal: parseFloat(item.weight) || 0,
         isCustom: false
       }))
     );
@@ -158,6 +243,7 @@ function GearPlanner({ data, currentUser }) {
   const [newItemCategory, setNewItemCategory] = useState('Custom');
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
+  const [expandedDetails, setExpandedDetails] = useState(() => new Set());
 
   // Sync loadouts from Supabase and listen for realtime updates.
   useEffect(() => {
@@ -300,12 +386,16 @@ function GearPlanner({ data, currentUser }) {
     e.preventDefault();
     if (!newItemName || !newItemWeight) return;
 
-    const weightVal = parseFloat(newItemWeight) || 0;
+    const rawWeight = String(newItemWeight).trim();
+    const hasUnit = /[a-z]/i.test(rawWeight);
+    const weightLabel = hasUnit ? rawWeight : `${rawWeight} lb`;
+    const weightVal = parseWeightToLbs(weightLabel);
     const baseItem = {
       name: newItemName,
       detail: 'Custom added item',
-      weight: `${weightVal} lb`,
+      weight: weightLabel,
       weightVal,
+      weightLabel,
       category: newItemCategory,
       moduleId: 'custom',
       isCustom: true,
@@ -370,9 +460,25 @@ function GearPlanner({ data, currentUser }) {
   // Derived Data for Active Hiker
   const currentLoadoutIds = loadouts[activeHikerId] || new Set();
   const equippedItems = inventory.filter(item => currentLoadoutIds.has(item.id));
-  const currentWeight = equippedItems.reduce((sum, item) => sum + item.weightVal, 0);
-  const weightStatus = currentWeight <= activeHiker.baseWeightGoal ? 'good' : 'warn';
-  const isSelf = activeHikerId === currentUser;
+  const baseWeightGoal = Number(activeHiker.baseWeightGoal || data?.baseWeightGoalLbs || 0);
+
+  const weights = equippedItems.reduce(
+    (acc, item) => {
+      const bucket = getWeightBucket(item);
+      const w = Number(item.weightVal) || 0;
+      acc[bucket] += w;
+      return acc;
+    },
+    { carried: 0, worn: 0, consumable: 0 }
+  );
+
+  const carriedWeight = weights.carried;
+  const wornWeight = weights.worn;
+  const consumableWeight = weights.consumable;
+  const totalEquippedWeight = carriedWeight + wornWeight + consumableWeight;
+
+  const weightStatus = baseWeightGoal > 0 && carriedWeight > baseWeightGoal ? 'warn' : 'good';
+  const isSelf = activeHikerId === effectiveCurrentUser;
 
   const categories = useMemo(() => ['All', ...Object.keys(SLOT_METADATA)], []);
 
@@ -381,6 +487,35 @@ function GearPlanner({ data, currentUser }) {
     const matchesTerm = !term || item.name.toLowerCase().includes(term) || item.detail?.toLowerCase?.().includes(term);
     const matchesCat = categoryFilter === 'All' || item.category === categoryFilter;
     return matchesTerm && matchesCat;
+  };
+
+  const isDetailExpanded = (itemId) => expandedDetails.has(itemId);
+  const toggleDetailExpanded = (itemId) => {
+    setExpandedDetails((prev) => {
+      const next = new Set(prev);
+      if (next.has(itemId)) next.delete(itemId);
+      else next.add(itemId);
+      return next;
+    });
+  };
+
+  const renderSpecChips = (specs = []) => {
+    if (!Array.isArray(specs) || specs.length === 0) return null;
+    return (
+      <div className="gear-specs" aria-label="Gear specs">
+        {specs.filter(Boolean).map((spec) => (
+          <span key={spec} className="gear-spec-chip">{spec}</span>
+        ))}
+      </div>
+    );
+  };
+
+  const getDisplaySpecs = (item) => {
+    const base = Array.isArray(item?.specs) ? item.specs.filter(Boolean) : [];
+    const bucket = getWeightBucket(item);
+    if (bucket === 'worn' && !base.some((s) => String(s).toLowerCase().includes('worn'))) return ['Worn', ...base];
+    if (bucket === 'consumable' && !base.some((s) => String(s).toLowerCase().includes('consumable'))) return ['Consumable', ...base];
+    return base;
   };
 
   // Grouping for display
@@ -403,7 +538,7 @@ function GearPlanner({ data, currentUser }) {
           const loadout = loadouts[hiker.id];
           const loadoutWeight = inventory
             .filter(i => loadout.has(i.id))
-            .reduce((sum, i) => sum + i.weightVal, 0);
+            .reduce((sum, i) => sum + (getWeightBucket(i) === 'carried' ? i.weightVal : 0), 0);
           const isActive = activeHikerId === hiker.id;
           
           return (
@@ -420,7 +555,7 @@ function GearPlanner({ data, currentUser }) {
                 <span className="hiker-role">{hiker.role}</span>
               </div>
               <div className="hiker-weight-badge">
-                <span className={loadoutWeight <= hiker.baseWeightGoal ? 'weight-good' : 'weight-warn'}>
+                <span className={baseWeightGoal > 0 && loadoutWeight > baseWeightGoal ? 'weight-warn' : 'weight-good'}>
                   {loadoutWeight.toFixed(1)} lb
                 </span>
               </div>
@@ -433,14 +568,14 @@ function GearPlanner({ data, currentUser }) {
       {/* Loadout Summary */}
       <div className="gear-summary-grid">
         <div className="summary-card">
-          <div className="summary-label">Current Weight</div>
-          <div className={`summary-value status-${weightStatus}`}>{currentWeight.toFixed(1)} lb</div>
-          <div className="summary-sub">Goal {activeHiker.baseWeightGoal} lb</div>
+          <div className="summary-label">Base Weight (carried)</div>
+          <div className={`summary-value status-${weightStatus}`}>{carriedWeight.toFixed(1)} lb</div>
+          <div className="summary-sub">Goal {baseWeightGoal || '—'} lb</div>
         </div>
         <div className="summary-card">
           <div className="summary-label">Items Equipped</div>
           <div className="summary-value">{equippedItems.length}</div>
-          <div className="summary-sub">Live synced</div>
+          <div className="summary-sub">Worn {wornWeight.toFixed(1)} lb • Consumables {consumableWeight.toFixed(1)} lb</div>
         </div>
         <div className="summary-card">
           <div className="summary-label">Sync</div>
@@ -452,7 +587,9 @@ function GearPlanner({ data, currentUser }) {
           <div className="summary-tags">
             {HIKERS.map((h) => {
               const loadout = loadouts[h.id] || new Set();
-              const w = inventory.filter(i => loadout.has(i.id)).reduce((s, i) => s + i.weightVal, 0);
+              const w = inventory
+                .filter(i => loadout.has(i.id))
+                .reduce((s, i) => s + (getWeightBucket(i) === 'carried' ? i.weightVal : 0), 0);
               return (
                 <span
                   key={h.id}
@@ -464,6 +601,7 @@ function GearPlanner({ data, currentUser }) {
               );
             })}
           </div>
+          <div className="summary-sub">Total equipped {totalEquippedWeight.toFixed(1)} lb</div>
         </div>
       </div>
 
@@ -476,7 +614,7 @@ function GearPlanner({ data, currentUser }) {
             <h3>{activeHiker.name}'s Loadout</h3>
             <div className="gear-avatar-meta">
               <span className={`status-${weightStatus}`}>
-                {currentWeight.toFixed(1)} lb / {activeHiker.baseWeightGoal} lb Goal
+                {carriedWeight.toFixed(1)} lb base / {baseWeightGoal || '—'} lb Goal
               </span>
               <span className="pack-info">{activeHiker.pack}</span>
             </div>
@@ -491,7 +629,9 @@ function GearPlanner({ data, currentUser }) {
           <span className="team-weights-label">Team Weights:</span>
           {HIKERS.map(h => {
             const loadout = loadouts[h.id] || new Set();
-            const w = inventory.filter(i => loadout.has(i.id)).reduce((s, i) => s + i.weightVal, 0);
+            const w = inventory
+              .filter(i => loadout.has(i.id))
+              .reduce((s, i) => s + (getWeightBucket(i) === 'carried' ? i.weightVal : 0), 0);
             return (
               <span 
                 key={h.id} 
@@ -561,12 +701,15 @@ function GearPlanner({ data, currentUser }) {
                       className="rpg-item-row rpg-item-row--add"
                       onClick={() => toggleItem(item.id)}
                       title={`Click to equip ${item.name} to ${activeHiker.name}'s pack`}
-                      aria-label={`Equip ${item.name}, ${item.weight}`}
+                      aria-label={`Equip ${item.name}, ${item.weightLabel || item.weight}`}
                     >
                       <span className="item-icon">{SLOT_METADATA[category]?.icon || '📦'}</span>
                       <div className="item-info">
-                        <span className="item-name">{item.name}</span>
-                        <span className="item-weight">{item.weight}</span>
+                        <span className="item-name">
+                          {item.name}
+                          {Number(item.qty) > 1 ? <span className="item-qty">×{Number(item.qty)}</span> : null}
+                        </span>
+                        <span className="item-weight">{item.weightLabel || item.weight}</span>
                       </div>
                       <span className="item-action item-action--add">+ Equip</span>
                     </button>
@@ -590,9 +733,8 @@ function GearPlanner({ data, currentUser }) {
                 className="rpg-input"
               />
               <input
-                type="number"
-                placeholder="Lbs"
-                step="0.1"
+                type="text"
+                placeholder="Weight (e.g., 0.5 lb, 8 oz, 120 g)"
                 value={newItemWeight}
                 onChange={(e) => setNewItemWeight(e.target.value)}
                 className="rpg-input weight-input"
@@ -626,12 +768,14 @@ function GearPlanner({ data, currentUser }) {
               if (equippedInCat.length === 0) return null;
               
               const meta = SLOT_METADATA[category] || { icon: '📦', stat: 'Misc' };
+              const categoryWeight = equippedInCat.reduce((sum, i) => sum + (i.weightVal || 0), 0);
               
               return (
                 <div key={category} className="loadout-slot">
                   <div className="slot-header">
                     <span className="slot-icon">{meta.icon}</span>
                     <span className="slot-name">{category}</span>
+                    <span className="slot-weight">{formatWeightLabel(categoryWeight)}</span>
                   </div>
                   <div className="slot-items">
                     {equippedInCat.map((item) => (
@@ -641,13 +785,32 @@ function GearPlanner({ data, currentUser }) {
                         className="rpg-item-card"
                         onClick={() => toggleItem(item.id)}
                         title={`Click to unequip ${item.name}`}
-                        aria-label={`Unequip ${item.name}, ${item.weight}`}
+                        aria-label={`Unequip ${item.name}, ${item.weightLabel || item.weight}`}
                       >
                         <div className="card-top">
-                          <span className="item-name">{item.name}</span>
-                          <span className="item-weight">{item.weight}</span>
+                          <span className="item-name">
+                            {item.name}
+                            {Number(item.qty) > 1 ? <span className="item-qty">×{Number(item.qty)}</span> : null}
+                          </span>
+                          <span className="item-weight">{item.weightLabel || item.weight}</span>
                         </div>
-                        <span className="item-detail">{item.detail}</span>
+                        {renderSpecChips(getDisplaySpecs(item))}
+                        <span className={`item-detail ${isDetailExpanded(item.id) ? 'item-detail--expanded' : 'item-detail--clamped'}`}>
+                          {item.detail}
+                        </span>
+                        {item.detail && item.detail.length > 120 && (
+                          <button
+                            type="button"
+                            className="item-detail-toggle"
+                            onClick={(e) => {
+                              // Don't unequip when expanding/collapsing text.
+                              e.stopPropagation();
+                              toggleDetailExpanded(item.id);
+                            }}
+                          >
+                            {isDetailExpanded(item.id) ? 'Less' : 'More'}
+                          </button>
+                        )}
                         {renderSourceChips(item.sourceIds)}
                         <span className="item-action item-action--remove">× Unequip</span>
                       </button>

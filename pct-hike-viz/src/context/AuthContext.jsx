@@ -7,7 +7,16 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { supabase, getTeamProfile, DDG_TEAM, isAllowedEmail, getHikerIdFromEmail, isAdminEmail } from '../lib/supabase';
+import {
+  supabase,
+  supabaseReady,
+  supabaseConfigError,
+  getTeamProfile,
+  DDG_TEAM,
+  isAllowedEmail,
+  getHikerIdFromEmail,
+  isAdminEmail,
+} from '../lib/supabase';
 
 const AuthContext = createContext(null);
 
@@ -56,6 +65,14 @@ export function AuthProvider({ children }) {
 
     const initAuth = async () => {
       try {
+        if (!supabaseReady) {
+          if (mounted) {
+            setError(supabaseConfigError);
+            setLoading(false);
+          }
+          return;
+        }
+
         // Set a timeout to prevent infinite spinning
         timeoutId = setTimeout(() => {
           if (mounted && loading) {
@@ -130,6 +147,12 @@ export function AuthProvider({ children }) {
   // Listen for auth state changes
   useEffect(() => {
     let mounted = true;
+
+    if (!supabaseReady) {
+      return () => {
+        mounted = false;
+      };
+    }
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {

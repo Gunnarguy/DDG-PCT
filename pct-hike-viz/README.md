@@ -33,7 +33,10 @@ Open the printed URL (usually `http://localhost:5173`) and start exploring. Buil
 
 ### Supabase setup (realtime ops log + gear)
 
-1) Create a Supabase project and add the env vars to `.env` (copy from `.env.example`). Restart `npm run dev` after editing.
+1) Supabase config is read from env vars at dev/build time. Copy `.env.example` → `.env` and restart `npm run dev`.
+	- This repo includes a working `.env.example` for the DDG project.
+	- The app code intentionally has **no** hardcoded Supabase fallback: if `.env` is missing, it runs in offline mode.
+	- If you fork this repo, replace the Supabase URL + anon key with your own project values.
 2) Fast path (idempotent): `npm run supabase:apply` — this runs `supabase/combined.sql` (tables, publication, seed loadouts, RLS enabled, permissive anon policies).
 	- Uses `psql` if `SUPABASE_DB_URL` is set; falls back to Supabase CLI `db execute`. If both are missing, paste `supabase/combined.sql` into the SQL editor.
 3) Smoke check: `npm run supabase:smoke` (uses anon key) inserts/reads `ops_logs`, upserts a `gear_loadouts` row (`smoke-bot`), and inserts/deletes a `custom_items` row.

@@ -243,41 +243,41 @@ export const gearBlueprint = {
     {
       name: 'Navigation',
       items: [
-        'NST Guide web map viewer + FarOut/Guthook references',
-        'Trail-Compass concept as analog redundancy',
-        'Offline GPX on phones and Garmin units'
+        'Offline trail map app + cached basemap (phone-based primary nav)',
+        'Analog backup: compass + basic map/landmark awareness (Trail-Compass concept)',
+        'Offline GPX tracks on phones and/or a dedicated GPS device (optional redundancy)'
       ]
     },
     {
       name: 'Shelter & Sleep',
       items: [
-        '3-season tent (Zpacks/Durston) or tarp system',
-        '20°F quilts (EE Revelation) or bags + NeoAir XLite NXT pads',
-        'Dedicated dry bags (Exped pump sack) for insulation'
+        '3-season solo shelter (tent or tarp) suitable for wind + light rain',
+        '20°F sleep system: quilt/bag + insulated pad (target R-value ~3+ for shoulder-season comfort)',
+        'Waterproof storage for insulation/sleep kit (dry bag or pack liner strategy)'
       ]
     },
     {
       name: 'Cooking & Hydration',
       items: [
         'Small canister stove + titanium pot (750ml+), campfire permit in CA',
-        'Smartwater bottles + Sawyer Squeeze filter + CNOC Vecto 2L dirty bag',
+        'Water carry: ~3L baseline capacity + squeeze-style filter (0.1µm) + 2L dirty-water bag',
         'Bear hang kit + collapsible bucket for camp chores'
       ]
     },
     {
       name: 'Lighting & Safety',
       items: [
-        'Nitecore NU25 UL headlamp plus backup LED beacons',
-        'Garmin InReach Mini 2, full first-aid (Leukotape!), whistle',
+        'Rechargeable headlamp with red mode + backup micro light (optional)',
+        '2-way satellite messenger (SOS + check-in) + full first-aid + blister tape + whistle',
         'High-vis accents for road walks to Dunsmuir'
       ]
     }
   ],
   personalPriorities: [
-    'Foot-care kit: Darn Tough socks (2-3 pairs), Leukotape, and Dirty Girl gaiters.',
-    'Sun & bug defense: Sun hoodie (Arcteryx/JollyGear), wide-brim hat, permethrin.',
-    'Rain + pack protection: Montbell/Patagonia shell, wind pants or rain skirt, pack liner.',
-    'Comfort boosts: Camp shoes, book/podcasts, Nitecore NB10000 power bank.',
+    'Foot-care kit: 2–3 pairs wool/synthetic hiking socks, high-adhesion blister tape, low ankle gaiters (optional).',
+    'Sun & bug defense: hooded UPF long-sleeve sun shirt, wide-brim hat, permethrin-treated clothing + picaridin on skin as needed.',
+    'Rain + pack protection: lightweight waterproof shell + wind pants/rain skirt + pack liner or pack cover (pick one primary strategy).',
+    'Comfort boosts: camp shoes, book/podcasts, 10,000 mAh power bank (target ~150–220g) sized to our recharge cadence.',
     'Finance prep: cash + cards ready for Dunsmuir/Mt. Shasta resupply.'
   ]
 };
@@ -308,6 +308,7 @@ export const packPlanner = {
           name: '1-person backpacking tent',
           detail: 'Ultralight tent that sets up with trekking poles or on its own. Keeps you dry in rain and blocks wind.',
           weight: '1.5 lb',
+          specs: ['1P', '3-season', 'Wind + rain capable'],
           defaultPacked: true,
           sourceIds: ['doc-day-plan', 'reddit-gear-recs']
         },
@@ -316,6 +317,7 @@ export const packPlanner = {
           name: 'Sleeping bag/quilt (rated to 20°F)',
           detail: 'Lightweight down blanket that wraps around you like a sleeping bag. Keeps you warm on cold mountain nights.',
           weight: '1.4 lb',
+          specs: ['20°F rating', 'Compressible', 'Sleep comfort priority'],
           defaultPacked: true,
           sourceIds: ['reddit-gear-recs', 'reddit-shakedown-2025']
         },
@@ -324,6 +326,7 @@ export const packPlanner = {
           name: 'Inflatable sleeping pad',
           detail: 'Air mattress for sleeping outdoors—cushions you from rocks and insulates from cold ground. Packs small.',
           weight: '0.9 lb',
+          specs: ['Insulated', 'Packs small'],
           defaultPacked: true,
           sourceIds: ['reddit-gear-recs']
         },
@@ -356,9 +359,10 @@ export const packPlanner = {
       items: [
         {
           id: 'stove',
-          name: 'Lightweight canister stove (SOTO WindMaster)',
-          detail: 'Fast-boil stove for threaded fuel canisters; wind-resistant. CA Campfire Permit required!',
+          name: 'Lightweight canister stove (threaded, wind-tolerant)',
+          detail: 'Threaded canister stove for fast boils in breezy conditions. Target ~2–4 oz stove weight. CA Campfire Permit required (even for stoves).',
           weight: '0.2 lb',
+          specs: ['Threaded canister', 'Wind-tolerant', '~2–4 oz target'],
           defaultPacked: true,
           sourceIds: ['permit-pcta-campfire', 'doc-permits-overview']
         },
@@ -374,31 +378,37 @@ export const packPlanner = {
           id: 'fuel',
           name: 'Small fuel canister (isobutane 100g)',
           detail: 'Fuel for the canister stove; roughly 4 days of hot meals.',
+          weightBucket: 'consumable',
           weight: '0.4 lb',
+          specs: ['100g class', 'Consumable'],
           defaultPacked: true,
           sourceIds: ['bikehikesafari-resupply', 'longdistancehiker-resupply']
         },
         {
           id: 'filter',
-          name: 'Water filter (Sawyer Squeeze)',
-          detail: 'Squeeze-style 0.1µm filter for streams; backflush daily to keep flow.',
+          name: 'Water filter (squeeze-style, 0.1µm)',
+          detail: 'Squeeze-style hollow-fiber filter for streams. Prioritize a field-backflushable design to keep flow rate up.',
           weight: '0.2 lb',
+          specs: ['0.1µm', 'Field-backflushable'],
           defaultPacked: true,
           sourceIds: ['wv-2017-log', 'reddit-shakedown-2025', 'halfway-anywhere']
         },
         {
           id: 'dirty-bag',
-          name: 'Dirty water bag (CNOC Vecto 2L)',
-          detail: 'Collapsible dirty-water collection bag for filtering.',
+          name: 'Dirty water bag (2L, wide-mouth)',
+          detail: 'Collapsible dirty-water collection bag for filtering. Wide-mouth + tough seams matter more than brand.',
           weight: '0.2 lb',
+          specs: ['2L', 'Wide-mouth'],
           defaultPacked: true,
           sourceIds: ['reddit-shakedown-2025']
         },
         {
           id: 'smartwater',
-          name: 'Water bottles (3 liters total)',
-          detail: 'Lightweight plastic bottles for carrying drinking water. Three 1-liter bottles = 3 liters capacity.',
+          name: 'Water bottle (1L)',
+          detail: 'Lightweight plastic drink bottle used as your main water carry. Pack three 1-liter bottles for 3L baseline capacity.',
+          qty: 3,
           weight: '0.3 lb',
+          specs: ['3L total capacity', 'Distributed carry'],
           defaultPacked: true,
           sourceIds: ['doc-transport-dunsmuir', 'pcta-resupply', 'erin-exploring-resupply']
         },
@@ -439,9 +449,10 @@ export const packPlanner = {
       items: [
         {
           id: 'inreach',
-          name: 'Satellite messenger (Garmin InReach)',
-          detail: 'Device that sends text messages via satellite when there\'s no cell service. Can call for rescue in emergencies.',
+          name: 'Satellite messenger (2-way + SOS)',
+          detail: '2-way satellite messaging for check-ins when there\'s no cell service, plus SOS capability for emergencies. Subscription + battery management are part of the "weight" here.',
           weight: '0.2 lb',
+          specs: ['2-way messaging', 'SOS', 'Battery plan'],
           defaultPacked: true,
           sourceIds: ['doc-day-plan', 'reddit-norcal-tips']
         },
@@ -458,6 +469,7 @@ export const packPlanner = {
           name: 'Portable battery charger (10,000mAh)',
           detail: 'Rechargeable battery pack to charge your phone and devices. Lasts about 6 days if you\'re careful.',
           weight: '0.3 lb',
+          specs: ['10,000mAh class', 'USB-C preferred'],
           defaultPacked: true,
           sourceIds: ['reddit-shakedown-2025', 'doc-detox-trip']
         },
@@ -471,9 +483,10 @@ export const packPlanner = {
         },
         {
           id: 'headlamp',
-          name: 'Rechargeable headlamp',
-          detail: 'Flashlight that straps to your head, leaving hands free. Has a red light mode that won\'t blind your campmates.',
+          name: 'Rechargeable headlamp (red mode)',
+          detail: 'Hands-free light with red mode for camp. Aim for USB-rechargeable, a low-power setting for long nights, and a real lockout so it doesn\'t turn on in the pack.',
           weight: '0.1 lb',
+          specs: ['Red mode', 'USB-rechargeable', 'Lockout'],
           defaultPacked: true,
           sourceIds: ['reddit-gear-recs']
         },
@@ -524,6 +537,7 @@ export const packPlanner = {
           id: 'sun-hoodie',
           name: 'Long-sleeve sun shirt with hood',
           detail: 'Thin breathable shirt that protects from sunburn and also helps block ticks and poison oak.',
+          weightBucket: 'worn',
           weight: '0.4 lb',
           defaultPacked: true,
           sourceIds: ['adventurehacks-guide', 'reddit-gear-recs', 'wv-2017-log']
@@ -548,15 +562,20 @@ export const packPlanner = {
           id: 'hiking-pants',
           name: 'Zip-off hiking pants',
           detail: 'Long pants that convert to shorts by unzipping the legs. Protects from ticks and brush.',
+          weightBucket: 'worn',
           weight: '0.5 lb',
           defaultPacked: true,
           sourceIds: ['adventurehacks-guide', 'reddit-gear-recs']
         },
         {
           id: 'socks',
-          name: 'Hiking socks (3 pairs)',
+          name: 'Hiking socks',
           detail: 'Wool hiking socks with cushioning. Rotate daily to prevent blisters. Wool dries fast and fights odor.',
+          qty: 3,
+          weightEachLbs: 0.1,
+          weightBucket: 'worn',
           weight: '0.3 lb',
+          specs: ['3 pairs', 'Wool/synthetic'],
           defaultPacked: true,
           sourceIds: ['doc-day-plan', 'reddit-gear-recs', 'wv-2017-log']
         },
@@ -564,6 +583,7 @@ export const packPlanner = {
           id: 'gaiters',
           name: 'Ankle gaiters',
           detail: 'Fabric sleeves that cover the gap between your shoe and pants to keep rocks and dirt out.',
+          weightBucket: 'worn',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['norcal-hiking-castle-crags']
@@ -572,6 +592,7 @@ export const packPlanner = {
           id: 'hat',
           name: 'Wide-brim sun hat',
           detail: 'Hat with a brim all around to shade your face, ears, and neck from intense mountain sun.',
+          weightBucket: 'worn',
           weight: '0.2 lb',
           defaultPacked: true,
           sourceIds: ['adventurehacks-guide', 'reddit-gear-recs']
@@ -580,6 +601,7 @@ export const packPlanner = {
           id: 'buff',
           name: 'Neck tube (bandana alternative)',
           detail: 'Stretchy fabric tube you wear around your neck. Pull it up to cover your face from sun or dust.',
+          weightBucket: 'worn',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: []
@@ -621,8 +643,8 @@ export const packPlanner = {
         },
         {
           id: 'leukotape',
-          name: 'Medical tape for blisters (Leukotape)',
-          detail: 'Super-sticky tape that stays on sweaty feet. Put it on "hot spots" BEFORE they become blisters.',
+          name: 'High-adhesion medical tape for blisters',
+          detail: 'Super-sticky tape that stays on sweaty feet. Put it on "hot spots" BEFORE they become blisters. Test adhesion at home—some tapes fail when wet/sweaty.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['doc-day-plan', 'reddit-gear-recs', 'wv-2017-log']
@@ -654,7 +676,7 @@ export const packPlanner = {
         {
           id: 'tp-kit',
           name: 'Toilet paper + hand sanitizer',
-          detail: 'Pack it in, pack it out. Bring a ziplock bag for used TP.',
+          detail: 'Pack it in, pack it out. Bring a resealable odor-resistant bag for used TP.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['wv-2017-log']
@@ -720,8 +742,9 @@ export const packPlanner = {
         },
         {
           id: 'trekking-poles',
-          name: 'Trekking poles (pair)',
+          name: 'Trekking pole',
           detail: 'Adjustable hiking poles that save your knees on downhills and help balance on rough terrain. Highly recommended.',
+          qty: 2,
           weight: '0.8 lb',
           defaultPacked: true,
           sourceIds: ['doc-day-plan', 'reddit-gear-recs']
@@ -771,9 +794,11 @@ export const packPlanner = {
       items: [
         {
           id: 'earplugs',
-          name: 'Foam earplugs (2-3 pairs)',
+          name: 'Foam earplugs',
           detail: 'Sleep through snoring tentmates, wind flapping your tent, and 5am bird concerts. $2 life-saver.',
+          qty: 3,
           weight: '0.0 lb',
+          specs: ['2–3 pairs'],
           defaultPacked: true,
           sourceIds: ['reddit-shakedown-2025']
         },
@@ -787,7 +812,7 @@ export const packPlanner = {
         },
         {
           id: 'mini-bic',
-          name: 'Mini Bic lighter',
+          name: 'Mini lighter (backup ignition)',
           detail: 'Backup for your stove igniter. They WILL fail. Costs $1, weighs nothing, saves dinner.',
           weight: '0.0 lb',
           defaultPacked: true,
@@ -811,7 +836,7 @@ export const packPlanner = {
         },
         {
           id: 'ziplock-bags',
-          name: 'Ziploc bags (assorted sizes)',
+          name: 'Resealable bags (assorted sizes)',
           detail: 'Organize small items, protect phone from rain, store used TP, keep snacks fresh. Bring 5-6.',
           weight: '0.1 lb',
           defaultPacked: true,
@@ -827,16 +852,16 @@ export const packPlanner = {
         },
         {
           id: 'aquaphor',
-          name: 'Small tub of Aquaphor or Vaseline',
-          detail: 'Prevents chafing on thighs and underarms. Heals cracked lips and dry hands. Apply before it hurts.',
+          name: 'Skin barrier ointment (petrolatum-based)',
+          detail: 'Prevents chafing on thighs/underarms and helps cracked lips/dry hands. Choose something that won\'t leak and won\'t freeze into a brick overnight.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['reddit-shakedown-2025']
         },
         {
           id: 'body-glide',
-          name: 'Body Glide anti-chafe stick',
-          detail: 'Rub on inner thighs, feet, anywhere that rubs. Prevents the painful chafing that ruins trips.',
+          name: 'Anti-chafe balm/stick',
+          detail: 'Rub on inner thighs, feet, anywhere that rubs. Choose a solid stick or tiny tin that won\'t explode in heat.',
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: ['reddit-gear-recs']
@@ -867,7 +892,7 @@ export const packPlanner = {
         },
         {
           id: 'tenacious-tape',
-          name: 'Tenacious Tape (gear repair patches)',
+          name: 'Adhesive gear repair patches',
           detail: 'Fixes holes in tents, sleeping pads, and jackets. Sticks even when wet. Bring 2-3 patches.',
           weight: '0.0 lb',
           defaultPacked: true,
@@ -875,8 +900,8 @@ export const packPlanner = {
         },
         {
           id: 'seam-grip',
-          name: 'Tiny tube of Seam Grip or Shoe Goo',
-          detail: 'Glue for when your shoe sole starts peeling off (it happens). Saves a trip-ending disaster.',
+          name: 'Flexible gear/shoe adhesive (tiny tube)',
+          detail: 'Glue for when your shoe sole starts peeling off (it happens). Look for a flexible urethane-style adhesive that bonds to rubber + fabric.',
           weight: '0.1 lb',
           defaultPacked: false,
           sourceIds: ['reddit-gear-recs']
@@ -907,15 +932,15 @@ export const packPlanner = {
         },
         {
           id: 'antihistamine',
-          name: 'Benadryl (4-6 pills)',
-          detail: 'For allergic reactions to bee stings, plants, or unknown triggers. Also helps you sleep.',
+          name: 'Antihistamine tablets (4-6)',
+          detail: 'For allergic reactions to bee stings, plants, or unknown triggers. Pick a type you tolerate (some cause drowsiness).',
           weight: '0.0 lb',
           defaultPacked: true,
           sourceIds: ['reddit-shakedown-2025']
         },
         {
           id: 'imodium',
-          name: 'Imodium (anti-diarrhea pills)',
+          name: 'Anti-diarrheal tablets (loperamide)',
           detail: 'Trail food + water changes = stomach issues. This stops them FAST. Do not skip this.',
           weight: '0.0 lb',
           defaultPacked: true,
@@ -923,7 +948,7 @@ export const packPlanner = {
         },
         {
           id: 'pepto-tabs',
-          name: 'Pepto-Bismol tablets',
+          name: 'Upset-stomach tablets (bismuth)',
           detail: 'For nausea and upset stomach. Chewable tabs are easier than liquid. Stomach issues are common.',
           weight: '0.0 lb',
           defaultPacked: true,
@@ -931,7 +956,7 @@ export const packPlanner = {
         },
         {
           id: 'mini-dropper',
-          name: 'Backup water treatment (Aquamira drops or tablets)',
+          name: 'Backup water treatment (chlorine dioxide)',
           detail: 'If your filter clogs or breaks, you NEED a backup. Tablets weigh nothing. Bring 10+.',
           weight: '0.1 lb',
           defaultPacked: true,
@@ -948,7 +973,7 @@ export const packPlanner = {
         {
           id: 'head-net',
           name: 'Bug head net',
-          detail: 'When mosquitoes are BAD, this is the only thing that works. Weighs 1oz, saves your sanity.',
+          detail: 'When mosquitoes are BAD, this is the only thing that works. Weighs ~1 oz, saves your sanity.',
           weight: '0.1 lb',
           defaultPacked: false,
           sourceIds: ['adventurehacks-guide']
@@ -972,7 +997,7 @@ export const packPlanner = {
         {
           id: 'pee-bottle',
           name: 'Wide-mouth bottle for night pee (optional)',
-          detail: 'Avoids leaving your tent at 2am in the cold. Label it clearly. Gatorade bottles work.',
+          detail: 'Avoids leaving your tent at 2am in the cold. Label it clearly. Any wide-mouth sports drink bottle works.',
           weight: '0.1 lb',
           defaultPacked: false,
           sourceIds: ['reddit-gear-recs']
@@ -1040,7 +1065,7 @@ export const packPlanner = {
     {
       label: 'Top lid',
       focus: 'Navigation + comms',
-      suggestions: ['InReach', 'Map', 'Compass', 'Snacks']
+      suggestions: ['Satellite messenger', 'Map', 'Compass', 'Snacks']
     },
     {
       label: 'Front stretch pocket',
@@ -1082,12 +1107,12 @@ export const riskPlaybook = [
   },
   {
     title: 'Transportation contingencies',
-    detail: 'Document Amtrak Coast Starlight + Mt. Shasta Taxi contacts; share ETA updates via InReach.',
+    detail: 'Document Amtrak Coast Starlight + Mt. Shasta Taxi contacts; share ETA updates via satellite messenger when needed.',
     sourceIds: ['reddit-amtrak-coast', 'doc-transport-dunsmuir', 'pcta-transport']
   },
   {
     title: 'Communications plan',
-    detail: 'Daily InReach check-ins, itinerary + permits stored with family.',
+    detail: 'Daily check-ins via satellite messenger (or equivalent), itinerary + permits stored with family.',
     sourceIds: ['doc-day-plan', 'reddit-norcal-tips']
   },
   {

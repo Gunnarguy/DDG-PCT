@@ -9,6 +9,44 @@
 
 import { createClient } from '@supabase/supabase-js';
 
+// Vite automatically loads .env files, but this script is executed via Node.
+// To make `npm run supabase:smoke` work locally (and in simple CI contexts),
+// we load env vars from .env/.env.local if they exist.
+const loadDotEnvFile = async (relativePath) => {
+  try {
+    const fs = await import('node:fs');
+    const path = await import('node:path');
+
+    const envPath = path.resolve(process.cwd(), relativePath);
+    if (!fs.existsSync(envPath)) return;
+
+    const raw = fs.readFileSync(envPath, 'utf8');
+    raw.split(/\r?\n/).forEach((line) => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) return;
+
+      const eq = trimmed.indexOf('=');
+      if (eq <= 0) return;
+      const key = trimmed.slice(0, eq).trim();
+      let value = trimmed.slice(eq + 1).trim();
+
+      // Strip optional surrounding quotes.
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1);
+      }
+
+      if (process.env[key] == null) {
+        process.env[key] = value;
+      }
+    });
+  } catch {
+    // Best-effort only. If this fails, the missing env check below will explain.
+  }
+};
+
+await loadDotEnvFile('.env.local');
+await loadDotEnvFile('.env');
+
 const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const anonKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
