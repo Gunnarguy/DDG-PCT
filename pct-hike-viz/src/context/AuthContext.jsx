@@ -187,10 +187,9 @@ export function AuthProvider({ children }) {
    */
   const signInWithEmail = async (email) => {
     setError(null);
-    // Explicitly set the redirect URL to production site
-    const redirectUrl = import.meta.env.PROD 
-      ? 'https://gunnarguy.github.io/DDG-PCT'
-      : window.location.origin;
+    // IMPORTANT: On GitHub Pages the app lives under /DDG-PCT/ (Vite base).
+    // Using only window.location.origin would drop the base path and break auth redirects.
+    const redirectUrl = new URL(import.meta.env.BASE_URL || '/', window.location.origin).toString();
     
     const { error: signInError } = await supabase.auth.signInWithOtp({
       email,
@@ -215,7 +214,8 @@ export function AuthProvider({ children }) {
     const { error: signInError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin,
+        // Match Pages deploy base path in production.
+        redirectTo: new URL(import.meta.env.BASE_URL || '/', window.location.origin).toString(),
       },
     });
 
