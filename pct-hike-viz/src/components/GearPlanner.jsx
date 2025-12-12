@@ -221,8 +221,8 @@ function GearPlanner({ data, currentUser }) {
   const defaultLoadouts = useMemo(() => ({
     dan: new Set(),
     drew: new Set(),
-    gunnar: new Set(initialInventory.filter((i) => i.defaultPacked).map((i) => i.id))
-  }), [initialInventory]);
+    gunnar: new Set()
+  }), []);
 
   // 2. State for each hiker's loadout (live synced)
   const [loadouts, setLoadouts] = useState(defaultLoadouts);
@@ -234,7 +234,10 @@ function GearPlanner({ data, currentUser }) {
   const detectedHikerId = user?.email ? getHikerIdFromEmail(user.email) : null;
   const effectiveCurrentUser = detectedHikerId || currentUser || 'gunnar';
 
-  const [activeHikerId, setActiveHikerId] = useState(effectiveCurrentUser);
+  // If a user clicks another hiker tab, we keep that selection until they
+  // click back. Otherwise, follow the signed-in user's identity automatically.
+  const [manualHikerId, setManualHikerId] = useState(null);
+  const activeHikerId = manualHikerId || effectiveCurrentUser;
   const activeHiker = HIKERS.find(h => h.id === activeHikerId);
 
   // Custom item form state
@@ -256,16 +259,19 @@ function GearPlanner({ data, currentUser }) {
 
     const inflateLoadouts = (rows = []) => {
       const next = { dan: new Set(), drew: new Set(), gunnar: new Set() };
+      const seen = new Set();
       rows.forEach((row) => {
         if (next[row.hiker_id]) {
           next[row.hiker_id] = new Set(row.item_ids || []);
+          seen.add(row.hiker_id);
         }
       });
-      // Preserve defaults if remote payload empty
+      // Preserve defaults only when there is no remote row for that hiker.
+      // IMPORTANT: an intentionally empty pack ([]) must stay empty after refresh.
       return {
-        dan: next.dan.size ? next.dan : new Set(defaultLoadouts.dan),
-        drew: next.drew.size ? next.drew : new Set(defaultLoadouts.drew),
-        gunnar: next.gunnar.size ? next.gunnar : new Set(defaultLoadouts.gunnar)
+        dan: seen.has('dan') ? next.dan : new Set(defaultLoadouts.dan),
+        drew: seen.has('drew') ? next.drew : new Set(defaultLoadouts.drew),
+        gunnar: seen.has('gunnar') ? next.gunnar : new Set(defaultLoadouts.gunnar)
       };
     };
 
@@ -287,9 +293,14 @@ function GearPlanner({ data, currentUser }) {
     channel = supabase
       .channel('gear_loadouts_sync')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'gear_loadouts' }, (payload) => {
+        const eventType = payload?.eventType || payload?.type;
+        if (eventType === 'DELETE') return;
+        const nextRow = payload?.new;
+        if (!nextRow?.hiker_id) return;
+
         setLoadouts((prev) => ({
           ...prev,
-          [payload.new.hiker_id]: new Set(payload.new.item_ids || [])
+          [nextRow.hiker_id]: new Set(nextRow.item_ids || [])
         }));
       })
       .subscribe();
@@ -357,7 +368,8 @@ function GearPlanner({ data, currentUser }) {
 
     const { error } = await supabase.from('gear_loadouts').upsert({
       hiker_id: hikerId,
-      item_ids: Array.from(nextSet)
+      item_ids: Array.from(nextSet),
+      updated_at: new Date().toISOString()
     });
     if (error) {
       setSyncError(error);
@@ -547,7 +559,9 @@ function GearPlanner({ data, currentUser }) {
               type="button"
               className={`hiker-tab ddg-hiker-tab ${isActive ? 'is-active' : ''}`}
               style={{ '--hiker-color': hiker.color }}
-              onClick={() => setActiveHikerId(hiker.id)}
+              onClick={() => {
+                setManualHikerId(hiker.id);
+              }}
             >
               <span className="hiker-emoji">{hiker.emoji}</span>
               <div className="hiker-info">
