@@ -82,34 +82,50 @@ export function AuthProvider({ children }) {
         }, 5000);
 
         // Check if we have auth tokens in the URL hash (from magic link redirect)
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const accessToken = hashParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token');
+        // Supabase sends: #access_token=...&expires_at=...&expires_in=...&refresh_token=...&token_type=bearer&type=magiclink
+        const hash = window.location.hash.substring(1);
         
-        if (accessToken && refreshToken) {
-          // Manually set the session from URL params
-          const { data, error } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-          });
+        if (hash) {
+          console.log('[Auth] Found URL hash, attempting to parse tokens...');
+          const hashParams = new URLSearchParams(hash);
+          const accessToken = hashParams.get('access_token');
+          const refreshToken = hashParams.get('refresh_token');
+          const tokenType = hashParams.get('type'); // 'magiclink', 'recovery', etc.
           
-          if (error) {
-            console.error('Error setting session from URL:', error);
-          } else if (data.session) {
-            // Clear the hash from URL
-            window.history.replaceState(null, '', window.location.pathname);
-            if (mounted) {
-              setUser(data.session.user);
-              await fetchProfile(data.session.user);
-              setLoading(false);
+          console.log('[Auth] Token type:', tokenType, '| Has access_token:', !!accessToken, '| Has refresh_token:', !!refreshToken);
+          
+          if (accessToken && refreshToken) {
+            // Manually set the session from URL params
+            const { data, error: setSessionError } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            
+            if (setSessionError) {
+              console.error('[Auth] Error setting session from URL:', setSessionError);
+              setError(`Login failed: ${setSessionError.message}`);
+            } else if (data.session) {
+              console.log('[Auth] Session established for:', data.session.user?.email);
+              // Clear the hash from URL - preserve full path including base
+              const cleanUrl = window.location.pathname + window.location.search;
+              window.history.replaceState(null, '', cleanUrl);
+              if (mounted) {
+                setUser(data.session.user);
+                await fetchProfile(data.session.user);
+                setLoading(false);
+              }
+              return;
             }
-            return;
+          } else if (hashParams.get('error')) {
+            // Supabase can send errors in the hash too
+            const errorDesc = hashParams.get('error_description') || hashParams.get('error');
+            console.error('[Auth] Error in URL hash:', errorDesc);
+            setError(errorDesc);
           }
-        }
-
-        // Clear hash if present but empty/incomplete
-        if (window.location.hash) {
-          window.history.replaceState(null, '', window.location.pathname);
+          
+          // Clear hash regardless (don't leave tokens in URL)
+          const cleanUrl = window.location.pathname + window.location.search;
+          window.history.replaceState(null, '', cleanUrl);
         }
 
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -156,6 +172,7 @@ export function AuthProvider({ children }) {
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('[Auth] Auth state changed:', event, '| User:', session?.user?.email || 'none');
         if (mounted) {
           setUser(session?.user ?? null);
           if (session?.user) {

@@ -76,13 +76,13 @@ function Sidebar({
   const [activeTab, setActiveTab] = useState('mission');
   const tabs = [
     { id: 'mission', label: 'Mission' },
+    { id: 'prep', label: 'Prep' },
     { id: 'itinerary', label: 'Itinerary' },
     { id: 'safety', label: 'Safety' },
     { id: 'gear', label: 'Gear' },
-    { id: 'comms', label: 'Comms' },
+    { id: 'connectivity', label: 'Connectivity' },
     { id: 'logistics', label: 'Logistics' },
-    { id: 'risks', label: 'Risks' },
-    { id: 'library', label: 'Library' }
+    { id: 'resources', label: 'Resources' }
   ];
 
   const activeUser = ddgTeam.find((member) => member.id === currentUserId) || ddgTeam[2];
@@ -216,33 +216,26 @@ function Sidebar({
       
       {/* Terrain Analysis - Slope-angle breakdown */}
       <TerrainAnalysis />
-      
-      {/* Water Sources - tap to show on map */}
+
+      {/* Risk & Contingency Planning */}
       <section className="sidebar-card sidebar-card--full">
         <div className="section-header">
-          <h2>Water Sources</h2>
-          <span className="section-subtitle">{waterSourceMeta.count} reliable sources · {waterSourceMeta.mileRange}</span>
+          <h2>⚠️ Risk &amp; Contingency Planning</h2>
+          <span className="section-subtitle">Know the hazards before you go</span>
         </div>
-        <div className="water-list">
-          {waterSources.map((source) => (
-            <button
-              type="button"
-              key={source.waypoint || source.mile}
-              className="water-item"
-              onClick={() => setPopupInfo(source)}
-            >
-              <div className="water-item__meta">
-                <span className="water-icon">💧</span>
-                <span className="mile-marker">Mile {source.mile}</span>
-              </div>
-              <h4>{source.name}</h4>
-              <p className="note">{source.report}</p>
-            </button>
-          ))}
-        </div>
-        <p className="note water-source-note">
-          Synced from {waterSourceMeta.sourceLabel}; last checked {waterSourceMeta.lastSynced}. Tap a source to drop the 💧 marker on the map.
+        <p className="lede">
+          Pre-identified hazards and mitigation strategies for Section O.
         </p>
+        <ul className="bullet-list">
+          {riskPlaybook.map((risk) => (
+            <li key={risk.title}>
+              <strong>{risk.title}:</strong> {risk.detail}
+              {risk.sourceIds && risk.sourceIds.length > 0 && (
+                <SourceChips sourceIds={risk.sourceIds} size="small" />
+              )}
+            </li>
+          ))}
+        </ul>
       </section>
     </>
   );
@@ -346,13 +339,6 @@ function Sidebar({
           ))}
         </div>
       </section>
-
-      {/* Trip Readiness Dashboard */}
-      <TripReadinessPanel
-        packPlanner={packPlanner}
-        nextStepsChecklist={nextStepsChecklist}
-        permitChecklist={permitChecklist}
-      />
 
       {/* Route Highlights - Key trail features */}
       <section className="sidebar-card sidebar-card--full highlights-card">
@@ -580,6 +566,34 @@ function Sidebar({
           ))}
         </div>
       </section>
+
+      {/* Water Sources - tap to show on map */}
+      <section className="sidebar-card sidebar-card--full">
+        <div className="section-header">
+          <h2>💧 Water Sources</h2>
+          <span className="section-subtitle">{waterSourceMeta.count} reliable sources · {waterSourceMeta.mileRange}</span>
+        </div>
+        <div className="water-list">
+          {waterSources.map((source) => (
+            <button
+              type="button"
+              key={source.waypoint || source.mile}
+              className="water-item"
+              onClick={() => setPopupInfo(source)}
+            >
+              <div className="water-item__meta">
+                <span className="water-icon">💧</span>
+                <span className="mile-marker">Mile {source.mile}</span>
+              </div>
+              <h4>{source.name}</h4>
+              <p className="note">{source.report}</p>
+            </button>
+          ))}
+        </div>
+        <p className="note water-source-note">
+          Synced from {waterSourceMeta.sourceLabel}; last checked {waterSourceMeta.lastSynced}. Tap a source to drop the 💧 marker on the map.
+        </p>
+      </section>
     </>
   );
 
@@ -669,11 +683,46 @@ function Sidebar({
     );
   };
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PREP TAB - Trip readiness, permits, next steps
+  // ═══════════════════════════════════════════════════════════════════════════
+  const renderPrep = () => (
+    <>
+      {/* Trip Readiness Dashboard */}
+      <TripReadinessPanel
+        packPlanner={packPlanner}
+        nextStepsChecklist={nextStepsChecklist}
+        permitChecklist={permitChecklist}
+      />
+
+      {/* Permit Checklist - Detailed */}
+      <section className="sidebar-card sidebar-card--full">
+        <div className="section-header">
+          <h2>📝 Permit Checklist</h2>
+          <span className="section-subtitle">Required documents for Section O</span>
+        </div>
+        <div className="permit-grid">
+          {permitChecklist.map((permit) => (
+            <article key={permit.name} className="permit-card">
+              <h3>{permit.name}</h3>
+              <p className="tag">{permit.coverage}</p>
+              <p><strong>Where:</strong> {permit.source}</p>
+              <p><strong>Cost:</strong> {permit.cost}</p>
+              <p>{permit.notes}</p>
+              {permit.sourceIds && <SourceChips sourceIds={permit.sourceIds} size="small" maxShow={4} />}
+            </article>
+          ))}
+        </div>
+      </section>
+    </>
+  );
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // LOGISTICS TAB - Transit, travel, resupply (slimmed down)
+  // ═══════════════════════════════════════════════════════════════════════════
   const renderLogistics = () => (
     <>
-      {renderLiveSatelliteIntel()}
-      
-      {/* Transit & Access Panel - NEW */}
+      {/* Transit & Access Panel */}
       <TransitPanel />
 
       <section className="sidebar-card">
@@ -738,22 +787,33 @@ function Sidebar({
           </div>
         </div>
       </section>
+    </>
+  );
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CONNECTIVITY TAB - OpsLog + satellite/cell coverage
+  // ═══════════════════════════════════════════════════════════════════════════
+  const renderConnectivity = () => (
+    <>
+      {/* Mission Control Log */}
+      <section className="sidebar-card sidebar-card--full">
+        <div className="section-header">
+          <h2>Mission Control Log</h2>
+          <span className="section-subtitle">Live ops traffic for the DDG crew</span>
+        </div>
+        <OpsLog contextId="general" userName={activeUserName} />
+      </section>
 
       <section className="sidebar-card sidebar-card--full">
-        <h2>Permit Checklist</h2>
-        <div className="permit-grid">
-          {permitChecklist.map((permit) => (
-            <article key={permit.name} className="permit-card">
-              <h3>{permit.name}</h3>
-              <p className="tag">{permit.coverage}</p>
-              <p><strong>Where:</strong> {permit.source}</p>
-              <p><strong>Cost:</strong> {permit.cost}</p>
-              <p>{permit.notes}</p>
-              {permit.sourceIds && <SourceChips sourceIds={permit.sourceIds} size="small" maxShow={4} />}
-            </article>
-          ))}
+        <div className="section-header">
+          <h2>Tasking Channel</h2>
+          <span className="section-subtitle">Use /task to flag work and alerts</span>
         </div>
+        <OpsLog contextId="tasks" userName={activeUserName} />
       </section>
+
+      {/* Live Satellite Intel */}
+      {renderLiveSatelliteIntel()}
 
       {/* Connectivity Timeline Visualization */}
       <section className="sidebar-card sidebar-card--full connectivity-timeline-card">
@@ -790,6 +850,7 @@ function Sidebar({
         <p className="note">📱 Expect ~42 miles of complete cell blackout. iPhone 16 Pro Max satellite + Garmin InReach provide backup.</p>
       </section>
 
+      {/* Cell Coverage Map */}
       <section className="sidebar-card sidebar-card--full">
         <div className="section-header">
           <h2>Cell Coverage Map</h2>
@@ -827,6 +888,7 @@ function Sidebar({
         </div>
       </section>
 
+      {/* Satellite Communication Devices */}
       <section className="sidebar-card sidebar-card--full">
         <h2>Satellite Communication Devices</h2>
         <p className="lede">Section O has ~70 miles with zero cell service. Satellite devices provide emergency SOS and two-way messaging in deep wilderness.</p>
@@ -850,46 +912,10 @@ function Sidebar({
     </>
   );
 
-  const renderComms = () => (
-    <>
-      <section className="sidebar-card sidebar-card--full">
-        <div className="section-header">
-          <h2>Mission Control Log</h2>
-          <span className="section-subtitle">Live ops traffic for the DDG crew</span>
-        </div>
-        <OpsLog contextId="general" userName={activeUserName} />
-      </section>
-
-      <section className="sidebar-card sidebar-card--full">
-        <div className="section-header">
-          <h2>Tasking Channel</h2>
-          <span className="section-subtitle">Use /task to flag work and alerts</span>
-        </div>
-        <OpsLog contextId="tasks" userName={activeUserName} />
-      </section>
-    </>
-  );
-
-  const renderRisks = () => (
-    <section className="sidebar-card sidebar-card--full">
-      <h2>Risk &amp; Contingency Planning</h2>
-      <p className="lede">
-        Pre-identified hazards and mitigation strategies for Section O. Know the risks before you hit the trail.
-      </p>
-      <ul className="bullet-list">
-        {riskPlaybook.map((risk) => (
-          <li key={risk.title}>
-            <strong>{risk.title}:</strong> {risk.detail}
-            {risk.sourceIds && risk.sourceIds.length > 0 && (
-              <SourceChips sourceIds={risk.sourceIds} size="small" />
-            )}
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-
-  const renderLibrary = () => (
+  // ═══════════════════════════════════════════════════════════════════════════
+  // RESOURCES TAB - Reference library (renamed from Library)
+  // ═══════════════════════════════════════════════════════════════════════════
+  const renderResources = () => (
     <section className="sidebar-card sidebar-card--full">
       <h2>Reference Library</h2>
       <div className="link-columns">
@@ -960,13 +986,13 @@ function Sidebar({
       </nav>
       <div className="sidebar__sections">
         {activeTab === 'mission' && renderMission()}
+        {activeTab === 'prep' && renderPrep()}
         {activeTab === 'itinerary' && renderItinerary()}
         {activeTab === 'safety' && renderSafety()}
         {activeTab === 'gear' && renderGear()}
-        {activeTab === 'comms' && renderComms()}
+        {activeTab === 'connectivity' && renderConnectivity()}
         {activeTab === 'logistics' && renderLogistics()}
-        {activeTab === 'risks' && renderRisks()}
-        {activeTab === 'library' && renderLibrary()}
+        {activeTab === 'resources' && renderResources()}
       </div>
     </aside>
   );
