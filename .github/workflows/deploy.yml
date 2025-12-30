@@ -35,13 +35,17 @@ jobs:
         working-directory: pct-hike-viz
         run: npm ci
 
-      - name: Configure env for build
+      - name: Configure env
         working-directory: pct-hike-viz
         run: cp .env.example .env
 
       - name: Build
         working-directory: pct-hike-viz
         run: npm run build
+
+      - name: SPA fallback (404.html)
+        working-directory: pct-hike-viz
+        run: cp dist/index.html dist/404.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
