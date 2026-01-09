@@ -2,7 +2,8 @@ import csv, json
 from pathlib import Path
 
 csv_path = Path('/tmp/pct_water_northern_ca.csv')
-route_path = Path(__file__).parent.parent / 'src' / 'hike_data.json'
+# Use canonical runtime artifact for geometry snaps
+route_path = Path(__file__).parent.parent / "public" / "data" / "hike_data.json"
 
 route_data = json.loads(route_path.read_text())
 route_coords = route_data.get('route', {}).get('path', [])

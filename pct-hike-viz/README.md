@@ -52,7 +52,7 @@ https://mcp.supabase.com/mcp?project_ref=tnqvxjtqvmmacrfqpelj
 
 ## Data sources
 
-* `src/hike_data.json` – GeoJSON-style data derived from `Original-DDG-PCT-PDF.txt` (points, route segments, Dunsmuir waypoint).
+* `public/data/hike_data.json` – Canonical runtime GeoJSON-style data derived from `Original-DDG-PCT-PDF.txt` + GPX (points, route segments, Dunsmuir waypoint). `src/hike_data.json` is a mirrored copy for tooling.
 * `src/data/planContent.js` – Structured logistics (schedules, travel plan, resupply notes, permit checklist, research links) extracted verbatim from the narrative and associated research URLs.
 
 Swap these files with live feeds (e.g., from `nst-guide/data` pipelines or the PCT water report) when you are ready for real-time planning.

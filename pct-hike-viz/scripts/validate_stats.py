@@ -5,9 +5,9 @@ import json
 from math import radians, cos, sin, asin, sqrt
 from pathlib import Path
 
-# Load data
+# Load data from canonical runtime artifact (public/data/hike_data.json)
 script_dir = Path(__file__).parent
-data_path = script_dir.parent / 'src' / 'hike_data.json'
+data_path = script_dir.parent / "public" / "data" / "hike_data.json"
 with open(data_path) as f:
     data = json.load(f)
 
@@ -31,8 +31,10 @@ def haversine(lon1, lat1, lon2, lat2):
     c = 2 * asin(sqrt(a))
     return 6371000 * c  # meters
 
-total_meters = sum(haversine(coords[i][0], coords[i][1], coords[i+1][0], coords[i+1][1]) 
-                   for i in range(len(coords)-1))
+total_meters = sum(
+    haversine(coords[i][0], coords[i][1], coords[i + 1][0], coords[i + 1][1])
+    for i in range(len(coords) - 1)
+)
 total_miles = total_meters / 1609.34
 
 print(f'\n--- DISTANCE ---')

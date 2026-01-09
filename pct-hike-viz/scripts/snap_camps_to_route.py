@@ -9,7 +9,8 @@ from pathlib import Path
 from typing import Iterable, List, Sequence, Tuple
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA_PATH = ROOT / "src" / "hike_data.json"
+CANONICAL_PATH = ROOT / "public" / "data" / "hike_data.json"
+MIRROR_PATH = ROOT / "src" / "hike_data.json"
 TARGET_TYPES = {"Trailhead", "Camp"}
 MANUAL_ORIGINALS = {
     "Burney Falls State Park": [-121.65, 41.012],
@@ -96,7 +97,7 @@ def build_segment_lengths(path: Sequence[Vec2]) -> List[float]:
 
 
 def main() -> None:
-    data = json.loads(DATA_PATH.read_text())
+    data = json.loads(CANONICAL_PATH.read_text())
     route_path = data["route"]["path"]
     to_xy, to_lonlat = deg_to_xy_converter(route_path)
     xy_path = [to_xy(lon, lat) for lon, lat in route_path]
@@ -136,7 +137,15 @@ def main() -> None:
 
         updated.append((props.get("name"), stored_original, lonlat, target_miles))
 
-    DATA_PATH.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    # Write canonical runtime artifact
+    payload = json.dumps(data, indent=2)
+    CANONICAL_PATH.write_text(payload, encoding="utf-8")
+
+    # Mirror to src/ for tooling that still expects that path
+    try:
+        MIRROR_PATH.write_text(payload, encoding="utf-8")
+    except Exception as exc:  # noqa: BLE001
+        print(f"Warning: failed to mirror to {MIRROR_PATH}: {exc}")
 
     print("Updated waypoints:")
     for name, original, snapped, mile in updated:
