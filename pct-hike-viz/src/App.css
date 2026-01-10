@@ -468,9 +468,23 @@
   z-index: 5;
   display: flex;
   gap: 0.65rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
   background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0));
   padding-bottom: 0.75rem;
   margin-bottom: 1.5rem;
+}
+
+.sidebar__tabs::-webkit-scrollbar {
+  height: 6px;
+}
+
+.sidebar__tabs::-webkit-scrollbar-thumb {
+  background: var(--sand-200);
+  border-radius: 999px;
 }
 
 .tab-btn {
@@ -482,6 +496,8 @@
   color: var(--ink-500);
   cursor: pointer;
   transition: all 0.2s ease;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .tab-btn.is-active {

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   connectivityZones,
   getSignalBadgeClass,
@@ -86,6 +86,7 @@ function Sidebar({
   onUserChange,
 }) {
   const [activeTab, setActiveTab] = useState("mission");
+  const tabsRef = useRef(null);
   const tabs = [
     { id: "mission", label: "Mission" },
     { id: "prep", label: "Prep" },
@@ -96,6 +97,28 @@ function Sidebar({
     { id: "logistics", label: "Logistics" },
     { id: "resources", label: "Resources" },
   ];
+
+  useEffect(() => {
+    const el = tabsRef.current;
+    if (!el) return;
+
+    const handleWheel = (event) => {
+      if (event.shiftKey) return;
+      if (el.scrollWidth <= el.clientWidth) return;
+
+      const dominantAxisIsVertical =
+        Math.abs(event.deltaY) >= Math.abs(event.deltaX);
+      if (!dominantAxisIsVertical) return;
+
+      el.scrollLeft += event.deltaY;
+      event.preventDefault();
+    };
+
+    el.addEventListener("wheel", handleWheel, { passive: false });
+    return () => {
+      el.removeEventListener("wheel", handleWheel);
+    };
+  }, []);
 
   const activeUser =
     ddgTeam.find((member) => member.id === currentUserId) || ddgTeam[2];
@@ -1297,7 +1320,11 @@ function Sidebar({
         </div>
       </div>
 
-      <nav className="sidebar__tabs" aria-label="Mission control sections">
+      <nav
+        ref={tabsRef}
+        className="sidebar__tabs"
+        aria-label="Mission control sections"
+      >
         {tabs.map((tab) => (
           <button
             key={tab.id}
