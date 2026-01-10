@@ -204,20 +204,56 @@ export function AuthProvider({ children }) {
    */
   const signInWithEmail = async (email) => {
     setError(null);
+    const normalizedEmail = (email || '').trim().toLowerCase();
+
+    if (!normalizedEmail) {
+      setError('Please enter an email address.');
+      return { success: false, error: 'Please enter an email address.' };
+    }
+
+    // Avoid creating unexpected auth users for random emails.
+    if (!isAllowedEmail(normalizedEmail)) {
+      const msg =
+        'This email is not on the DDG allowlist. Ask Gunnar to add it before signing in.';
+      setError(msg);
+      return { success: false, error: msg };
+    }
+
     // IMPORTANT: On GitHub Pages the app lives under /DDG-PCT/ (Vite base).
     // Using only window.location.origin would drop the base path and break auth redirects.
     const redirectUrl = new URL(import.meta.env.BASE_URL || '/', window.location.origin).toString();
     
     const { error: signInError } = await supabase.auth.signInWithOtp({
-      email,
+      email: normalizedEmail,
       options: {
         emailRedirectTo: redirectUrl,
+        // Do not auto-create auth users from the client. If a user isn't provisioned
+        // in Supabase Auth yet, we want a clear "user not found" style error instead
+        // of tripping DB triggers/policies during signup.
+        shouldCreateUser: false,
       },
     });
 
     if (signInError) {
-      setError(signInError.message);
-      return { success: false, error: signInError.message };
+      const raw = signInError.message || 'Login failed.';
+      const lower = raw.toLowerCase();
+
+      if (
+        lower.includes('user not found') ||
+        lower.includes('signup') ||
+        lower.includes('signups') ||
+        lower.includes('create') && lower.includes('user') ||
+        lower.includes('database error')
+      ) {
+        const friendly =
+          `That email is allowed, but it looks like it isn't provisioned in Supabase Auth yet. ` +
+          `Gunnar needs to invite/create the user in the Supabase dashboard (Auth → Users) for ${normalizedEmail}.`;
+        setError(friendly);
+        return { success: false, error: friendly };
+      }
+
+      setError(raw);
+      return { success: false, error: raw };
     }
 
     return { success: true, message: 'Check your email for the magic link!' };
