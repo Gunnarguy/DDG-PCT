@@ -288,7 +288,7 @@ function App() {
   const [liveSatelliteStatus, setLiveSatelliteStatus] = useState("idle");
   const [liveSatelliteError, setLiveSatelliteError] = useState(null);
   const [profileHoverPoint, setProfileHoverPoint] = useState(null);
-  const [sidebarWidth, setSidebarWidth] = useState(28); // percentage
+  const [sidebarWidth, setSidebarWidth] = useState(28); // percent of app width
   const [isDragging, setIsDragging] = useState(false);
   const [computedStats, setComputedStats] = useState(null);
 
@@ -498,7 +498,7 @@ function App() {
 
   const townPins = hikeData?.towns ?? [];
   const transportPoints = hikeData?.transport ?? [];
-  const waterSources = hikeData?.waterSources ?? [];
+  const waterSources = useMemo(() => hikeData?.waterSources ?? [], [hikeData]);
   const waterSourceMeta = useMemo(
     () => deriveWaterMeta(waterSources),
     [waterSources]
@@ -513,7 +513,7 @@ function App() {
       connectivityZones
     );
     setComputedStats(stats);
-  }, [hikingTrail, routeSegments, waterSources, connectivityZones]);
+  }, [hikingTrail, routeSegments, waterSources]);
 
   const handleSelectPoint = (day) => {
     const target = campPoints.find((feature) => feature.properties.day === day);
@@ -525,6 +525,8 @@ function App() {
   const handleProfileHover = useCallback((pointMeta) => {
     setProfileHoverPoint(pointMeta);
   }, []);
+
+  const sidebarSize = `clamp(320px, ${sidebarWidth}%, 50%)`;
 
   if (isLoading) {
     return (
@@ -556,7 +558,7 @@ function App() {
       <div
         className={`resize-handle ${isDragging ? "dragging" : ""}`}
         onMouseDown={handleResizeStart}
-        style={{ right: `${sidebarWidth}vw` }}
+        style={{ right: sidebarSize }}
         aria-label="Resize sidebar"
       />
       <div className="map-column">
@@ -591,7 +593,7 @@ function App() {
       </div>
 
       <Sidebar
-        style={{ width: `${sidebarWidth}vw` }}
+        style={{ width: sidebarSize }}
         waterSources={waterSources}
         waterSourceMeta={waterSourceMeta}
         scheduleOptions={scheduleOptions}

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Lightweight data sanity check to keep the runtime artifact authoritative.
 import fs from "fs";
+import process from "node:process";
 import path from "path";
 import { fileURLToPath } from "url";
 

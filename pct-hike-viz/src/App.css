@@ -18,7 +18,7 @@
 
 .resize-handle {
   position: absolute;
-  right: 28vw;
+  right: clamp(320px, 28%, 50%);
   top: 0;
   bottom: 0;
   width: 8px;
@@ -55,7 +55,7 @@
 .map-column {
   --map-panel-min: 320px;
   flex: 1;
-  min-width: 300px;
+  min-width: 0;
   display: grid;
   grid-template-rows: 1fr auto;
   height: 100dvh;
@@ -392,6 +392,7 @@
   min-width: 320px;
   max-width: 50vw;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 1.75rem 1.9rem 2.5rem;
   background: linear-gradient(180deg, #fff 0%, #faf8f3 100%);
   border-left: 1px solid var(--sand-200);
@@ -1218,7 +1219,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, 
+  background: linear-gradient(135deg,
     color-mix(in srgb, var(--member-color) 15%, white),
     color-mix(in srgb, var(--member-color) 30%, white)
   );
@@ -1396,7 +1397,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, 
+  background: linear-gradient(135deg,
     color-mix(in srgb, var(--member-color) 15%, white),
     color-mix(in srgb, var(--member-color) 25%, white)
   );
@@ -2201,12 +2202,12 @@
   .gear-systems-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .gear-stats-bar {
     flex-wrap: wrap;
     gap: 0.75rem;
   }
-  
+
   .gear-stat {
     flex: 1 1 40%;
   }
@@ -2297,7 +2298,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, 
+  background: linear-gradient(135deg,
     color-mix(in srgb, var(--hiker-color) 15%, white),
     color-mix(in srgb, var(--hiker-color) 30%, white)
   );
@@ -4238,7 +4239,7 @@
 }
 
 .ddg-hiker-tab.is-active {
-  background: linear-gradient(135deg, 
+  background: linear-gradient(135deg,
     color-mix(in srgb, var(--hiker-color) 8%, white),
     color-mix(in srgb, var(--hiker-color) 15%, white)
   );
@@ -4314,7 +4315,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, 
+  background: linear-gradient(135deg,
     color-mix(in srgb, var(--hiker-color) 20%, white),
     color-mix(in srgb, var(--hiker-color) 35%, white)
   );
@@ -5454,7 +5455,7 @@
   }
 
   /* Buttons min touch size */
-  button, 
+    button,
   .btn,
   [role="button"] {
     min-height: 44px;
