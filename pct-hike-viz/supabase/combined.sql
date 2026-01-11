@@ -97,14 +97,6 @@ insert into gear_loadouts (hiker_id, item_ids)
 values ('dan','[]'),('drew','[]'),('gunnar','[]')
 on conflict (hiker_id) do nothing;
 
--- Seed allowed emails for DDG team
-insert into allowed_emails (email, hiker_id, name)
-values
-  ('smileyguy@aol.com', 'dan', 'Dan'),
-  ('andrew.d.hostetler@gmail.com', 'drew', 'Drew'),
-  ('gunnarguy@me.com', 'gunnar', 'Gunnar'),
-  ('gunnarguy@aol.com', 'gunnar', 'Gunnar')
-on conflict (email) do nothing;
 
 -- Enable RLS (required for PostgREST + realtime). Policies below are permissive for anon key
 -- so the current open-access behavior is preserved while silencing Supabase warnings.
@@ -145,6 +137,14 @@ create policy "gear_loadouts_select_all" on gear_loadouts for select using (true
 create policy "gear_loadouts_upsert_all" on gear_loadouts for insert with check (true);
 create policy "gear_loadouts_update_all" on gear_loadouts for update using (true) with check (true);
 
+-- Seed allowed emails for DDG team
+insert into allowed_emails (email, hiker_id, name)
+values
+  ('smileyguy@aol.com', 'dan', 'Dan'),
+  ('andrew.d.hostetler@gmail.com', 'drew', 'Drew'),
+  ('gunnarguy@me.com', 'gunnar', 'Gunnar'),
+  ('gunnarguy@aol.com', 'gunnar', 'Gunnar')
+on conflict (email) do nothing;
 create policy "custom_items_select_all" on custom_items for select using (true);
 create policy "custom_items_insert_all" on custom_items for insert with check (true);
 create policy "custom_items_update_all" on custom_items for update using (true) with check (true);
