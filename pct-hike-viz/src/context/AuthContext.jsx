@@ -1,22 +1,28 @@
 /**
  * Auth Context Provider for DDG-PCT Mission Control
- * 
+ *
  * Provides authentication state and methods to all components.
  * Supports magic link (email) and Google OAuth for the DDG team.
  */
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import {
-  supabase,
-  supabaseReady,
-  supabaseConfigError,
-  getTeamProfile,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import {
   DDG_TEAM,
-  isAllowedEmail,
   getHikerIdFromEmail,
+  getTeamProfile,
   isAdminEmail,
-} from '../lib/supabase';
+  isAllowedEmail,
+  supabase,
+  supabaseConfigError,
+  supabaseReady,
+} from "../lib/supabase";
 
 const AuthContext = createContext(null);
 
@@ -27,7 +33,7 @@ const AuthContext = createContext(null);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return context;
 };
@@ -53,7 +59,7 @@ export function AuthProvider({ children }) {
       const teamProfile = await getTeamProfile();
       setProfile(teamProfile);
     } catch (err) {
-      console.warn('Failed to fetch team profile:', err);
+      console.warn("Failed to fetch team profile:", err);
       setProfile(null);
     }
   }, []);
@@ -76,7 +82,7 @@ export function AuthProvider({ children }) {
         // Set a timeout to prevent infinite spinning
         timeoutId = setTimeout(() => {
           if (mounted && loading) {
-            console.warn('Auth init timed out, setting loading to false');
+            console.warn("Auth init timed out, setting loading to false");
             setLoading(false);
           }
         }, 5000);
@@ -84,31 +90,46 @@ export function AuthProvider({ children }) {
         // Check if we have auth tokens in the URL hash (from magic link redirect)
         // Supabase sends: #access_token=...&expires_at=...&expires_in=...&refresh_token=...&token_type=bearer&type=magiclink
         const hash = window.location.hash.substring(1);
-        
+
         if (hash) {
-          console.log('[Auth] Found URL hash, attempting to parse tokens...');
+          console.log("[Auth] Found URL hash, attempting to parse tokens...");
           const hashParams = new URLSearchParams(hash);
-          const accessToken = hashParams.get('access_token');
-          const refreshToken = hashParams.get('refresh_token');
-          const tokenType = hashParams.get('type'); // 'magiclink', 'recovery', etc.
-          
-          console.log('[Auth] Token type:', tokenType, '| Has access_token:', !!accessToken, '| Has refresh_token:', !!refreshToken);
-          
+          const accessToken = hashParams.get("access_token");
+          const refreshToken = hashParams.get("refresh_token");
+          const tokenType = hashParams.get("type"); // 'magiclink', 'recovery', etc.
+
+          console.log(
+            "[Auth] Token type:",
+            tokenType,
+            "| Has access_token:",
+            !!accessToken,
+            "| Has refresh_token:",
+            !!refreshToken
+          );
+
           if (accessToken && refreshToken) {
             // Manually set the session from URL params
-            const { data, error: setSessionError } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken,
-            });
-            
+            const { data, error: setSessionError } =
+              await supabase.auth.setSession({
+                access_token: accessToken,
+                refresh_token: refreshToken,
+              });
+
             if (setSessionError) {
-              console.error('[Auth] Error setting session from URL:', setSessionError);
+              console.error(
+                "[Auth] Error setting session from URL:",
+                setSessionError
+              );
               setError(`Login failed: ${setSessionError.message}`);
             } else if (data.session) {
-              console.log('[Auth] Session established for:', data.session.user?.email);
+              console.log(
+                "[Auth] Session established for:",
+                data.session.user?.email
+              );
               // Clear the hash from URL - preserve full path including base
-              const cleanUrl = window.location.pathname + window.location.search;
-              window.history.replaceState(null, '', cleanUrl);
+              const cleanUrl =
+                window.location.pathname + window.location.search;
+              window.history.replaceState(null, "", cleanUrl);
               if (mounted) {
                 setUser(data.session.user);
                 await fetchProfile(data.session.user);
@@ -116,24 +137,28 @@ export function AuthProvider({ children }) {
               }
               return;
             }
-          } else if (hashParams.get('error')) {
+          } else if (hashParams.get("error")) {
             // Supabase can send errors in the hash too
-            const errorDesc = hashParams.get('error_description') || hashParams.get('error');
-            console.error('[Auth] Error in URL hash:', errorDesc);
+            const errorDesc =
+              hashParams.get("error_description") || hashParams.get("error");
+            console.error("[Auth] Error in URL hash:", errorDesc);
             setError(errorDesc);
           }
-          
+
           // Clear hash regardless (don't leave tokens in URL)
           const cleanUrl = window.location.pathname + window.location.search;
-          window.history.replaceState(null, '', cleanUrl);
+          window.history.replaceState(null, "", cleanUrl);
         }
 
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
+        const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession();
+
         if (sessionError) {
-          console.error('Session error:', sessionError);
+          console.error("Session error:", sessionError);
         }
-        
+
         if (mounted) {
           setUser(session?.user ?? null);
           if (session?.user) {
@@ -142,7 +167,7 @@ export function AuthProvider({ children }) {
           setLoading(false);
         }
       } catch (err) {
-        console.error('Auth init error:', err);
+        console.error("Auth init error:", err);
         if (mounted) {
           setError(err.message);
           setLoading(false);
@@ -169,29 +194,34 @@ export function AuthProvider({ children }) {
         mounted = false;
       };
     }
-    
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('[Auth] Auth state changed:', event, '| User:', session?.user?.email || 'none');
-        if (mounted) {
-          setUser(session?.user ?? null);
-          if (session?.user) {
-            await fetchProfile(session.user);
-          } else {
-            setProfile(null);
-          }
 
-          // Update last_seen timestamp
-          if (event === 'SIGNED_IN' && session?.user) {
-            supabase
-              .from('ddg_team_profiles')
-              .update({ last_seen: new Date().toISOString() })
-              .eq('id', session.user.id)
-              .then(() => {});
-          }
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log(
+        "[Auth] Auth state changed:",
+        event,
+        "| User:",
+        session?.user?.email || "none"
+      );
+      if (mounted) {
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          await fetchProfile(session.user);
+        } else {
+          setProfile(null);
+        }
+
+        // Update last_seen timestamp
+        if (event === "SIGNED_IN" && session?.user) {
+          supabase
+            .from("ddg_team_profiles")
+            .update({ last_seen: new Date().toISOString() })
+            .eq("id", session.user.id)
+            .then(() => {});
         }
       }
-    );
+    });
 
     return () => {
       mounted = false;
@@ -204,59 +234,45 @@ export function AuthProvider({ children }) {
    */
   const signInWithEmail = async (email) => {
     setError(null);
-    const normalizedEmail = (email || '').trim().toLowerCase();
+    const normalizedEmail = (email || "").trim().toLowerCase();
 
     if (!normalizedEmail) {
-      setError('Please enter an email address.');
-      return { success: false, error: 'Please enter an email address.' };
+      setError("Please enter an email address.");
+      return { success: false, error: "Please enter an email address." };
     }
 
     // Avoid creating unexpected auth users for random emails.
     if (!isAllowedEmail(normalizedEmail)) {
       const msg =
-        'This email is not on the DDG allowlist. Ask Gunnar to add it before signing in.';
+        "This email is not on the DDG allowlist. Ask Gunnar to add it before signing in.";
       setError(msg);
       return { success: false, error: msg };
     }
 
     // IMPORTANT: On GitHub Pages the app lives under /DDG-PCT/ (Vite base).
     // Using only window.location.origin would drop the base path and break auth redirects.
-    const redirectUrl = new URL(import.meta.env.BASE_URL || '/', window.location.origin).toString();
-    
+    const redirectUrl = new URL(
+      import.meta.env.BASE_URL || "/",
+      window.location.origin
+    ).toString();
+
     const { error: signInError } = await supabase.auth.signInWithOtp({
       email: normalizedEmail,
       options: {
         emailRedirectTo: redirectUrl,
-        // Do not auto-create auth users from the client. If a user isn't provisioned
-        // in Supabase Auth yet, we want a clear "user not found" style error instead
-        // of tripping DB triggers/policies during signup.
-        shouldCreateUser: false,
+        // Allow auto-creation for allowlisted emails.
+        // We still block non-allowlisted emails above, so this won't create random accounts.
+        shouldCreateUser: true,
       },
     });
 
     if (signInError) {
-      const raw = signInError.message || 'Login failed.';
-      const lower = raw.toLowerCase();
-
-      if (
-        lower.includes('user not found') ||
-        lower.includes('signup') ||
-        lower.includes('signups') ||
-        lower.includes('create') && lower.includes('user') ||
-        lower.includes('database error')
-      ) {
-        const friendly =
-          `That email is allowed, but it looks like it isn't provisioned in Supabase Auth yet. ` +
-          `Gunnar needs to invite/create the user in the Supabase dashboard (Auth → Users) for ${normalizedEmail}.`;
-        setError(friendly);
-        return { success: false, error: friendly };
-      }
-
+      const raw = signInError.message || "Login failed.";
       setError(raw);
       return { success: false, error: raw };
     }
 
-    return { success: true, message: 'Check your email for the magic link!' };
+    return { success: true, message: "Check your email for the magic link!" };
   };
 
   /**
@@ -265,10 +281,13 @@ export function AuthProvider({ children }) {
   const signInWithGoogle = async () => {
     setError(null);
     const { error: signInError } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
       options: {
         // Match Pages deploy base path in production.
-        redirectTo: new URL(import.meta.env.BASE_URL || '/', window.location.origin).toString(),
+        redirectTo: new URL(
+          import.meta.env.BASE_URL || "/",
+          window.location.origin
+        ).toString(),
       },
     });
 
@@ -286,7 +305,7 @@ export function AuthProvider({ children }) {
   const signOut = async () => {
     setError(null);
     const { error: signOutError } = await supabase.auth.signOut();
-    
+
     if (signOutError) {
       setError(signOutError.message);
       return { success: false, error: signOutError.message };
@@ -319,7 +338,7 @@ export function AuthProvider({ children }) {
         hikerId: hikerId,
         isTeamMember: true,
         isAdmin: isAdmin,
-        accessStatus: 'approved',
+        accessStatus: "approved",
       };
     }
 
@@ -333,21 +352,21 @@ export function AuthProvider({ children }) {
         email: email,
         hikerId: profile.hiker_id,
         isTeamMember: true,
-        isAdmin: profile.role === 'admin',
-        accessStatus: 'approved',
+        isAdmin: profile.role === "admin",
+        accessStatus: "approved",
       };
     }
 
     // Not whitelisted - access pending/denied
     return {
-      name: email?.split('@')[0] || 'Visitor',
-      emoji: '🚫',
-      role: 'Access Pending',
+      name: email?.split("@")[0] || "Visitor",
+      emoji: "🚫",
+      role: "Access Pending",
       email: email,
       hikerId: null,
       isTeamMember: false,
       isAdmin: false,
-      accessStatus: 'pending',
+      accessStatus: "pending",
     };
   }, [user, profile]);
 
@@ -372,11 +391,7 @@ export function AuthProvider({ children }) {
     isAllowedEmail,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 AuthProvider.propTypes = {
