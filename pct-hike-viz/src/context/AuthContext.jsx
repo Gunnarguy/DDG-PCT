@@ -289,23 +289,40 @@ export function AuthProvider({ children }) {
       window.location.origin
     ).toString();
 
-    const { error: signInError } = await supabase.auth.signInWithOtp({
-      email: normalizedEmail,
-      options: {
-        emailRedirectTo: redirectUrl,
-        // Allow auto-creation for allowlisted emails.
-        // We still block non-allowlisted emails above, so this won't create random accounts.
-        shouldCreateUser: true,
-      },
+    // Add timeout protection to prevent infinite "Sending..." state
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(
+        () => reject(new Error("Request timed out after 15 seconds")),
+        15000
+      );
     });
 
-    if (signInError) {
-      const raw = signInError.message || "Login failed.";
+    try {
+      const { error: signInError } = await Promise.race([
+        supabase.auth.signInWithOtp({
+          email: normalizedEmail,
+          options: {
+            emailRedirectTo: redirectUrl,
+            // Allow auto-creation for allowlisted emails.
+            // We still block non-allowlisted emails above, so this won't create random accounts.
+            shouldCreateUser: true,
+          },
+        }),
+        timeoutPromise,
+      ]);
+
+      if (signInError) {
+        const raw = signInError.message || "Login failed.";
+        setError(raw);
+        return { success: false, error: raw };
+      }
+
+      return { success: true, message: "Check your email for the magic link!" };
+    } catch (error) {
+      const raw = error.message || "Connection failed. Please try again.";
       setError(raw);
       return { success: false, error: raw };
     }
-
-    return { success: true, message: "Check your email for the magic link!" };
   };
 
   /**
@@ -313,23 +330,41 @@ export function AuthProvider({ children }) {
    */
   const signInWithGoogle = async () => {
     setError(null);
-    const { error: signInError } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        // Match Pages deploy base path in production.
-        redirectTo: new URL(
-          import.meta.env.BASE_URL || "/",
-          window.location.origin
-        ).toString(),
-      },
+
+    // Add timeout protection
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(
+        () => reject(new Error("Request timed out after 15 seconds")),
+        15000
+      );
     });
 
-    if (signInError) {
-      setError(signInError.message);
-      return { success: false, error: signInError.message };
-    }
+    try {
+      const { error: signInError } = await Promise.race([
+        supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            // Match Pages deploy base path in production.
+            redirectTo: new URL(
+              import.meta.env.BASE_URL || "/",
+              window.location.origin
+            ).toString(),
+          },
+        }),
+        timeoutPromise,
+      ]);
 
-    return { success: true };
+      if (signInError) {
+        setError(signInError.message);
+        return { success: false, error: signInError.message };
+      }
+
+      return { success: true };
+    } catch (error) {
+      const raw = error.message || "Connection failed. Please try again.";
+      setError(raw);
+      return { success: false, error: raw };
+    }
   };
 
   /**
@@ -337,16 +372,33 @@ export function AuthProvider({ children }) {
    */
   const signOut = async () => {
     setError(null);
-    const { error: signOutError } = await supabase.auth.signOut();
 
-    if (signOutError) {
-      setError(signOutError.message);
-      return { success: false, error: signOutError.message };
+    // Add timeout protection
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Sign out timed out")), 10000);
+    });
+
+    try {
+      const { error: signOutError } = await Promise.race([
+        supabase.auth.signOut(),
+        timeoutPromise,
+      ]);
+
+      if (signOutError) {
+        setError(signOutError.message);
+        return { success: false, error: signOutError.message };
+      }
+
+      setUser(null);
+      setProfile(null);
+      return { success: true };
+    } catch (error) {
+      // Even if sign out fails server-side, clear local state
+      setUser(null);
+      setProfile(null);
+      console.warn("Sign out timed out, cleared local state anyway:", error);
+      return { success: true };
     }
-
-    setUser(null);
-    setProfile(null);
-    return { success: true };
   };
 
   /**
