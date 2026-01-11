@@ -1,6 +1,6 @@
 /**
  * Supabase Client Configuration
- * 
+ *
  * Provides authenticated access to DDG-PCT backend services:
  * - Team authentication (Dan, Drew, Gunnar)
  * - Gear loadout sync
@@ -170,16 +170,16 @@ export const getTeamProfile = async () => {
   if (!session) return null;
 
   const { data, error } = await supabase
-    .from('ddg_team_profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
+    .from("ddg_team_profiles")
+    .select("*")
+    .eq("id", session.user.id)
+    .maybeSingle();
 
   if (error) {
-    console.warn('Profile fetch error:', error);
+    console.warn("Profile fetch error:", error);
     return null;
   }
-  return data;
+  return data; // Returns null if no profile exists, which is fine
 };
 
 export default supabase;
