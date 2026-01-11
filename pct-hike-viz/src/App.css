@@ -5670,21 +5670,33 @@
 /* === LANDSCAPE PHONE === */
 @media (max-width: 767px) and (orientation: landscape) {
   .app-shell {
-    flex-direction: row;
+    flex-direction: row !important;
+    height: 100vh;
+    overflow: hidden;
   }
 
   .map-column {
-    height: 100vh;
+    height: 100vh !important;
     width: 50%;
     max-height: none;
+    min-height: 100vh;
+    flex: 0 0 50%;
+  }
+
+  .map-column .map-panel {
+    height: 100vh !important;
+    min-height: 100vh;
+    max-height: 100vh;
   }
 
   .sidebar {
     width: 50% !important;
     height: 100vh;
+    min-height: 100vh;
     overflow-y: auto;
     border-top: none;
     border-left: 1px solid var(--sand-200);
+    flex: 0 0 50%;
   }
 }
 
