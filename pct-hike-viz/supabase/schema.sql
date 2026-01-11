@@ -8,13 +8,13 @@ create table if not exists ops_logs (
   context_id text not null,
   user_name text not null,
   content text not null,
-  type text default 'NOTE' check (type in ('NOTE','TASK','ALERT')),
-  status text default 'OPEN' check (status in ('OPEN','IN_PROGRESS','DONE'))
+  type text default 'NOTE' not null check (type in ('NOTE','TASK','ALERT')),
+  status text check (status is null or status in ('OPEN','IN_PROGRESS','DONE'))
 );
 
 -- Backfill status column if migrating an existing table
 alter table if exists ops_logs
-  add column if not exists status text default 'OPEN' check (status in ('OPEN','IN_PROGRESS','DONE'));
+  add column if not exists status text check (status is null or status in ('OPEN','IN_PROGRESS','DONE'));
 
 -- Gear loadouts per hiker
 create table if not exists gear_loadouts (

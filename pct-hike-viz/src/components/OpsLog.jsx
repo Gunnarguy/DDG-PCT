@@ -39,19 +39,34 @@ function OpsLog({ contextId = 'general', userName }) {
         return;
       }
       setIsLoading(true);
-      const { data, error } = await supabase
-        .from('ops_logs')
-        .select('*')
-        .eq('context_id', contextId)
-        .order('created_at', { ascending: true });
+      
+      // Add timeout protection to prevent infinite loading
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Loading history timed out after 10 seconds')), 10000);
+      });
 
-      if (error) {
-        setLogError(error);
-      } else if (data) {
-        setLogs(data.map(normalizeEntry));
-        setLogError(null);
+      try {
+        const { data, error } = await Promise.race([
+          supabase
+            .from('ops_logs')
+            .select('*')
+            .eq('context_id', contextId)
+            .order('created_at', { ascending: true }),
+          timeoutPromise,
+        ]);
+
+        if (error) {
+          setLogError(error);
+        } else if (data) {
+          setLogs(data.map(normalizeEntry));
+          setLogError(null);
+        }
+      } catch (err) {
+        console.error('OpsLog fetch error:', err);
+        setLogError(err);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     fetchLogs();
@@ -105,19 +120,27 @@ function OpsLog({ contextId = 'general', userName }) {
 
     setIsSubmitting(true);
     try {
-      const { data, error } = await supabase
-        .from('ops_logs')
-        .insert([
-          {
-            context_id: contextId,
-            user_name: userName,
-            content: trimmed,
-            type: classification.type,
-            status: classification.status
-          }
-        ])
-        .select()
-        .single();
+      // Add timeout protection to prevent infinite "Sending…" state
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Message send timed out after 10 seconds')), 10000);
+      });
+
+      const { data, error } = await Promise.race([
+        supabase
+          .from('ops_logs')
+          .insert([
+            {
+              context_id: contextId,
+              user_name: userName,
+              content: trimmed,
+              type: classification.type,
+              status: classification.status
+            }
+          ])
+          .select()
+          .single(),
+        timeoutPromise,
+      ]);
 
       if (error) {
         console.error('OpsLog insert error:', error);
