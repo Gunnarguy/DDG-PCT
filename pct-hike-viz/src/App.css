@@ -5017,8 +5017,7 @@
     flex-direction: column;
     height: auto;
     min-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: visible;
   }
 
     /* Map takes less vertical space in portrait */
@@ -5043,11 +5042,11 @@
     max-width: 100%;
     min-width: unset;
     height: auto;
-    min-height: 50vh;
     border-left: none;
     border-top: 1px solid var(--sand-200);
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
     padding: 1rem 1rem 2rem;
+    overflow: visible;
   }
 
   /* Horizontal scrolling tabs */
