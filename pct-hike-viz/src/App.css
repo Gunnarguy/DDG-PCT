@@ -5010,9 +5010,9 @@
    - lg: 1024+ (desktop)
    ───────────────────────────────────────────────────────────────────────────── */
 
-/* === TABLET AND BELOW (< 1024px) === */
-@media (max-width: 1023px) {
-  /* Stack layout vertically */
+/* === PORTRAIT: TABLET AND BELOW (< 1024px) === */
+@media (max-width: 1023px) and (orientation: portrait) {
+  /* Stack layout vertically in portrait */
   .app-shell {
     flex-direction: column;
     height: auto;
@@ -5021,7 +5021,7 @@
     overflow-x: hidden;
   }
 
-  /* Map takes less vertical space */
+    /* Map takes less vertical space in portrait */
   .map-column {
     --map-panel-min: min(35dvh, 320px);
     height: auto;
@@ -5113,9 +5113,49 @@
   }
 }
 
-/* === PHONE (< 768px) === */
-@media (max-width: 767px) {
-  /* Even smaller map */
+/* === LANDSCAPE: ALL MOBILE/TABLET (< 1024px) === */
+@media (max-width: 1023px) and (orientation: landscape) {
+
+  /* Force side-by-side layout in landscape */
+  .app-shell {
+    flex-direction: row !important;
+    height: 100vh;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Map takes left 50% */
+  .map-column {
+    width: 50% !important;
+    height: 100vh !important;
+    min-height: 100vh;
+    max-height: 100vh;
+    flex: 0 0 50%;
+  }
+
+  .map-column .map-panel {
+    height: 100vh !important;
+    min-height: 100vh;
+    max-height: 100vh;
+  }
+
+  /* Sidebar takes right 50% */
+  .sidebar {
+    width: 50% !important;
+    height: 100vh !important;
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+    border-top: none !important;
+    border-left: 1px solid var(--sand-200);
+    padding: 1rem 1.25rem 2rem;
+    flex: 0 0 50%;
+  }
+}
+
+/* === PORTRAIT: PHONE (< 768px) === */
+@media (max-width: 767px) and (orientation: portrait) {
+  /* Even smaller map in portrait phone */
   .map-column {
     --map-panel-min: 240px;
     height: auto;
@@ -5682,7 +5722,7 @@
     min-height: 100vh;
       flex: 0 0 50%;
     }
-    
+
     .map-column .map-panel {
       height: 100vh !important;
       min-height: 100vh;
@@ -5691,19 +5731,13 @@
 
   .sidebar {
     width: 50% !important;
-    height: 100vh;
+    height: 100vh !important;
     min-height: 100vh;
+    max-height: 100vh;
     overflow-y: auto;
-    border-top: none;
+    border-top: none !important;
     border-left: 1px solid var(--sand-200);
-    flex: 0 0 50%;
-  }
-}
-
-/* === TOUCH-SPECIFIC ENHANCEMENTS === */
-@media (hover: none) and (pointer: coarse) {
-  /* Remove hover effects that don't work on touch */
-  .rpg-item-row:hover {
+    padding: 1rem 1.25rem 2rem;
     transform: none;
     box-shadow: none;
   }
