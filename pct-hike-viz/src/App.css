@@ -5712,20 +5712,20 @@
     display: flex !important;
     flex-direction: row !important;
     height: 100vh !important;
-    width: 100vw !important;
-    overflow: hidden !important;
-    position: fixed !important;
-    top: 0;
-    left: 0;
+      width: 100vw !important;
+      overflow: hidden !important;
+      position: fixed !important;
+      top: 0;
+      left: 0;
   }
 
   .map-column {
     width: 50% !important;
     height: 100vh !important;
     max-height: 100vh !important;
-    flex: 0 0 50% !important;
-    overflow: hidden !important;
-    position: relative !important;
+      flex: 0 0 50% !important;
+      overflow: hidden !important;
+      position: relative !important;
   }
 
   .map-column .map-panel {
@@ -5738,7 +5738,7 @@
     width: 50% !important;
     height: 100vh !important;
     max-height: 100vh !important;
-    flex: 0 0 50% !important;
+      flex: 0 0 50% !important;
     overflow-y: scroll !important;
     overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch !important;
