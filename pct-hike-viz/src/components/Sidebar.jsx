@@ -1341,7 +1341,6 @@ function Sidebar({
     <aside className="sidebar" style={style}>
       {/* Identity Switcher - Controls who you're posting as in Comms */}
       <div className="identity-section">
-        <span className="identity-label-text">Posting as:</span>
         <div
           className="identity-switcher"
           role="group"

@@ -402,6 +402,8 @@
   background: linear-gradient(180deg, #fff 0%, #faf8f3 100%);
   border-left: 1px solid var(--sand-200);
   box-shadow: -24px 0 50px rgba(46, 55, 77, 0.08);
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
@@ -5347,7 +5349,7 @@
       font-size: 0.9rem;
       line-height: 1.5;
     }
-    
+
     .maplibregl-popup-close-button {
       width: 28px;
       height: 28px;
@@ -5450,7 +5452,7 @@
       height: 44px !important;
       font-size: 18px;
     }
-    
+
     .maplibregl-ctrl-icon {
       background-size: 20px 20px;
   }
@@ -5629,7 +5631,7 @@
     min-height: 44px;
     padding: 0.65rem 1rem;
     }
-    
+
     input[type="text"],
     input[type="email"],
     input[type="number"],
@@ -5639,7 +5641,7 @@
       font-size: 16px;
       padding: 0.65rem 0.75rem;
     }
-    
+
     a {
       min-height: 44px;
       display: inline-flex;
