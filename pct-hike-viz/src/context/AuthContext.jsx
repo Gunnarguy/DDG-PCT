@@ -251,8 +251,7 @@ export function AuthProvider({ children }) {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, [fetchProfile]);
-  }, [fetchProfile, fetchTeamRoster]);
+  }, [fetchProfile, fetchTeamRoster, supabaseReady]);
 
   // Poll roster periodically while authenticated
   useEffect(() => {
@@ -353,10 +352,6 @@ export function AuthProvider({ children }) {
   /**
    * Get display info for current user
    */
-  const getDisplayInfo = useCallback(() => {
-    if (!user) return null;
-
-
   const syncStatus = useMemo(() => {
     if (!supabaseReady) return "offline";
     if (loading) return "syncing";
@@ -364,6 +359,10 @@ export function AuthProvider({ children }) {
     if (user) return "synced";
     return "unauthenticated";
   }, [supabaseReady, loading, error, user]);
+
+  const getDisplayInfo = useCallback(() => {
+    if (!user) return null;
+
     const email = user.email;
     const isAllowed = isAllowedEmail(email);
     const hikerId = getHikerIdFromEmail(email);
