@@ -97,6 +97,15 @@ insert into gear_loadouts (hiker_id, item_ids)
 values ('dan','[]'),('drew','[]'),('gunnar','[]')
 on conflict (hiker_id) do nothing;
 
+-- Seed allowed emails for DDG team
+insert into allowed_emails (email, hiker_id, name)
+values 
+  ('smileyguy@aol.com', 'dan', 'Dan'),
+  ('andrew.d.hostetler@gmail.com', 'drew', 'Drew'),
+  ('gunnarguy@me.com', 'gunnar', 'Gunnar'),
+  ('gunnarguy@aol.com', 'gunnar', 'Gunnar')
+on conflict (email) do nothing;
+
 -- Enable RLS (required for PostgREST + realtime). Policies below are permissive for anon key
 -- so the current open-access behavior is preserved while silencing Supabase warnings.
 alter table ops_logs enable row level security;
