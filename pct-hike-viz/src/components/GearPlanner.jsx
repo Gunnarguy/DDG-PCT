@@ -366,17 +366,35 @@ function GearPlanner({ data, currentUser }) {
       return;
     }
 
-    const { error } = await supabase.from('gear_loadouts').upsert({
-      hiker_id: hikerId,
-      item_ids: Array.from(nextSet),
-      updated_at: new Date().toISOString()
+    // Add timeout protection
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Gear save timed out after 10 seconds')), 10000);
     });
-    if (error) {
-      setSyncError(error);
+
+    try {
+      const { error } = await Promise.race([
+        supabase.from('gear_loadouts').upsert({
+          hiker_id: hikerId,
+          item_ids: Array.from(nextSet),
+          updated_at: new Date().toISOString()
+        }),
+        timeoutPromise,
+      ]);
+
+      if (error) {
+        console.error(`Gear save error for ${hikerId}:`, error);
+        setSyncError(error);
+        // rollback
+        setLoadouts((prev) => ({ ...prev, [hikerId]: new Set(previousSet) }));
+      } else {
+        console.log(`✅ Saved gear for ${hikerId}: ${nextSet.size} items`);
+        setSyncError(null);
+      }
+    } catch (err) {
+      console.error(`Gear save exception for ${hikerId}:`, err);
+      setSyncError(err);
       // rollback
       setLoadouts((prev) => ({ ...prev, [hikerId]: new Set(previousSet) }));
-    } else {
-      setSyncError(null);
     }
   };
 
