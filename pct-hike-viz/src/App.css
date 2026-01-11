@@ -437,15 +437,31 @@
   display: flex;
   gap: 0.5rem;
   flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  padding-bottom: 2px;
+}
+
+.identity-switcher::-webkit-scrollbar {
+  height: 4px;
+}
+
+.identity-switcher::-webkit-scrollbar-thumb {
+  background: var(--sand-300);
+  border-radius: 999px;
+}
+
+.identity-chip {
+  flex-shrink: 0;
 }
 
 @media (max-width: 767px) {
   .identity-switcher {
     width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     scroll-snap-type: x proximity;
     padding-bottom: 0.25rem;
@@ -459,7 +475,6 @@
   }
 
   .identity-chip {
-    flex-shrink: 0;
     scroll-snap-align: start;
   }
 }
@@ -476,6 +491,8 @@
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--ink-500);
+  min-height: 44px;
+  touch-action: manipulation;
 }
 
 .identity-chip:hover {
@@ -5004,18 +5021,18 @@
 
   /* Map takes less vertical space */
   .map-column {
-    --map-panel-min: min(50dvh, 340px);
+    --map-panel-min: min(35dvh, 320px);
     height: auto;
-    min-height: 340px;
+    min-height: 280px;
     max-height: none;
     width: 100%;
     flex: 0 0 auto;
   }
 
   .map-column .map-panel {
-    height: 50dvh;
-    min-height: 280px;
-    max-height: 400px;
+    height: 35dvh;
+    min-height: 260px;
+    max-height: 380px;
   }
 
   /* Sidebar becomes full-width scrollable */
@@ -5098,16 +5115,16 @@
 @media (max-width: 767px) {
   /* Even smaller map */
   .map-column {
-    --map-panel-min: 260px;
+    --map-panel-min: 240px;
     height: auto;
-    min-height: 260px;
+    min-height: 240px;
     max-height: none;
   }
 
   .map-column .map-panel {
-    height: 45dvh;
-    min-height: 240px;
-    max-height: 360px;
+    height: 30dvh;
+    min-height: 220px;
+    max-height: 320px;
   }
 
   /* Compact sidebar */
