@@ -5709,44 +5709,50 @@
 /* === LANDSCAPE PHONE === */
 @media (max-width: 767px) and (orientation: landscape) {
   .app-shell {
+    display: flex !important;
     flex-direction: row !important;
-    height: 100vh;
-    overflow: visible;
-    position: relative;
+    height: 100vh !important;
+    width: 100vw !important;
+    overflow: hidden !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
   }
 
   .map-column {
+    width: 50% !important;
     height: 100vh !important;
-    width: 50%;
-    max-height: 100vh;
-    min-height: 100vh;
-    flex: 0 0 50%;
-    overflow: hidden;
+    max-height: 100vh !important;
+    flex: 0 0 50% !important;
+    overflow: hidden !important;
+    position: relative !important;
   }
 
   .map-column .map-panel {
+    width: 100% !important;
     height: 100vh !important;
-    min-height: 100vh;
-    max-height: 100vh;
+    position: relative !important;
   }
 
   .sidebar {
     width: 50% !important;
     height: 100vh !important;
-    max-height: 100vh;
+    max-height: 100vh !important;
+    flex: 0 0 50% !important;
     overflow-y: scroll !important;
     overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: contain !important;
     border-top: none !important;
     border-left: 1px solid var(--sand-200);
     padding: 1rem 1.25rem calc(2rem + env(safe-area-inset-bottom));
-    flex: 0 0 50%;
-    position: relative;
+    position: relative !important;
   }
 
   /* Ensure sections inside sidebar can expand */
   .sidebar__sections {
     min-height: auto;
+    display: block;
   }
 }
 
