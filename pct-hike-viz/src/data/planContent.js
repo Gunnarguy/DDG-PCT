@@ -429,6 +429,24 @@ export const packPlanner = {
           sourceIds: ['wv-2017-log', 'reddit-shakedown-2025', 'halfway-anywhere']
         },
         {
+          id: 'grayl',
+          name: 'Grayl water purifier bottle',
+          detail: 'Press-to-purify water bottle with built-in filter. Removes viruses, bacteria, and protozoa. Great backup/camp option.',
+          weight: '0.7 lb',
+          specs: ['Viral protection', 'Press-to-filter', '16oz capacity'],
+          defaultPacked: false,
+          sourceIds: ['reddit-shakedown-2025']
+        },
+        {
+          id: 'water-tabs',
+          name: 'Water treatment tablets (backup)',
+          detail: 'Chemical purification tablets for emergency backup when filters fail. Lightweight insurance policy.',
+          weight: '0.1 lb',
+          specs: ['Chlorine dioxide or iodine', '20+ treatments'],
+          defaultPacked: false,
+          sourceIds: ['pcta-resupply']
+        },
+        {
           id: 'dirty-bag',
           name: 'Dirty water bag (2L, wide-mouth)',
           detail: 'Collapsible dirty-water collection bag for filtering. Wide-mouth + tough seams matter more than brand.',
@@ -470,6 +488,36 @@ export const packPlanner = {
           weight: '0.1 lb',
           defaultPacked: true,
           sourceIds: []
+        },
+        {
+          id: 'tuna-packets',
+          name: 'Tuna/chicken packets',
+          detail: 'Shelf-stable protein packets. Dad swears by these—worked for him last time. Pack 2-3 per day for reliable protein.',
+          weightBucket: 'consumable',
+          weight: '0.2 lb',
+          specs: ['High protein', 'No refrigeration needed', 'Dad-approved'],
+          defaultPacked: false,
+          sourceIds: ['bikehikesafari-resupply', 'longdistancehiker-resupply']
+        },
+        {
+          id: 'protein-bars',
+          name: 'High-protein bars',
+          detail: 'Dense protein bars for quick calories. 15-20g protein per bar. Pack multiple per day.',
+          weightBucket: 'consumable',
+          weight: '0.3 lb',
+          specs: ['15-20g protein', 'Dense calories'],
+          defaultPacked: false,
+          sourceIds: ['reddit-shakedown-2025', 'halfway-anywhere']
+        },
+        {
+          id: 'jerky',
+          name: 'Beef/turkey jerky',
+          detail: 'Lightweight dried meat for trail snacking. High protein, low moisture. Lasts forever in a pack.',
+          weightBucket: 'consumable',
+          weight: '0.2 lb',
+          specs: ['Dried meat', 'Long shelf life'],
+          defaultPacked: false,
+          sourceIds: ['bikehikesafari-resupply']
         }
       ]
     },
