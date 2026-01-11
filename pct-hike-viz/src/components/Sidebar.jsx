@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   connectivityZones,
   getSignalBadgeClass,
@@ -65,6 +65,8 @@ const SATELLITE_SECTION_CONFIG = [
 
 function Sidebar({
   style,
+  syncStatus,
+  teamRoster,
   waterSources,
   waterSourceMeta,
   scheduleOptions,
@@ -129,6 +131,52 @@ function Sidebar({
   const basePlanMiles = stats?.totalMiles ?? tripStats.totalMiles;
   const fullSectionMiles = stats?.fullSectionMiles;
   const timelineRangeMiles = stats?.connectivityRangeMiles || 90;
+
+  const presenceRow = useMemo(() => {
+    const hasRoster = Array.isArray(teamRoster) && teamRoster.length > 0;
+    if (!syncStatus && !hasRoster) return null;
+
+    const statusLabel =
+      syncStatus === "synced"
+        ? "Synced"
+        : syncStatus === "syncing"
+        ? "Syncing…"
+        : "Offline";
+    const statusColor =
+      syncStatus === "synced"
+        ? "#16a34a"
+        : syncStatus === "syncing"
+        ? "#ca8a04"
+        : "#ef4444";
+
+    return (
+      <div className="presence-row">
+        <div
+          className="presence-status"
+          title={`Data sync status: ${statusLabel}`}
+        >
+          <span
+            className="presence-dot"
+            style={{ backgroundColor: statusColor }}
+          />
+          <span className="presence-text">{statusLabel}</span>
+        </div>
+        {hasRoster && (
+          <div className="presence-avatars" title="Currently online">
+            {teamRoster.map((member) => (
+              <div
+                key={member.id}
+                className="presence-avatar"
+                aria-label={member.name || member.email}
+              >
+                {(member.name || member.email || "?").charAt(0).toUpperCase()}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }, [syncStatus, teamRoster]);
 
   const liveStatusCopy = {
     idle: "Awaiting Apple live feed…",
@@ -1320,6 +1368,8 @@ function Sidebar({
         </div>
       </div>
 
+      {presenceRow}
+
       <nav
         ref={tabsRef}
         className="sidebar__tabs"
@@ -1352,6 +1402,17 @@ function Sidebar({
 
 Sidebar.propTypes = {
   style: PropTypes.object,
+  syncStatus: PropTypes.string,
+  teamRoster: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      email: PropTypes.string,
+      name: PropTypes.string,
+      role: PropTypes.string,
+      last_seen: PropTypes.string,
+      hiker_id: PropTypes.string,
+    })
+  ),
   waterSources: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,

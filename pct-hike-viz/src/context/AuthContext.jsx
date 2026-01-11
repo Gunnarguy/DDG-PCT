@@ -11,6 +11,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import {
@@ -47,6 +48,7 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [teamRoster, setTeamRoster] = useState([]);
 
   // Fetch team profile when user changes
   const fetchProfile = useCallback(async (authUser) => {
@@ -185,6 +187,25 @@ export function AuthProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Fetch team roster for presence display (team members only)
+  const fetchTeamRoster = useCallback(async () => {
+    if (!supabaseReady || !user) {
+      setTeamRoster([]);
+      return;
+    }
+
+    const { data, error: rosterError } = await supabase
+      .from("ddg_team_profiles")
+      .select("id, email, name, role, last_seen, hiker_id");
+
+    if (rosterError) {
+      console.warn("Failed to fetch team roster", rosterError);
+      return;
+    }
+
+    setTeamRoster(data ?? []);
+  }, [supabaseReady, user]);
+
   // Listen for auth state changes
   useEffect(() => {
     let mounted = true;
@@ -219,6 +240,9 @@ export function AuthProvider({ children }) {
             .update({ last_seen: new Date().toISOString() })
             .eq("id", session.user.id)
             .then(() => {});
+
+          // Refresh roster after a successful sign-in so presence shows quickly
+          fetchTeamRoster();
         }
       }
     });
@@ -228,6 +252,16 @@ export function AuthProvider({ children }) {
       subscription.unsubscribe();
     };
   }, [fetchProfile]);
+  }, [fetchProfile, fetchTeamRoster]);
+
+  // Poll roster periodically while authenticated
+  useEffect(() => {
+    if (!user || !supabaseReady) return undefined;
+
+    fetchTeamRoster();
+    const id = setInterval(fetchTeamRoster, 60_000);
+    return () => clearInterval(id);
+  }, [user, supabaseReady, fetchTeamRoster]);
 
   /**
    * Sign in with magic link (email)
@@ -322,6 +356,14 @@ export function AuthProvider({ children }) {
   const getDisplayInfo = useCallback(() => {
     if (!user) return null;
 
+
+  const syncStatus = useMemo(() => {
+    if (!supabaseReady) return "offline";
+    if (loading) return "syncing";
+    if (error) return "error";
+    if (user) return "synced";
+    return "unauthenticated";
+  }, [supabaseReady, loading, error, user]);
     const email = user.email;
     const isAllowed = isAllowedEmail(email);
     const hikerId = getHikerIdFromEmail(email);
@@ -379,6 +421,8 @@ export function AuthProvider({ children }) {
     isAuthenticated: !!user,
     isTeamMember: !!user && isAllowedEmail(user?.email),
     isAdmin: !!user && isAdminEmail(user?.email),
+    syncStatus,
+    teamRoster,
 
     // Methods
     signInWithEmail,

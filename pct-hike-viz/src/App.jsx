@@ -274,6 +274,7 @@ function MapLoadingFallback() {
 function App() {
   const [popupInfo, setPopupInfo] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState("topo");
+    const { syncStatus, teamRoster } = useAuth();
   // Fetch hike data from public/data at runtime
   const [hikeData, setHikeData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -594,6 +595,8 @@ function App() {
 
       <Sidebar
         style={{ width: sidebarSize }}
+        syncStatus={syncStatus}
+        teamRoster={teamRoster}
         waterSources={waterSources}
         waterSourceMeta={waterSourceMeta}
         scheduleOptions={scheduleOptions}
