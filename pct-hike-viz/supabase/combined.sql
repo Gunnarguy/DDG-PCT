@@ -99,7 +99,7 @@ on conflict (hiker_id) do nothing;
 
 -- Seed allowed emails for DDG team
 insert into allowed_emails (email, hiker_id, name)
-values 
+values
   ('smileyguy@aol.com', 'dan', 'Dan'),
   ('andrew.d.hostetler@gmail.com', 'drew', 'Drew'),
   ('gunnarguy@me.com', 'gunnar', 'Gunnar'),
