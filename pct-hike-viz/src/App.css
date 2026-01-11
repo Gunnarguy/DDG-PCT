@@ -28,6 +28,11 @@
   transition: background 0.2s ease;
 }
 
+@media (max-width: 1023px) {
+  .resize-handle {
+    display: none;
+  }
+}
 .resize-handle:hover,
 .resize-handle.dragging {
   background: linear-gradient(90deg, transparent, rgba(52, 104, 85, 0.15), transparent);
@@ -412,6 +417,13 @@
   border-bottom: 1px solid var(--sand-200);
 }
 
+@media (max-width: 767px) {
+  .identity-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
 .identity-label-text {
   font-size: 0.75rem;
   font-weight: 600;
@@ -427,6 +439,30 @@
   flex: 1;
 }
 
+@media (max-width: 767px) {
+  .identity-switcher {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+    padding-bottom: 0.25rem;
+    margin: 0 -0.75rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .identity-switcher::-webkit-scrollbar {
+    display: none;
+  }
+
+  .identity-chip {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+}
 .identity-chip {
   display: flex;
   align-items: center;
@@ -462,6 +498,82 @@
   font-weight: 600;
 }
 
+/* Presence row - sync status and avatars */
+.presence-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--sand-50);
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--sand-200);
+}
+
+.presence-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.presence-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sand-400);
+}
+
+.presence-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink-600);
+}
+
+.presence-avatars {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.presence-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--pine-100);
+  color: var(--pine-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 767px) {
+  .presence-row {
+    padding: 0.5rem 0.65rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .presence-text {
+    font-size: 0.75rem;
+  }
+
+  .presence-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 479px) {
+  .presence-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
 .sidebar__tabs {
   position: sticky;
   top: 0;
@@ -476,6 +588,8 @@
   background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0));
   padding-bottom: 0.75rem;
   margin-bottom: 1.5rem;
+  scroll-behavior: smooth;
+    overscroll-behavior-x: contain;
 }
 
 .sidebar__tabs::-webkit-scrollbar {
@@ -498,6 +612,10 @@
   transition: all 0.2s ease;
   flex: 0 0 auto;
   white-space: nowrap;
+  min-height: 44px;
+    display: flex;
+    align-items: center;
+    touch-action: manipulation;
 }
 
 .tab-btn.is-active {
@@ -4884,11 +5002,6 @@
     overflow-x: hidden;
   }
 
-  /* Hide resize handle on touch */
-  .resize-handle {
-    display: none;
-  }
-
   /* Map takes less vertical space */
   .map-column {
     --map-panel-min: min(50dvh, 340px);
@@ -4929,6 +5042,7 @@
     margin: 0 -1rem 1rem;
     padding-left: 1rem;
     padding-right: 1rem;
+    scroll-snap-type: x proximity;
   }
 
   .sidebar__tabs::-webkit-scrollbar {
@@ -4939,17 +5053,22 @@
     flex-shrink: 0;
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
+    scroll-snap-align: start;
   }
 
   /* Elevation profile adjustments */
   .elevation-profile-shell {
     padding: 0.75rem 1rem;
+    touch-action: pan-y pinch-zoom;
   }
 
   .elevation-profile-title {
     font-size: 0.85rem;
   }
 
+        .elevation-profile-shell svg {
+          touch-action: none;
+        }
   /* Cards need breathing room */
   .sidebar-card {
     padding: 1rem;
@@ -5206,9 +5325,20 @@
 
   /* Popups on map */
   .maplibregl-popup-content {
-    padding: 0.75rem;
-    max-width: 280px;
-    font-size: 0.85rem;
+    padding: 0.875rem;
+      max-width: 90vw;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    
+    .maplibregl-popup-close-button {
+      width: 28px;
+      height: 28px;
+      font-size: 20px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
   }
 
   /* Map HUD mobile - collapsible */
@@ -5299,8 +5429,13 @@
   }
 
   .maplibregl-ctrl-group button {
-    width: 36px !important;
-    height: 36px !important;
+    width: 44px !important;
+      height: 44px !important;
+      font-size: 18px;
+    }
+    
+    .maplibregl-ctrl-icon {
+      background-size: 20px 20px;
   }
 }
 
@@ -5471,11 +5606,27 @@
   }
 
   /* Buttons min touch size */
-    button,
+        button:not(.tab-btn):not(.identity-chip),
   .btn,
   [role="button"] {
     min-height: 44px;
-    min-width: 44px;
+    padding: 0.65rem 1rem;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    textarea,
+    select {
+      min-height: 44px;
+      font-size: 16px;
+      padding: 0.65rem 0.75rem;
+    }
+    
+    a {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
   }
 
   /* Custom item form */
@@ -5549,9 +5700,16 @@
   /* Scroll momentum */
   .sidebar,
   .sidebar__tabs,
-  .inventory-list {
+    .inventory-list,
+    .identity-switcher {
     -webkit-overflow-scrolling: touch;
   }
+/* Prevent text selection during fast scrolls */
+.sidebar__tabs,
+.identity-switcher {
+  -webkit-user-select: none;
+  user-select: none;
+}
 }
 
 /* === SAFE AREA INSETS (notch, home indicator) === */
