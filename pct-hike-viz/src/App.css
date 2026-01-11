@@ -5733,12 +5733,13 @@
     height: 100vh !important;
     min-height: 100vh;
     max-height: 100vh;
-    overflow-y: auto;
+    overflow-y: scroll !important;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     border-top: none !important;
     border-left: 1px solid var(--sand-200);
     padding: 1rem 1.25rem 2rem;
-    transform: none;
-    box-shadow: none;
+    flex: 0 0 50%;
   }
 
   /* Add active states instead */
