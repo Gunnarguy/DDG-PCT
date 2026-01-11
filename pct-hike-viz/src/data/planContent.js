@@ -323,849 +323,994 @@ export const gearBlueprint = {
 // trip reports, and official guidance. This powers the GearPlanner component.
 // ═══════════════════════════════════════════════════════════════════════════════
 export const packPlanner = {
-  packName: 'DDG Mission Loadout',
+  packName: "DDG Mission Loadout",
   capacityLiters: 60,
   baseWeightGoalLbs: 20,
   consumablesStartLbs: 10,
-  summary: 'Comfort-first hauler for Section O—capable of carrying big water loads per Wilderness Vagabond beta.',
+  summary:
+    "Comfort-first hauler for Section O—capable of carrying big water loads per Wilderness Vagabond beta.",
   modules: [
     {
-      id: 'shelter-sleep',
-      label: 'Shelter + Sleep',
+      id: "shelter-sleep",
+      label: "Shelter + Sleep",
       weightLbs: 6.0,
       volumeLiters: 18,
-      readiness: 'locked',
-      focus: 'Storm-ready kit for late-summer NorCal weather volatility.',
-      sourceIds: ['doc-day-plan', 'wv-2017-log', 'adventurehacks-guide'],
+      readiness: "locked",
+      focus: "Storm-ready kit for late-summer NorCal weather volatility.",
+      sourceIds: ["doc-day-plan", "wv-2017-log", "adventurehacks-guide"],
       items: [
         {
-          id: 'tent',
-          name: '1-person backpacking tent',
-          detail: 'Ultralight tent that sets up with trekking poles or on its own. Keeps you dry in rain and blocks wind.',
-          weight: '1.5 lb',
-          specs: ['1P', '3-season', 'Wind + rain capable'],
+          id: "tent",
+          name: "1-person backpacking tent",
+          detail:
+            "Ultralight tent that sets up with trekking poles or on its own. Keeps you dry in rain and blocks wind.",
+          weight: "1.5 lb",
+          specs: ["1P", "3-season", "Wind + rain capable"],
           defaultPacked: true,
-          sourceIds: ['doc-day-plan', 'reddit-gear-recs']
+          sourceIds: ["doc-day-plan", "reddit-gear-recs"],
         },
         {
-          id: 'quilt',
-          name: 'Sleeping bag/quilt (rated to 20°F)',
-          detail: 'Lightweight down blanket that wraps around you like a sleeping bag. Keeps you warm on cold mountain nights.',
-          weight: '1.4 lb',
-          specs: ['20°F rating', 'Compressible', 'Sleep comfort priority'],
+          id: "quilt",
+          name: "Sleeping bag/quilt (rated to 20°F)",
+          detail:
+            "Lightweight down blanket that wraps around you like a sleeping bag. Keeps you warm on cold mountain nights.",
+          weight: "1.4 lb",
+          specs: ["20°F rating", "Compressible", "Sleep comfort priority"],
           defaultPacked: true,
-          sourceIds: ['reddit-gear-recs', 'reddit-shakedown-2025']
+          sourceIds: ["reddit-gear-recs", "reddit-shakedown-2025"],
         },
         {
-          id: 'pad',
-          name: 'Inflatable sleeping pad',
-          detail: 'Air mattress for sleeping outdoors—cushions you from rocks and insulates from cold ground. Packs small.',
-          weight: '0.9 lb',
-          specs: ['Insulated', 'Packs small'],
+          id: "pad",
+          name: "Inflatable sleeping pad",
+          detail:
+            "Air mattress for sleeping outdoors—cushions you from rocks and insulates from cold ground. Packs small.",
+          weight: "0.9 lb",
+          specs: ["Insulated", "Packs small"],
           defaultPacked: true,
-          sourceIds: ['reddit-gear-recs']
+          sourceIds: ["reddit-gear-recs"],
         },
         {
-          id: 'pillow',
-          name: 'Inflatable camp pillow',
-          detail: 'Small inflatable pillow for better sleep. Optional comfort item—some hikers just use a stuffed jacket instead.',
-          weight: '0.2 lb',
+          id: "pillow",
+          name: "Inflatable camp pillow",
+          detail:
+            "Small inflatable pillow for better sleep. Optional comfort item—some hikers just use a stuffed jacket instead.",
+          weight: "0.2 lb",
           defaultPacked: false,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'groundsheet',
-          name: 'Thin plastic groundsheet',
-          detail: 'Sheet of plastic that goes under your tent to protect it from sharp rocks and moisture.',
-          weight: '0.1 lb',
+          id: "groundsheet",
+          name: "Thin plastic groundsheet",
+          detail:
+            "Sheet of plastic that goes under your tent to protect it from sharp rocks and moisture.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['norcal-hiking-castle-crags']
-        }
-      ]
+          sourceIds: ["norcal-hiking-castle-crags"],
+        },
+      ],
     },
     {
-      id: 'kitchen-hydration',
-      label: 'Kitchen + Hydration',
+      id: "kitchen-hydration",
+      label: "Kitchen + Hydration",
       weightLbs: 4.0,
       volumeLiters: 10,
-      readiness: 'dialing in',
-      focus: 'Water carry capacity for Hat Creek Rim stretches per Wilderness Vagabond.',
-      sourceIds: ['doc-water-hat-creek', 'wv-2017-log', 'halfway-anywhere'],
+      readiness: "dialing in",
+      focus:
+        "Water carry capacity for Hat Creek Rim stretches per Wilderness Vagabond.",
+      sourceIds: ["doc-water-hat-creek", "wv-2017-log", "halfway-anywhere"],
       items: [
         {
-          id: 'stove',
-          name: 'Lightweight canister stove (threaded, wind-tolerant)',
-          detail: 'Threaded canister stove for fast boils in breezy conditions. Target ~2–4 oz stove weight. CA Campfire Permit required (even for stoves).',
-          weight: '0.2 lb',
-          specs: ['Threaded canister', 'Wind-tolerant', '~2–4 oz target'],
+          id: "stove",
+          name: "Lightweight canister stove (threaded, wind-tolerant)",
+          detail:
+            "Threaded canister stove for fast boils in breezy conditions. Target ~2–4 oz stove weight. CA Campfire Permit required (even for stoves).",
+          weight: "0.2 lb",
+          specs: ["Threaded canister", "Wind-tolerant", "~2–4 oz target"],
           defaultPacked: true,
-          sourceIds: ['permit-pcta-campfire', 'doc-permits-overview']
+          sourceIds: ["permit-pcta-campfire", "doc-permits-overview"],
         },
         {
-          id: 'pot',
-          name: 'Small cooking pot (750ml)',
-          detail: 'Lightweight metal pot for boiling water and cooking meals. Holds about 3 cups—enough for one person.',
-          weight: '0.3 lb',
+          id: "pot",
+          name: "Small cooking pot (750ml)",
+          detail:
+            "Lightweight metal pot for boiling water and cooking meals. Holds about 3 cups—enough for one person.",
+          weight: "0.3 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'fuel',
-          name: 'Small fuel canister (isobutane 100g)',
-          detail: 'Fuel for the canister stove; roughly 4 days of hot meals.',
-          weightBucket: 'consumable',
-          weight: '0.4 lb',
-          specs: ['100g class', 'Consumable'],
+          id: "fuel",
+          name: "Small fuel canister (isobutane 100g)",
+          detail: "Fuel for the canister stove; roughly 4 days of hot meals.",
+          weightBucket: "consumable",
+          weight: "0.4 lb",
+          specs: ["100g class", "Consumable"],
           defaultPacked: true,
-          sourceIds: ['bikehikesafari-resupply', 'longdistancehiker-resupply']
+          sourceIds: ["bikehikesafari-resupply", "longdistancehiker-resupply"],
         },
         {
-          id: 'filter',
-          name: 'Water filter (squeeze-style, 0.1µm)',
-          detail: 'Squeeze-style hollow-fiber filter for streams. Prioritize a field-backflushable design to keep flow rate up.',
-          weight: '0.2 lb',
-          specs: ['0.1µm', 'Field-backflushable'],
+          id: "filter",
+          name: "Water filter (squeeze-style, 0.1µm)",
+          detail:
+            "Squeeze-style hollow-fiber filter for streams. Prioritize a field-backflushable design to keep flow rate up.",
+          weight: "0.2 lb",
+          specs: ["0.1µm", "Field-backflushable"],
           defaultPacked: true,
-          sourceIds: ['wv-2017-log', 'reddit-shakedown-2025', 'halfway-anywhere']
+          sourceIds: [
+            "wv-2017-log",
+            "reddit-shakedown-2025",
+            "halfway-anywhere",
+          ],
         },
         {
-          id: 'grayl',
-          name: 'Grayl water purifier bottle',
-          detail: 'Press-to-purify water bottle with built-in filter. Removes viruses, bacteria, and protozoa. Great backup/camp option.',
-          weight: '0.7 lb',
-          specs: ['Viral protection', 'Press-to-filter', '16oz capacity'],
+          id: "grayl",
+          name: "Grayl water purifier bottle",
+          detail:
+            "Press-to-purify water bottle with built-in filter. Removes viruses, bacteria, and protozoa. Great backup/camp option.",
+          weight: "0.7 lb",
+          specs: ["Viral protection", "Press-to-filter", "16oz capacity"],
           defaultPacked: false,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: [
+            "reddit-shakedown-2025",
+            "wv-2017-log",
+            "trailhiker-section-o",
+          ],
         },
         {
-          id: 'water-tabs',
-          name: 'Water treatment tablets (backup)',
-          detail: 'Chemical purification tablets for emergency backup when filters fail. Lightweight insurance policy.',
-          weight: '0.1 lb',
-          specs: ['Chlorine dioxide or iodine', '20+ treatments'],
+          id: "water-tabs",
+          name: "Water treatment tablets (backup)",
+          detail:
+            "Chemical purification tablets for emergency backup when filters fail. Lightweight insurance policy.",
+          weight: "0.1 lb",
+          specs: ["Chlorine dioxide or iodine", "20+ treatments"],
           defaultPacked: false,
-          sourceIds: ['pcta-resupply']
+          sourceIds: [
+            "pcta-resupply",
+            "doc-water-hat-creek",
+            "trailhiker-section-o",
+          ],
         },
         {
-          id: 'dirty-bag',
-          name: 'Dirty water bag (2L, wide-mouth)',
-          detail: 'Collapsible dirty-water collection bag for filtering. Wide-mouth + tough seams matter more than brand.',
-          weight: '0.2 lb',
-          specs: ['2L', 'Wide-mouth'],
+          id: "dirty-bag",
+          name: "Dirty water bag (2L, wide-mouth)",
+          detail:
+            "Collapsible dirty-water collection bag for filtering. Wide-mouth + tough seams matter more than brand.",
+          weight: "0.2 lb",
+          specs: ["2L", "Wide-mouth"],
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'smartwater',
-          name: 'Water bottle (1L)',
-          detail: 'Lightweight plastic drink bottle used as your main water carry. Pack three 1-liter bottles for 3L baseline capacity.',
+          id: "smartwater",
+          name: "Water bottle (1L)",
+          detail:
+            "Lightweight plastic drink bottle used as your main water carry. Pack three 1-liter bottles for 3L baseline capacity.",
           qty: 3,
-          weight: '0.3 lb',
-          specs: ['3L total capacity', 'Distributed carry'],
+          weight: "0.3 lb",
+          specs: ["3L total capacity", "Distributed carry"],
           defaultPacked: true,
-          sourceIds: ['doc-transport-dunsmuir', 'pcta-resupply', 'erin-exploring-resupply']
+          sourceIds: [
+            "doc-transport-dunsmuir",
+            "pcta-resupply",
+            "erin-exploring-resupply",
+          ],
         },
         {
-          id: 'platypus',
-          name: 'Extra collapsible water bag (2L)',
-          detail: 'Soft bag that rolls up when empty. Use for extra water capacity when crossing long dry stretches.',
-          weight: '0.2 lb',
+          id: "platypus",
+          name: "Extra collapsible water bag (2L)",
+          detail:
+            "Soft bag that rolls up when empty. Use for extra water capacity when crossing long dry stretches.",
+          weight: "0.2 lb",
           defaultPacked: false,
-          sourceIds: ['wv-2017-log', 'doc-water-hat-creek']
+          sourceIds: ["wv-2017-log", "doc-water-hat-creek"],
         },
         {
-          id: 'bear-hang',
-          name: 'Bear-proof food bag + rope',
-          detail: 'Special bag and rope to hang your food from a tree at night. Keeps bears from eating your supplies.',
-          weight: '0.8 lb',
+          id: "bear-hang",
+          name: "Bear-proof food bag + rope",
+          detail:
+            "Special bag and rope to hang your food from a tree at night. Keeps bears from eating your supplies.",
+          weight: "0.8 lb",
           defaultPacked: true,
-          sourceIds: ['doc-day-plan', 'norcal-hiking-castle-crags', 'usfs-castle-crags']
+          sourceIds: [
+            "doc-day-plan",
+            "norcal-hiking-castle-crags",
+            "usfs-castle-crags",
+          ],
         },
         {
-          id: 'spork',
-          name: 'Long-handled spoon',
-          detail: 'Long spoon to eat out of deep food bags. Lightweight metal version lasts forever.',
-          weight: '0.1 lb',
+          id: "spork",
+          name: "Long-handled spoon",
+          detail:
+            "Long spoon to eat out of deep food bags. Lightweight metal version lasts forever.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: []
+          sourceIds: [],
         },
         {
-          id: 'tuna-packets',
-          name: 'Tuna/chicken packets',
-          detail: 'Shelf-stable protein packets. Dad swears by these—worked for him last time. Pack 2-3 per day for reliable protein.',
-          weightBucket: 'consumable',
-          weight: '0.2 lb',
-          specs: ['High protein', 'No refrigeration needed', 'Dad-approved'],
+          id: "tuna-packets",
+          name: "Tuna/chicken packets",
+          detail:
+            "Shelf-stable protein packets. Dad swears by these—worked for him last time. Pack 2-3 per day for reliable protein.",
+          weightBucket: "consumable",
+          weight: "0.2 lb",
+          specs: ["High protein", "No refrigeration needed", "Dad-approved"],
           defaultPacked: false,
-          sourceIds: ['bikehikesafari-resupply', 'longdistancehiker-resupply']
+          sourceIds: [
+            "bikehikesafari-resupply",
+            "longdistancehiker-resupply",
+            "doc-detox-trip",
+            "wv-2017-log",
+          ],
         },
         {
-          id: 'protein-bars',
-          name: 'High-protein bars',
-          detail: 'Dense protein bars for quick calories. 15-20g protein per bar. Pack multiple per day.',
-          weightBucket: 'consumable',
-          weight: '0.3 lb',
-          specs: ['15-20g protein', 'Dense calories'],
+          id: "protein-bars",
+          name: "High-protein bars",
+          detail:
+            "Dense protein bars for quick calories. 15-20g protein per bar. Pack multiple per day.",
+          weightBucket: "consumable",
+          weight: "0.3 lb",
+          specs: ["15-20g protein", "Dense calories"],
           defaultPacked: false,
-          sourceIds: ['reddit-shakedown-2025', 'halfway-anywhere']
+          sourceIds: [
+            "reddit-shakedown-2025",
+            "halfway-anywhere",
+            "trailhiker-section-o",
+            "adventurehacks-guide",
+          ],
         },
         {
-          id: 'jerky',
-          name: 'Beef/turkey jerky',
-          detail: 'Lightweight dried meat for trail snacking. High protein, low moisture. Lasts forever in a pack.',
-          weightBucket: 'consumable',
-          weight: '0.2 lb',
-          specs: ['Dried meat', 'Long shelf life'],
+          id: "jerky",
+          name: "Beef/turkey jerky",
+          detail:
+            "Lightweight dried meat for trail snacking. High protein, low moisture. Lasts forever in a pack.",
+          weightBucket: "consumable",
+          weight: "0.2 lb",
+          specs: ["Dried meat", "Long shelf life"],
           defaultPacked: false,
-          sourceIds: ['bikehikesafari-resupply']
-        }
-      ]
+          sourceIds: ["bikehikesafari-resupply", "wv-2017-log", "doc-day-plan"],
+        },
+      ],
     },
     {
-      id: 'nav-tech',
-      label: 'Navigation + Tech',
+      id: "nav-tech",
+      label: "Navigation + Tech",
       weightLbs: 3.0,
       volumeLiters: 6,
-      readiness: 'in-progress',
-      focus: 'Comms and navigation redundancy for 70+ mile no-service stretch.',
-      sourceIds: ['doc-day-plan', 'farout-pct', 'onxmaps-section-n'],
+      readiness: "in-progress",
+      focus: "Comms and navigation redundancy for 70+ mile no-service stretch.",
+      sourceIds: ["doc-day-plan", "farout-pct", "onxmaps-section-n"],
       items: [
         {
-          id: 'inreach',
-          name: 'Satellite messenger (2-way + SOS)',
-          detail: '2-way satellite messaging for check-ins when there\'s no cell service, plus SOS capability for emergencies. Subscription + battery management are part of the "weight" here.',
-          weight: '0.2 lb',
-          specs: ['2-way messaging', 'SOS', 'Battery plan'],
+          id: "inreach",
+          name: "Satellite messenger (2-way + SOS)",
+          detail:
+            '2-way satellite messaging for check-ins when there\'s no cell service, plus SOS capability for emergencies. Subscription + battery management are part of the "weight" here.',
+          weight: "0.2 lb",
+          specs: ["2-way messaging", "SOS", "Battery plan"],
           defaultPacked: true,
-          sourceIds: ['doc-day-plan', 'reddit-norcal-tips']
+          sourceIds: ["doc-day-plan", "reddit-norcal-tips"],
         },
         {
-          id: 'phone',
-          name: 'Smartphone with downloaded maps',
-          detail: 'Your phone with trail maps downloaded for offline use. Works even without cell service.',
-          weight: '0.5 lb',
+          id: "phone",
+          name: "Smartphone with downloaded maps",
+          detail:
+            "Your phone with trail maps downloaded for offline use. Works even without cell service.",
+          weight: "0.5 lb",
           defaultPacked: true,
-          sourceIds: ['farout-pct', 'onxmaps-section-n', 'hiiker-norcal']
+          sourceIds: ["farout-pct", "onxmaps-section-n", "hiiker-norcal"],
         },
         {
-          id: 'power-bank',
-          name: 'Portable battery charger (10,000mAh)',
-          detail: 'Rechargeable battery pack to charge your phone and devices. Lasts about 6 days if you\'re careful.',
-          weight: '0.3 lb',
-          specs: ['10,000mAh class', 'USB-C preferred'],
+          id: "power-bank",
+          name: "Portable battery charger (10,000mAh)",
+          detail:
+            "Rechargeable battery pack to charge your phone and devices. Lasts about 6 days if you're careful.",
+          weight: "0.3 lb",
+          specs: ["10,000mAh class", "USB-C preferred"],
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025', 'doc-detox-trip']
+          sourceIds: ["reddit-shakedown-2025", "doc-detox-trip"],
         },
         {
-          id: 'cables',
-          name: 'Charging cables',
-          detail: 'Cables to charge your phone and satellite messenger from the battery pack.',
-          weight: '0.1 lb',
+          id: "cables",
+          name: "Charging cables",
+          detail:
+            "Cables to charge your phone and satellite messenger from the battery pack.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'headlamp',
-          name: 'Rechargeable headlamp (red mode)',
-          detail: 'Hands-free light with red mode for camp. Aim for USB-rechargeable, a low-power setting for long nights, and a real lockout so it doesn\'t turn on in the pack.',
-          weight: '0.1 lb',
-          specs: ['Red mode', 'USB-rechargeable', 'Lockout'],
+          id: "headlamp",
+          name: "Rechargeable headlamp (red mode)",
+          detail:
+            "Hands-free light with red mode for camp. Aim for USB-rechargeable, a low-power setting for long nights, and a real lockout so it doesn't turn on in the pack.",
+          weight: "0.1 lb",
+          specs: ["Red mode", "USB-rechargeable", "Lockout"],
           defaultPacked: true,
-          sourceIds: ['reddit-gear-recs']
+          sourceIds: ["reddit-gear-recs"],
         },
         {
-          id: 'backup-nav',
-          name: 'Paper map + compass',
-          detail: 'Old-school backup navigation in case electronics die. Print trail maps before the trip.',
-          weight: '0.1 lb',
+          id: "backup-nav",
+          name: "Paper map + compass",
+          detail:
+            "Old-school backup navigation in case electronics die. Print trail maps before the trip.",
+          weight: "0.1 lb",
           defaultPacked: false,
-          sourceIds: ['doc-day-plan', 'farout-pct', 'backpackers-section']
+          sourceIds: ["doc-day-plan", "farout-pct", "backpackers-section"],
         },
         {
-          id: 'watch',
-          name: 'GPS watch (optional)',
-          detail: 'Wristwatch with built-in GPS that tracks your route and shows elevation. Nice backup but not essential.',
-          weight: '0.2 lb',
+          id: "watch",
+          name: "GPS watch (optional)",
+          detail:
+            "Wristwatch with built-in GPS that tracks your route and shows elevation. Nice backup but not essential.",
+          weight: "0.2 lb",
           defaultPacked: false,
-          sourceIds: []
-        }
-      ]
+          sourceIds: [],
+        },
+      ],
     },
     {
-      id: 'layers-fuel',
-      label: 'Layers + Fuel Buffer',
+      id: "layers-fuel",
+      label: "Layers + Fuel Buffer",
       weightLbs: 5.0,
       volumeLiters: 12,
-      readiness: 'dialing in',
-      focus: 'Prepared for rain, bugs, and dramatic temperature swings per Adventure Hacks.',
-      sourceIds: ['adventurehacks-guide', 'reddit-gear-recs', 'wv-2017-log'],
+      readiness: "dialing in",
+      focus:
+        "Prepared for rain, bugs, and dramatic temperature swings per Adventure Hacks.",
+      sourceIds: ["adventurehacks-guide", "reddit-gear-recs", "wv-2017-log"],
       items: [
         {
-          id: 'rain-jacket',
-          name: 'Lightweight rain jacket',
-          detail: 'Waterproof jacket that packs small. Storms can pop up suddenly in the mountains.',
-          weight: '0.5 lb',
+          id: "rain-jacket",
+          name: "Lightweight rain jacket",
+          detail:
+            "Waterproof jacket that packs small. Storms can pop up suddenly in the mountains.",
+          weight: "0.5 lb",
           defaultPacked: true,
-          sourceIds: ['adventurehacks-guide', 'reddit-gear-recs', 'reddit-shakedown-2025']
+          sourceIds: [
+            "adventurehacks-guide",
+            "reddit-gear-recs",
+            "reddit-shakedown-2025",
+          ],
         },
         {
-          id: 'wind-pants',
-          name: 'Rain pants or rain skirt',
-          detail: 'Waterproof lower-body layer. Rain skirts are lighter; rain pants offer more coverage.',
-          weight: '0.3 lb',
+          id: "wind-pants",
+          name: "Rain pants or rain skirt",
+          detail:
+            "Waterproof lower-body layer. Rain skirts are lighter; rain pants offer more coverage.",
+          weight: "0.3 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025', 'reddit-gear-recs']
+          sourceIds: ["reddit-shakedown-2025", "reddit-gear-recs"],
         },
         {
-          id: 'sun-hoodie',
-          name: 'Long-sleeve sun shirt with hood',
-          detail: 'Thin breathable shirt that protects from sunburn and also helps block ticks and poison oak.',
-          weightBucket: 'worn',
-          weight: '0.4 lb',
+          id: "sun-hoodie",
+          name: "Long-sleeve sun shirt with hood",
+          detail:
+            "Thin breathable shirt that protects from sunburn and also helps block ticks and poison oak.",
+          weightBucket: "worn",
+          weight: "0.4 lb",
           defaultPacked: true,
-          sourceIds: ['adventurehacks-guide', 'reddit-gear-recs', 'wv-2017-log']
+          sourceIds: [
+            "adventurehacks-guide",
+            "reddit-gear-recs",
+            "wv-2017-log",
+          ],
         },
         {
-          id: 'base-layer',
-          name: 'Warm long-sleeve undershirt (wool or synthetic)',
-          detail: 'Thin warm layer to wear under your jacket. Wool stays warm even when damp and doesn\'t get stinky.',
-          weight: '0.4 lb',
+          id: "base-layer",
+          name: "Warm long-sleeve undershirt (wool or synthetic)",
+          detail:
+            "Thin warm layer to wear under your jacket. Wool stays warm even when damp and doesn't get stinky.",
+          weight: "0.4 lb",
           defaultPacked: true,
-          sourceIds: ['doc-day-plan', 'reddit-gear-recs']
+          sourceIds: ["doc-day-plan", "reddit-gear-recs"],
         },
         {
-          id: 'puffy',
-          name: 'Insulated down jacket',
-          detail: 'Puffy jacket filled with down feathers. Super warm and compresses small. Essential for cold camp evenings.',
-          weight: '0.6 lb',
+          id: "puffy",
+          name: "Insulated down jacket",
+          detail:
+            "Puffy jacket filled with down feathers. Super warm and compresses small. Essential for cold camp evenings.",
+          weight: "0.6 lb",
           defaultPacked: true,
-          sourceIds: ['adventurehacks-guide']
+          sourceIds: ["adventurehacks-guide"],
         },
         {
-          id: 'hiking-pants',
-          name: 'Zip-off hiking pants',
-          detail: 'Long pants that convert to shorts by unzipping the legs. Protects from ticks and brush.',
-          weightBucket: 'worn',
-          weight: '0.5 lb',
+          id: "hiking-pants",
+          name: "Zip-off hiking pants",
+          detail:
+            "Long pants that convert to shorts by unzipping the legs. Protects from ticks and brush.",
+          weightBucket: "worn",
+          weight: "0.5 lb",
           defaultPacked: true,
-          sourceIds: ['adventurehacks-guide', 'reddit-gear-recs']
+          sourceIds: ["adventurehacks-guide", "reddit-gear-recs"],
         },
         {
-          id: 'socks',
-          name: 'Hiking socks',
-          detail: 'Wool hiking socks with cushioning. Rotate daily to prevent blisters. Wool dries fast and fights odor.',
+          id: "socks",
+          name: "Hiking socks",
+          detail:
+            "Wool hiking socks with cushioning. Rotate daily to prevent blisters. Wool dries fast and fights odor.",
           qty: 3,
           weightEachLbs: 0.1,
-          weightBucket: 'worn',
-          weight: '0.3 lb',
-          specs: ['3 pairs', 'Wool/synthetic'],
+          weightBucket: "worn",
+          weight: "0.3 lb",
+          specs: ["3 pairs", "Wool/synthetic"],
           defaultPacked: true,
-          sourceIds: ['doc-day-plan', 'reddit-gear-recs', 'wv-2017-log']
+          sourceIds: ["doc-day-plan", "reddit-gear-recs", "wv-2017-log"],
         },
         {
-          id: 'gaiters',
-          name: 'Ankle gaiters',
-          detail: 'Fabric sleeves that cover the gap between your shoe and pants to keep rocks and dirt out.',
-          weightBucket: 'worn',
-          weight: '0.1 lb',
+          id: "gaiters",
+          name: "Ankle gaiters",
+          detail:
+            "Fabric sleeves that cover the gap between your shoe and pants to keep rocks and dirt out.",
+          weightBucket: "worn",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['norcal-hiking-castle-crags']
+          sourceIds: ["norcal-hiking-castle-crags"],
         },
         {
-          id: 'hat',
-          name: 'Wide-brim sun hat',
-          detail: 'Hat with a brim all around to shade your face, ears, and neck from intense mountain sun.',
-          weightBucket: 'worn',
-          weight: '0.2 lb',
+          id: "hat",
+          name: "Wide-brim sun hat",
+          detail:
+            "Hat with a brim all around to shade your face, ears, and neck from intense mountain sun.",
+          weightBucket: "worn",
+          weight: "0.2 lb",
           defaultPacked: true,
-          sourceIds: ['adventurehacks-guide', 'reddit-gear-recs']
+          sourceIds: ["adventurehacks-guide", "reddit-gear-recs"],
         },
         {
-          id: 'buff',
-          name: 'Neck tube (bandana alternative)',
-          detail: 'Stretchy fabric tube you wear around your neck. Pull it up to cover your face from sun or dust.',
-          weightBucket: 'worn',
-          weight: '0.1 lb',
+          id: "buff",
+          name: "Neck tube (bandana alternative)",
+          detail:
+            "Stretchy fabric tube you wear around your neck. Pull it up to cover your face from sun or dust.",
+          weightBucket: "worn",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: []
+          sourceIds: [],
         },
         {
-          id: 'gloves',
-          name: 'Thin fleece gloves',
-          detail: 'Lightweight gloves for chilly mornings. Optional but nice when breaking camp in the cold.',
-          weight: '0.1 lb',
+          id: "gloves",
+          name: "Thin fleece gloves",
+          detail:
+            "Lightweight gloves for chilly mornings. Optional but nice when breaking camp in the cold.",
+          weight: "0.1 lb",
           defaultPacked: false,
-          sourceIds: ['reddit-gear-recs']
+          sourceIds: ["reddit-gear-recs"],
         },
         {
-          id: 'camp-shoes',
-          name: 'Lightweight sandals or camp shoes',
-          detail: 'Something easy to slip on at camp so your feet can rest after hiking all day. Optional luxury item.',
-          weight: '0.4 lb',
+          id: "camp-shoes",
+          name: "Lightweight sandals or camp shoes",
+          detail:
+            "Something easy to slip on at camp so your feet can rest after hiking all day. Optional luxury item.",
+          weight: "0.4 lb",
           defaultPacked: false,
-          sourceIds: ['doc-day-plan', 'reddit-shakedown-2025']
-        }
-      ]
+          sourceIds: ["doc-day-plan", "reddit-shakedown-2025"],
+        },
+      ],
     },
     {
-      id: 'safety-hygiene',
-      label: 'Safety + Hygiene',
+      id: "safety-hygiene",
+      label: "Safety + Hygiene",
       weightLbs: 2.0,
       volumeLiters: 4,
-      readiness: 'in-progress',
-      focus: 'First aid, blister management, and backcountry hygiene per multiple trip reports.',
-      sourceIds: ['doc-day-plan', 'wv-2017-log', 'adventurehacks-guide'],
+      readiness: "in-progress",
+      focus:
+        "First aid, blister management, and backcountry hygiene per multiple trip reports.",
+      sourceIds: ["doc-day-plan", "wv-2017-log", "adventurehacks-guide"],
       items: [
         {
-          id: 'first-aid',
-          name: 'First aid kit',
-          detail: 'Basic medical supplies: bandages, blister pads, pain relievers (ibuprofen), allergy pills.',
-          weight: '0.5 lb',
+          id: "first-aid",
+          name: "First aid kit",
+          detail:
+            "Basic medical supplies: bandages, blister pads, pain relievers (ibuprofen), allergy pills.",
+          weight: "0.5 lb",
           defaultPacked: true,
-          sourceIds: ['doc-day-plan', 'wv-2017-log']
+          sourceIds: ["doc-day-plan", "wv-2017-log"],
         },
         {
-          id: 'leukotape',
-          name: 'High-adhesion medical tape for blisters',
-          detail: 'Super-sticky tape that stays on sweaty feet. Put it on "hot spots" BEFORE they become blisters. Test adhesion at home—some tapes fail when wet/sweaty.',
-          weight: '0.1 lb',
+          id: "leukotape",
+          name: "High-adhesion medical tape for blisters",
+          detail:
+            'Super-sticky tape that stays on sweaty feet. Put it on "hot spots" BEFORE they become blisters. Test adhesion at home—some tapes fail when wet/sweaty.',
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['doc-day-plan', 'reddit-gear-recs', 'wv-2017-log']
+          sourceIds: ["doc-day-plan", "reddit-gear-recs", "wv-2017-log"],
         },
         {
-          id: 'sunscreen',
-          name: 'Sunscreen (SPF 50+)',
-          detail: 'High-protection sunscreen. The sun is stronger at high elevations—you\'ll burn faster up there.',
-          weight: '0.2 lb',
+          id: "sunscreen",
+          name: "Sunscreen (SPF 50+)",
+          detail:
+            "High-protection sunscreen. The sun is stronger at high elevations—you'll burn faster up there.",
+          weight: "0.2 lb",
           defaultPacked: true,
-          sourceIds: ['adventurehacks-guide']
+          sourceIds: ["adventurehacks-guide"],
         },
         {
-          id: 'bug-spray',
-          name: 'Bug repellent (clothes treatment + skin spray)',
-          detail: 'Spray your clothes with permethrin at home (lasts weeks). Bring picaridin spray for your skin.',
-          weight: '0.2 lb',
+          id: "bug-spray",
+          name: "Bug repellent (clothes treatment + skin spray)",
+          detail:
+            "Spray your clothes with permethrin at home (lasts weeks). Bring picaridin spray for your skin.",
+          weight: "0.2 lb",
           defaultPacked: true,
-          sourceIds: ['adventurehacks-guide', 'reddit-norcal-tips']
+          sourceIds: ["adventurehacks-guide", "reddit-norcal-tips"],
         },
         {
-          id: 'trowel',
-          name: 'Small digging trowel',
-          detail: 'For digging holes when you need to go to the bathroom in the woods. Required wilderness practice.',
-          weight: '0.1 lb',
+          id: "trowel",
+          name: "Small digging trowel",
+          detail:
+            "For digging holes when you need to go to the bathroom in the woods. Required wilderness practice.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['usfs-castle-crags', 'parks-castle-crags']
+          sourceIds: ["usfs-castle-crags", "parks-castle-crags"],
         },
         {
-          id: 'tp-kit',
-          name: 'Toilet paper + hand sanitizer',
-          detail: 'Pack it in, pack it out. Bring a resealable odor-resistant bag for used TP.',
-          weight: '0.1 lb',
+          id: "tp-kit",
+          name: "Toilet paper + hand sanitizer",
+          detail:
+            "Pack it in, pack it out. Bring a resealable odor-resistant bag for used TP.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['wv-2017-log']
+          sourceIds: ["wv-2017-log"],
         },
         {
-          id: 'toothbrush',
-          name: 'Toothbrush + small toothpaste',
-          detail: 'Basic hygiene. A travel-size toothpaste tube is plenty for a week.',
-          weight: '0.1 lb',
+          id: "toothbrush",
+          name: "Toothbrush + small toothpaste",
+          detail:
+            "Basic hygiene. A travel-size toothpaste tube is plenty for a week.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: []
+          sourceIds: [],
         },
         {
-          id: 'whistle',
-          name: 'Emergency whistle',
-          detail: 'Loud whistle for signaling if you get lost or hurt. Three short blasts is the universal distress signal.',
-          weight: '0.0 lb',
+          id: "whistle",
+          name: "Emergency whistle",
+          detail:
+            "Loud whistle for signaling if you get lost or hurt. Three short blasts is the universal distress signal.",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: ['doc-day-plan']
+          sourceIds: ["doc-day-plan"],
         },
         {
-          id: 'knife',
-          name: 'Small pocket knife or multitool',
-          detail: 'Tiny knife for cutting tape, trimming moleskin, opening food packages, or fixing gear.',
-          weight: '0.1 lb',
+          id: "knife",
+          name: "Small pocket knife or multitool",
+          detail:
+            "Tiny knife for cutting tape, trimming moleskin, opening food packages, or fixing gear.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: []
-        }
-      ]
+          sourceIds: [],
+        },
+      ],
     },
     {
-      id: 'custom',
-      label: 'Custom',
+      id: "custom",
+      label: "Custom",
       weightLbs: 0,
       volumeLiters: 0,
-      readiness: 'flex',
-      focus: 'Personal additions, trip-specific items, or DDG special equipment.',
-      sourceIds: ['doc-day-plan', 'doc-detox-trip'],
+      readiness: "flex",
+      focus:
+        "Personal additions, trip-specific items, or DDG special equipment.",
+      sourceIds: ["doc-day-plan", "doc-detox-trip"],
       items: [
         {
-          id: 'camera',
-          name: 'Camera (optional)',
-          detail: 'For better photos than your phone. The sunrise at Vista Camp is spectacular.',
-          weight: '0.5 lb',
+          id: "camera",
+          name: "Camera (optional)",
+          detail:
+            "For better photos than your phone. The sunrise at Vista Camp is spectacular.",
+          weight: "0.5 lb",
           defaultPacked: false,
-          sourceIds: ['youtube-section-o', 'entranced-wilderness']
+          sourceIds: ["youtube-section-o", "entranced-wilderness"],
         },
         {
-          id: 'book',
-          name: 'Book or e-reader (optional)',
-          detail: 'Something to read at camp. Good for winding down and unplugging.',
-          weight: '0.3 lb',
+          id: "book",
+          name: "Book or e-reader (optional)",
+          detail:
+            "Something to read at camp. Good for winding down and unplugging.",
+          weight: "0.3 lb",
           defaultPacked: false,
-          sourceIds: ['doc-detox-trip']
+          sourceIds: ["doc-detox-trip"],
         },
         {
-          id: 'journal',
-          name: 'Small notebook + pen (optional)',
-          detail: 'Write down memories, thoughts, and trail notes. Nice keepsake from the trip.',
-          weight: '0.2 lb',
+          id: "journal",
+          name: "Small notebook + pen (optional)",
+          detail:
+            "Write down memories, thoughts, and trail notes. Nice keepsake from the trip.",
+          weight: "0.2 lb",
           defaultPacked: false,
-          sourceIds: ['doc-detox-trip', 'wv-2017-log']
+          sourceIds: ["doc-detox-trip", "wv-2017-log"],
         },
         {
-          id: 'trekking-poles',
-          name: 'Trekking pole',
-          detail: 'Adjustable hiking poles that save your knees on downhills and help balance on rough terrain. Highly recommended.',
+          id: "trekking-poles",
+          name: "Trekking pole",
+          detail:
+            "Adjustable hiking poles that save your knees on downhills and help balance on rough terrain. Highly recommended.",
           qty: 2,
-          weight: '0.8 lb',
+          weight: "0.8 lb",
           defaultPacked: true,
-          sourceIds: ['doc-day-plan', 'reddit-gear-recs']
+          sourceIds: ["doc-day-plan", "reddit-gear-recs"],
         },
         {
-          id: 'pack-liner',
-          name: 'Waterproof bag liner',
-          detail: 'Heavy-duty plastic bag that lines your backpack to keep everything dry if it rains.',
-          weight: '0.1 lb',
+          id: "pack-liner",
+          name: "Waterproof bag liner",
+          detail:
+            "Heavy-duty plastic bag that lines your backpack to keep everything dry if it rains.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'sit-pad',
-          name: 'Foam sit pad (optional)',
-          detail: 'Small foam square to sit on during breaks. Keeps your butt dry and insulated from cold ground.',
-          weight: '0.1 lb',
+          id: "sit-pad",
+          name: "Foam sit pad (optional)",
+          detail:
+            "Small foam square to sit on during breaks. Keeps your butt dry and insulated from cold ground.",
+          weight: "0.1 lb",
           defaultPacked: false,
-          sourceIds: []
+          sourceIds: [],
         },
         {
-          id: 'wallet',
-          name: 'Cash and credit cards',
-          detail: 'Money for buying food and supplies in town. Some small shops are cash-only.',
-          weight: '0.1 lb',
+          id: "wallet",
+          name: "Cash and credit cards",
+          detail:
+            "Money for buying food and supplies in town. Some small shops are cash-only.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['doc-transport-dunsmuir', 'unexpected-occurrence']
+          sourceIds: ["doc-transport-dunsmuir", "unexpected-occurrence"],
         },
         {
-          id: 'permits',
-          name: 'Printed permits (required!)',
-          detail: 'Your wilderness camping permit and California campfire permit. Each person needs their own copies.',
-          weight: '0.0 lb',
+          id: "permits",
+          name: "Printed permits (required!)",
+          detail:
+            "Your wilderness camping permit and California campfire permit. Each person needs their own copies.",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: ['doc-permits-overview', 'pcta-permits', 'permit-pcta-campfire', 'reddit-permits-ca']
-        }
-      ]
+          sourceIds: [
+            "doc-permits-overview",
+            "pcta-permits",
+            "permit-pcta-campfire",
+            "reddit-permits-ca",
+          ],
+        },
+      ],
     },
     {
-      id: 'secret-weapons',
-      label: 'Secret Weapons (The Nuance)',
+      id: "secret-weapons",
+      label: "Secret Weapons (The Nuance)",
       weightLbs: 1.5,
       volumeLiters: 2,
-      readiness: 'game-changers',
-      focus: 'The tiny things that make or break a trip. Experienced hikers know.',
-      sourceIds: ['reddit-shakedown-2025', 'reddit-gear-recs', 'wv-2017-log'],
+      readiness: "game-changers",
+      focus:
+        "The tiny things that make or break a trip. Experienced hikers know.",
+      sourceIds: ["reddit-shakedown-2025", "reddit-gear-recs", "wv-2017-log"],
       items: [
         {
-          id: 'earplugs',
-          name: 'Foam earplugs',
-          detail: 'Sleep through snoring tentmates, wind flapping your tent, and 5am bird concerts. $2 life-saver.',
+          id: "earplugs",
+          name: "Foam earplugs",
+          detail:
+            "Sleep through snoring tentmates, wind flapping your tent, and 5am bird concerts. $2 life-saver.",
           qty: 3,
-          weight: '0.0 lb',
-          specs: ['2–3 pairs'],
+          weight: "0.0 lb",
+          specs: ["2–3 pairs"],
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'sleep-mask',
-          name: 'Sleep mask',
-          detail: 'Blocks early sunrise (5:30am in summer) so you can actually sleep in. Game changer for recovery.',
-          weight: '0.0 lb',
+          id: "sleep-mask",
+          name: "Sleep mask",
+          detail:
+            "Blocks early sunrise (5:30am in summer) so you can actually sleep in. Game changer for recovery.",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-gear-recs']
+          sourceIds: ["reddit-gear-recs"],
         },
         {
-          id: 'mini-bic',
-          name: 'Mini lighter (backup ignition)',
-          detail: 'Backup for your stove igniter. They WILL fail. Costs $1, weighs nothing, saves dinner.',
-          weight: '0.0 lb',
+          id: "mini-bic",
+          name: "Mini lighter (backup ignition)",
+          detail:
+            "Backup for your stove igniter. They WILL fail. Costs $1, weighs nothing, saves dinner.",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'duct-tape',
-          name: 'Duct tape (wrapped around trekking pole)',
-          detail: 'Fixes torn gear, blisters (in emergencies), broken poles, ripped shoes. Wrap 3ft around your pole.',
-          weight: '0.0 lb',
+          id: "duct-tape",
+          name: "Duct tape (wrapped around trekking pole)",
+          detail:
+            "Fixes torn gear, blisters (in emergencies), broken poles, ripped shoes. Wrap 3ft around your pole.",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: ['wv-2017-log']
+          sourceIds: ["wv-2017-log"],
         },
         {
-          id: 'safety-pins',
-          name: 'Safety pins (3-4)',
-          detail: 'Hang wet socks on your pack while hiking. Fix zipper pulls. Attach stuff. Weighs nothing.',
-          weight: '0.0 lb',
+          id: "safety-pins",
+          name: "Safety pins (3-4)",
+          detail:
+            "Hang wet socks on your pack while hiking. Fix zipper pulls. Attach stuff. Weighs nothing.",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'ziplock-bags',
-          name: 'Resealable bags (assorted sizes)',
-          detail: 'Organize small items, protect phone from rain, store used TP, keep snacks fresh. Bring 5-6.',
-          weight: '0.1 lb',
+          id: "ziplock-bags",
+          name: "Resealable bags (assorted sizes)",
+          detail:
+            "Organize small items, protect phone from rain, store used TP, keep snacks fresh. Bring 5-6.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-gear-recs']
+          sourceIds: ["reddit-gear-recs"],
         },
         {
-          id: 'bandana',
-          name: 'Cotton bandana',
-          detail: 'Pot holder, sweat rag, pre-filter for silty water, napkin, signal flag, washcloth. One item, 20 uses.',
-          weight: '0.1 lb',
+          id: "bandana",
+          name: "Cotton bandana",
+          detail:
+            "Pot holder, sweat rag, pre-filter for silty water, napkin, signal flag, washcloth. One item, 20 uses.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['wv-2017-log']
+          sourceIds: ["wv-2017-log"],
         },
         {
-          id: 'aquaphor',
-          name: 'Skin barrier ointment (petrolatum-based)',
-          detail: 'Prevents chafing on thighs/underarms and helps cracked lips/dry hands. Choose something that won\'t leak and won\'t freeze into a brick overnight.',
-          weight: '0.1 lb',
+          id: "aquaphor",
+          name: "Skin barrier ointment (petrolatum-based)",
+          detail:
+            "Prevents chafing on thighs/underarms and helps cracked lips/dry hands. Choose something that won't leak and won't freeze into a brick overnight.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'body-glide',
-          name: 'Anti-chafe balm/stick',
-          detail: 'Rub on inner thighs, feet, anywhere that rubs. Choose a solid stick or tiny tin that won\'t explode in heat.',
-          weight: '0.1 lb',
+          id: "body-glide",
+          name: "Anti-chafe balm/stick",
+          detail:
+            "Rub on inner thighs, feet, anywhere that rubs. Choose a solid stick or tiny tin that won't explode in heat.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-gear-recs']
+          sourceIds: ["reddit-gear-recs"],
         },
         {
-          id: 'nail-clippers',
-          name: 'Tiny nail clippers',
-          detail: 'Long toenails + hiking = black toenails and lost nails. Trim before and during the trip.',
-          weight: '0.0 lb',
+          id: "nail-clippers",
+          name: "Tiny nail clippers",
+          detail:
+            "Long toenails + hiking = black toenails and lost nails. Trim before and during the trip.",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'tweezers',
-          name: 'Tweezers (pointed tip)',
-          detail: 'For splinters, thorns, and TICK REMOVAL. Section O has ticks. Check yourself daily.',
-          weight: '0.0 lb',
+          id: "tweezers",
+          name: "Tweezers (pointed tip)",
+          detail:
+            "For splinters, thorns, and TICK REMOVAL. Section O has ticks. Check yourself daily.",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: ['adventurehacks-guide']
+          sourceIds: ["adventurehacks-guide"],
         },
         {
-          id: 'spare-laces',
-          name: 'Spare shoelaces or paracord (3ft)',
-          detail: 'Laces break at the worst times. Paracord works as backup laces, clothesline, or gear repair.',
-          weight: '0.1 lb',
+          id: "spare-laces",
+          name: "Spare shoelaces or paracord (3ft)",
+          detail:
+            "Laces break at the worst times. Paracord works as backup laces, clothesline, or gear repair.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-gear-recs']
+          sourceIds: ["reddit-gear-recs"],
         },
         {
-          id: 'tenacious-tape',
-          name: 'Adhesive gear repair patches',
-          detail: 'Fixes holes in tents, sleeping pads, and jackets. Sticks even when wet. Bring 2-3 patches.',
-          weight: '0.0 lb',
+          id: "tenacious-tape",
+          name: "Adhesive gear repair patches",
+          detail:
+            "Fixes holes in tents, sleeping pads, and jackets. Sticks even when wet. Bring 2-3 patches.",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'seam-grip',
-          name: 'Flexible gear/shoe adhesive (tiny tube)',
-          detail: 'Glue for when your shoe sole starts peeling off (it happens). Look for a flexible urethane-style adhesive that bonds to rubber + fabric.',
-          weight: '0.1 lb',
+          id: "seam-grip",
+          name: "Flexible gear/shoe adhesive (tiny tube)",
+          detail:
+            "Glue for when your shoe sole starts peeling off (it happens). Look for a flexible urethane-style adhesive that bonds to rubber + fabric.",
+          weight: "0.1 lb",
           defaultPacked: false,
-          sourceIds: ['reddit-gear-recs']
+          sourceIds: ["reddit-gear-recs"],
         },
         {
-          id: 'cord-tensioners',
-          name: 'Guyline tensioners (if your tent needs them)',
-          detail: 'Tiny plastic clips that keep tent lines tight. Lose one and your tent flaps all night.',
-          weight: '0.0 lb',
+          id: "cord-tensioners",
+          name: "Guyline tensioners (if your tent needs them)",
+          detail:
+            "Tiny plastic clips that keep tent lines tight. Lose one and your tent flaps all night.",
+          weight: "0.0 lb",
           defaultPacked: false,
-          sourceIds: []
+          sourceIds: [],
         },
         {
-          id: 'electrolytes',
-          name: 'Electrolyte powder packets (6-10)',
-          detail: 'Add to water on hot days. Prevents muscle cramps and headaches from sweating out salts.',
-          weight: '0.2 lb',
+          id: "electrolytes",
+          name: "Electrolyte powder packets (6-10)",
+          detail:
+            "Add to water on hot days. Prevents muscle cramps and headaches from sweating out salts.",
+          weight: "0.2 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025', 'adventurehacks-guide']
+          sourceIds: ["reddit-shakedown-2025", "adventurehacks-guide"],
         },
         {
-          id: 'caffeine-pills',
-          name: 'Caffeine pills (optional)',
-          detail: 'Lighter than carrying coffee. One pill = one cup. Good for early morning starts without stove time.',
-          weight: '0.0 lb',
+          id: "caffeine-pills",
+          name: "Caffeine pills (optional)",
+          detail:
+            "Lighter than carrying coffee. One pill = one cup. Good for early morning starts without stove time.",
+          weight: "0.0 lb",
           defaultPacked: false,
-          sourceIds: ['reddit-gear-recs']
+          sourceIds: ["reddit-gear-recs"],
         },
         {
-          id: 'antihistamine',
-          name: 'Antihistamine tablets (4-6)',
-          detail: 'For allergic reactions to bee stings, plants, or unknown triggers. Pick a type you tolerate (some cause drowsiness).',
-          weight: '0.0 lb',
+          id: "antihistamine",
+          name: "Antihistamine tablets (4-6)",
+          detail:
+            "For allergic reactions to bee stings, plants, or unknown triggers. Pick a type you tolerate (some cause drowsiness).",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'imodium',
-          name: 'Anti-diarrheal tablets (loperamide)',
-          detail: 'Trail food + water changes = stomach issues. This stops them FAST. Do not skip this.',
-          weight: '0.0 lb',
+          id: "imodium",
+          name: "Anti-diarrheal tablets (loperamide)",
+          detail:
+            "Trail food + water changes = stomach issues. This stops them FAST. Do not skip this.",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-gear-recs', 'wv-2017-log']
+          sourceIds: ["reddit-gear-recs", "wv-2017-log"],
         },
         {
-          id: 'pepto-tabs',
-          name: 'Upset-stomach tablets (bismuth)',
-          detail: 'For nausea and upset stomach. Chewable tabs are easier than liquid. Stomach issues are common.',
-          weight: '0.0 lb',
+          id: "pepto-tabs",
+          name: "Upset-stomach tablets (bismuth)",
+          detail:
+            "For nausea and upset stomach. Chewable tabs are easier than liquid. Stomach issues are common.",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'mini-dropper',
-          name: 'Backup water treatment (chlorine dioxide)',
-          detail: 'If your filter clogs or breaks, you NEED a backup. Tablets weigh nothing. Bring 10+.',
-          weight: '0.1 lb',
+          id: "mini-dropper",
+          name: "Backup water treatment (chlorine dioxide)",
+          detail:
+            "If your filter clogs or breaks, you NEED a backup. Tablets weigh nothing. Bring 10+.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['wv-2017-log', 'reddit-gear-recs']
+          sourceIds: ["wv-2017-log", "reddit-gear-recs"],
         },
         {
-          id: 'sewing-kit',
-          name: 'Tiny sewing kit (needle + thread)',
-          detail: 'Fix torn clothes, backpack straps, or tent mesh. Dental floss works as strong thread.',
-          weight: '0.0 lb',
+          id: "sewing-kit",
+          name: "Tiny sewing kit (needle + thread)",
+          detail:
+            "Fix torn clothes, backpack straps, or tent mesh. Dental floss works as strong thread.",
+          weight: "0.0 lb",
           defaultPacked: false,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'head-net',
-          name: 'Bug head net',
-          detail: 'When mosquitoes are BAD, this is the only thing that works. Weighs ~1 oz, saves your sanity.',
-          weight: '0.1 lb',
+          id: "head-net",
+          name: "Bug head net",
+          detail:
+            "When mosquitoes are BAD, this is the only thing that works. Weighs ~1 oz, saves your sanity.",
+          weight: "0.1 lb",
           defaultPacked: false,
-          sourceIds: ['adventurehacks-guide']
+          sourceIds: ["adventurehacks-guide"],
         },
         {
-          id: 'sleep-socks',
-          name: 'Dedicated sleep socks (clean & dry)',
-          detail: 'Never hike in these. Keep them in your sleeping bag. Dry feet at night = warm feet = good sleep.',
-          weight: '0.1 lb',
+          id: "sleep-socks",
+          name: "Dedicated sleep socks (clean & dry)",
+          detail:
+            "Never hike in these. Keep them in your sleeping bag. Dry feet at night = warm feet = good sleep.",
+          weight: "0.1 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-gear-recs']
+          sourceIds: ["reddit-gear-recs"],
         },
         {
-          id: 'pee-rag',
-          name: 'Pee rag (for those who squat)',
-          detail: 'Bandana that clips to outside of pack to dry. Saves TP and is more sustainable. Antimicrobial ones exist.',
-          weight: '0.0 lb',
+          id: "pee-rag",
+          name: "Pee rag (for those who squat)",
+          detail:
+            "Bandana that clips to outside of pack to dry. Saves TP and is more sustainable. Antimicrobial ones exist.",
+          weight: "0.0 lb",
           defaultPacked: false,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'pee-bottle',
-          name: 'Wide-mouth bottle for night pee (optional)',
-          detail: 'Avoids leaving your tent at 2am in the cold. Label it clearly. Any wide-mouth sports drink bottle works.',
-          weight: '0.1 lb',
+          id: "pee-bottle",
+          name: "Wide-mouth bottle for night pee (optional)",
+          detail:
+            "Avoids leaving your tent at 2am in the cold. Label it clearly. Any wide-mouth sports drink bottle works.",
+          weight: "0.1 lb",
           defaultPacked: false,
-          sourceIds: ['reddit-gear-recs']
+          sourceIds: ["reddit-gear-recs"],
         },
         {
-          id: 'mini-carabiner',
-          name: 'Small carabiner (non-climbing)',
-          detail: 'Clip water bottles to your pack, hang stuff to dry, organize gear. Bring 2-3 tiny ones.',
-          weight: '0.0 lb',
+          id: "mini-carabiner",
+          name: "Small carabiner (non-climbing)",
+          detail:
+            "Clip water bottles to your pack, hang stuff to dry, organize gear. Bring 2-3 tiny ones.",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: []
+          sourceIds: [],
         },
         {
-          id: 'rubber-bands',
-          name: 'A few thick rubber bands',
-          detail: 'Secure rolled items, bundle trekking poles, keep bags closed. Stupid simple, surprisingly useful.',
-          weight: '0.0 lb',
+          id: "rubber-bands",
+          name: "A few thick rubber bands",
+          detail:
+            "Secure rolled items, bundle trekking poles, keep bags closed. Stupid simple, surprisingly useful.",
+          weight: "0.0 lb",
           defaultPacked: true,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'mirrror',
-          name: 'Tiny signal mirror or compact mirror',
-          detail: 'Check for ticks in hard-to-see places. Signal for help in emergencies. Doubles for personal care.',
-          weight: '0.0 lb',
+          id: "mirrror",
+          name: "Tiny signal mirror or compact mirror",
+          detail:
+            "Check for ticks in hard-to-see places. Signal for help in emergencies. Doubles for personal care.",
+          weight: "0.0 lb",
           defaultPacked: false,
-          sourceIds: ['adventurehacks-guide']
+          sourceIds: ["adventurehacks-guide"],
         },
         {
-          id: 'pack-cover',
-          name: 'Pack rain cover (if your pack needs one)',
-          detail: 'Some packs are water-resistant, some aren\'t. Test yours before the trip. Cover or liner—pick one.',
-          weight: '0.2 lb',
+          id: "pack-cover",
+          name: "Pack rain cover (if your pack needs one)",
+          detail:
+            "Some packs are water-resistant, some aren't. Test yours before the trip. Cover or liner—pick one.",
+          weight: "0.2 lb",
           defaultPacked: false,
-          sourceIds: ['reddit-gear-recs']
+          sourceIds: ["reddit-gear-recs"],
         },
         {
-          id: 'pillow-stuff',
-          name: 'Use your clothes bag as a pillow',
-          detail: 'Stuff your puffy + extra clothes into a stuff sack = free pillow. Skip the inflatable.',
-          weight: '0.0 lb',
+          id: "pillow-stuff",
+          name: "Use your clothes bag as a pillow",
+          detail:
+            "Stuff your puffy + extra clothes into a stuff sack = free pillow. Skip the inflatable.",
+          weight: "0.0 lb",
           defaultPacked: false,
-          sourceIds: ['reddit-shakedown-2025']
+          sourceIds: ["reddit-shakedown-2025"],
         },
         {
-          id: 'gummy-vitamins',
-          name: 'Multivitamin gummies (optional)',
-          detail: 'Trail diet lacks nutrients. A few gummies a day might help. At minimum, they taste good.',
-          weight: '0.1 lb',
+          id: "gummy-vitamins",
+          name: "Multivitamin gummies (optional)",
+          detail:
+            "Trail diet lacks nutrients. A few gummies a day might help. At minimum, they taste good.",
+          weight: "0.1 lb",
           defaultPacked: false,
-          sourceIds: ['reddit-gear-recs']
+          sourceIds: ["reddit-gear-recs"],
         },
         {
-          id: 'olive-oil',
-          name: 'Tiny bottle of olive oil',
-          detail: 'Add calories to any meal. Helps with calorie-dense eating when you\'re burning 3000+/day.',
-          weight: '0.2 lb',
+          id: "olive-oil",
+          name: "Tiny bottle of olive oil",
+          detail:
+            "Add calories to any meal. Helps with calorie-dense eating when you're burning 3000+/day.",
+          weight: "0.2 lb",
           defaultPacked: false,
-          sourceIds: ['reddit-shakedown-2025']
-        }
-      ]
-    }
+          sourceIds: ["reddit-shakedown-2025"],
+        },
+      ],
+    },
   ],
   stashZones: [
     {
-      label: 'Top lid',
-      focus: 'Navigation + comms',
-      suggestions: ['Satellite messenger', 'Map', 'Compass', 'Snacks']
+      label: "Top lid",
+      focus: "Navigation + comms",
+      suggestions: ["Satellite messenger", "Map", "Compass", "Snacks"],
     },
     {
-      label: 'Front stretch pocket',
-      focus: 'Wet gear + quick access',
-      suggestions: ['Rain shell', 'Filter']
+      label: "Front stretch pocket",
+      focus: "Wet gear + quick access",
+      suggestions: ["Rain shell", "Filter"],
     },
     {
-      label: 'Hip belt',
-      focus: 'Snacks + foot care',
-      suggestions: ['Blister kit', 'Sunscreen']
-    }
+      label: "Hip belt",
+      focus: "Snacks + foot care",
+      suggestions: ["Blister kit", "Sunscreen"],
+    },
   ],
   resourceLinks: [
-    { label: 'Wilderness Vagabond 2017 packing notes', href: 'http://wildernessvagabond.com/PCT-2017/PCT-2017.htm' },
-    { label: 'Northern California Hiking Trails · Trinity Alps conditions', href: 'https://northerncaliforniahikingtrails.com/blog/2015/07/13/trinity-alps-wilderness-trail-conditions/' },
-    { label: 'Halfway Anywhere Hat Creek Rim water beta', href: 'https://www.halfwayanywhere.com/trails/pacific-crest-trail/best-section-hikes-pct-norcal/' }
-  ]
+    {
+      label: "Wilderness Vagabond 2017 packing notes",
+      href: "http://wildernessvagabond.com/PCT-2017/PCT-2017.htm",
+    },
+    {
+      label: "Northern California Hiking Trails · Trinity Alps conditions",
+      href: "https://northerncaliforniahikingtrails.com/blog/2015/07/13/trinity-alps-wilderness-trail-conditions/",
+    },
+    {
+      label: "Halfway Anywhere Hat Creek Rim water beta",
+      href: "https://www.halfwayanywhere.com/trails/pacific-crest-trail/best-section-hikes-pct-norcal/",
+    },
+  ],
 };
 
 export const riskPlaybook = [
