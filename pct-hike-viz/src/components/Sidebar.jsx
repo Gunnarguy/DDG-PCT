@@ -1428,8 +1428,25 @@ Sidebar.propTypes = {
   }).isRequired,
   scheduleOptions: PropTypes.arrayOf(PropTypes.object).isRequired,
   travelPlan: PropTypes.shape({
-    inbound: PropTypes.arrayOf(PropTypes.string).isRequired,
-    exit: PropTypes.arrayOf(PropTypes.string).isRequired,
+    driver: PropTypes.string,
+    inbound: PropTypes.arrayOf(
+      PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+          step: PropTypes.string.isRequired,
+          sourceIds: PropTypes.arrayOf(PropTypes.string),
+        }),
+      ])
+    ).isRequired,
+    exit: PropTypes.arrayOf(
+      PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+          step: PropTypes.string.isRequired,
+          sourceIds: PropTypes.arrayOf(PropTypes.string),
+        }),
+      ])
+    ).isRequired,
     trailAngelNotes: PropTypes.string.isRequired,
   }).isRequired,
   resupplyPlan: PropTypes.shape({

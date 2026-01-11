@@ -145,24 +145,59 @@ export const scheduleOptions = [
 ];
 
 export const travelPlan = {
-  driver: 'Gunnar',
-  team: ['Dan', 'Drew', 'Gunnar'],
-  sourceIds: ['doc-transport-dunsmuir', 'pcta-transport', 'reddit-amtrak-coast'],
+  driver: "Gunnar (Mikaela if available for pickup)",
+  team: ["Dan", "Drew", "Gunnar"],
+  sourceIds: [
+    "doc-transport-dunsmuir",
+    "pcta-transport",
+    "reddit-amtrak-coast",
+  ],
   inbound: [
-    { step: 'Dan & Drew fly into Sacramento (SMF) Friday night or early Saturday.', sourceIds: ['doc-day-plan'] },
-    { step: 'Gunnar picks up Dan & Drew at Sacramento airport.', sourceIds: ['doc-day-plan'] },
-    { step: 'Gunnar drives 4 hours to Burney Falls trailhead.', sourceIds: ['doc-day-plan', 'rome2rio-burney-shasta'] },
-    { step: 'Stage car at Burney Falls (confirm overnight parking rules).', sourceIds: ['parks-burney'] },
-    { step: 'Check in with Burney Taxi / Green Gables parking if needed.', sourceIds: ['tripadvisor-shasta-burney'] }
+    {
+      step: "Home base: 2800 Joseph Avenue → pick up arrivals at SJC (preferred) or SFO based on flights.",
+      sourceIds: ["doc-day-plan"],
+    },
+    {
+      step: "If rental at SJC/SFO: drive I-880/I-680 → I-80 → I-505 → I-5 → CA-299E → CA-89N (~4.75-5.25 hours).",
+      sourceIds: ["pcta-transport"],
+    },
+    {
+      step: "If rail from SJC: VTA Rapid 60 or rideshare to San Jose Diridon → Coast Starlight to Redding → short Uber/taxi to RDD rental → drive CA-299E.",
+      sourceIds: ["reddit-amtrak-coast"],
+    },
+    {
+      step: "If rail from SFO: AirTrain → BART Yellow line to Richmond → Coast Starlight to Redding → rental for CA-299E/CA-89N.",
+      sourceIds: ["pcta-transport", "reddit-amtrak-coast"],
+    },
+    {
+      step: "Stage vehicle at Burney Falls (confirm overnight parking and pay $10/day).",
+      sourceIds: ["parks-burney"],
+    },
+    {
+      step: "If RABA weekday bus is used, budget taxi/ride for final 1-2 miles to trailhead; rideshare east of Redding is unreliable.",
+      sourceIds: ["srta-need-a-ride"],
+    },
   ],
   exit: [
-    { step: 'Finish at Castle Crags State Park.', sourceIds: ['parks-castle-crags'] },
-    { step: 'Arrange shuttle, Uber, or Trail Angel to Dunsmuir/Mt. Shasta.', sourceIds: ['pcta-transport', 'srta-need-a-ride'] },
-    { step: 'STAGE Bus option (seasonal, pre-book).', sourceIds: ['stage-bus-news', 'pcta-stage-bus'] },
-    { step: 'Retrieve car from Burney Falls.', sourceIds: ['doc-day-plan'] },
-    { step: 'Backup: Mt. Shasta Taxi (+1 530-605-7950) or hitching.', sourceIds: ['doc-transport-dunsmuir', 'reddit-castle-crags-transit'] }
+    {
+      step: "Finish at Castle Crags State Park.",
+      sourceIds: ["parks-castle-crags"],
+    },
+    {
+      step: "Primary: pre-arranged shuttle/trail angel or Mt. Shasta Taxi (+1 530-605-7950) to Redding or Burney.",
+      sourceIds: ["pcta-transport", "srta-need-a-ride"],
+    },
+    {
+      step: "Weekday transit fallback: STAGE/Siskiyou Stage Lines to Redding, or Amtrak Coast Starlight at Dunsmuir.",
+      sourceIds: ["stage-bus-news", "pcta-stage-bus"],
+    },
+    {
+      step: "Retrieve staged car at Burney Falls and return to Bay Area via I-5/CA-299.",
+      sourceIds: ["doc-day-plan"],
+    },
   ],
-  trailAngelNotes: 'STAGE and informal drivers book fast—confirm two weeks out. Monitor Trinity Alps Wilderness FB group for road intel.'
+  trailAngelNotes:
+    "Rideshare east of Redding is thin—lock rentals or shuttles. STAGE and informal drivers book fast; confirm two weeks out.",
 };
 
 export const resupplyPlan = {
@@ -1162,7 +1197,7 @@ export const riskPlaybook = [
 // Distance values: GPS-measured (actual trail miles including switchbacks)
 // PDF estimates were lower due to "as the crow flies" approximations
 // GPS total: ~83 miles over 6 hiking days = ~13.8 mi/day average
-// 
+//
 // NOTE: Distances here are adjusted proportionally from PDF estimates to match
 // GPS reality. Camp locations remain as specified in source document.
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1326,7 +1361,7 @@ export const dayItinerary = [
 // • GPS route data (hike_data.json):     52.0 miles (Burney to Castle Crags SP)
 // • Source PDF header (ddg-pdf):         "78-90 miles" (Refers to full Section O)
 // • Source PDF daily estimates:          52 miles (Matches GPS subset!)
-// 
+//
 // The 52 mile plan is accurate for distance. The "78-90" figure in the PDF header
 // likely referred to the full section to Dunsmuir/I-5.
 // However, ELEVATION is significantly higher than the PDF estimates.

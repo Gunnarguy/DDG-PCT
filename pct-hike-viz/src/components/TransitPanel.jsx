@@ -1,12 +1,48 @@
-import PropTypes from 'prop-types';
-import { transitRoutes, shuttleServices, rentalCarInfo, resupplyAccess, getTransitPlan } from '../services/transitService';
-import '../styles/TransitPanel.css';
+import {
+  getTransitPlan,
+  rentalCarInfo,
+  resupplyAccess,
+  shuttleServices,
+  transitRoutes,
+} from "../services/transitService";
+import "../styles/TransitPanel.css";
 
 /**
  * Public Transit & Trailhead Access Information
  * Based on nst.guide transit layer methodology
  */
 function TransitPanel() {
+  const renderPlan = (label, origin, defaultOpen = false) => {
+    const plan = getTransitPlan(origin);
+    if (!plan) return null;
+
+    return (
+      <details
+        className="plan-accordion"
+        {...(defaultOpen ? { open: true } : {})}
+      >
+        <summary>{label}</summary>
+        <div className="plan-content">
+          <div className="plan-stats">
+            {plan.duration && <span>⏱️ {plan.duration}</span>}
+            {plan.cost && <span>💰 ~{plan.cost}</span>}
+          </div>
+          <ol className="plan-steps">
+            {(plan.steps || []).map((step, idx) => (
+              <li key={idx}>{step}</li>
+            ))}
+          </ol>
+          {plan.notes && <p className="plan-notes">📝 {plan.notes}</p>}
+        </div>
+      </details>
+    );
+    <li>
+      <strong>Exit rideshare scarcity:</strong> Castle Crags/Dunsmuir rarely
+      have Uber/Lyft. Prebook Mt. Shasta Taxi (+1 530-605-7950) or a
+      shuttle/trail angel before losing signal.
+    </li>;
+  };
+
   return (
     <div className="transit-panel">
       <div className="panel-header">
@@ -21,8 +57,10 @@ function TransitPanel() {
         <div className="summary-card recommended">
           <h4>✅ Recommended: Rental Car</h4>
           <p>
-            <strong>3.5 hours</strong> from Sacramento (SMF). Drive CA-299 to Burney Falls SP. 
-            Park at trailhead ($10/day, confirm extended parking with park office).
+            <strong>3.5 hours</strong> from Sacramento (SMF) or{" "}
+            <strong>~5 hours</strong> from SJC/SFO. Drive I-505 → I-5 → CA-299 →
+            CA-89. Park at trailhead ($10/day, confirm extended parking with
+            park office).
           </p>
           <a href="tel:5303352777" className="contact-link">
             📞 Call Burney Falls SP: (530) 335-2777
@@ -32,8 +70,9 @@ function TransitPanel() {
         <div className="summary-card">
           <h4>⚠️ Public Transit: Limited Weekday Service</h4>
           <p>
-            Amtrak to Redding → RABA bus to Burney → Taxi to trailhead. 
-            <strong>RABA Route 5 runs Mon-Fri only.</strong> Plan accordingly.
+            Amtrak to Redding → RABA bus to Burney → Taxi to trailhead.
+            <strong>RABA Route 5 runs Mon-Fri only.</strong> Last-mile rideshare
+            east of Redding is unreliable.
           </p>
         </div>
       </div>
@@ -58,16 +97,16 @@ function TransitPanel() {
                   {route.cost && <span>💰 {route.cost}</span>}
                   {route.distance && <span>📍 {route.distance}</span>}
                 </div>
-                
+
                 <div className="route-stops">
-                  <strong>Stops:</strong> {route.stops.join(' → ')}
+                  <strong>Stops:</strong> {route.stops.join(" → ")}
                 </div>
 
                 <p className="route-notes">{route.notes}</p>
 
-                <a 
-                  href={route.url} 
-                  target="_blank" 
+                <a
+                  href={route.url}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="route-link"
                 >
@@ -103,21 +142,27 @@ function TransitPanel() {
       {/* Rental Car Details */}
       <div className="rental-car-section">
         <h4>🚗 Rental Car Information</h4>
-        
+
         <div className="airport-options">
           <h5>Airports with Rental Cars:</h5>
           {rentalCarInfo.airports.map((airport) => (
-            <div 
-              key={airport.code} 
-              className={`airport-card ${airport.recommended ? 'recommended' : ''}`}
+            <div
+              key={airport.code}
+              className={`airport-card ${
+                airport.recommended ? "recommended" : ""
+              }`}
             >
               <div className="airport-header">
-                <strong>{airport.code} - {airport.name}</strong>
-                {airport.recommended && <span className="rec-badge">✅ Recommended</span>}
+                <strong>
+                  {airport.code} - {airport.name}
+                </strong>
+                {airport.recommended && (
+                  <span className="rec-badge">✅ Recommended</span>
+                )}
               </div>
               <p className="airport-distance">📍 {airport.distanceToBurney}</p>
               <p className="airport-agencies">
-                🚗 Agencies: {airport.rentalAgencies.join(', ')}
+                🚗 Agencies: {airport.rentalAgencies.join(", ")}
               </p>
               <p className="airport-notes">{airport.notes}</p>
             </div>
@@ -153,12 +198,14 @@ function TransitPanel() {
                 <strong>📍 {town.town}</strong>
                 <span className="trail-distance">{town.trailDistance}</span>
               </div>
-              
+
               <div className="resupply-services">
                 <strong>Services:</strong>
                 <div className="service-tags">
                   {town.services.map((service, sidx) => (
-                    <span key={sidx} className="service-tag">{service}</span>
+                    <span key={sidx} className="service-tag">
+                      {service}
+                    </span>
                   ))}
                 </div>
               </div>
@@ -166,7 +213,7 @@ function TransitPanel() {
               <p className="resupply-transit">
                 <strong>Transit:</strong> {town.transitAccess}
               </p>
-              
+
               <p className="resupply-notes">{town.notes}</p>
             </div>
           ))}
@@ -176,92 +223,47 @@ function TransitPanel() {
       {/* Sample Transit Plans */}
       <div className="transit-plans">
         <h4>📋 Sample Access Plans</h4>
-        
-        <details className="plan-accordion">
-          <summary>From Sacramento (Public Transit)</summary>
-          <div className="plan-content">
-            {(() => {
-              const plan = getTransitPlan('Sacramento');
-              return (
-                <>
-                  <div className="plan-stats">
-                    <span>⏱️ {plan.duration}</span>
-                    <span>💰 ~{plan.cost}</span>
-                  </div>
-                  <ol className="plan-steps">
-                    {plan.steps.map((step, idx) => (
-                      <li key={idx}>{step}</li>
-                    ))}
-                  </ol>
-                  <p className="plan-notes">📝 {plan.notes}</p>
-                </>
-              );
-            })()}
-          </div>
-        </details>
 
-        <details className="plan-accordion">
-          <summary>From San Francisco (Public Transit)</summary>
-          <div className="plan-content">
-            {(() => {
-              const plan = getTransitPlan('San Francisco');
-              return (
-                <>
-                  <div className="plan-stats">
-                    <span>⏱️ {plan.duration}</span>
-                    <span>💰 ~{plan.cost}</span>
-                  </div>
-                  <ol className="plan-steps">
-                    {plan.steps.map((step, idx) => (
-                      <li key={idx}>{step}</li>
-                    ))}
-                  </ol>
-                  <p className="plan-notes">📝 {plan.notes}</p>
-                </>
-              );
-            })()}
-          </div>
-        </details>
-
-        <details className="plan-accordion" open>
-          <summary>Rental Car (Recommended)</summary>
-          <div className="plan-content">
-            {(() => {
-              const plan = getTransitPlan('Rental Car');
-              return (
-                <>
-                  <div className="plan-stats">
-                    <span>⏱️ {plan.duration}</span>
-                    <span>💰 ~{plan.cost}</span>
-                  </div>
-                  <ol className="plan-steps">
-                    {plan.steps.map((step, idx) => (
-                      <li key={idx}>{step}</li>
-                    ))}
-                  </ol>
-                  <p className="plan-notes">📝 {plan.notes}</p>
-                </>
-              );
-            })()}
-          </div>
-        </details>
+        {renderPlan("SJC arrival (rail + rental backup)", "SJC")}
+        {renderPlan("SFO arrival (rail + rental backup)", "SFO")}
+        {renderPlan("Home base (drive from Joseph Ave)", "Home")}
+        {renderPlan("From Sacramento (public transit)", "Sacramento")}
+        {renderPlan("Rental car (recommended)", "Rental Car", true)}
       </div>
 
       {/* Important Notes */}
       <div className="transit-notes">
         <h4>⚠️ Important Notes</h4>
         <ul>
-          <li><strong>RABA weekday-only service:</strong> Route 5 to Burney does not operate Saturdays or Sundays. Plan travel days accordingly.</li>
-          <li><strong>Last-mile problem:</strong> All public transit stops 1-5 miles from trailheads. Budget for taxi/Uber (~$15-30) or arrange trail angel pickup.</li>
-          <li><strong>Cell service limited:</strong> Book rides in advance. Don't rely on hailing Uber from the trail.</li>
-          <li><strong>Extended parking:</strong> Always call ahead to confirm multi-day parking policies. Some parks have 72-hour limits.</li>
+          <li>
+            <strong>RABA weekday-only service:</strong> Route 5 to Burney does
+            not operate Saturdays or Sundays. Plan travel days accordingly.
+          </li>
+          <li>
+            <strong>Last-mile problem:</strong> All public transit stops 1-5
+            miles from trailheads. Budget for taxi/Uber (~$15-30) or arrange
+            trail angel pickup.
+          </li>
+          <li>
+            <strong>Cell service limited:</strong> Book rides in advance. Don't
+            rely on hailing Uber from the trail.
+          </li>
+          <li>
+            <strong>Night driving:</strong> Try to clear CA-299 before dark to
+            avoid deer and one-lane construction controls.
+          </li>
+          <li>
+            <strong>Extended parking:</strong> Always call ahead to confirm
+            multi-day parking policies. Some parks have 72-hour limits.
+          </li>
         </ul>
       </div>
 
       {/* Data Attribution */}
       <div className="panel-footer">
         <p className="data-sources">
-          Transit data methodology adapted from <strong>nst.guide</strong> (routes within 1km of trail)
+          Transit data methodology adapted from <strong>nst.guide</strong>{" "}
+          (routes within 1km of trail)
         </p>
       </div>
     </div>
