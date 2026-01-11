@@ -1,57 +1,63 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
-import supabase, { supabaseReady } from '../lib/supabase';
-import './OpsLog.css';
+import PropTypes from "prop-types";
+import { useEffect, useMemo, useRef, useState } from "react";
+import supabase, { supabaseReady } from "../lib/supabase";
+import "./OpsLog.css";
 
 const normalizeEntry = (entry) => ({
   ...entry,
-  type: entry.type || 'NOTE',
-  status: entry.status || (entry.type === 'TASK' ? 'OPEN' : null)
+  type: entry.type || "NOTE",
+  status: entry.status || (entry.type === "TASK" ? "OPEN" : null),
 });
 
 // Lightweight, realtime operations log for mission coordination.
 // Pulls history on mount and streams inserts via Supabase Realtime.
-function OpsLog({ contextId = 'general', userName }) {
+function OpsLog({ contextId = "general", userName }) {
   const [logs, setLogs] = useState([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [logError, setLogError] = useState(null);
   const endRef = useRef(null);
 
   const sortedLogs = useMemo(
-    () => [...logs].sort((a, b) => new Date(a.created_at) - new Date(b.created_at)),
+    () =>
+      [...logs].sort((a, b) => new Date(a.created_at) - new Date(b.created_at)),
     [logs]
   );
 
   const classifyEntry = (value) => {
     const lowered = value.toLowerCase();
-    if (lowered.includes('/task') || lowered.includes('taking care of')) return { type: 'TASK', status: 'OPEN' };
-    if (lowered.includes('warning') || lowered.includes('alert')) return { type: 'ALERT', status: null };
-    return { type: 'NOTE', status: null };
+    if (lowered.includes("/task") || lowered.includes("taking care of"))
+      return { type: "TASK", status: "OPEN" };
+    if (lowered.includes("warning") || lowered.includes("alert"))
+      return { type: "ALERT", status: null };
+    return { type: "NOTE", status: null };
   };
 
   useEffect(() => {
     let channel;
     const fetchLogs = async () => {
       if (!supabaseReady) {
-        setLogError(new Error('Supabase not configured; live comms offline.'));
+        setLogError(new Error("Supabase not configured; live comms offline."));
         return;
       }
       setIsLoading(true);
-      
+
       // Add timeout protection to prevent infinite loading
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Loading history timed out after 10 seconds')), 10000);
+        setTimeout(
+          () => reject(new Error("Loading history timed out after 10 seconds")),
+          10000
+        );
       });
 
       try {
         const { data, error } = await Promise.race([
           supabase
-            .from('ops_logs')
-            .select('*')
-            .eq('context_id', contextId)
-            .order('created_at', { ascending: true }),
+            .from("ops_logs")
+            .select("*")
+            .eq("context_id", contextId)
+            .order("created_at", { ascending: true }),
           timeoutPromise,
         ]);
 
@@ -62,7 +68,7 @@ function OpsLog({ contextId = 'general', userName }) {
           setLogError(null);
         }
       } catch (err) {
-        console.error('OpsLog fetch error:', err);
+        console.error("OpsLog fetch error:", err);
         setLogError(err);
       } finally {
         setIsLoading(false);
@@ -75,23 +81,37 @@ function OpsLog({ contextId = 'general', userName }) {
       channel = supabase
         .channel(`ops_logs_${contextId}`)
         .on(
-          'postgres_changes',
-          { event: 'INSERT', schema: 'public', table: 'ops_logs', filter: `context_id=eq.${contextId}` },
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "ops_logs",
+            filter: `context_id=eq.${contextId}`,
+          },
           (payload) =>
             setLogs((prev) => {
               const incoming = normalizeEntry(payload.new);
-              return prev.some((row) => row.id === incoming.id) ? prev : [...prev, incoming];
+              return prev.some((row) => row.id === incoming.id)
+                ? prev
+                : [...prev, incoming];
             })
         )
         .on(
-          'postgres_changes',
-          { event: 'UPDATE', schema: 'public', table: 'ops_logs', filter: `context_id=eq.${contextId}` },
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "ops_logs",
+            filter: `context_id=eq.${contextId}`,
+          },
           (payload) =>
             setLogs((prev) => {
               const incoming = normalizeEntry(payload.new);
               const exists = prev.some((row) => row.id === incoming.id);
               return exists
-                ? prev.map((row) => (row.id === incoming.id ? { ...row, ...incoming } : row))
+                ? prev.map((row) =>
+                    row.id === incoming.id ? { ...row, ...incoming } : row
+                  )
                 : [...prev, incoming];
             })
         )
@@ -104,7 +124,7 @@ function OpsLog({ contextId = 'general', userName }) {
   }, [contextId]);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [sortedLogs]);
 
   const handleSubmit = async (event) => {
@@ -112,7 +132,7 @@ function OpsLog({ contextId = 'general', userName }) {
     const trimmed = input.trim();
     if (!trimmed) return;
     if (!supabaseReady) {
-      setLogError(new Error('Supabase not configured; cannot send.'));
+      setLogError(new Error("Supabase not configured; cannot send."));
       return;
     }
 
@@ -122,20 +142,23 @@ function OpsLog({ contextId = 'general', userName }) {
     try {
       // Add timeout protection to prevent infinite "Sending…" state
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Message send timed out after 10 seconds')), 10000);
+        setTimeout(
+          () => reject(new Error("Message send timed out after 10 seconds")),
+          10000
+        );
       });
 
       const { data, error } = await Promise.race([
         supabase
-          .from('ops_logs')
+          .from("ops_logs")
           .insert([
             {
               context_id: contextId,
               user_name: userName,
               content: trimmed,
               type: classification.type,
-              status: classification.status
-            }
+              status: classification.status,
+            },
           ])
           .select()
           .single(),
@@ -143,16 +166,20 @@ function OpsLog({ contextId = 'general', userName }) {
       ]);
 
       if (error) {
-        console.error('OpsLog insert error:', error);
+        console.error("OpsLog insert error:", error);
         setLogError(error);
       } else if (data) {
         const normalized = normalizeEntry(data);
-        setLogs((prev) => (prev.some((row) => row.id === normalized.id) ? prev : [...prev, normalized]));
-        setInput('');
+        setLogs((prev) =>
+          prev.some((row) => row.id === normalized.id)
+            ? prev
+            : [...prev, normalized]
+        );
+        setInput("");
         setLogError(null);
       }
     } catch (err) {
-      console.error('OpsLog submit exception:', err);
+      console.error("OpsLog submit exception:", err);
       setLogError(err);
     } finally {
       setIsSubmitting(false);
@@ -160,22 +187,30 @@ function OpsLog({ contextId = 'general', userName }) {
   };
 
   const cycleStatus = (entry) => {
-    if (!supabaseReady || entry.type !== 'TASK') return;
-    const order = ['OPEN', 'IN_PROGRESS', 'DONE'];
-    const currentIdx = order.indexOf(entry.status || 'OPEN');
+    if (!supabaseReady || entry.type !== "TASK") return;
+    const order = ["OPEN", "IN_PROGRESS", "DONE"];
+    const currentIdx = order.indexOf(entry.status || "OPEN");
     const nextStatus = order[(currentIdx + 1) % order.length];
 
-    setLogs((prev) => prev.map((row) => (row.id === entry.id ? { ...row, status: nextStatus } : row)));
+    setLogs((prev) =>
+      prev.map((row) =>
+        row.id === entry.id ? { ...row, status: nextStatus } : row
+      )
+    );
 
     supabase
-      .from('ops_logs')
+      .from("ops_logs")
       .update({ status: nextStatus })
-      .eq('id', entry.id)
+      .eq("id", entry.id)
       .then(({ error }) => {
         if (error) {
           setLogError(error);
           // rollback
-          setLogs((prev) => prev.map((row) => (row.id === entry.id ? { ...row, status: entry.status } : row)));
+          setLogs((prev) =>
+            prev.map((row) =>
+              row.id === entry.id ? { ...row, status: entry.status } : row
+            )
+          );
         }
       });
   };
@@ -183,19 +218,28 @@ function OpsLog({ contextId = 'general', userName }) {
   const renderEntry = (entry) => (
     <div
       key={entry.id}
-      className={`ops-entry type-${entry.type?.toLowerCase?.() ?? 'note'} ${entry.user_name === userName ? 'own' : ''}`}
+      className={`ops-entry type-${entry.type?.toLowerCase?.() ?? "note"} ${
+        entry.user_name === userName ? "own" : ""
+      }`}
     >
       <div className="ops-meta">
         <span className="ops-user">{entry.user_name}</span>
         <span className="ops-time">
-          {new Date(entry.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {new Date(entry.created_at).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
         </span>
       </div>
       <div className="ops-content">{entry.content}</div>
-      {entry.type === 'TASK' && (
+      {entry.type === "TASK" && (
         <div className="ops-task-row">
-          <span className={`task-pill status-${(entry.status || 'OPEN').toLowerCase()}`}>
-            {entry.status || 'OPEN'}
+          <span
+            className={`task-pill status-${(
+              entry.status || "OPEN"
+            ).toLowerCase()}`}
+          >
+            {entry.status || "OPEN"}
           </span>
           <button
             type="button"
@@ -213,12 +257,16 @@ function OpsLog({ contextId = 'general', userName }) {
   return (
     <div className="ops-panel">
       <div className="ops-header">
-        <span className="blink-status" aria-hidden="true">●</span>
+        <span className="blink-status" aria-hidden="true">
+          ●
+        </span>
         Live Comms · {contextId.toUpperCase()}
       </div>
       {(!supabaseReady || logError) && (
         <div className="ops-offline">
-          {logError ? logError.message : 'Supabase not configured; realtime is offline.'}
+          {logError
+            ? logError.message
+            : "Supabase not configured; realtime is offline."}
         </div>
       )}
       {isLoading && <div className="ops-loading">Loading history…</div>}
@@ -235,7 +283,7 @@ function OpsLog({ contextId = 'general', userName }) {
           disabled={!supabaseReady}
         />
         <button type="submit" disabled={isSubmitting || !supabaseReady}>
-          {isSubmitting ? 'Sending…' : supabaseReady ? 'Send' : 'Offline'}
+          {isSubmitting ? "Sending…" : supabaseReady ? "Send" : "Offline"}
         </button>
       </form>
     </div>
@@ -244,7 +292,7 @@ function OpsLog({ contextId = 'general', userName }) {
 
 OpsLog.propTypes = {
   contextId: PropTypes.string,
-  userName: PropTypes.string.isRequired
+  userName: PropTypes.string.isRequired,
 };
 
 export default OpsLog;
