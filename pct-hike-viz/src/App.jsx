@@ -46,7 +46,7 @@ const buildDataUrl = () => {
 const hasAnyCell = (zone = {}) => {
   const carriers = ["verizon", "att", "tmobile"];
   return carriers.some(
-    (c) => zone.cellCoverage?.[c] && zone.cellCoverage[c] !== "none"
+    (c) => zone.cellCoverage?.[c] && zone.cellCoverage[c] !== "none",
   );
 };
 
@@ -124,11 +124,11 @@ const deriveRouteStats = (
   hikingTrail = [],
   routeSegments = [],
   waterSources = [],
-  connectivityZones = []
+  connectivityZones = [],
 ) => {
   const totalMiles = routeSegments.reduce(
     (sum, segment) => sum + (segment.distance || 0),
-    0
+    0,
   );
 
   let totalGain = 0;
@@ -271,10 +271,10 @@ function MapLoadingFallback() {
   );
 }
 
-function App() {
+function App({ authBanner = null }) {
   const [popupInfo, setPopupInfo] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState("topo");
-    const { syncStatus, teamRoster } = useAuth();
+  const { syncStatus, teamRoster } = useAuth();
   // Fetch hike data from public/data at runtime
   const [hikeData, setHikeData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -325,7 +325,7 @@ function App() {
               JSON.stringify({
                 version: DATASET_VERSION,
                 fetchedAt: new Date().toISOString(),
-              })
+              }),
             );
           } catch (e) {
             console.warn("Failed to cache hike data:", e);
@@ -457,7 +457,7 @@ function App() {
         pt.length >= 3 &&
         pt[0] != null &&
         pt[1] != null &&
-        pt[2] != null
+        pt[2] != null,
     );
   }, [hikeData]);
 
@@ -489,12 +489,12 @@ function App() {
   const totalMiles = useMemo(
     () =>
       routeSegments.reduce((sum, segment) => sum + (segment.distance || 0), 0),
-    [routeSegments]
+    [routeSegments],
   );
 
   const driveSegments = useMemo(
     () => hikeData?.driveSegments ?? [],
-    [hikeData]
+    [hikeData],
   );
 
   const townPins = hikeData?.towns ?? [];
@@ -502,7 +502,7 @@ function App() {
   const waterSources = useMemo(() => hikeData?.waterSources ?? [], [hikeData]);
   const waterSourceMeta = useMemo(
     () => deriveWaterMeta(waterSources),
-    [waterSources]
+    [waterSources],
   );
 
   useEffect(() => {
@@ -511,7 +511,7 @@ function App() {
       hikingTrail,
       routeSegments,
       waterSources,
-      connectivityZones
+      connectivityZones,
     );
     setComputedStats(stats);
   }, [hikingTrail, routeSegments, waterSources]);
@@ -556,6 +556,11 @@ function App() {
 
   return (
     <div className="app-shell">
+      {authBanner && (
+        <div className="auth-status error" style={{ margin: "12px 12px 0" }}>
+          {authBanner}
+        </div>
+      )}
       <div
         className={`resize-handle ${isDragging ? "dragging" : ""}`}
         onMouseDown={handleResizeStart}
@@ -626,7 +631,23 @@ function App() {
  * access denied if not a DDG team member
  */
 function AuthGatedApp() {
-  const { isAuthenticated, isTeamMember, loading, user, signOut } = useAuth();
+  const {
+    authUnavailable,
+    error,
+    isAuthenticated,
+    isTeamMember,
+    loading,
+    user,
+    signOut,
+  } = useAuth();
+
+  if (import.meta.env.DEV && authUnavailable && !isAuthenticated) {
+    return (
+      <App
+        authBanner={`Authentication is unavailable in local dev, so Mission Control is running in offline mode. ${error}`}
+      />
+    );
+  }
 
   if (loading) {
     return (

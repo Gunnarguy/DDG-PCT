@@ -34,7 +34,8 @@ Open the printed URL (usually `http://localhost:5173`) and start exploring. Buil
 ### Supabase setup (realtime ops log + gear)
 
 1) Supabase config is read from env vars at dev/build time. Copy `.env.example` → `.env` and restart `npm run dev`.
-	- This repo includes a working `.env.example` for the DDG project.
+	- `.env.example` ships with the live DDG publishable values and is also used by the GitHub Pages workflow during CI.
+	- The original DDG Supabase project was paused; the current values target the restored replacement project.
 	- The app code intentionally has **no** hardcoded Supabase fallback: if `.env` is missing, it runs in offline mode.
 	- If you fork this repo, replace the Supabase URL + anon key with your own project values.
 2) Fast path (idempotent): `npm run supabase:apply` — this runs `supabase/combined.sql` (tables, publication, seed loadouts, RLS enabled, permissive anon policies).
@@ -44,10 +45,10 @@ Open the printed URL (usually `http://localhost:5173`) and start exploring. Buil
 
 ### Supabase MCP (AI assistant bridge)
 
-If you want AI assistants (e.g., Cursor/Claude Code) to manage Supabase safely, use the hosted MCP server. See `docs/supabase-mcp.md` for quick setup, scoping, read-only defaults, feature-group narrowing, and safety tips. The project-ref-scoped URL for this app is:
+If you want AI assistants (e.g., Cursor/Claude Code) to manage Supabase safely, use the hosted MCP server. See `docs/supabase-mcp.md` for quick setup, scoping, read-only defaults, feature-group narrowing, and safety tips. The current project-ref-scoped URL for this app is:
 
 ```
-https://mcp.supabase.com/mcp?project_ref=tnqvxjtqvmmacrfqpelj
+https://mcp.supabase.com/mcp?project_ref=wpeyvbhhfqcyhuszumtx
 ```
 
 ## Data sources

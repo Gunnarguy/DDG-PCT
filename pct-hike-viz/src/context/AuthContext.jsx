@@ -48,6 +48,7 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [authUnavailable, setAuthUnavailable] = useState(false);
   const [teamRoster, setTeamRoster] = useState([]);
 
   // Fetch team profile when user changes
@@ -76,6 +77,7 @@ export function AuthProvider({ children }) {
         if (!supabaseReady) {
           if (mounted) {
             setError(supabaseConfigError);
+            setAuthUnavailable(true);
             setLoading(false);
           }
           return;
@@ -85,6 +87,7 @@ export function AuthProvider({ children }) {
         timeoutId = setTimeout(() => {
           if (mounted && loading) {
             console.warn("Auth init timed out, setting loading to false");
+            setAuthUnavailable(true);
             setLoading(false);
           }
         }, 5000);
@@ -106,7 +109,7 @@ export function AuthProvider({ children }) {
             "| Has access_token:",
             !!accessToken,
             "| Has refresh_token:",
-            !!refreshToken
+            !!refreshToken,
           );
 
           if (accessToken && refreshToken) {
@@ -120,13 +123,14 @@ export function AuthProvider({ children }) {
             if (setSessionError) {
               console.error(
                 "[Auth] Error setting session from URL:",
-                setSessionError
+                setSessionError,
               );
+              setAuthUnavailable(true);
               setError(`Login failed: ${setSessionError.message}`);
             } else if (data.session) {
               console.log(
                 "[Auth] Session established for:",
-                data.session.user?.email
+                data.session.user?.email,
               );
               // Clear the hash from URL - preserve full path including base
               const cleanUrl =
@@ -134,6 +138,8 @@ export function AuthProvider({ children }) {
               window.history.replaceState(null, "", cleanUrl);
               if (mounted) {
                 setUser(data.session.user);
+                setError(null);
+                setAuthUnavailable(false);
                 await fetchProfile(data.session.user);
                 setLoading(false);
               }
@@ -159,10 +165,18 @@ export function AuthProvider({ children }) {
 
         if (sessionError) {
           console.error("Session error:", sessionError);
+          if (mounted) {
+            setError(sessionError.message);
+            setAuthUnavailable(true);
+            setLoading(false);
+          }
+          return;
         }
 
         if (mounted) {
           setUser(session?.user ?? null);
+          setError(null);
+          setAuthUnavailable(false);
           if (session?.user) {
             await fetchProfile(session.user);
           }
@@ -172,6 +186,7 @@ export function AuthProvider({ children }) {
         console.error("Auth init error:", err);
         if (mounted) {
           setError(err.message);
+          setAuthUnavailable(true);
           setLoading(false);
         }
       }
@@ -223,10 +238,12 @@ export function AuthProvider({ children }) {
         "[Auth] Auth state changed:",
         event,
         "| User:",
-        session?.user?.email || "none"
+        session?.user?.email || "none",
       );
       if (mounted) {
         setUser(session?.user ?? null);
+        setError(null);
+        setAuthUnavailable(false);
         if (session?.user) {
           await fetchProfile(session.user);
         } else {
@@ -286,14 +303,14 @@ export function AuthProvider({ children }) {
     // Using only window.location.origin would drop the base path and break auth redirects.
     const redirectUrl = new URL(
       import.meta.env.BASE_URL || "/",
-      window.location.origin
+      window.location.origin,
     ).toString();
 
     // Add timeout protection to prevent infinite "Sending..." state
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(
         () => reject(new Error("Request timed out after 15 seconds")),
-        15000
+        15000,
       );
     });
 
@@ -335,7 +352,7 @@ export function AuthProvider({ children }) {
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(
         () => reject(new Error("Request timed out after 15 seconds")),
-        15000
+        15000,
       );
     });
 
@@ -347,7 +364,7 @@ export function AuthProvider({ children }) {
             // Match Pages deploy base path in production.
             redirectTo: new URL(
               import.meta.env.BASE_URL || "/",
-              window.location.origin
+              window.location.origin,
             ).toString(),
           },
         }),
@@ -407,8 +424,8 @@ export function AuthProvider({ children }) {
   const syncStatus = useMemo(() => {
     if (!supabaseReady) return "offline";
     if (loading) return "syncing";
-    if (error) return "error";
     if (user) return "synced";
+    if (error) return "error";
     return "unauthenticated";
   }, [supabaseReady, loading, error, user]);
 
@@ -469,6 +486,7 @@ export function AuthProvider({ children }) {
     profile,
     loading,
     error,
+    authUnavailable,
     isAuthenticated: !!user,
     isTeamMember: !!user && isAllowedEmail(user?.email),
     isAdmin: !!user && isAdminEmail(user?.email),

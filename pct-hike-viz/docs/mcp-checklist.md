@@ -1,15 +1,15 @@
-# Supabase MCP smoke checklist (tnqvxjtqvmmacrfqpelj)
+# Supabase MCP smoke checklist (<project_ref>)
 
 Use the hosted endpoint (project-scoped):
 
 ```
-https://mcp.supabase.com/mcp?project_ref=tnqvxjtqvmmacrfqpelj
+https://mcp.supabase.com/mcp?project_ref=<project_ref>
 ```
 
 Prefer read-only for routine checks:
 
 ```
-https://mcp.supabase.com/mcp?project_ref=tnqvxjtqvmmacrfqpelj&read_only=true
+https://mcp.supabase.com/mcp?project_ref=<project_ref>&read_only=true
 ```
 
 ## Quick client config (generic JSON)
@@ -18,7 +18,7 @@ https://mcp.supabase.com/mcp?project_ref=tnqvxjtqvmmacrfqpelj&read_only=true
   "mcpServers": {
     "supabase": {
       "type": "http",
-      "url": "https://mcp.supabase.com/mcp?project_ref=tnqvxjtqvmmacrfqpelj&read_only=true"
+      "url": "https://mcp.supabase.com/mcp?project_ref=<project_ref>&read_only=true"
     }
   }
 }
@@ -40,7 +40,7 @@ https://mcp.supabase.com/mcp?project_ref=tnqvxjtqvmmacrfqpelj&read_only=true
 
 ## Feature narrowing examples
 - Only docs + database + debugging:
-  `https://mcp.supabase.com/mcp?project_ref=tnqvxjtqvmmacrfqpelj&features=docs,database,debugging&read_only=true`
+  `https://mcp.supabase.com/mcp?project_ref=<project_ref>&features=docs,database,debugging&read_only=true`
 - Add storage tools:
   append `storage` to `features`.
 
