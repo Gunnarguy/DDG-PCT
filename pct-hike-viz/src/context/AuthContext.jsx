@@ -219,7 +219,7 @@ export function AuthProvider({ children }) {
     }
 
     setTeamRoster(data ?? []);
-  }, [user, supabaseReady]);
+  }, [user]);
 
   // Listen for auth state changes
   useEffect(() => {
@@ -268,7 +268,7 @@ export function AuthProvider({ children }) {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, [fetchProfile, fetchTeamRoster, supabaseReady]);
+  }, [fetchProfile, fetchTeamRoster]);
 
   // Poll roster periodically while authenticated
   useEffect(() => {
@@ -277,7 +277,7 @@ export function AuthProvider({ children }) {
     fetchTeamRoster();
     const id = setInterval(fetchTeamRoster, 60_000);
     return () => clearInterval(id);
-  }, [user, supabaseReady, fetchTeamRoster]);
+  }, [user, fetchTeamRoster]);
 
   /**
    * Sign in with magic link (email)
@@ -427,7 +427,7 @@ export function AuthProvider({ children }) {
     if (user) return "synced";
     if (error) return "error";
     return "unauthenticated";
-  }, [loading, error, user, supabaseReady]);
+  }, [loading, error, user]);
 
   const getDisplayInfo = useCallback(() => {
     if (!user) return null;

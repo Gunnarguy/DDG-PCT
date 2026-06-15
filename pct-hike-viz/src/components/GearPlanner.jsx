@@ -441,7 +441,7 @@ function GearPlanner({ data, currentUser }) {
       isMounted = false;
       if (channel) supabase.removeChannel(channel);
     };
-  }, [initialInventory.length, supabaseReady, isOnline]);
+  }, [initialInventory.length, isOnline]);
   // Actions
   const persistLoadout = async (nextSet, hikerId, previousSet) => {
     if (!supabaseReady) {
