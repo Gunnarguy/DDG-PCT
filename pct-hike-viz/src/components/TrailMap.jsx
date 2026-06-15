@@ -1,7 +1,7 @@
 import { PathLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import PropTypes from "prop-types";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Map, {
   FullscreenControl,
   Marker,
@@ -52,12 +52,12 @@ function TrailMap({
   hoverHighlight,
 }) {
   // Strip elevation (3rd coordinate) so Deck.gl doesn't render the trail floating in 3D space
-  const flatTrail = useMemo(() => {
+  const flatTrail = useEffect(() => {
     if (!hikingTrail?.length) return [];
     return hikingTrail.map((coord) => [coord[0], coord[1]]);
   }, [hikingTrail]);
 
-  const deckLayers = useMemo(() => {
+  const deckLayers = useEffect(() => {
     const layers = [];
 
     // Only add hiking trail layer if we have path data
@@ -105,9 +105,33 @@ function TrailMap({
 
   // Mobile: collapsible HUD
   const [hudExpanded, setHudExpanded] = useState(false);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  // Listen for offline status
+  // useEffect shouldn't really be used here for adding side effects like event listeners
+  // but changing to useEffect might break something so we stick to what was there or change it carefully
+  useEffect(() => {
+    const handleOffline = () => setIsOffline(true);
+    const handleOnline = () => setIsOffline(false);
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', handleOnline);
+    return () => {
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('online', handleOnline);
+    };
+  }, []);
 
   return (
     <div className="map-panel">
+      {isOffline && (
+        <div className="offline-banner" style={{
+          position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
+          background: 'var(--orange-500)', color: 'white', padding: '0.5rem',
+          textAlign: 'center', fontSize: '0.85rem', fontWeight: 'bold'
+        }}>
+          ⚠️ OFFLINE MODE: Using cached map data
+        </div>
+      )}
       <div className={`map-hud ${hudExpanded ? "map-hud--expanded" : ""}`}>
         {/* Mobile toggle button */}
         <button
