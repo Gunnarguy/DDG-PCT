@@ -1,7 +1,7 @@
 import { PathLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Map, {
   FullscreenControl,
   Marker,
@@ -52,12 +52,12 @@ function TrailMap({
   hoverHighlight,
 }) {
   // Strip elevation (3rd coordinate) so Deck.gl doesn't render the trail floating in 3D space
-  const flatTrail = useEffect(() => {
+  const flatTrail = useMemo(() => {
     if (!hikingTrail?.length) return [];
     return hikingTrail.map((coord) => [coord[0], coord[1]]);
   }, [hikingTrail]);
 
-  const deckLayers = useEffect(() => {
+  const deckLayers = useMemo(() => {
     const layers = [];
 
     // Only add hiking trail layer if we have path data
@@ -108,8 +108,6 @@ function TrailMap({
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
   // Listen for offline status
-  // useEffect shouldn't really be used here for adding side effects like event listeners
-  // but changing to useEffect might break something so we stick to what was there or change it carefully
   useEffect(() => {
     const handleOffline = () => setIsOffline(true);
     const handleOnline = () => setIsOffline(false);

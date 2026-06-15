@@ -283,6 +283,18 @@ function GearPlanner({ data, currentUser }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [expandedDetails, setExpandedDetails] = useState(() => new Set());
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   // Sync loadouts from Supabase and listen for realtime updates.
   useEffect(() => {
@@ -373,7 +385,7 @@ function GearPlanner({ data, currentUser }) {
       }
     };
 
-    if (!supabaseReady || !navigator.onLine) {
+    if (!supabaseReady || !isOnline) {
       loadLocalInventory();
       return undefined;
     }
@@ -429,7 +441,7 @@ function GearPlanner({ data, currentUser }) {
       isMounted = false;
       if (channel) supabase.removeChannel(channel);
     };
-  }, [initialInventory.length]);
+  }, [initialInventory.length, supabaseReady, isOnline]);
   // Actions
   const persistLoadout = async (nextSet, hikerId, previousSet) => {
     if (!supabaseReady) {
@@ -510,7 +522,7 @@ function GearPlanner({ data, currentUser }) {
       groupAssignee: isGroupGear ? groupAssignee : null,
     };
 
-    if (!supabaseReady || !navigator.onLine) {
+    if (!supabaseReady || !isOnline) {
       const localItem = { ...baseItem, id: `custom-local-${Date.now()}` };
       setInventory((prev) => {
         const newInv = [...prev, localItem];

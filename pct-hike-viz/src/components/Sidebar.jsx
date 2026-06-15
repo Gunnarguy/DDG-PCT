@@ -64,6 +64,54 @@ const SATELLITE_SECTION_CONFIG = [
   },
 ];
 
+const SatelliteSMSGenerator = ({ dayItinerary }) => {
+  const [selectedCheckpointIndex, setSelectedCheckpointIndex] = useState(0);
+
+  const checkpoints = (dayItinerary || []).map(day => ({
+    name: day.title.split(' to ')[1] || day.title,
+    coord: day.coordinates?.[1] ? `${day.coordinates[1][1].toFixed(4)}, ${day.coordinates[1][0].toFixed(4)}` : "Unknown"
+  }));
+
+  const handleCopyStatus = () => {
+    const cp = checkpoints[selectedCheckpointIndex];
+    if (!cp) return;
+    const statusText = `DDG Status: Safe at ${cp.name}. Coord: [${cp.coord}]. Garmin inReach connected. All well.`;
+    navigator.clipboard.writeText(statusText)
+      .then(() => alert('Status copied to clipboard!'))
+      .catch(err => {
+        console.error('Failed to copy', err);
+        alert('Failed to copy to clipboard.');
+      });
+  };
+
+  return (
+    <section className="sidebar-card sidebar-card--full">
+      <div className="section-header">
+        <h2>Satellite Status SMS Generator</h2>
+        <span className="section-subtitle">Quick-copy templates for inReach messages</span>
+      </div>
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+        <select
+          value={selectedCheckpointIndex}
+          onChange={(e) => setSelectedCheckpointIndex(Number(e.target.value))}
+          className="rpg-select"
+          style={{ flex: 1 }}
+        >
+          {checkpoints.map((cp, idx) => (
+            <option key={idx} value={idx}>{cp.name}</option>
+          ))}
+        </select>
+        <button onClick={handleCopyStatus} className="rpg-btn-add" style={{ padding: '0.5rem 1rem' }}>
+          Copy
+        </button>
+      </div>
+      <p style={{ margin: 0, padding: '0.5rem', background: 'var(--sand-100)', borderRadius: '4px', fontSize: '0.85rem', fontFamily: 'monospace' }}>
+        DDG Status: Safe at {checkpoints[selectedCheckpointIndex]?.name}. Coord: [{checkpoints[selectedCheckpointIndex]?.coord}]. Garmin inReach connected. All well.
+      </p>
+    </section>
+  );
+};
+
 function Sidebar({
   style,
   syncStatus,
@@ -1129,48 +1177,7 @@ function Sidebar({
     </>
   )};
 
-const SatelliteSMSGenerator = () => {
-  const [selectedCheckpointIndex, setSelectedCheckpointIndex] = useState(0);
 
-  const checkpoints = dayItinerary.map(day => ({
-    name: day.title.split(' to ')[1] || day.title,
-    coord: day.coordinates?.[1] ? `${day.coordinates[1][1].toFixed(4)}, ${day.coordinates[1][0].toFixed(4)}` : "Unknown"
-  }));
-
-  const handleCopyStatus = () => {
-    const cp = checkpoints[selectedCheckpointIndex];
-    const statusText = `DDG Status: Safe at ${cp.name}. Coord: [${cp.coord}]. Garmin inReach connected. All well.`;
-    navigator.clipboard.writeText(statusText);
-    alert('Status copied to clipboard!');
-  };
-
-  return (
-    <section className="sidebar-card sidebar-card--full">
-      <div className="section-header">
-        <h2>Satellite Status SMS Generator</h2>
-        <span className="section-subtitle">Quick-copy templates for inReach messages</span>
-      </div>
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
-        <select
-          value={selectedCheckpointIndex}
-          onChange={(e) => setSelectedCheckpointIndex(Number(e.target.value))}
-          className="rpg-select"
-          style={{ flex: 1 }}
-        >
-          {checkpoints.map((cp, idx) => (
-            <option key={idx} value={idx}>{cp.name}</option>
-          ))}
-        </select>
-        <button onClick={handleCopyStatus} className="rpg-btn-add" style={{ padding: '0.5rem 1rem' }}>
-          Copy
-        </button>
-      </div>
-      <p style={{ margin: 0, padding: '0.5rem', background: 'var(--sand-100)', borderRadius: '4px', fontSize: '0.85rem', fontFamily: 'monospace' }}>
-        DDG Status: Safe at {checkpoints[selectedCheckpointIndex]?.name}. Coord: [{checkpoints[selectedCheckpointIndex]?.coord}]. Garmin inReach connected. All well.
-      </p>
-    </section>
-  );
-};
 
   // ═══════════════════════════════════════════════════════════════════════════
   // CONNECTIVITY TAB - OpsLog + satellite/cell coverage
@@ -1178,7 +1185,7 @@ const SatelliteSMSGenerator = () => {
   const renderConnectivity = () => {
     return (
     <>
-      <SatelliteSMSGenerator />
+      <SatelliteSMSGenerator dayItinerary={dayItinerary} />
 
       {/* Mission Control Log */}
       <section className="sidebar-card sidebar-card--full">
