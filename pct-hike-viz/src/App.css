@@ -6,6 +6,7 @@
   background: var(--sand-50);
   overflow: hidden;
   position: relative;
+  font-family: 'Inter', 'Outfit', system-ui, sans-serif;
 }
 
 /* Auth badge container - positioned over the map */
@@ -628,13 +629,18 @@
   font-weight: 600;
   color: var(--ink-500);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   flex: 0 0 auto;
   white-space: nowrap;
   min-height: 44px;
-    display: flex;
-    align-items: center;
-    touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  touch-action: manipulation;
+}
+
+.tab-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(41, 47, 63, 0.08);
 }
 
 .tab-btn.is-active {
@@ -651,11 +657,19 @@
 }
 
 .sidebar-card {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 1.25rem;
   border: 1px solid var(--sand-200);
   padding: 1.25rem 1.35rem;
   box-shadow: 0 20px 40px rgba(41, 47, 63, 0.08);
+  transition: all 0.3s ease;
+}
+
+.sidebar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 48px rgba(41, 47, 63, 0.12);
 }
 
 .sidebar-card--full {
@@ -5754,7 +5768,6 @@
     min-height: auto;
     display: block;
   }
-}
 
   /* Add active states instead */
   .rpg-item-row:active {

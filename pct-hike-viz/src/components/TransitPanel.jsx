@@ -36,11 +36,6 @@ function TransitPanel() {
         </div>
       </details>
     );
-    <li>
-      <strong>Exit rideshare scarcity:</strong> Castle Crags/Dunsmuir rarely
-      have Uber/Lyft. Prebook Mt. Shasta Taxi (+1 530-605-7950) or a
-      shuttle/trail angel before losing signal.
-    </li>;
   };
 
   return (
@@ -77,44 +72,36 @@ function TransitPanel() {
         </div>
       </div>
 
-      {/* Public Transit Routes */}
+      {/* Public Transit Routes Timeline */}
       <div className="transit-routes-section">
-        <h4>🚆 Public Transit Options</h4>
-        <div className="route-list">
-          {transitRoutes.map((route) => (
-            <div key={route.id} className="route-card">
-              <div className="route-header">
-                <span className="route-icon">{route.emoji}</span>
-                <div className="route-title">
-                  <strong>{route.name}</strong>
-                  <span className="route-agency">{route.agency}</span>
+        <h4>🚆 Interactive Logistics Timeline</h4>
+        <div className="logistics-timeline">
+          {transitRoutes.map((route) => {
+            const isWeekendGap = route.notes?.toLowerCase().includes("saturday") || route.notes?.toLowerCase().includes("weekend");
+            const requiresBooking = route.notes?.toLowerCase().includes("call") || route.notes?.toLowerCase().includes("book");
+
+            return (
+              <div key={route.id} className="timeline-step" style={{ display: 'flex', gap: '1rem', padding: '1rem', background: 'var(--sand-50)', borderLeft: '3px solid var(--pine-500)', marginBottom: '1rem', position: 'relative' }}>
+                <div className="step-icon" style={{ fontSize: '1.5rem', flexShrink: 0 }}>{route.emoji}</div>
+                <div className="step-content">
+                  <strong style={{ fontSize: '1.1rem', display: 'block', color: 'var(--pine-900)' }}>{route.name}</strong>
+                  <p style={{ margin: '0.25rem 0', fontSize: '0.9rem', color: 'var(--stone-600)' }}>{route.agency} · {route.frequency}</p>
+                  <p style={{ margin: '0.5rem 0', fontSize: '0.85rem' }}><strong>Route:</strong> {route.stops.join(" → ")}</p>
+
+                  {(isWeekendGap || requiresBooking) && (
+                    <div style={{ marginTop: '0.5rem', padding: '0.5rem', background: 'var(--orange-50)', borderLeft: '2px solid var(--orange-500)', borderRadius: '4px' }}>
+                      {isWeekendGap && <p style={{ margin: '0 0 0.25rem 0', fontSize: '0.8rem', color: 'var(--orange-900)' }}><strong>⚠️ Weekend Gap:</strong> This service may not run on Saturday/Sunday.</p>}
+                      {requiresBooking && <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--orange-900)' }}><strong>📅 Booking Required:</strong> {route.notes}</p>}
+                    </div>
+                  )}
+                  {!isWeekendGap && !requiresBooking && route.notes && (
+                    <p style={{ margin: '0.5rem 0', fontSize: '0.85rem', color: 'var(--stone-600)' }}>{route.notes}</p>
+                  )}
+                  {route.cost && <p style={{ margin: '0.25rem 0', fontSize: '0.85rem' }}>💰 {route.cost}</p>}
                 </div>
               </div>
-
-              <div className="route-details">
-                <div className="route-info">
-                  <span>🕐 {route.frequency}</span>
-                  {route.cost && <span>💰 {route.cost}</span>}
-                  {route.distance && <span>📍 {route.distance}</span>}
-                </div>
-
-                <div className="route-stops">
-                  <strong>Stops:</strong> {route.stops.join(" → ")}
-                </div>
-
-                <p className="route-notes">{route.notes}</p>
-
-                <a
-                  href={route.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="route-link"
-                >
-                  View Schedule →
-                </a>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

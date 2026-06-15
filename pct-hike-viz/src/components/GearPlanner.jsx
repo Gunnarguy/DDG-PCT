@@ -278,9 +278,23 @@ function GearPlanner({ data, currentUser }) {
   const [newItemName, setNewItemName] = useState("");
   const [newItemWeight, setNewItemWeight] = useState("");
   const [newItemCategory, setNewItemCategory] = useState("Custom");
+  const [isGroupGear, setIsGroupGear] = useState(false);
+  const [groupAssignee, setGroupAssignee] = useState(activeHikerId);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [expandedDetails, setExpandedDetails] = useState(() => new Set());
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   // Sync loadouts from Supabase and listen for realtime updates.
   useEffect(() => {
@@ -355,19 +369,42 @@ function GearPlanner({ data, currentUser }) {
 
   // Custom items: fetch and live-sync shared inventory
   useEffect(() => {
-    if (!supabaseReady) return undefined;
     let channel;
     let isMounted = true;
+
+    const loadLocalInventory = () => {
+      try {
+        const cached = localStorage.getItem('pct-gear-inventory');
+        if (cached && isMounted) {
+          const parsed = JSON.parse(cached);
+          // Only set if we don't have default/base inventory already populated beyond base
+          setInventory(prev => prev.length <= initialInventory.length ? parsed : prev);
+        }
+      } catch {
+        console.warn("Failed to parse local inventory cache");
+      }
+    };
+
+    if (!supabaseReady || !isOnline) {
+      loadLocalInventory();
+      return undefined;
+    }
 
     const upsertItem = (item) => {
       setInventory((prev) => {
         const filtered = prev.filter((i) => i.id !== item.id);
-        return [...filtered, item];
+        const newInv = [...filtered, item];
+        try { localStorage.setItem('pct-gear-inventory', JSON.stringify(newInv)); } catch { /* ignore */ }
+        return newInv;
       });
     };
 
     const removeItem = (id) => {
-      setInventory((prev) => prev.filter((i) => i.id !== id));
+      setInventory((prev) => {
+        const newInv = prev.filter((i) => i.id !== id);
+        try { localStorage.setItem('pct-gear-inventory', JSON.stringify(newInv)); } catch { /* ignore */ }
+        return newInv;
+      });
     };
 
     const hydrateCustom = async () => {
@@ -404,7 +441,7 @@ function GearPlanner({ data, currentUser }) {
       isMounted = false;
       if (channel) supabase.removeChannel(channel);
     };
-  }, []);
+  }, [initialInventory.length, isOnline]);
   // Actions
   const persistLoadout = async (nextSet, hikerId, previousSet) => {
     if (!supabaseReady) {
@@ -481,18 +518,26 @@ function GearPlanner({ data, currentUser }) {
       moduleId: "custom",
       isCustom: true,
       sourceIds: [],
+      isGroupGear,
+      groupAssignee: isGroupGear ? groupAssignee : null,
     };
 
-    if (!supabaseReady) {
+    if (!supabaseReady || !isOnline) {
       const localItem = { ...baseItem, id: `custom-local-${Date.now()}` };
-      setInventory((prev) => [...prev, localItem]);
+      setInventory((prev) => {
+        const newInv = [...prev, localItem];
+        try { localStorage.setItem('pct-gear-inventory', JSON.stringify(newInv)); } catch { /* ignore */ }
+        return newInv;
+      });
       setLoadouts((prev) => {
-        const currentLoadout = new Set(prev[activeHikerId]);
+        const targetHiker = isGroupGear ? groupAssignee : activeHikerId;
+        const currentLoadout = new Set(prev[targetHiker] || []);
         currentLoadout.add(localItem.id);
-        return { ...prev, [activeHikerId]: currentLoadout };
+        return { ...prev, [targetHiker]: currentLoadout };
       });
       setNewItemName("");
       setNewItemWeight("");
+      setIsGroupGear(false);
       return;
     }
 
@@ -519,23 +564,27 @@ function GearPlanner({ data, currentUser }) {
       const localItem = { ...baseItem, id: `custom-local-${Date.now()}` };
       setInventory((prev) => [...prev, localItem]);
       setLoadouts((prev) => {
-        const currentLoadout = new Set(prev[activeHikerId]);
+        const targetHiker = isGroupGear ? groupAssignee : activeHikerId;
+        const currentLoadout = new Set(prev[targetHiker] || []);
         currentLoadout.add(localItem.id);
-        return { ...prev, [activeHikerId]: currentLoadout };
+        return { ...prev, [targetHiker]: currentLoadout };
       });
     } else if (data) {
       const saved = normalizeCustomItem(data);
       setInventory((prev) => [...prev, saved]);
       setLoadouts((prev) => {
-        const currentLoadout = new Set(prev[activeHikerId]);
+        const targetHiker = isGroupGear ? groupAssignee : activeHikerId;
+        const currentLoadout = new Set(prev[targetHiker] || []);
         currentLoadout.add(saved.id);
-        return { ...prev, [activeHikerId]: currentLoadout };
+        persistLoadout(currentLoadout, targetHiker, new Set(prev[targetHiker] || []));
+        return { ...prev, [targetHiker]: currentLoadout };
       });
       setSyncError(null);
     }
 
     setNewItemName("");
     setNewItemWeight("");
+    setIsGroupGear(false);
   };
 
   // Derived Data for Active Hiker
@@ -687,6 +736,18 @@ function GearPlanner({ data, currentUser }) {
             {carriedWeight.toFixed(1)} lb
           </div>
           <div className="summary-sub">Goal {baseWeightGoal || "—"} lb</div>
+        </div>
+        <div className="summary-card">
+          <div className="summary-label">Volume Estimate</div>
+          <div className="summary-value">
+            <progress
+              value={carriedWeight * 2}
+              max={activeHikerId === 'dan' ? 60 : 50}
+              className={carriedWeight * 2 > (activeHikerId === 'dan' ? 54 : 45) ? 'progress-warn' : ''}
+              style={{ width: '100%', height: '8px', accentColor: carriedWeight * 2 > (activeHikerId === 'dan' ? 54 : 45) ? 'red' : 'var(--pine-500)' }}
+            />
+          </div>
+          <div className="summary-sub">Est {Math.round(carriedWeight * 2)}L / {activeHikerId === 'dan' ? 60 : 50}L</div>
         </div>
         <div className="summary-card">
           <div className="summary-label">Items Equipped</div>
@@ -912,6 +973,28 @@ function GearPlanner({ data, currentUser }) {
               <button type="submit" className="rpg-btn-add">
                 Create & Equip
               </button>
+            </div>
+            <div className="form-row group-gear-row" style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <label style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={isGroupGear}
+                  onChange={(e) => setIsGroupGear(e.target.checked)}
+                />
+                Group Gear
+              </label>
+              {isGroupGear && (
+                <select
+                  value={groupAssignee}
+                  onChange={(e) => setGroupAssignee(e.target.value)}
+                  className="rpg-select"
+                  style={{ width: 'auto', flex: 1 }}
+                >
+                  {HIKERS.map(h => (
+                    <option key={h.id} value={h.id}>{h.name}</option>
+                  ))}
+                </select>
+              )}
             </div>
           </form>
         </div>

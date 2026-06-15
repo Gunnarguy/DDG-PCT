@@ -1,7 +1,7 @@
 import { PathLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import PropTypes from "prop-types";
-import { useMemo, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Map, {
   FullscreenControl,
   Marker,
@@ -105,9 +105,31 @@ function TrailMap({
 
   // Mobile: collapsible HUD
   const [hudExpanded, setHudExpanded] = useState(false);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  // Listen for offline status
+  useEffect(() => {
+    const handleOffline = () => setIsOffline(true);
+    const handleOnline = () => setIsOffline(false);
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', handleOnline);
+    return () => {
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('online', handleOnline);
+    };
+  }, []);
 
   return (
     <div className="map-panel">
+      {isOffline && (
+        <div className="offline-banner" style={{
+          position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
+          background: 'var(--orange-500)', color: 'white', padding: '0.5rem',
+          textAlign: 'center', fontSize: '0.85rem', fontWeight: 'bold'
+        }}>
+          ⚠️ OFFLINE MODE: Using cached map data
+        </div>
+      )}
       <div className={`map-hud ${hudExpanded ? "map-hud--expanded" : ""}`}>
         {/* Mobile toggle button */}
         <button

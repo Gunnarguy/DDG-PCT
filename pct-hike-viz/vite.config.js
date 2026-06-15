@@ -1,9 +1,31 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff,woff2}']
+      },
+      manifest: {
+        name: 'PCT Mission Control',
+        short_name: 'PCT Control',
+        description: 'Offline-capable backcountry dashboard for PCT Section O.',
+        theme_color: '#346855',
+        icons: [
+          {
+            src: 'vite.svg',
+            sizes: '192x192',
+            type: 'image/svg+xml'
+          }
+        ]
+      }
+    })
+  ],
   // GitHub Pages deploys to /DDG-PCT/ subdirectory
   // Use '/' for dev, '/DDG-PCT/' for production build
   base: command === 'serve' ? '/' : '/DDG-PCT/',

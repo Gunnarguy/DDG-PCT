@@ -19,6 +19,7 @@ import TerrainAnalysis from "./TerrainAnalysis";
 import TransitPanel from "./TransitPanel";
 import TripReadinessPanel from "./TripReadinessPanel";
 import WildfireMonitor from "./WildfireMonitor";
+import { generateGPX } from "../utils/gpxExporter";
 
 // Present readable timestamps next to live Apple data refresh events.
 const formatTimestamp = (isoString) => {
@@ -63,10 +64,60 @@ const SATELLITE_SECTION_CONFIG = [
   },
 ];
 
+const SatelliteSMSGenerator = ({ dayItinerary }) => {
+  const [selectedCheckpointIndex, setSelectedCheckpointIndex] = useState(0);
+
+  const checkpoints = (dayItinerary || []).map(day => ({
+    name: day.title.split(' to ')[1] || day.title,
+    coord: day.coordinates?.[1] ? `${day.coordinates[1][1].toFixed(4)}, ${day.coordinates[1][0].toFixed(4)}` : "Unknown"
+  }));
+
+  const handleCopyStatus = () => {
+    const cp = checkpoints[selectedCheckpointIndex];
+    if (!cp) return;
+    const statusText = `DDG Status: Safe at ${cp.name}. Coord: [${cp.coord}]. Garmin inReach connected. All well.`;
+    navigator.clipboard.writeText(statusText)
+      .then(() => alert('Status copied to clipboard!'))
+      .catch(err => {
+        console.error('Failed to copy', err);
+        alert('Failed to copy to clipboard.');
+      });
+  };
+
+  return (
+    <section className="sidebar-card sidebar-card--full">
+      <div className="section-header">
+        <h2>Satellite Status SMS Generator</h2>
+        <span className="section-subtitle">Quick-copy templates for inReach messages</span>
+      </div>
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+        <select
+          value={selectedCheckpointIndex}
+          onChange={(e) => setSelectedCheckpointIndex(Number(e.target.value))}
+          className="rpg-select"
+          style={{ flex: 1 }}
+        >
+          {checkpoints.map((cp, idx) => (
+            <option key={idx} value={idx}>{cp.name}</option>
+          ))}
+        </select>
+        <button onClick={handleCopyStatus} className="rpg-btn-add" style={{ padding: '0.5rem 1rem' }}>
+          Copy
+        </button>
+      </div>
+      <p style={{ margin: 0, padding: '0.5rem', background: 'var(--sand-100)', borderRadius: '4px', fontSize: '0.85rem', fontFamily: 'monospace' }}>
+        DDG Status: Safe at {checkpoints[selectedCheckpointIndex]?.name}. Coord: [{checkpoints[selectedCheckpointIndex]?.coord}]. Garmin inReach connected. All well.
+      </p>
+    </section>
+  );
+};
+
 function Sidebar({
   style,
   syncStatus,
   teamRoster,
+  hikingTrail,
+  campPoints,
   waterSources,
   waterSourceMeta,
   scheduleOptions,
@@ -1001,10 +1052,32 @@ function Sidebar({
   // ═══════════════════════════════════════════════════════════════════════════
   // LOGISTICS TAB - Transit, travel, resupply (slimmed down)
   // ═══════════════════════════════════════════════════════════════════════════
-  const renderLogistics = () => (
+  const renderLogistics = () => {
+    const handleExportGPX = () => {
+      const gpxContent = generateGPX(hikingTrail, campPoints);
+      const blob = new Blob([gpxContent], { type: "application/gpx+xml" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "pct_section_o.gpx";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+
+    return (
     <>
       {/* Transit & Access Panel */}
       <TransitPanel />
+
+      <section className="sidebar-card">
+        <h2>GPS Export</h2>
+        <p className="note">Download waypoints and trail geometry to load into Garmin, FarOut, or CalTopo before losing service.</p>
+        <button onClick={handleExportGPX} className="rpg-btn-add" style={{ width: '100%', marginTop: '0.5rem', cursor: 'pointer', padding: '0.75rem', background: 'var(--pine-500)', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}>
+          Export GPX to Garmin/FarOut
+        </button>
+      </section>
 
       <section className="sidebar-card">
         <h2>Travel &amp; Shuttle Playbook</h2>
@@ -1102,13 +1175,18 @@ function Sidebar({
         </div>
       </section>
     </>
-  );
+  )};
+
+
 
   // ═══════════════════════════════════════════════════════════════════════════
   // CONNECTIVITY TAB - OpsLog + satellite/cell coverage
   // ═══════════════════════════════════════════════════════════════════════════
-  const renderConnectivity = () => (
+  const renderConnectivity = () => {
+    return (
     <>
+      <SatelliteSMSGenerator dayItinerary={dayItinerary} />
+
       {/* Mission Control Log */}
       <section className="sidebar-card sidebar-card--full">
         <div className="section-header">
@@ -1288,7 +1366,7 @@ function Sidebar({
         </div>
       </section>
     </>
-  );
+  )};
 
   // ═══════════════════════════════════════════════════════════════════════════
   // RESOURCES TAB - Reference library (renamed from Library)
@@ -1412,6 +1490,8 @@ Sidebar.propTypes = {
       hiker_id: PropTypes.string,
     })
   ),
+  hikingTrail: PropTypes.array,
+  campPoints: PropTypes.array,
   waterSources: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
