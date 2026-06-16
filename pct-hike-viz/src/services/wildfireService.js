@@ -18,10 +18,6 @@ const SECTION_O_BBOX = {
   north: 41.3
 };
 
-// Legacy direct API key (fallback for unauthenticated users)
-const EPA_API_KEY = import.meta.env.VITE_EPA_AIRNOW_API_KEY;
-const AIRNOW_ENDPOINT = 'https://www.airnowapi.org/aq/observation/latLong/current/';
-
 const CACHE_DURATION_MS = 4 * 60 * 60 * 1000; // 4 hours
 let wildfireCache = null;
 let airQualityCache = null;
@@ -176,89 +172,28 @@ export const fetchAirQuality = async () => {
           }
         }
 
-        // Fallback to direct API (if key is set) or return placeholder
-        if (!EPA_API_KEY) {
-          return {
-            location: point.name,
-            aqi: null,
-            category: 'Unknown',
-            pm25: null,
-            ozone: null,
-            timestamp: new Date().toISOString(),
-            note: 'No API key configured'
-          };
-        }
-
-        try {
-          const response = await fetch(
-            `${AIRNOW_ENDPOINT}?` + new URLSearchParams({
-              format: 'application/json',
-              latitude: point.lat,
-              longitude: point.lon,
-              distance: 25,
-              API_KEY: EPA_API_KEY
-            })
-          );
-
-          if (!response.ok) {
-            throw new Error(`AirNow API responded with ${response.status}`);
-          }
-
-          const payload = await response.json();
-          if (!Array.isArray(payload) || payload.length === 0) {
-            return {
-              location: point.name,
-              aqi: null,
-              category: 'Unknown',
-              pm25: null,
-              ozone: null,
-              timestamp: new Date().toISOString(),
-              note: 'No AirNow readings returned'
-            };
-          }
-
-          const pm25Entry = payload.find(record => record.ParameterName === 'PM2.5');
-          const ozoneEntry = payload.find(record => record.ParameterName === 'O3');
-          const primary = payload[0];
-
-          return {
-            location: point.name,
-            aqi: primary?.AQI ?? null,
-            category: primary?.Category?.Name ?? 'Unknown',
-            pm25: pm25Entry?.AQI ?? null,
-            ozone: ozoneEntry?.AQI ?? null,
-            timestamp: primary?.DateObserved
-              ? `${primary.DateObserved} ${primary.HourObserved}:00 ${primary.LocalTimeZone}`
-              : new Date().toISOString(),
-            via: 'direct-api'
-          };
-        } catch (error) {
-          console.warn(`Failed to fetch AQI for ${point.name}:`, error);
-          return {
-            location: point.name,
-            aqi: null,
-            category: 'Unknown',
-            pm25: null,
-            ozone: null,
-            timestamp: new Date().toISOString(),
-            error: error.message
-          };
-        }
+        // Fallback placeholder when not authenticated
+        return {
+          location: point.name,
+          aqi: null,
+          category: 'Unknown',
+          pm25: null,
+          ozone: null,
+          timestamp: new Date().toISOString(),
+          note: 'Sign in to view live AQI data'
+        };
       })
     );
 
     // Determine source for note
     const hasEdgeData = readings.some(r => r.via === 'edge-function');
-    const hasDirectData = readings.some(r => r.via === 'direct-api');
 
     airQualityCache = {
       readings,
       timestamp: new Date().toISOString(),
       note: hasEdgeData
         ? 'Live AQI via Supabase Edge Function (authenticated)'
-        : hasDirectData
-          ? 'Live AQI via direct EPA AirNow API'
-          : 'Sign in for live AQI data'
+        : 'Sign in for live AQI data'
     };
     lastAirQualityFetch = now;
     
