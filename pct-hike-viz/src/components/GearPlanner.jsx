@@ -475,7 +475,6 @@ function GearPlanner({ data, currentUser }) {
         // rollback
         setLoadouts((prev) => ({ ...prev, [hikerId]: new Set(previousSet) }));
       } else {
-        console.log(`✅ Saved gear for ${hikerId}: ${nextSet.size} items`);
         setSyncError(null);
       }
     } catch (err) {
