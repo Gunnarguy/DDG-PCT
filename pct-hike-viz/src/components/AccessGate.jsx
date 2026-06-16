@@ -47,13 +47,8 @@ export function AccessGate({ children, requireAuth = false }) {
             Your access request has been logged.
           </p>
           <p className="gate-note">
-            If you're Dan, Drew, or Gunnar, make sure you're using the correct email:
+            Make sure you're using the email you provided to the team.
           </p>
-          <ul className="allowed-emails">
-            <li>🧭 Dan: smileyguy@aol.com</li>
-            <li>🏔️ Drew: andrew.d.hostetler@gmail.com</li>
-            <li>⚡ Gunnar: gunnarguy@me.com or gunnarguy@aol.com</li>
-          </ul>
           <button className="gate-signout" onClick={signOut}>
             Sign out and try a different email
           </button>

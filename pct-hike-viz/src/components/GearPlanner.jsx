@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { ddgTeam } from "../data/planContent";
 import { resourcesById } from "../data/resourcesIndex";
-import supabase, { getHikerIdFromEmail, supabaseReady } from "../lib/supabase";
+import supabase, { supabaseReady } from "../lib/supabase";
 
 // Weight helpers
 // - Built-in gear data is currently expressed as strings (e.g. "0.3 lb").
@@ -264,8 +264,8 @@ function GearPlanner({ data, currentUser }) {
   const [isSyncing, setIsSyncing] = useState(false);
 
   // Auto-detect hiker from auth
-  const { user } = useAuth();
-  const detectedHikerId = user?.email ? getHikerIdFromEmail(user.email) : null;
+  const { profile } = useAuth();
+  const detectedHikerId = profile?.hiker_id || null;
   const effectiveCurrentUser = detectedHikerId || currentUser || "gunnar";
 
   // If a user clicks another hiker tab, we keep that selection until they
