@@ -94,20 +94,9 @@ export function AuthProvider({ children }) {
         const hash = window.location.hash.substring(1);
 
         if (hash) {
-          console.log("[Auth] Found URL hash, attempting to parse tokens...");
           const hashParams = new URLSearchParams(hash);
           const accessToken = hashParams.get("access_token");
           const refreshToken = hashParams.get("refresh_token");
-          const tokenType = hashParams.get("type"); // 'magiclink', 'recovery', etc.
-
-          console.log(
-            "[Auth] Token type:",
-            tokenType,
-            "| Has access_token:",
-            !!accessToken,
-            "| Has refresh_token:",
-            !!refreshToken,
-          );
 
           if (accessToken && refreshToken) {
             // Manually set the session from URL params
@@ -125,10 +114,6 @@ export function AuthProvider({ children }) {
               setAuthUnavailable(true);
               setError(`Login failed: ${setSessionError.message}`);
             } else if (data.session) {
-              console.log(
-                "[Auth] Session established for:",
-                data.session.user?.email,
-              );
               // Clear the hash from URL - preserve full path including base
               const cleanUrl =
                 window.location.pathname + window.location.search;
@@ -231,12 +216,6 @@ export function AuthProvider({ children }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log(
-        "[Auth] Auth state changed:",
-        event,
-        "| User:",
-        session?.user?.email || "none",
-      );
       if (mounted) {
         setUser(session?.user ?? null);
         setError(null);
