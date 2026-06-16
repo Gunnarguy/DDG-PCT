@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { fetchWildfires, fetchAirQuality, getAQIInfo, assessHikingSafety } from '../services/wildfireService';
 import '../styles/WildfireMonitor.css';
 
@@ -198,7 +197,5 @@ function WildfireMonitor() {
     </div>
   );
 }
-
-WildfireMonitor.propTypes = {};
 
 export default WildfireMonitor;
