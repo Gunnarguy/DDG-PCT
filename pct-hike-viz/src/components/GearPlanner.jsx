@@ -411,7 +411,17 @@ function GearPlanner({ data, currentUser }) {
       const { data, error } = await supabase.from("custom_items").select("*");
       if (!isMounted) return;
       if (!error && data) {
-        data.map(normalizeCustomItem).forEach(upsertItem);
+        if (data.length > 0) {
+          const normalizedItems = data.map(normalizeCustomItem);
+          let newInvToSave;
+          setInventory((prev) => {
+            const idsToUpdate = new Set(normalizedItems.map((i) => i.id));
+            const filtered = prev.filter((i) => !idsToUpdate.has(i.id));
+            newInvToSave = [...filtered, ...normalizedItems];
+            return newInvToSave;
+          });
+          try { localStorage.setItem('pct-gear-inventory', JSON.stringify(newInvToSave)); } catch { /* ignore */ }
+        }
         setSyncError(null);
       } else if (error) {
         setSyncError(error);
