@@ -68,7 +68,7 @@ const SatelliteSMSGenerator = ({ dayItinerary }) => {
   const [selectedCheckpointIndex, setSelectedCheckpointIndex] = useState(0);
 
   const checkpoints = (dayItinerary || []).map(day => ({
-    name: day.title.split(' to ')[1] || day.title,
+    name: day.to || day.label || "Unknown Location",
     coord: day.coordinates?.[1] ? `${day.coordinates[1][1].toFixed(4)}, ${day.coordinates[1][0].toFixed(4)}` : "Unknown"
   }));
 
