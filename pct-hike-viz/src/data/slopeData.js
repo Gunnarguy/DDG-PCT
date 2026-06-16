@@ -168,6 +168,12 @@ export const terrainHazards = [
   }
 ];
 
+// Pre-compute the maximum grade for each category to avoid parsing strings during lookup
+const categoryMaxGrades = slopeCategories.map(cat => {
+  const max = parseInt(cat.range.split('-')[1]);
+  return isNaN(max) ? Infinity : max;
+});
+
 /**
  * Generate slope difficulty summary for a day
  */
@@ -175,9 +181,8 @@ export const getDayTerrainSummary = (day) => {
   const profile = sectionOTerrainProfile[`day${day}`];
   if (!profile) return null;
   
-  const category = slopeCategories.find(cat => {
-    const max = parseInt(cat.range.split('-')[1]);
-    return profile.maxGrade <= max;
+  const category = slopeCategories.find((_, index) => {
+    return profile.maxGrade <= categoryMaxGrades[index];
   }) || slopeCategories[slopeCategories.length - 1];
   
   return {
