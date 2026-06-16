@@ -16,10 +16,7 @@ import {
 } from "react";
 import {
   DDG_TEAM,
-  getHikerIdFromEmail,
   getTeamProfile,
-  isAdminEmail,
-  isAllowedEmail,
   supabase,
   supabaseConfigError,
   supabaseReady,
@@ -291,12 +288,24 @@ export function AuthProvider({ children }) {
       return { success: false, error: "Please enter an email address." };
     }
 
-    // Avoid creating unexpected auth users for random emails.
-    if (!isAllowedEmail(normalizedEmail)) {
-      const msg =
-        "This email is not on the DDG allowlist. Ask Gunnar to add it before signing in.";
-      setError(msg);
-      return { success: false, error: msg };
+    // Check database to ensure email is allowlisted before attempting sign in
+    try {
+      const { data, error: allowlistError } = await supabase
+        .from('allowed_emails')
+        .select('email')
+        .ilike('email', normalizedEmail)
+        .maybeSingle();
+
+      if (allowlistError || !data) {
+        const msg =
+          "This email is not on the DDG allowlist. Ask Gunnar to add it before signing in.";
+        setError(msg);
+        return { success: false, error: msg };
+      }
+    } catch (err) {
+      console.warn("Allowlist check failed, proceeding to attempt sign in:", err);
+      // If we can't check the allowlist (e.g., network error or permissions),
+      // we'll still let Supabase try, but this prevents most accidental signups.
     }
 
     // IMPORTANT: On GitHub Pages the app lives under /DDG-PCT/ (Vite base).
@@ -433,24 +442,6 @@ export function AuthProvider({ children }) {
     if (!user) return null;
 
     const email = user.email;
-    const isAllowed = isAllowedEmail(email);
-    const hikerId = getHikerIdFromEmail(email);
-    const isAdmin = isAdminEmail(email);
-
-    // Check if they're a whitelisted DDG team member
-    if (isAllowed && hikerId && DDG_TEAM[hikerId]) {
-      const teamInfo = DDG_TEAM[hikerId];
-      return {
-        name: teamInfo.name,
-        emoji: teamInfo.emoji,
-        role: teamInfo.role,
-        email: email,
-        hikerId: hikerId,
-        isTeamMember: true,
-        isAdmin: isAdmin,
-        accessStatus: "approved",
-      };
-    }
 
     // Check if they have a team profile (from database)
     if (profile?.hiker_id && DDG_TEAM[profile.hiker_id]) {
@@ -488,8 +479,8 @@ export function AuthProvider({ children }) {
     error,
     authUnavailable,
     isAuthenticated: !!user,
-    isTeamMember: !!user && isAllowedEmail(user?.email),
-    isAdmin: !!user && isAdminEmail(user?.email),
+    isTeamMember: !!profile,
+    isAdmin: profile?.role === "admin",
     syncStatus,
     teamRoster,
 
@@ -501,7 +492,6 @@ export function AuthProvider({ children }) {
 
     // Utilities
     supabase,
-    isAllowedEmail,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

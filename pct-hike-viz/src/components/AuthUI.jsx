@@ -132,7 +132,7 @@ function LoginModal({ onClose }) {
         )}
 
         <div className="modal-footer">
-          <p>🔒 Only Dan, Drew, and Gunnar can access team features.</p>
+          <p>🔒 Only approved team members can access team features.</p>
         </div>
       </div>
     </div>
@@ -263,7 +263,7 @@ export function LoginScreen() {
           )}
 
           <div className="login-footer">
-            <p>🔒 Only Dan, Drew, and Gunnar have access.</p>
+            <p>🔒 Only approved team members have access.</p>
           </div>
         </div>
 
