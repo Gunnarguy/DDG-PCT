@@ -27,9 +27,8 @@ let lastAirQualityFetch = 0;
 /**
  * Fetch AQI via Supabase Edge Function (authenticated, API key server-side)
  */
-const fetchAqiViaEdge = async (latitude, longitude, distance = 25) => {
+const fetchAqiViaEdge = async (session, latitude, longitude, distance = 25) => {
   try {
-    const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       return { error: 'Not authenticated', useDirectApi: true };
     }
@@ -139,8 +138,10 @@ export const fetchAirQuality = async () => {
 
     // Check if we can use the Edge Function (authenticated)
     let useEdgeFunction = false;
+    let sessionData = null;
     try {
       const { data: { session } } = await supabase.auth.getSession();
+      sessionData = session;
       useEdgeFunction = !!session;
     } catch {
       useEdgeFunction = false;
@@ -150,7 +151,7 @@ export const fetchAirQuality = async () => {
       monitoringPoints.map(async (point) => {
         // Try Edge Function first if authenticated
         if (useEdgeFunction) {
-          const edgeResult = await fetchAqiViaEdge(point.lat, point.lon);
+          const edgeResult = await fetchAqiViaEdge(sessionData, point.lat, point.lon);
           if (!edgeResult.useDirectApi && edgeResult.data) {
             const payload = edgeResult.data;
             if (Array.isArray(payload) && payload.length > 0) {
