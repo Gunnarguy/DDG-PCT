@@ -548,7 +548,7 @@ function App({ authBanner = null }) {
     setProfileHoverPoint(pointMeta);
   }, []);
 
-  const sidebarSize = `clamp(320px, ${sidebarWidth}%, 50%)`;
+  const _sidebarSize = `clamp(320px, ${sidebarWidth}%, 50%)`;
 
   if (isLoading) {
     return (
