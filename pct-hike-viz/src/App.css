@@ -1,12 +1,13 @@
 .app-shell {
-  display: flex;
-  min-height: 100dvh;
-  height: 100dvh;
-  width: 100%;
-  background: var(--sand-50);
+  display: grid;
+  grid-template-columns: 1fr clamp(320px, var(--sidebar-width, 30%), 50%);
+  height: 100vh;
+  width: 100vw;
+  background: var(--dash-bg);
   overflow: hidden;
   position: relative;
   font-family: 'Inter', 'Outfit', system-ui, sans-serif;
+  color: var(--dash-text);
 }
 
 /* Auth badge container - positioned over the map */
@@ -19,7 +20,7 @@
 
 .resize-handle {
   position: absolute;
-  right: clamp(320px, 28%, 50%);
+  right: clamp(320px, var(--sidebar-width, 30%), 50%);
   top: 0;
   bottom: 0;
   width: 8px;
@@ -27,6 +28,7 @@
   z-index: 1000;
   background: transparent;
   transition: background 0.2s ease;
+  transform: translateX(4px);
 }
 
 @media (max-width: 1023px) {
@@ -60,13 +62,12 @@
 
 .map-column {
   --map-panel-min: 320px;
-  flex: 1;
   min-width: 0;
   display: grid;
   grid-template-rows: 1fr auto;
-  height: 100dvh;
-  min-height: 100dvh;
+  height: 100vh;
   overflow: hidden;
+  border-right: 1px solid var(--dash-border);
 }
 
 .map-column .map-panel {
@@ -394,17 +395,14 @@
 }
 
 .sidebar {
-  height: 100dvh;
+  height: 100vh;
   min-width: 320px;
-  max-width: 50vw;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 1.75rem 1.9rem 2.5rem;
-  background: linear-gradient(180deg, #fff 0%, #faf8f3 100%);
-  border-left: 1px solid var(--sand-200);
-  box-shadow: -24px 0 50px rgba(46, 55, 77, 0.08);
+  padding: 1.25rem;
+  background: var(--dash-panel);
   -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
@@ -449,13 +447,9 @@
   padding-bottom: 2px;
 }
 
-.identity-switcher::-webkit-scrollbar {
-  height: 4px;
-}
-
 .identity-switcher::-webkit-scrollbar-thumb {
-  background: var(--sand-300);
-  border-radius: 999px;
+  background: var(--dash-border);
+  border-radius: 4px;
 }
 
 .identity-chip {
@@ -486,28 +480,28 @@
   align-items: center;
   gap: 0.35rem;
   padding: 0.4rem 0.75rem;
-  border: 2px solid var(--sand-200);
-  border-radius: 2rem;
-  background: #fff;
+  border: 1px solid var(--dash-border);
+  border-radius: 4px;
+  background: var(--dash-bg);
   cursor: pointer;
   transition: all 0.15s ease;
   font-size: 0.8rem;
   font-weight: 500;
-  color: var(--ink-500);
+  color: var(--dash-text-muted);
   min-height: 44px;
   touch-action: manipulation;
 }
 
 .identity-chip:hover {
-  border-color: var(--identity-color, var(--pine-300));
-  background: var(--sand-50);
+  border-color: var(--dash-border-light);
+  background: var(--dash-panel-hover);
+  color: var(--dash-text);
 }
 
 .identity-chip.is-active {
-  border-color: var(--identity-color, var(--pine-500));
-  background: color-mix(in srgb, var(--identity-color, var(--pine-500)) 10%, white);
-  color: var(--ink-700);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--identity-color, var(--pine-500)) 25%, transparent);
+  border-color: var(--dash-accent);
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--dash-accent);
 }
 
 .identity-emoji {
@@ -525,10 +519,10 @@
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  background: var(--sand-50);
-  border-radius: 0.75rem;
+  background: var(--dash-bg);
+  border-radius: 4px;
   margin-bottom: 1rem;
-  border: 1px solid var(--sand-200);
+  border: 1px solid var(--dash-border);
 }
 
 .presence-status {
@@ -541,13 +535,13 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--sand-400);
+  background: var(--dash-border-light);
 }
 
 .presence-text {
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--ink-600);
+  color: var(--dash-text);
 }
 
 .presence-avatars {
@@ -605,29 +599,29 @@
   flex-wrap: nowrap;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
-  background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0));
+  background: var(--dash-panel);
   padding-bottom: 0.75rem;
   margin-bottom: 1.5rem;
   scroll-behavior: smooth;
-    overscroll-behavior-x: contain;
+  overscroll-behavior-x: contain;
 }
 
 .sidebar__tabs::-webkit-scrollbar {
-  height: 6px;
+  height: 4px;
 }
 
 .sidebar__tabs::-webkit-scrollbar-thumb {
-  background: var(--sand-200);
-  border-radius: 999px;
+  background: var(--dash-border);
+  border-radius: 4px;
 }
 
 .tab-btn {
-  border: 1px solid var(--sand-200);
-  background: #fff;
-  border-radius: 999px;
+  border: 1px solid var(--dash-border);
+  background: var(--dash-bg);
+  border-radius: 4px;
   padding: 0.35rem 1.1rem;
   font-weight: 600;
-  color: var(--ink-500);
+  color: var(--dash-text-muted);
   cursor: pointer;
   transition: all 0.3s ease;
   flex: 0 0 auto;
@@ -639,15 +633,14 @@
 }
 
 .tab-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(41, 47, 63, 0.08);
+  border-color: var(--dash-border-light);
+  color: var(--dash-text);
 }
 
 .tab-btn.is-active {
-  border-color: var(--pine-500);
-  color: var(--pine-600);
-  box-shadow: 0 8px 24px rgba(52, 104, 85, 0.18);
-  background: var(--pine-50);
+  border-color: var(--dash-accent);
+  color: var(--dash-accent);
+  background: rgba(59, 130, 246, 0.1);
 }
 
 .sidebar__sections {
@@ -657,19 +650,16 @@
 }
 
 .sidebar-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 1.25rem;
-  border: 1px solid var(--sand-200);
-  padding: 1.25rem 1.35rem;
-  box-shadow: 0 20px 40px rgba(41, 47, 63, 0.08);
-  transition: all 0.3s ease;
+  background: var(--dash-bg);
+  border-radius: 0.5rem;
+  border: 1px solid var(--dash-border);
+  padding: 1rem;
+  box-shadow: none;
+  transition: border-color 0.2s ease;
 }
 
 .sidebar-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 24px 48px rgba(41, 47, 63, 0.12);
+  border-color: var(--dash-border-light);
 }
 
 .sidebar-card--full {
@@ -677,7 +667,8 @@
 }
 
 .hero-card {
-  background: linear-gradient(135deg, #f8f5ee, #ecf3ec);
+  background: rgba(59, 130, 246, 0.05);
+  border-color: var(--dash-accent);
 }
 
 /* Section O Facts Display */
@@ -765,10 +756,10 @@
 }
 
 .schedule-card {
-  border: 1px solid var(--sand-200);
-  border-radius: 1rem;
+  border: 1px solid var(--dash-border);
+  border-radius: 4px;
   padding: 1rem;
-  background: var(--sand-25);
+  background: var(--dash-bg);
 }
 
 .schedule-card h3 {

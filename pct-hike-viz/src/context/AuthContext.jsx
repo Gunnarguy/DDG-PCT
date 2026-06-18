@@ -56,11 +56,33 @@ export function AuthProvider({ children }) {
     }
 
     try {
-      const teamProfile = await getTeamProfile();
+      let teamProfile = await getTeamProfile();
+      
+      // Fallback if Gunnar's profile is missing from the database
+      if (!teamProfile && authUser.email?.toLowerCase() === 'gunnarguy@me.com') {
+        teamProfile = {
+          id: authUser.id,
+          name: 'Gunnar',
+          email: authUser.email,
+          role: 'admin',
+          hiker_id: 'gunnar'
+        };
+      }
+      
       setProfile(teamProfile);
     } catch (err) {
       console.warn("Failed to fetch team profile:", err);
-      setProfile(null);
+      if (authUser.email?.toLowerCase() === 'gunnarguy@me.com') {
+        setProfile({
+          id: authUser.id,
+          name: 'Gunnar',
+          email: authUser.email,
+          role: 'admin',
+          hiker_id: 'gunnar'
+        });
+      } else {
+        setProfile(null);
+      }
     }
   }, []);
 

@@ -555,18 +555,12 @@ function App({ authBanner = null }) {
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell" style={{ "--sidebar-width": `${sidebarWidth}%` }}>
       {authBanner && (
         <div className="auth-status error" style={{ margin: "12px 12px 0" }}>
           {authBanner}
         </div>
       )}
-      <div
-        className={`resize-handle ${isDragging ? "dragging" : ""}`}
-        onMouseDown={handleResizeStart}
-        style={{ right: sidebarSize }}
-        aria-label="Resize sidebar"
-      />
       <div className="map-column">
         <div className="map-panel">
           <Suspense fallback={<MapLoadingFallback />}>
@@ -598,8 +592,13 @@ function App({ authBanner = null }) {
         />
       </div>
 
+      <div
+        className={`resize-handle ${isDragging ? "dragging" : ""}`}
+        onMouseDown={handleResizeStart}
+        aria-label="Resize sidebar"
+      />
+
       <Sidebar
-        style={{ width: sidebarSize }}
         syncStatus={syncStatus}
         teamRoster={teamRoster}
         hikingTrail={hikingTrail}

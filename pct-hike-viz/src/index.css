@@ -17,6 +17,20 @@
   --pine-500: #4c8c72;
   --pine-600: #2e6750;
   --pine-700: #1f4b3a;
+
+  /* Dashboard / Dark Mode Variables */
+  --dash-bg: #0B0E14;
+  --dash-panel: #151821;
+  --dash-panel-hover: #1A1D27;
+  --dash-border: #232836;
+  --dash-border-light: #2D3344;
+  --dash-text: #E2E8F0;
+  --dash-text-muted: #94A3B8;
+  --dash-accent: #3B82F6;
+  --dash-accent-hover: #60A5FA;
+  --dash-danger: #EF4444;
+  --dash-warning: #F59E0B;
+  --dash-success: #10B981;
 }
 
 * {
@@ -26,11 +40,10 @@
 body {
   margin: 0;
   width: 100%;
-  min-height: 100dvh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  background: var(--sand-50);
-  color: var(--ink-600);
+  height: 100vh;
+  overflow: hidden;
+  background: var(--dash-bg);
+  color: var(--dash-text);
 }
 
 html {
@@ -40,7 +53,7 @@ html {
 }
 
 #root {
-  min-height: 100dvh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
