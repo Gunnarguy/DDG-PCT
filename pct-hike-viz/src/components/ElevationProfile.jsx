@@ -238,8 +238,8 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
   );
 
   const width = 1000;
-  const height = 280;
-  const margin = { top: 30, right: 50, bottom: 45, left: 70 };
+  const height = 160;
+  const margin = { top: 15, right: 50, bottom: 30, left: 70 };
 
   const totalDistance = profileData.length ? profileData[profileData.length - 1].dist : 0;
   const minElevation = profileData.length ? Math.min(...profileData.map((d) => d.ele)) : 0;
