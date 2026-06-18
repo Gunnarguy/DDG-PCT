@@ -285,6 +285,27 @@ function App({ authBanner = null }) {
     const stored = storage?.getItem(USER_STORAGE_KEY);
     return stored || ddgTeam?.[2]?.id || "gunnar";
   });
+
+  const [theme, setTheme] = useState(() => {
+    const storage = getLocalStorage();
+    return (storage && storage.getItem("theme")) || "dark";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => {
+      const next = prev === "dark" ? "light" : "dark";
+      const storage = getLocalStorage();
+      if (storage) {
+        storage.setItem("theme", next);
+      }
+      return next;
+    });
+  };
+
   const [liveSatelliteData, setLiveSatelliteData] = useState(null);
   const [liveSatelliteStatus, setLiveSatelliteStatus] = useState("idle");
   const [liveSatelliteError, setLiveSatelliteError] = useState(null);
@@ -622,6 +643,8 @@ function App({ authBanner = null }) {
         setPopupInfo={setPopupInfo}
         currentUserId={currentUserId}
         onUserChange={setCurrentUserId}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
     </div>
   );

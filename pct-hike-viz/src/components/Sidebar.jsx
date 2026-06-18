@@ -137,6 +137,8 @@ function Sidebar({
   setPopupInfo,
   currentUserId,
   onUserChange,
+  theme = "dark",
+  onToggleTheme,
 }) {
   const [activeTab, setActiveTab] = useState("mission");
   const tabsRef = useRef(null);
@@ -1443,6 +1445,15 @@ function Sidebar({
             );
           })}
         </div>
+        <button
+          type="button"
+          className="theme-toggle-btn"
+          onClick={onToggleTheme}
+          title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          aria-label="Toggle visual theme"
+        >
+          {theme === "dark" ? "☀️" : "🌙"}
+        </button>
       </div>
 
       {presenceRow}
@@ -1478,6 +1489,8 @@ function Sidebar({
 }
 
 Sidebar.propTypes = {
+  theme: PropTypes.string,
+  onToggleTheme: PropTypes.func.isRequired,
   style: PropTypes.object,
   syncStatus: PropTypes.string,
   teamRoster: PropTypes.arrayOf(
