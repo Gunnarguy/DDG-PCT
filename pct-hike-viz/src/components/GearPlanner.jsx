@@ -686,6 +686,12 @@ function GearPlanner({ data, currentUser }) {
     return groups;
   }, [inventory]);
 
+  const inventoryMap = useMemo(() => {
+    const map = new Map();
+    inventory.forEach((i) => map.set(i.id, i));
+    return map;
+  }, [inventory]);
+
   return (
     <div className="gear-planner">
       {/* Loadout Viewer - View any team member's gear */}
@@ -694,13 +700,13 @@ function GearPlanner({ data, currentUser }) {
         <div className="hiker-switcher ddg-hiker-switcher">
           {HIKERS.map((hiker) => {
             const loadout = loadouts[hiker.id];
-            const loadoutWeight = inventory
-              .filter((i) => loadout.has(i.id))
-              .reduce(
-                (sum, i) =>
-                  sum + (getWeightBucket(i) === "carried" ? i.weightVal : 0),
-                0
-              );
+            let loadoutWeight = 0;
+            loadout.forEach((id) => {
+              const i = inventoryMap.get(id);
+              if (i && getWeightBucket(i) === "carried") {
+                loadoutWeight += i.weightVal || 0;
+              }
+            });
             const isActive = activeHikerId === hiker.id;
 
             return (
@@ -780,13 +786,13 @@ function GearPlanner({ data, currentUser }) {
           <div className="summary-tags">
             {HIKERS.map((h) => {
               const loadout = loadouts[h.id] || new Set();
-              const w = inventory
-                .filter((i) => loadout.has(i.id))
-                .reduce(
-                  (s, i) =>
-                    s + (getWeightBucket(i) === "carried" ? i.weightVal : 0),
-                  0
-                );
+              let w = 0;
+              loadout.forEach((id) => {
+                const i = inventoryMap.get(id);
+                if (i && getWeightBucket(i) === "carried") {
+                  w += i.weightVal || 0;
+                }
+              });
               return (
                 <span
                   key={h.id}
@@ -834,13 +840,13 @@ function GearPlanner({ data, currentUser }) {
           <span className="team-weights-label">Team Weights:</span>
           {HIKERS.map((h) => {
             const loadout = loadouts[h.id] || new Set();
-            const w = inventory
-              .filter((i) => loadout.has(i.id))
-              .reduce(
-                (s, i) =>
-                  s + (getWeightBucket(i) === "carried" ? i.weightVal : 0),
-                0
-              );
+            let w = 0;
+            loadout.forEach((id) => {
+              const i = inventoryMap.get(id);
+              if (i && getWeightBucket(i) === "carried") {
+                w += i.weightVal || 0;
+              }
+            });
             return (
               <span
                 key={h.id}
