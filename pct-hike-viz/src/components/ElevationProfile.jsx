@@ -485,15 +485,36 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
       const mile = xScale.invert(x);
       setHoverX(x);
       
-      // Find the closest point
+      // Find the closest point using binary search
       let closestPoint = profileData[0];
-      let minDiff = Math.abs(profileData[0].dist - mile);
+      let low = 0;
+      let high = profileData.length - 1;
       
-      for (const p of profileData) {
-        const diff = Math.abs(p.dist - mile);
-        if (diff < minDiff) {
-          minDiff = diff;
-          closestPoint = p;
+      if (mile <= profileData[low].dist) {
+        closestPoint = profileData[low];
+      } else if (mile >= profileData[high].dist) {
+        closestPoint = profileData[high];
+      } else {
+        while (low <= high) {
+          const mid = (low + high) >> 1;
+          const midDist = profileData[mid].dist;
+
+          if (midDist === mile) {
+            closestPoint = profileData[mid];
+            break;
+          }
+
+          if (midDist < mile) {
+            low = mid + 1;
+          } else {
+            high = mid - 1;
+          }
+        }
+
+        if (low > high) {
+          const highDiff = Math.abs(profileData[high].dist - mile);
+          const lowDiff = Math.abs(profileData[low].dist - mile);
+          closestPoint = highDiff < lowDiff ? profileData[high] : profileData[low];
         }
       }
       
