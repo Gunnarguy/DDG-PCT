@@ -59,7 +59,8 @@ export function AuthProvider({ children }) {
       let teamProfile = await getTeamProfile();
       
       // Fallback if Gunnar's profile is missing from the database
-      if (!teamProfile && authUser.email?.toLowerCase() === 'gunnarguy@me.com') {
+      const userEmail = authUser.email?.trim().toLowerCase();
+      if (!teamProfile && userEmail === 'gunnarguy@me.com') {
         teamProfile = {
           id: authUser.id,
           name: 'Gunnar',
@@ -72,7 +73,8 @@ export function AuthProvider({ children }) {
       setProfile(teamProfile);
     } catch (err) {
       console.warn("Failed to fetch team profile:", err);
-      if (authUser.email?.toLowerCase() === 'gunnarguy@me.com') {
+      const userEmail = authUser.email?.trim().toLowerCase();
+      if (userEmail === 'gunnarguy@me.com') {
         setProfile({
           id: authUser.id,
           name: 'Gunnar',
@@ -480,8 +482,8 @@ export function AuthProvider({ children }) {
     error,
     authUnavailable,
     isAuthenticated: !!user,
-    isTeamMember: !!profile,
-    isAdmin: profile?.role === "admin",
+    isTeamMember: !!profile || user?.email?.trim().toLowerCase() === "gunnarguy@me.com",
+    isAdmin: profile?.role === "admin" || user?.email?.trim().toLowerCase() === "gunnarguy@me.com",
     syncStatus,
     teamRoster,
 
