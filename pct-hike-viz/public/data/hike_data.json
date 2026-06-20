@@ -16,7 +16,8 @@
         "day": 0,
         "itinerary": "express",
         "segment": "Start of journey",
-        "mile": 1416.5
+        "mile": 1416.5,
+        "routeMile": 0
       }
     },
     {
@@ -34,7 +35,8 @@
         "day": 1,
         "itinerary": "express",
         "segment": "Day 1 push",
-        "mile": 1425.7
+        "mile": 1425.7,
+        "routeMile": 9.21093381560299
       }
     },
     {
@@ -52,7 +54,8 @@
         "day": 2,
         "itinerary": "express",
         "segment": "Day 2 push",
-        "mile": 1434.9
+        "mile": 1434.9,
+        "routeMile": 18.42186763120598
       }
     },
     {
@@ -70,7 +73,8 @@
         "day": 3,
         "itinerary": "express",
         "segment": "Day 3 push",
-        "mile": 1444.1
+        "mile": 1444.1,
+        "routeMile": 27.63280144680897
       }
     },
     {
@@ -88,7 +92,8 @@
         "day": 4,
         "itinerary": "express",
         "segment": "Day 4 push",
-        "mile": 1453.3
+        "mile": 1453.3,
+        "routeMile": 36.84373526241196
       }
     },
     {
@@ -106,7 +111,8 @@
         "day": 5,
         "itinerary": "express",
         "segment": "Day 5 push",
-        "mile": 1462.6
+        "mile": 1462.6,
+        "routeMile": 46.05466907801495
       }
     },
     {
@@ -124,7 +130,8 @@
         "day": 6,
         "itinerary": "express",
         "segment": "Day 6 push",
-        "mile": 1471.8
+        "mile": 1471.8,
+        "routeMile": 55.26560289361794
       }
     },
     {
@@ -142,7 +149,8 @@
         "day": 7,
         "itinerary": "express",
         "segment": "Day 7 push",
-        "mile": 1481
+        "mile": 1481,
+        "routeMile": 64.47653670922094
       }
     },
     {
@@ -160,7 +168,8 @@
         "day": 8,
         "itinerary": "express",
         "segment": "Day 8 push",
-        "mile": 1490.2
+        "mile": 1490.2,
+        "routeMile": 73.68747052482392
       }
     },
     {
@@ -178,7 +187,8 @@
         "day": 9,
         "itinerary": "express",
         "segment": "Final descent to park",
-        "mile": 1499.4
+        "mile": 1499.4,
+        "routeMile": 82.89840434042691
       }
     },
     {
@@ -196,7 +206,8 @@
         "day": 0,
         "itinerary": "relaxed",
         "segment": "Start of journey",
-        "mile": 1416.5
+        "mile": 1416.5,
+        "routeMile": 0
       }
     },
     {
@@ -214,7 +225,8 @@
         "day": 1,
         "itinerary": "relaxed",
         "segment": "Day 1 push",
-        "mile": 1421.7
+        "mile": 1421.7,
+        "routeMile": 5.181150271276682
       }
     },
     {
@@ -232,7 +244,8 @@
         "day": 2,
         "itinerary": "relaxed",
         "segment": "Day 2 push",
-        "mile": 1426.9
+        "mile": 1426.9,
+        "routeMile": 10.362300542553363
       }
     },
     {
@@ -250,7 +263,8 @@
         "day": 3,
         "itinerary": "relaxed",
         "segment": "Day 3 push",
-        "mile": 1432
+        "mile": 1432,
+        "routeMile": 15.543450813830045
       }
     },
     {
@@ -268,7 +282,8 @@
         "day": 4,
         "itinerary": "relaxed",
         "segment": "Day 4 push",
-        "mile": 1437.2
+        "mile": 1437.2,
+        "routeMile": 20.724601085106727
       }
     },
     {
@@ -286,7 +301,8 @@
         "day": 5,
         "itinerary": "relaxed",
         "segment": "Day 5 push",
-        "mile": 1442.4
+        "mile": 1442.4,
+        "routeMile": 25.90575135638341
       }
     },
     {
@@ -304,7 +320,8 @@
         "day": 6,
         "itinerary": "relaxed",
         "segment": "Day 6 push",
-        "mile": 1447.6
+        "mile": 1447.6,
+        "routeMile": 31.08690162766009
       }
     },
     {
@@ -322,7 +339,8 @@
         "day": 7,
         "itinerary": "relaxed",
         "segment": "Day 7 push",
-        "mile": 1452.8
+        "mile": 1452.8,
+        "routeMile": 36.268051898936776
       }
     },
     {
@@ -340,7 +358,8 @@
         "day": 8,
         "itinerary": "relaxed",
         "segment": "Day 8 push",
-        "mile": 1457.9
+        "mile": 1457.9,
+        "routeMile": 41.449202170213454
       }
     },
     {
@@ -358,7 +377,8 @@
         "day": 9,
         "itinerary": "relaxed",
         "segment": "Day 9 push",
-        "mile": 1463.1
+        "mile": 1463.1,
+        "routeMile": 46.63035244149013
       }
     },
     {
@@ -376,7 +396,8 @@
         "day": 10,
         "itinerary": "relaxed",
         "segment": "Day 10 push",
-        "mile": 1468.3
+        "mile": 1468.3,
+        "routeMile": 51.81150271276682
       }
     },
     {
@@ -394,7 +415,8 @@
         "day": 11,
         "itinerary": "relaxed",
         "segment": "Day 11 push",
-        "mile": 1473.5
+        "mile": 1473.5,
+        "routeMile": 56.9926529840435
       }
     },
     {
@@ -412,7 +434,8 @@
         "day": 12,
         "itinerary": "relaxed",
         "segment": "Day 12 push",
-        "mile": 1478.7
+        "mile": 1478.7,
+        "routeMile": 62.17380325532018
       }
     },
     {
@@ -430,7 +453,8 @@
         "day": 13,
         "itinerary": "relaxed",
         "segment": "Day 13 push",
-        "mile": 1483.9
+        "mile": 1483.9,
+        "routeMile": 67.35495352659686
       }
     },
     {
@@ -448,7 +472,8 @@
         "day": 14,
         "itinerary": "relaxed",
         "segment": "Day 14 push",
-        "mile": 1489
+        "mile": 1489,
+        "routeMile": 72.53610379787355
       }
     },
     {
@@ -466,7 +491,8 @@
         "day": 15,
         "itinerary": "relaxed",
         "segment": "Day 15 push",
-        "mile": 1494.2
+        "mile": 1494.2,
+        "routeMile": 77.71725406915023
       }
     },
     {
@@ -484,7 +510,8 @@
         "day": 16,
         "itinerary": "relaxed",
         "segment": "Final descent to park",
-        "mile": 1499.4
+        "mile": 1499.4,
+        "routeMile": 82.89840434042691
       }
     }
   ],
