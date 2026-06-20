@@ -7,7 +7,6 @@ import {
   satelliteDevices,
 } from "../data/connectivityData";
 import {
-  dayItinerary,
   ddgTeam,
   sectionOMeta,
   tripStats,
@@ -120,7 +119,6 @@ function Sidebar({
   campPoints,
   waterSources,
   waterSourceMeta,
-  scheduleOptions,
   travelPlan,
   resupplyPlan,
   permitChecklist,
