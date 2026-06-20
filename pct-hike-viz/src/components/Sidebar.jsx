@@ -1355,18 +1355,18 @@ function Sidebar({
 
       {presenceRow}
 
-      <div className="global-itinerary-toggle" style={{ margin: '0 16px 16px 16px', display: 'flex', gap: '8px', background: 'var(--slate-800)', padding: '4px', borderRadius: '8px' }}>
+      <div className="global-itinerary-toggle" style={{ margin: '0 16px 16px 16px', display: 'flex', gap: '8px', background: 'var(--dash-panel)', padding: '4px', borderRadius: '8px', border: '1px solid var(--dash-border)' }}>
         <button
           type="button"
           onClick={() => onItineraryChange("express")}
-          style={{ flex: 1, padding: '8px', borderRadius: '4px', background: selectedItinerary === "express" ? 'var(--pine-500)' : 'transparent', color: selectedItinerary === "express" ? 'white' : 'var(--text-muted)', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.85rem' }}
+          style={{ flex: 1, padding: '8px', borderRadius: '4px', background: selectedItinerary === "express" ? 'var(--pine-500)' : 'transparent', color: selectedItinerary === "express" ? '#ffffff' : 'var(--dash-text-muted)', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.85rem' }}
         >
           ⚡ 9-Day Express
         </button>
         <button
           type="button"
           onClick={() => onItineraryChange("relaxed")}
-          style={{ flex: 1, padding: '8px', borderRadius: '4px', background: selectedItinerary === "relaxed" ? 'var(--pine-500)' : 'transparent', color: selectedItinerary === "relaxed" ? 'white' : 'var(--text-muted)', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.85rem' }}
+          style={{ flex: 1, padding: '8px', borderRadius: '4px', background: selectedItinerary === "relaxed" ? 'var(--pine-500)' : 'transparent', color: selectedItinerary === "relaxed" ? '#ffffff' : 'var(--dash-text-muted)', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.85rem' }}
         >
           🏕️ 16-Day Relaxed
         </button>
