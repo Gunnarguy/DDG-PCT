@@ -17,7 +17,8 @@
         "itinerary": "express",
         "segment": "Start of journey",
         "mile": 1416.5,
-        "routeMile": 0
+        "routeMile": 0,
+        "type": "Trailhead"
       }
     },
     {
@@ -188,7 +189,8 @@
         "itinerary": "express",
         "segment": "Final descent to park",
         "mile": 1499.4,
-        "routeMile": 82.89840434042691
+        "routeMile": 82.89840434042691,
+        "type": "Finish"
       }
     },
     {
@@ -207,7 +209,8 @@
         "itinerary": "relaxed",
         "segment": "Start of journey",
         "mile": 1416.5,
-        "routeMile": 0
+        "routeMile": 0,
+        "type": "Trailhead"
       }
     },
     {
@@ -511,7 +514,8 @@
         "itinerary": "relaxed",
         "segment": "Final descent to park",
         "mile": 1499.4,
-        "routeMile": 82.89840434042691
+        "routeMile": 82.89840434042691,
+        "type": "Finish"
       }
     }
   ],
