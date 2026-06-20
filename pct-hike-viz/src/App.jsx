@@ -275,6 +275,7 @@ function App({ authBanner = null }) {
   const [popupInfo, setPopupInfo] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState("topo");
   const { syncStatus, teamRoster } = useAuth();
+  const [selectedItinerary, setSelectedItinerary] = useState("express"); // "express" or "relaxed"
   // Fetch hike data from public/data at runtime
   const [hikeData, setHikeData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -463,9 +464,9 @@ function App({ authBanner = null }) {
   const campPoints = useMemo(() => {
     if (!hikeData) return [];
     return [...hikeData.features]
-      .filter((feature) => feature.properties.day >= 0)
+      .filter((feature) => feature.properties.day >= 0 && feature.properties.itinerary === selectedItinerary)
       .sort((a, b) => a.properties.day - b.properties.day);
-  }, [hikeData]);
+  }, [hikeData, selectedItinerary]);
 
   const hikingTrail = useMemo(() => {
     if (!hikeData) return [];
@@ -646,6 +647,8 @@ function App({ authBanner = null }) {
         onUserChange={setCurrentUserId}
         theme={theme}
         onToggleTheme={toggleTheme}
+        selectedItinerary={selectedItinerary}
+        onItineraryChange={setSelectedItinerary}
       />
     </div>
   );

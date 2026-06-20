@@ -64,12 +64,12 @@ const SATELLITE_SECTION_CONFIG = [
   },
 ];
 
-const SatelliteSMSGenerator = ({ dayItinerary }) => {
+const SatelliteSMSGenerator = ({ campPoints }) => {
   const [selectedCheckpointIndex, setSelectedCheckpointIndex] = useState(0);
 
-  const checkpoints = (dayItinerary || []).map(day => ({
-    name: day.to || day.label || "Unknown Location",
-    coord: day.coordinates?.[1] ? `${day.coordinates[1][1].toFixed(4)}, ${day.coordinates[1][0].toFixed(4)}` : "Unknown"
+  const checkpoints = (campPoints || []).map(camp => ({
+    name: camp.properties.name || "Unknown Location",
+    coord: camp.geometry.coordinates ? `${camp.geometry.coordinates[1].toFixed(4)}, ${camp.geometry.coordinates[0].toFixed(4)}` : "Unknown"
   }));
 
   const handleCopyStatus = () => {
@@ -139,6 +139,8 @@ function Sidebar({
   onUserChange,
   theme = "dark",
   onToggleTheme,
+  selectedItinerary,
+  onItineraryChange,
 }) {
   const [activeTab, setActiveTab] = useState("mission");
   const tabsRef = useRef(null);
@@ -501,8 +503,8 @@ function Sidebar({
           </div>
         </div>
         <div className="quick-ref-dates">
-          <span className="date-badge">📅 {scheduleOptions[0].dates}</span>
-          <span className="date-note">9-day express schedule</span>
+          <span className="date-badge">📅 {selectedItinerary === "express" ? "Aug 29 – Sept 6" : "Aug 22 – Sept 6"}</span>
+          <span className="date-note">{selectedItinerary === "express" ? "9-day express schedule" : "16-day relaxed schedule"}</span>
         </div>
       </section>
 
@@ -665,9 +667,28 @@ function Sidebar({
           </div>
         </div>
 
+        <div className="itinerary-toggle-container" style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: 'var(--slate-800)', padding: '4px', borderRadius: '8px' }}>
+          <button
+            type="button"
+            className={`itinerary-toggle-btn ${selectedItinerary === "express" ? "is-active" : ""}`}
+            onClick={() => onItineraryChange("express")}
+            style={{ flex: 1, padding: '8px', borderRadius: '4px', background: selectedItinerary === "express" ? 'var(--pine-500)' : 'transparent', color: selectedItinerary === "express" ? 'white' : 'var(--text-muted)', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+          >
+            ⚡ 9-Day Express
+          </button>
+          <button
+            type="button"
+            className={`itinerary-toggle-btn ${selectedItinerary === "relaxed" ? "is-active" : ""}`}
+            onClick={() => onItineraryChange("relaxed")}
+            style={{ flex: 1, padding: '8px', borderRadius: '4px', background: selectedItinerary === "relaxed" ? 'var(--pine-500)' : 'transparent', color: selectedItinerary === "relaxed" ? 'white' : 'var(--text-muted)', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+          >
+            🏕️ 16-Day Relaxed
+          </button>
+        </div>
+
         <div className="trip-stats-grid">
           <div className="trip-stat">
-            <span className="stat-value">{tripStats.hikingDays}</span>
+            <span className="stat-value">{campPoints.length > 0 ? campPoints[campPoints.length - 1].properties.day : 0}</span>
             <span className="stat-label">Days Hiking</span>
           </div>
           <div className="trip-stat">
@@ -677,7 +698,7 @@ function Sidebar({
           <div className="trip-stat">
             <span className="stat-value">
               {(
-                (basePlanMiles || tripStats.totalMiles) / tripStats.hikingDays
+                (basePlanMiles || tripStats.totalMiles) / (campPoints.length > 0 ? campPoints[campPoints.length - 1].properties.day : 1)
               ).toFixed(1)}
             </span>
             <span className="stat-label">Avg/Day</span>
@@ -723,144 +744,41 @@ function Sidebar({
           </span>
         </div>
         <div className="itinerary-list itinerary-list--detailed">
-          {dayItinerary.map((day) => (
-            <button
-              type="button"
-              key={day.day}
-              className={`day-card day-card--detailed ${
-                day.type === "drive" ? "day-card--drive" : ""
-              }`}
-              onClick={() => onSelectPoint(day.day)}
-            >
-              {/* Header Row */}
-              <div className="day-card__header">
-                <div className="day-card__day-info">
-                  <span
-                    className="day-pill"
-                    style={{
-                      backgroundColor: day.gradient
-                        ? getGradientColor(day.gradient)
-                        : undefined,
-                    }}
-                  >
-                    {day.label}
-                  </span>
-                  {day.gradient && (
-                    <span
-                      className="gradient-badge"
-                      style={{ color: getGradientColor(day.gradient) }}
-                    >
-                      {day.gradient}
+          {campPoints.slice(1).map((camp, idx) => {
+            const day = camp.properties.day;
+            const prevCamp = campPoints[idx];
+            const dist = camp.properties.mile - prevCamp.properties.mile;
+            return (
+              <button
+                type="button"
+                key={day}
+                className="day-card day-card--detailed"
+                onClick={() => onSelectPoint(day)}
+              >
+                <div className="day-card__header">
+                  <div className="day-card__day-info">
+                    <span className="day-pill" style={{ backgroundColor: getGradientColor(dist > 12 ? "hard" : "moderate") }}>
+                      Day {day}
                     </span>
-                  )}
+                  </div>
+                  <div className="day-card__distance">
+                    <span className="distance-value">{dist.toFixed(1)}</span>
+                    <span className="distance-unit">mi</span>
+                  </div>
                 </div>
-                <div className="day-card__distance">
-                  <span className="distance-value">{day.distance}</span>
-                  <span className="distance-unit">
-                    {day.type === "drive" ? "hr drive" : "mi"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Route */}
-              <h3 className="day-card__route">
-                {day.from} → {day.to}
-              </h3>
-
-              {/* Elevation Stats */}
-              {day.type === "hike" && (
-                <div className="day-card__elevation-row">
-                  <span className="elev-stat elev-start">
-                    📍 {day.elevation.start.toLocaleString()}'
-                  </span>
-                  <span className="elev-arrow">→</span>
-                  <span className="elev-stat elev-end">
-                    🏕️ {day.elevation.end.toLocaleString()}'
-                  </span>
-                  <span className="elev-stat elev-gain">
-                    ↗️ +{day.elevation.gain.toLocaleString()}'
+                <h3 className="day-card__route">
+                  {prevCamp.properties.name} → {camp.properties.name}
+                </h3>
+                <p className="day-card__terrain">PCT segment through Section O</p>
+                <div className="day-card__indicators">
+                  <span className="indicator-chip indicator-water" title="Water sources">
+                    💧 Check water map
                   </span>
                 </div>
-              )}
-
-              {/* Terrain */}
-              <p className="day-card__terrain">{day.terrain}</p>
-
-              {/* Quick indicators row: water + connectivity */}
-              <div className="day-card__indicators">
-                {/* Water carry summary */}
-                {day.waterCarry && (
-                  <span
-                    className="indicator-chip indicator-water"
-                    title={day.waterCarry}
-                  >
-                    💧 {day.waterSources?.length || 0} sources
-                  </span>
-                )}
-
-                {/* Connectivity */}
-                <div className="day-card__connectivity">
-                  <span
-                    className={`signal-dot ${
-                      day.connectivity.verizon !== "none"
-                        ? "has-signal"
-                        : "no-signal"
-                    }`}
-                    title={`Verizon: ${day.connectivity.verizon}`}
-                  >
-                    V
-                  </span>
-                  <span
-                    className={`signal-dot ${
-                      day.connectivity.att !== "none"
-                        ? "has-signal"
-                        : "no-signal"
-                    }`}
-                    title={`AT&T: ${day.connectivity.att}`}
-                  >
-                    A
-                  </span>
-                  <span
-                    className={`signal-dot ${
-                      day.connectivity.tmobile !== "none"
-                        ? "has-signal"
-                        : "no-signal"
-                    }`}
-                    title={`T-Mobile: ${day.connectivity.tmobile}`}
-                  >
-                    T
-                  </span>
-                  {day.connectivity.satellite && (
-                    <span
-                      className="satellite-icon"
-                      title="Satellite available"
-                    >
-                      📡
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Camp Features */}
-              {day.campFeatures && (
-                <div className="day-card__features">
-                  {day.campFeatures.slice(0, 3).map((feat, i) => (
-                    <span key={i} className="feature-chip">
-                      {feat}
-                    </span>
-                  ))}
-                  {day.campFeatures.length > 3 && (
-                    <span className="feature-chip feature-more">
-                      +{day.campFeatures.length - 3}
-                    </span>
-                  )}
-                </div>
-              )}
-
-              {/* Notes */}
-              <p className="day-card__notes">{day.notes}</p>
-            </button>
-          ))}
+                <p className="day-card__notes">{camp.properties.segment}</p>
+              </button>
+            );
+          })}
         </div>
       </section>
 
@@ -1187,7 +1105,7 @@ function Sidebar({
   const renderConnectivity = () => {
     return (
     <>
-      <SatelliteSMSGenerator dayItinerary={dayItinerary} />
+      <SatelliteSMSGenerator campPoints={campPoints} />
 
       {/* Mission Control Log */}
       <section className="sidebar-card sidebar-card--full">
