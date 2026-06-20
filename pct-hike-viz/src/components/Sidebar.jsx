@@ -667,25 +667,6 @@ function Sidebar({
           </div>
         </div>
 
-        <div className="itinerary-toggle-container" style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: 'var(--slate-800)', padding: '4px', borderRadius: '8px' }}>
-          <button
-            type="button"
-            className={`itinerary-toggle-btn ${selectedItinerary === "express" ? "is-active" : ""}`}
-            onClick={() => onItineraryChange("express")}
-            style={{ flex: 1, padding: '8px', borderRadius: '4px', background: selectedItinerary === "express" ? 'var(--pine-500)' : 'transparent', color: selectedItinerary === "express" ? 'white' : 'var(--text-muted)', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
-          >
-            ⚡ 9-Day Express
-          </button>
-          <button
-            type="button"
-            className={`itinerary-toggle-btn ${selectedItinerary === "relaxed" ? "is-active" : ""}`}
-            onClick={() => onItineraryChange("relaxed")}
-            style={{ flex: 1, padding: '8px', borderRadius: '4px', background: selectedItinerary === "relaxed" ? 'var(--pine-500)' : 'transparent', color: selectedItinerary === "relaxed" ? 'white' : 'var(--text-muted)', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
-          >
-            🏕️ 16-Day Relaxed
-          </button>
-        </div>
-
         <div className="trip-stats-grid">
           <div className="trip-stat">
             <span className="stat-value">{campPoints.length > 0 ? campPoints[campPoints.length - 1].properties.day : 0}</span>
@@ -1375,6 +1356,23 @@ function Sidebar({
       </div>
 
       {presenceRow}
+
+      <div className="global-itinerary-toggle" style={{ margin: '0 16px 16px 16px', display: 'flex', gap: '8px', background: 'var(--slate-800)', padding: '4px', borderRadius: '8px' }}>
+        <button
+          type="button"
+          onClick={() => onItineraryChange("express")}
+          style={{ flex: 1, padding: '8px', borderRadius: '4px', background: selectedItinerary === "express" ? 'var(--pine-500)' : 'transparent', color: selectedItinerary === "express" ? 'white' : 'var(--text-muted)', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.85rem' }}
+        >
+          ⚡ 9-Day Express
+        </button>
+        <button
+          type="button"
+          onClick={() => onItineraryChange("relaxed")}
+          style={{ flex: 1, padding: '8px', borderRadius: '4px', background: selectedItinerary === "relaxed" ? 'var(--pine-500)' : 'transparent', color: selectedItinerary === "relaxed" ? 'white' : 'var(--text-muted)', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.85rem' }}
+        >
+          🏕️ 16-Day Relaxed
+        </button>
+      </div>
 
       <nav
         ref={tabsRef}
