@@ -549,9 +549,6 @@ function App({ authBanner = null }) {
     setProfileHoverPoint(pointMeta);
   }, []);
 
-  // eslint-disable-next-line no-unused-vars
-  const sidebarSize = `clamp(320px, ${sidebarWidth}%, 50%)`;
-
   if (isLoading) {
     return (
       <div className="app-shell">
