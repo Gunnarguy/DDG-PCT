@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { getAQIInfo } from './wildfireService';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { getAQIInfo, fetchWildfires } from './wildfireService';
 
 describe('getAQIInfo', () => {
   it('should return Unknown for null or undefined', () => {
@@ -40,5 +40,54 @@ describe('getAQIInfo', () => {
   it('should return Hazardous for AQI > 300', () => {
     expect(getAQIInfo(301)).toEqual({ category: 'Hazardous', color: '#7E0023', emoji: '☠️' });
     expect(getAQIInfo(500)).toEqual({ category: 'Hazardous', color: '#7E0023', emoji: '☠️' });
+  });
+});
+
+describe('fetchWildfires', () => {
+  const originalFetch = global.fetch;
+  const originalConsoleError = console.error;
+
+  beforeEach(() => {
+    global.fetch = vi.fn();
+    console.error = vi.fn();
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    console.error = originalConsoleError;
+  });
+
+  it('should return fallback object when fetch rejects', async () => {
+    const errorMsg = 'Network Error';
+    global.fetch.mockRejectedValueOnce(new Error(errorMsg));
+
+    const result = await fetchWildfires();
+
+    expect(global.fetch).toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith('Failed to fetch wildfire data:', expect.any(Error));
+    expect(result).toEqual({
+      fires: [],
+      timestamp: null,
+      count: 0,
+      error: errorMsg
+    });
+  });
+
+  it('should return fallback object when fetch returns non-ok status', async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: false,
+      status: 500
+    });
+
+    const result = await fetchWildfires();
+
+    expect(global.fetch).toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith('Failed to fetch wildfire data:', expect.any(Error));
+    expect(result).toEqual({
+      fires: [],
+      timestamp: null,
+      count: 0,
+      error: 'Wildfire API returned 500'
+    });
   });
 });
