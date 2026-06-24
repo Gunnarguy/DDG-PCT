@@ -5,16 +5,6 @@ import json
 from pathlib import Path
 from math import radians, cos, sin, asin, sqrt
 
-# Load data
-script_dir = Path(__file__).parent
-data_path = script_dir.parent / 'src' / 'hike_data.json'
-with open(data_path) as f:
-    data = json.load(f)
-
-route_coords = data.get('route', {}).get('path', data.get('route', {}).get('geometry', {}).get('coordinates', []))
-camps = [f for f in data['features'] if f['properties'].get('day', -1) >= 0]
-camps.sort(key=lambda x: x['properties']['day'])
-
 def haversine(lon1, lat1, lon2, lat2):
     lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
     dlon = lon2 - lon1
@@ -23,7 +13,7 @@ def haversine(lon1, lat1, lon2, lat2):
     c = 2 * asin(sqrt(a))
     return 6371000 * c  # meters
 
-def find_nearest_route_point(camp_coords):
+def find_nearest_route_point(camp_coords, route_coords):
     """Find nearest point on route to a camp."""
     min_dist = float('inf')
     nearest = None
@@ -44,10 +34,8 @@ def smooth_elevations(coords, window=5):
         smoothed.append(sum(window_vals) / len(window_vals))
     return smoothed
 
-smoothed_elevations = smooth_elevations(route_coords)
-
 # Calculate gain/loss between points using 10ft threshold
-def calc_gain_loss(start_idx, end_idx):
+def calc_gain_loss(start_idx, end_idx, smoothed_elevations):
     gain = loss = 0
     last_counted = smoothed_elevations[start_idx]
     THRESHOLD = 10
@@ -63,50 +51,66 @@ def calc_gain_loss(start_idx, end_idx):
     
     return round(gain), round(loss)
 
-print("SCIENTIFICALLY ACCURATE ELEVATION DATA")
-print("=" * 80)
-print("Based on GPS route data with 5-point smoothing + 10ft threshold\n")
+def main():
+    # Load data
+    script_dir = Path(__file__).parent
+    data_path = script_dir.parent / 'src' / 'hike_data.json'
+    with open(data_path) as f:
+        data = json.load(f)
 
-# Map camps to route indices
-camp_route_indices = []
-for camp in camps:
-    camp_coords = camp['geometry']['coordinates']
-    nearest_pt = find_nearest_route_point(camp_coords)
-    if nearest_pt is None:
-        print(f"Warning: Could not find route point for {camp['properties']['name']}")
-        continue
-    idx = route_coords.index(nearest_pt)
-    camp_route_indices.append((camp['properties']['day'], camp['properties']['name'], idx, nearest_pt[2]))
+    route_coords = data.get('route', {}).get('path', data.get('route', {}).get('geometry', {}).get('coordinates', []))
+    camps = [f for f in data['features'] if f['properties'].get('day', -1) >= 0]
+    camps.sort(key=lambda x: x['properties']['day'])
 
-for i, (day, name, idx, elev) in enumerate(camp_route_indices):
-    if i == 0:
-        print(f"Day {day} (Start): {name}")
-        print(f"  Elevation: {elev:.0f} ft")
+    smoothed_elevations = smooth_elevations(route_coords)
+
+    print("SCIENTIFICALLY ACCURATE ELEVATION DATA")
+    print("=" * 80)
+    print("Based on GPS route data with 5-point smoothing + 10ft threshold\n")
+    
+    # Map camps to route indices
+    camp_route_indices = []
+    for camp in camps:
+        camp_coords = camp['geometry']['coordinates']
+        nearest_pt = find_nearest_route_point(camp_coords, route_coords)
+        if nearest_pt is None:
+            print(f"Warning: Could not find route point for {camp['properties']['name']}")
+            continue
+        idx = route_coords.index(nearest_pt)
+        camp_route_indices.append((camp['properties']['day'], camp['properties']['name'], idx, nearest_pt[2]))
+    
+    for i, (day, name, idx, elev) in enumerate(camp_route_indices):
+        if i == 0:
+            print(f"Day {day} (Start): {name}")
+            print(f"  Elevation: {elev:.0f} ft")
+            print()
+            continue
+
+        prev_day, prev_name, prev_idx, prev_elev = camp_route_indices[i-1]
+        gain, loss = calc_gain_loss(prev_idx, idx, smoothed_elevations)
+
+        # Calculate distance
+        segment_dist = sum(haversine(route_coords[j][0], route_coords[j][1],
+                                      route_coords[j+1][0], route_coords[j+1][1])
+                            for j in range(prev_idx, idx)) / 1609.34
+
+        print(f"Day {day}: {prev_name} → {name}")
+        print(f"  Start elevation: {prev_elev:.0f} ft")
+        print(f"  End elevation: {elev:.0f} ft")
+        print(f"  Net change: {elev - prev_elev:+.0f} ft")
+        print(f"  Cumulative gain: +{gain} ft")
+        print(f"  Cumulative loss: -{loss} ft")
+        print(f"  Distance: {segment_dist:.1f} mi")
         print()
-        continue
     
-    prev_day, prev_name, prev_idx, prev_elev = camp_route_indices[i-1]
-    gain, loss = calc_gain_loss(prev_idx, idx)
-    
-    # Calculate distance
-    segment_dist = sum(haversine(route_coords[j][0], route_coords[j][1], 
-                                  route_coords[j+1][0], route_coords[j+1][1]) 
-                        for j in range(prev_idx, idx)) / 1609.34
-    
-    print(f"Day {day}: {prev_name} → {name}")
-    print(f"  Start elevation: {prev_elev:.0f} ft")
-    print(f"  End elevation: {elev:.0f} ft")
-    print(f"  Net change: {elev - prev_elev:+.0f} ft")
-    print(f"  Cumulative gain: +{gain} ft")
-    print(f"  Cumulative loss: -{loss} ft")
-    print(f"  Distance: {segment_dist:.1f} mi")
-    print()
+    print("\nJavaScript format for planContent.js:\n")
+    for i, (day, name, idx, elev) in enumerate(camp_route_indices):
+        if i == 0:
+            continue
+        prev_day, prev_name, prev_idx, prev_elev = camp_route_indices[i-1]
+        gain, loss = calc_gain_loss(prev_idx, idx, smoothed_elevations)
+        print(f"  // Day {day}")
+        print(f"  elevation: {{ start: {prev_elev:.0f}, end: {elev:.0f}, gain: {gain}, loss: {loss} }},")
 
-print("\nJavaScript format for planContent.js:\n")
-for i, (day, name, idx, elev) in enumerate(camp_route_indices):
-    if i == 0:
-        continue
-    prev_day, prev_name, prev_idx, prev_elev = camp_route_indices[i-1]
-    gain, loss = calc_gain_loss(prev_idx, idx)
-    print(f"  // Day {day}")
-    print(f"  elevation: {{ start: {prev_elev:.0f}, end: {elev:.0f}, gain: {gain}, loss: {loss} }},")
+if __name__ == '__main__':
+    main()
