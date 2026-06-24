@@ -411,8 +411,22 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
   const getElevationAtMile = useCallback((mile) => {
     if (!profileData.length) return null;
     if (mile <= 0) return profileData[0].ele;
-    const point = profileData.find((d) => d.dist >= mile);
-    return (point ?? profileData[profileData.length - 1]).ele;
+
+    let low = 0;
+    let high = profileData.length - 1;
+    let result = profileData[high];
+
+    while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+      if (profileData[mid].dist >= mile) {
+        result = profileData[mid];
+        high = mid - 1;
+      } else {
+        low = mid + 1;
+      }
+    }
+
+    return result.ele;
   }, [profileData]);
 
   // Map camp points to the profile with enhanced data
