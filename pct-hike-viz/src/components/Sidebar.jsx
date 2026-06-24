@@ -175,8 +175,9 @@ function Sidebar({
     };
   }, []);
 
-  const activeUser =
-    ddgTeam.find((member) => member.id === currentUserId) || ddgTeam[2];
+  const activeUser = useMemo(() => {
+    return ddgTeam.find((member) => member.id === currentUserId) || ddgTeam[2];
+  }, [currentUserId]);
   const activeUserName = activeUser?.name || "Gunnar";
   const stats = computedStats ?? tripStats;
   const blackoutMiles =
