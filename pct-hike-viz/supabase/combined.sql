@@ -129,13 +129,13 @@ drop policy if exists "access_requests_select_admin" on access_requests;
 drop policy if exists "allowed_emails_select_all" on allowed_emails;
 
 -- Permissive policies (anonymous read/write). Tighten as needed when auth is added.
-create policy "ops_logs_select_all" on ops_logs for select using (true);
-create policy "ops_logs_insert_all" on ops_logs for insert with check (true);
-create policy "ops_logs_update_status" on ops_logs for update using (true) with check (true);
+create policy "ops_logs_select_all" on ops_logs for select using (auth.role() = 'authenticated');
+create policy "ops_logs_insert_all" on ops_logs for insert with check (auth.role() = 'authenticated');
+create policy "ops_logs_update_status" on ops_logs for update using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
-create policy "gear_loadouts_select_all" on gear_loadouts for select using (true);
-create policy "gear_loadouts_upsert_all" on gear_loadouts for insert with check (true);
-create policy "gear_loadouts_update_all" on gear_loadouts for update using (true) with check (true);
+create policy "gear_loadouts_select_all" on gear_loadouts for select using (auth.role() = 'authenticated');
+create policy "gear_loadouts_upsert_all" on gear_loadouts for insert with check (auth.role() = 'authenticated');
+create policy "gear_loadouts_update_all" on gear_loadouts for update using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
 -- Seed allowed emails for DDG team
 insert into allowed_emails (email, hiker_id, name)
@@ -145,15 +145,15 @@ values
   ('gunnarguy@me.com', 'gunnar', 'Gunnar'),
   ('gunnarguy@aol.com', 'gunnar', 'Gunnar')
 on conflict (email) do nothing;
-create policy "custom_items_select_all" on custom_items for select using (true);
-create policy "custom_items_insert_all" on custom_items for insert with check (true);
-create policy "custom_items_update_all" on custom_items for update using (true) with check (true);
+create policy "custom_items_select_all" on custom_items for select using (auth.role() = 'authenticated');
+create policy "custom_items_insert_all" on custom_items for insert with check (auth.role() = 'authenticated');
+create policy "custom_items_update_all" on custom_items for update using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
 -- Auth table policies (team members can view profiles, anyone can request access)
 create policy "ddg_team_profiles_select_own" on ddg_team_profiles for select using (auth.uid() = id);
-create policy "ddg_team_profiles_select_all" on ddg_team_profiles for select using (true);
+create policy "ddg_team_profiles_select_all" on ddg_team_profiles for select using (auth.role() = 'authenticated');
 
-create policy "access_requests_insert" on access_requests for insert with check (true);
-create policy "access_requests_select_admin" on access_requests for select using (true);
+create policy "access_requests_insert" on access_requests for insert with check (auth.role() = 'authenticated');
+create policy "access_requests_select_admin" on access_requests for select using (auth.role() = 'authenticated');
 
-create policy "allowed_emails_select_all" on allowed_emails for select using (true);
+create policy "allowed_emails_select_all" on allowed_emails for select using (auth.role() = 'authenticated');
