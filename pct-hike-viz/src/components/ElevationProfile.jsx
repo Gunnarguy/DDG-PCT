@@ -366,15 +366,28 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
       (a.properties?.routeMile ?? 0) - (b.properties?.routeMile ?? 0)
     );
     
+    let profileIndex = 0;
+
     for (let i = 0; i < sortedCamps.length - 1; i++) {
       const startMile = sortedCamps[i].properties?.routeMile ?? 0;
       const endMile = sortedCamps[i + 1].properties?.routeMile ?? startMile;
       const day = sortedCamps[i + 1].properties?.day ?? i + 1;
       const colorIdx = (day - 1) % DAY_COLORS.length;
       
-      // Find profile points within this segment
-      const segmentPoints = profileData.filter(p => p.dist >= startMile && p.dist <= endMile);
-      if (segmentPoints.length < 2) continue;
+      // Advance profileIndex to the start of this segment
+      while (profileIndex < profileData.length && profileData[profileIndex].dist < startMile) {
+        profileIndex++;
+      }
+
+      let pointsInSegment = 0;
+      let tempIndex = profileIndex;
+      while (tempIndex < profileData.length && profileData[tempIndex].dist <= endMile) {
+        pointsInSegment++;
+        if (pointsInSegment >= 2) break;
+        tempIndex++;
+      }
+
+      if (pointsInSegment < 2) continue;
       
       const x1 = xScale(startMile);
       const x2 = xScale(endMile);
