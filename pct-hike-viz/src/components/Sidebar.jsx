@@ -6,11 +6,7 @@ import {
   getSignalEmoji,
   satelliteDevices,
 } from "../data/connectivityData";
-import {
-  ddgTeam,
-  sectionOMeta,
-  tripStats,
-} from "../data/planContent";
+import { ddgTeam, sectionOMeta, tripStats } from "../data/planContent";
 import GearPlanner from "./GearPlanner";
 import OpsLog from "./OpsLog";
 import SourceChips from "./SourceChips";
@@ -28,8 +24,7 @@ const formatTimestamp = (isoString) => {
       dateStyle: "medium",
       timeStyle: "short",
     });
-  } catch (error) {
-    console.debug("Failed to humanize live satellite timestamp.", error);
+  } catch {
     return isoString;
   }
 };
@@ -66,20 +61,23 @@ const SATELLITE_SECTION_CONFIG = [
 const SatelliteSMSGenerator = ({ campPoints }) => {
   const [selectedCheckpointIndex, setSelectedCheckpointIndex] = useState(0);
 
-  const checkpoints = (campPoints || []).map(camp => ({
+  const checkpoints = (campPoints || []).map((camp) => ({
     name: camp.properties.name || "Unknown Location",
-    coord: camp.geometry.coordinates ? `${camp.geometry.coordinates[1].toFixed(4)}, ${camp.geometry.coordinates[0].toFixed(4)}` : "Unknown"
+    coord: camp.geometry.coordinates
+      ? `${camp.geometry.coordinates[1].toFixed(4)}, ${camp.geometry.coordinates[0].toFixed(4)}`
+      : "Unknown",
   }));
 
   const handleCopyStatus = () => {
     const cp = checkpoints[selectedCheckpointIndex];
     if (!cp) return;
     const statusText = `DDG Status: Safe at ${cp.name}. Coord: [${cp.coord}]. Garmin inReach connected. All well.`;
-    navigator.clipboard.writeText(statusText)
-      .then(() => alert('Status copied to clipboard!'))
-      .catch(err => {
-        console.error('Failed to copy', err);
-        alert('Failed to copy to clipboard.');
+    navigator.clipboard
+      .writeText(statusText)
+      .then(() => alert("Status copied to clipboard!"))
+      .catch((err) => {
+        console.error("Failed to copy", err);
+        alert("Failed to copy to clipboard.");
       });
   };
 
@@ -87,9 +85,11 @@ const SatelliteSMSGenerator = ({ campPoints }) => {
     <section className="sidebar-card sidebar-card--full">
       <div className="section-header">
         <h2>Satellite Status SMS Generator</h2>
-        <span className="section-subtitle">Quick-copy templates for inReach messages</span>
+        <span className="section-subtitle">
+          Quick-copy templates for inReach messages
+        </span>
       </div>
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
         <select
           value={selectedCheckpointIndex}
           onChange={(e) => setSelectedCheckpointIndex(Number(e.target.value))}
@@ -97,15 +97,32 @@ const SatelliteSMSGenerator = ({ campPoints }) => {
           style={{ flex: 1 }}
         >
           {checkpoints.map((cp, idx) => (
-            <option key={idx} value={idx}>{cp.name}</option>
+            <option key={idx} value={idx}>
+              {cp.name}
+            </option>
           ))}
         </select>
-        <button onClick={handleCopyStatus} className="rpg-btn-add" style={{ padding: '0.5rem 1rem' }}>
+        <button
+          onClick={handleCopyStatus}
+          className="rpg-btn-add"
+          style={{ padding: "0.5rem 1rem" }}
+        >
           Copy
         </button>
       </div>
-      <p style={{ margin: 0, padding: '0.5rem', background: 'var(--sand-100)', borderRadius: '4px', fontSize: '0.85rem', fontFamily: 'monospace' }}>
-        DDG Status: Safe at {checkpoints[selectedCheckpointIndex]?.name}. Coord: [{checkpoints[selectedCheckpointIndex]?.coord}]. Garmin inReach connected. All well.
+      <p
+        style={{
+          margin: 0,
+          padding: "0.5rem",
+          background: "var(--sand-100)",
+          borderRadius: "4px",
+          fontSize: "0.85rem",
+          fontFamily: "monospace",
+        }}
+      >
+        DDG Status: Safe at {checkpoints[selectedCheckpointIndex]?.name}. Coord:
+        [{checkpoints[selectedCheckpointIndex]?.coord}]. Garmin inReach
+        connected. All well.
       </p>
     </section>
   );
@@ -193,14 +210,14 @@ function Sidebar({
       syncStatus === "synced"
         ? "Synced"
         : syncStatus === "syncing"
-        ? "Syncing…"
-        : "Offline";
+          ? "Syncing…"
+          : "Offline";
     const statusColor =
       syncStatus === "synced"
         ? "#16a34a"
         : syncStatus === "syncing"
-        ? "#ca8a04"
-        : "#ef4444";
+          ? "#ca8a04"
+          : "#ef4444";
 
     return (
       <div className="presence-row">
@@ -282,7 +299,7 @@ function Sidebar({
       ? formatTimestamp(liveSatelliteData.updatedAt)
       : "pending refresh";
     const hasLiveCards = SATELLITE_SECTION_CONFIG.some(
-      ({ key }) => liveSatelliteData?.[key]
+      ({ key }) => liveSatelliteData?.[key],
     );
 
     return (
@@ -342,7 +359,7 @@ function Sidebar({
                     )}
                   </article>
                 );
-              }
+              },
             )}
           </div>
         ) : (
@@ -501,8 +518,17 @@ function Sidebar({
           </div>
         </div>
         <div className="quick-ref-dates">
-          <span className="date-badge">📅 {selectedItinerary === "express" ? "Aug 29 – Sept 6" : "Aug 22 – Sept 6"}</span>
-          <span className="date-note">{selectedItinerary === "express" ? "9-day express schedule" : "16-day relaxed schedule"}</span>
+          <span className="date-badge">
+            📅{" "}
+            {selectedItinerary === "express"
+              ? "Aug 29 – Sept 6"
+              : "Aug 22 – Sept 6"}
+          </span>
+          <span className="date-note">
+            {selectedItinerary === "express"
+              ? "9-day express schedule"
+              : "16-day relaxed schedule"}
+          </span>
         </div>
       </section>
 
@@ -667,7 +693,11 @@ function Sidebar({
 
         <div className="trip-stats-grid">
           <div className="trip-stat">
-            <span className="stat-value">{campPoints.length > 0 ? campPoints[campPoints.length - 1].properties.day : 0}</span>
+            <span className="stat-value">
+              {campPoints.length > 0
+                ? campPoints[campPoints.length - 1].properties.day
+                : 0}
+            </span>
             <span className="stat-label">Days Hiking</span>
           </div>
           <div className="trip-stat">
@@ -677,7 +707,10 @@ function Sidebar({
           <div className="trip-stat">
             <span className="stat-value">
               {(
-                (basePlanMiles || tripStats.totalMiles) / (campPoints.length > 0 ? campPoints[campPoints.length - 1].properties.day : 1)
+                (basePlanMiles || tripStats.totalMiles) /
+                (campPoints.length > 0
+                  ? campPoints[campPoints.length - 1].properties.day
+                  : 1)
               ).toFixed(1)}
             </span>
             <span className="stat-label">Avg/Day</span>
@@ -736,7 +769,14 @@ function Sidebar({
               >
                 <div className="day-card__header">
                   <div className="day-card__day-info">
-                    <span className="day-pill" style={{ backgroundColor: getGradientColor(dist > 12 ? "hard" : "moderate") }}>
+                    <span
+                      className="day-pill"
+                      style={{
+                        backgroundColor: getGradientColor(
+                          dist > 12 ? "hard" : "moderate",
+                        ),
+                      }}
+                    >
                       Day {day}
                     </span>
                   </div>
@@ -748,9 +788,14 @@ function Sidebar({
                 <h3 className="day-card__route">
                   {prevCamp.properties.name} → {camp.properties.name}
                 </h3>
-                <p className="day-card__terrain">PCT segment through Section O</p>
+                <p className="day-card__terrain">
+                  PCT segment through Section O
+                </p>
                 <div className="day-card__indicators">
-                  <span className="indicator-chip indicator-water" title="Water sources">
+                  <span
+                    className="indicator-chip indicator-water"
+                    title="Water sources"
+                  >
                     💧 Check water map
                   </span>
                 </div>
@@ -966,306 +1011,325 @@ function Sidebar({
     };
 
     return (
-    <>
-      {/* Transit & Access Panel */}
-      <TransitPanel />
+      <>
+        {/* Transit & Access Panel */}
+        <TransitPanel />
 
-      <section className="sidebar-card">
-        <h2>GPS Export</h2>
-        <p className="note">Download waypoints and trail geometry to load into Garmin, FarOut, or CalTopo before losing service.</p>
-        <button onClick={handleExportGPX} className="rpg-btn-add" style={{ width: '100%', marginTop: '0.5rem', cursor: 'pointer', padding: '0.75rem', background: 'var(--pine-500)', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}>
-          Export GPX to Garmin/FarOut
-        </button>
-      </section>
+        <section className="sidebar-card">
+          <h2>GPS Export</h2>
+          <p className="note">
+            Download waypoints and trail geometry to load into Garmin, FarOut,
+            or CalTopo before losing service.
+          </p>
+          <button
+            onClick={handleExportGPX}
+            className="rpg-btn-add"
+            style={{
+              width: "100%",
+              marginTop: "0.5rem",
+              cursor: "pointer",
+              padding: "0.75rem",
+              background: "var(--pine-500)",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              fontWeight: "bold",
+            }}
+          >
+            Export GPX to Garmin/FarOut
+          </button>
+        </section>
 
-      <section className="sidebar-card">
-        <h2>Travel &amp; Shuttle Playbook</h2>
-        {travelPlan.sourceIds && (
-          <SourceChips
-            sourceIds={travelPlan.sourceIds}
-            size="small"
-            maxShow={3}
-          />
-        )}
-        <h3 className="subhead">Inbound</h3>
-        <ul className="bullet-list bullet-list--sourced">
-          {travelPlan.inbound.map((item, i) => {
-            const step = typeof item === "string" ? item : item.step;
-            const stepSourceIds =
-              typeof item === "object" ? item.sourceIds : null;
-            return (
-              <li key={i}>
-                <span>{step}</span>
-                {stepSourceIds && (
-                  <SourceChips
-                    sourceIds={stepSourceIds}
-                    size="small"
-                    maxShow={2}
-                  />
-                )}
-              </li>
-            );
-          })}
-        </ul>
-        <h3 className="subhead">Exit strategy</h3>
-        <ul className="bullet-list bullet-list--sourced">
-          {travelPlan.exit.map((item, i) => {
-            const step = typeof item === "string" ? item : item.step;
-            const stepSourceIds =
-              typeof item === "object" ? item.sourceIds : null;
-            return (
-              <li key={i}>
-                <span>{step}</span>
-                {stepSourceIds && (
-                  <SourceChips
-                    sourceIds={stepSourceIds}
-                    size="small"
-                    maxShow={2}
-                  />
-                )}
-              </li>
-            );
-          })}
-        </ul>
-        <p className="note">Trail angel intel: {travelPlan.trailAngelNotes}</p>
-      </section>
+        <section className="sidebar-card">
+          <h2>Travel &amp; Shuttle Playbook</h2>
+          {travelPlan.sourceIds && (
+            <SourceChips
+              sourceIds={travelPlan.sourceIds}
+              size="small"
+              maxShow={3}
+            />
+          )}
+          <h3 className="subhead">Inbound</h3>
+          <ul className="bullet-list bullet-list--sourced">
+            {travelPlan.inbound.map((item, i) => {
+              const step = typeof item === "string" ? item : item.step;
+              const stepSourceIds =
+                typeof item === "object" ? item.sourceIds : null;
+              return (
+                <li key={i}>
+                  <span>{step}</span>
+                  {stepSourceIds && (
+                    <SourceChips
+                      sourceIds={stepSourceIds}
+                      size="small"
+                      maxShow={2}
+                    />
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+          <h3 className="subhead">Exit strategy</h3>
+          <ul className="bullet-list bullet-list--sourced">
+            {travelPlan.exit.map((item, i) => {
+              const step = typeof item === "string" ? item : item.step;
+              const stepSourceIds =
+                typeof item === "object" ? item.sourceIds : null;
+              return (
+                <li key={i}>
+                  <span>{step}</span>
+                  {stepSourceIds && (
+                    <SourceChips
+                      sourceIds={stepSourceIds}
+                      size="small"
+                      maxShow={2}
+                    />
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+          <p className="note">
+            Trail angel intel: {travelPlan.trailAngelNotes}
+          </p>
+        </section>
 
-      <section className="sidebar-card">
-        <h2>Resupply Hub · {resupplyPlan.town}</h2>
-        <p className="lede">{resupplyPlan.callouts}</p>
-        {resupplyPlan.sourceIds && (
-          <SourceChips
-            sourceIds={resupplyPlan.sourceIds}
-            size="small"
-            maxShow={3}
-          />
-        )}
-        <div className="two-column">
-          <div>
-            <h3 className="subhead">Access</h3>
-            <ul className="bullet-list bullet-list--sourced">
-              {resupplyPlan.access.map((item, i) => {
-                const text = typeof item === "string" ? item : item.item;
-                const itemSourceIds =
-                  typeof item === "object" ? item.sourceIds : null;
-                return (
-                  <li key={i}>
-                    <span>{text}</span>
-                    {itemSourceIds && (
-                      <SourceChips
-                        sourceIds={itemSourceIds}
-                        size="small"
-                        maxShow={2}
-                      />
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
+        <section className="sidebar-card">
+          <h2>Resupply Hub · {resupplyPlan.town}</h2>
+          <p className="lede">{resupplyPlan.callouts}</p>
+          {resupplyPlan.sourceIds && (
+            <SourceChips
+              sourceIds={resupplyPlan.sourceIds}
+              size="small"
+              maxShow={3}
+            />
+          )}
+          <div className="two-column">
+            <div>
+              <h3 className="subhead">Access</h3>
+              <ul className="bullet-list bullet-list--sourced">
+                {resupplyPlan.access.map((item, i) => {
+                  const text = typeof item === "string" ? item : item.item;
+                  const itemSourceIds =
+                    typeof item === "object" ? item.sourceIds : null;
+                  return (
+                    <li key={i}>
+                      <span>{text}</span>
+                      {itemSourceIds && (
+                        <SourceChips
+                          sourceIds={itemSourceIds}
+                          size="small"
+                          maxShow={2}
+                        />
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+            <div>
+              <h3 className="subhead">Services</h3>
+              <ul className="bullet-list">
+                {resupplyPlan.services.map((item, i) => (
+                  <li key={i}>{item}</li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div>
-            <h3 className="subhead">Services</h3>
-            <ul className="bullet-list">
-              {resupplyPlan.services.map((item, i) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-    </>
-  )};
-
-
+        </section>
+      </>
+    );
+  };
 
   // ═══════════════════════════════════════════════════════════════════════════
   // CONNECTIVITY TAB - OpsLog + satellite/cell coverage
   // ═══════════════════════════════════════════════════════════════════════════
   const renderConnectivity = () => {
     return (
-    <>
-      <SatelliteSMSGenerator campPoints={campPoints} />
+      <>
+        <SatelliteSMSGenerator campPoints={campPoints} />
 
-      {/* Mission Control Log */}
-      <section className="sidebar-card sidebar-card--full">
-        <div className="section-header">
-          <h2>Mission Control Log</h2>
-          <span className="section-subtitle">
-            Live ops traffic for the DDG crew
-          </span>
-        </div>
-        <OpsLog contextId="general" userName={activeUserName} />
-      </section>
+        {/* Mission Control Log */}
+        <section className="sidebar-card sidebar-card--full">
+          <div className="section-header">
+            <h2>Mission Control Log</h2>
+            <span className="section-subtitle">
+              Live ops traffic for the DDG crew
+            </span>
+          </div>
+          <OpsLog contextId="general" userName={activeUserName} />
+        </section>
 
-      <section className="sidebar-card sidebar-card--full">
-        <div className="section-header">
-          <h2>Tasking Channel</h2>
-          <span className="section-subtitle">
-            Use /task to flag work and alerts
-          </span>
-        </div>
-        <OpsLog contextId="tasks" userName={activeUserName} />
-      </section>
+        <section className="sidebar-card sidebar-card--full">
+          <div className="section-header">
+            <h2>Tasking Channel</h2>
+            <span className="section-subtitle">
+              Use /task to flag work and alerts
+            </span>
+          </div>
+          <OpsLog contextId="tasks" userName={activeUserName} />
+        </section>
 
-      {/* Live Satellite Intel */}
-      {renderLiveSatelliteIntel()}
+        {/* Live Satellite Intel */}
+        {renderLiveSatelliteIntel()}
 
-      {/* Connectivity Timeline Visualization */}
-      <section className="sidebar-card sidebar-card--full connectivity-timeline-card">
-        <div className="section-header">
-          <h2>Signal Timeline</h2>
-          <span className="section-subtitle">
-            Cell service availability along the route
-          </span>
-        </div>
-        <div className="connectivity-timeline">
-          <div className="timeline-track">
-            {connectivityZones.map((zone, i) => {
-              const nextZone = connectivityZones[i + 1];
-              const hasSignal =
-                zone.cellCoverage.verizon !== "none" ||
-                zone.cellCoverage.att !== "none";
-              const segmentWidth =
-                nextZone && timelineRangeMiles
-                  ? `${
-                      ((nextZone.mile - zone.mile) / timelineRangeMiles) * 100
-                    }%`
-                  : "5%";
+        {/* Connectivity Timeline Visualization */}
+        <section className="sidebar-card sidebar-card--full connectivity-timeline-card">
+          <div className="section-header">
+            <h2>Signal Timeline</h2>
+            <span className="section-subtitle">
+              Cell service availability along the route
+            </span>
+          </div>
+          <div className="connectivity-timeline">
+            <div className="timeline-track">
+              {connectivityZones.map((zone, i) => {
+                const nextZone = connectivityZones[i + 1];
+                const hasSignal =
+                  zone.cellCoverage.verizon !== "none" ||
+                  zone.cellCoverage.att !== "none";
+                const segmentWidth =
+                  nextZone && timelineRangeMiles
+                    ? `${
+                        ((nextZone.mile - zone.mile) / timelineRangeMiles) * 100
+                      }%`
+                    : "5%";
 
-              return (
-                <div
-                  key={zone.mile}
-                  className="timeline-segment"
-                  style={{ width: segmentWidth }}
-                >
+                return (
                   <div
-                    className={`timeline-bar ${
-                      hasSignal ? "has-signal" : "no-signal"
-                    }`}
-                    title={`${zone.name}: ${
-                      hasSignal ? "Signal available" : "No signal"
-                    }`}
-                  />
-                  <div className="timeline-marker">
-                    <span
-                      className="marker-dot"
-                      style={{
-                        backgroundColor: hasSignal ? "#4CAF50" : "#BDBDBD",
-                      }}
+                    key={zone.mile}
+                    className="timeline-segment"
+                    style={{ width: segmentWidth }}
+                  >
+                    <div
+                      className={`timeline-bar ${
+                        hasSignal ? "has-signal" : "no-signal"
+                      }`}
+                      title={`${zone.name}: ${
+                        hasSignal ? "Signal available" : "No signal"
+                      }`}
                     />
+                    <div className="timeline-marker">
+                      <span
+                        className="marker-dot"
+                        style={{
+                          backgroundColor: hasSignal ? "#4CAF50" : "#BDBDBD",
+                        }}
+                      />
+                    </div>
+                    <span className="timeline-label">
+                      {zone.name.split(" ")[0]}
+                    </span>
                   </div>
-                  <span className="timeline-label">
-                    {zone.name.split(" ")[0]}
+                );
+              })}
+            </div>
+            <div className="timeline-legend">
+              <span className="legend-item">
+                <span className="legend-dot signal-on" /> Cell service
+              </span>
+              <span className="legend-item">
+                <span className="legend-dot signal-off" /> Satellite only
+              </span>
+            </div>
+          </div>
+          <p className="note">
+            📱 Expect ~{blackoutMiles} miles of complete cell blackout. iPhone
+            16 Pro Max satellite + Garmin InReach provide backup.
+          </p>
+        </section>
+
+        {/* Cell Coverage Map */}
+        <section className="sidebar-card sidebar-card--full">
+          <div className="section-header">
+            <h2>Cell Coverage Map</h2>
+            <span className="section-subtitle">
+              9 connectivity checkpoints along Section O
+            </span>
+          </div>
+          <div className="connectivity-list">
+            {connectivityZones.map((zone) => (
+              <button
+                type="button"
+                key={zone.mile}
+                className="connectivity-item"
+                onClick={() => setPopupInfo({ ...zone, type: "connectivity" })}
+              >
+                <div className="connectivity-header">
+                  <h4>{zone.name}</h4>
+                  <span className="mile-marker">Mile {zone.mile}</span>
+                </div>
+                <div className="signal-badges">
+                  <span
+                    className={`signal-badge ${getSignalBadgeClass(
+                      zone.cellCoverage.verizon,
+                    )}`}
+                  >
+                    {getSignalEmoji(zone.cellCoverage.verizon)} Verizon:{" "}
+                    {zone.cellCoverage.verizon}
+                  </span>
+                  <span
+                    className={`signal-badge ${getSignalBadgeClass(
+                      zone.cellCoverage.att,
+                    )}`}
+                  >
+                    {getSignalEmoji(zone.cellCoverage.att)} AT&T:{" "}
+                    {zone.cellCoverage.att}
+                  </span>
+                  <span
+                    className={`signal-badge ${getSignalBadgeClass(
+                      zone.cellCoverage.tmobile,
+                    )}`}
+                  >
+                    {getSignalEmoji(zone.cellCoverage.tmobile)} T-Mobile:{" "}
+                    {zone.cellCoverage.tmobile}
                   </span>
                 </div>
-              );
-            })}
+                {zone.satelliteCompatible && (
+                  <p className="satellite-note">
+                    📡 Satellite connectivity available
+                  </p>
+                )}
+                <p className="note">{zone.notes}</p>
+              </button>
+            ))}
           </div>
-          <div className="timeline-legend">
-            <span className="legend-item">
-              <span className="legend-dot signal-on" /> Cell service
-            </span>
-            <span className="legend-item">
-              <span className="legend-dot signal-off" /> Satellite only
-            </span>
-          </div>
-        </div>
-        <p className="note">
-          📱 Expect ~{blackoutMiles} miles of complete cell blackout. iPhone 16
-          Pro Max satellite + Garmin InReach provide backup.
-        </p>
-      </section>
+        </section>
 
-      {/* Cell Coverage Map */}
-      <section className="sidebar-card sidebar-card--full">
-        <div className="section-header">
-          <h2>Cell Coverage Map</h2>
-          <span className="section-subtitle">
-            9 connectivity checkpoints along Section O
-          </span>
-        </div>
-        <div className="connectivity-list">
-          {connectivityZones.map((zone) => (
-            <button
-              type="button"
-              key={zone.mile}
-              className="connectivity-item"
-              onClick={() => setPopupInfo({ ...zone, type: "connectivity" })}
-            >
-              <div className="connectivity-header">
-                <h4>{zone.name}</h4>
-                <span className="mile-marker">Mile {zone.mile}</span>
-              </div>
-              <div className="signal-badges">
-                <span
-                  className={`signal-badge ${getSignalBadgeClass(
-                    zone.cellCoverage.verizon
-                  )}`}
-                >
-                  {getSignalEmoji(zone.cellCoverage.verizon)} Verizon:{" "}
-                  {zone.cellCoverage.verizon}
-                </span>
-                <span
-                  className={`signal-badge ${getSignalBadgeClass(
-                    zone.cellCoverage.att
-                  )}`}
-                >
-                  {getSignalEmoji(zone.cellCoverage.att)} AT&T:{" "}
-                  {zone.cellCoverage.att}
-                </span>
-                <span
-                  className={`signal-badge ${getSignalBadgeClass(
-                    zone.cellCoverage.tmobile
-                  )}`}
-                >
-                  {getSignalEmoji(zone.cellCoverage.tmobile)} T-Mobile:{" "}
-                  {zone.cellCoverage.tmobile}
-                </span>
-              </div>
-              {zone.satelliteCompatible && (
-                <p className="satellite-note">
-                  📡 Satellite connectivity available
+        {/* Satellite Communication Devices */}
+        <section className="sidebar-card sidebar-card--full">
+          <h2>Satellite Communication Devices</h2>
+          <p className="lede">
+            Section O has ~{blackoutMiles} miles with zero cell service.
+            Satellite devices provide emergency SOS and two-way messaging in
+            deep wilderness.
+          </p>
+          <div className="device-grid">
+            {satelliteDevices.map((device) => (
+              <article key={device.device} className="device-card">
+                <h3>{device.device}</h3>
+                <p className="device-cost">{device.cost}</p>
+                <p className="device-compatibility">
+                  <strong>Compatibility:</strong> {device.compatibility}
                 </p>
-              )}
-              <p className="note">{zone.notes}</p>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* Satellite Communication Devices */}
-      <section className="sidebar-card sidebar-card--full">
-        <h2>Satellite Communication Devices</h2>
-        <p className="lede">
-          Section O has ~{blackoutMiles} miles with zero cell service. Satellite
-          devices provide emergency SOS and two-way messaging in deep
-          wilderness.
-        </p>
-        <div className="device-grid">
-          {satelliteDevices.map((device) => (
-            <article key={device.device} className="device-card">
-              <h3>{device.device}</h3>
-              <p className="device-cost">{device.cost}</p>
-              <p className="device-compatibility">
-                <strong>Compatibility:</strong> {device.compatibility}
-              </p>
-              <div className="device-features">
-                {device.features.map((feature) => (
-                  <span key={feature} className="feature-badge">
-                    {feature}
-                  </span>
-                ))}
-              </div>
-              <p className="note">{device.notes}</p>
-              <p className="trail-note">
-                <strong>Trail intel:</strong> {device.trailNotes}
-              </p>
-            </article>
-          ))}
-        </div>
-      </section>
-    </>
-  )};
+                <div className="device-features">
+                  {device.features.map((feature) => (
+                    <span key={feature} className="feature-badge">
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+                <p className="note">{device.notes}</p>
+                <p className="trail-note">
+                  <strong>Trail intel:</strong> {device.trailNotes}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+      </>
+    );
+  };
 
   // ═══════════════════════════════════════════════════════════════════════════
   // RESOURCES TAB - Reference library (renamed from Library)
@@ -1355,18 +1419,61 @@ function Sidebar({
 
       {presenceRow}
 
-      <div className="global-itinerary-toggle" style={{ margin: '0 16px 16px 16px', display: 'flex', gap: '8px', background: 'var(--dash-panel)', padding: '4px', borderRadius: '8px', border: '1px solid var(--dash-border)' }}>
+      <div
+        className="global-itinerary-toggle"
+        style={{
+          margin: "0 16px 16px 16px",
+          display: "flex",
+          gap: "8px",
+          background: "var(--dash-panel)",
+          padding: "4px",
+          borderRadius: "8px",
+          border: "1px solid var(--dash-border)",
+        }}
+      >
         <button
           type="button"
           onClick={() => onItineraryChange("express")}
-          style={{ flex: 1, padding: '8px', borderRadius: '4px', background: selectedItinerary === "express" ? 'var(--pine-500)' : 'transparent', color: selectedItinerary === "express" ? '#ffffff' : 'var(--dash-text-muted)', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.85rem' }}
+          style={{
+            flex: 1,
+            padding: "8px",
+            borderRadius: "4px",
+            background:
+              selectedItinerary === "express"
+                ? "var(--pine-500)"
+                : "transparent",
+            color:
+              selectedItinerary === "express"
+                ? "#ffffff"
+                : "var(--dash-text-muted)",
+            border: "none",
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "0.85rem",
+          }}
         >
           ⚡ 9-Day Express
         </button>
         <button
           type="button"
           onClick={() => onItineraryChange("relaxed")}
-          style={{ flex: 1, padding: '8px', borderRadius: '4px', background: selectedItinerary === "relaxed" ? 'var(--pine-500)' : 'transparent', color: selectedItinerary === "relaxed" ? '#ffffff' : 'var(--dash-text-muted)', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.85rem' }}
+          style={{
+            flex: 1,
+            padding: "8px",
+            borderRadius: "4px",
+            background:
+              selectedItinerary === "relaxed"
+                ? "var(--pine-500)"
+                : "transparent",
+            color:
+              selectedItinerary === "relaxed"
+                ? "#ffffff"
+                : "var(--dash-text-muted)",
+            border: "none",
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "0.85rem",
+          }}
         >
           🏕️ 16-Day Relaxed
         </button>
@@ -1415,7 +1522,7 @@ Sidebar.propTypes = {
       role: PropTypes.string,
       last_seen: PropTypes.string,
       hiker_id: PropTypes.string,
-    })
+    }),
   ),
   hikingTrail: PropTypes.array,
   campPoints: PropTypes.array,
@@ -1425,7 +1532,7 @@ Sidebar.propTypes = {
       mile: PropTypes.number.isRequired,
       report: PropTypes.string.isRequired,
       waypoint: PropTypes.string,
-    })
+    }),
   ).isRequired,
   waterSourceMeta: PropTypes.shape({
     count: PropTypes.number.isRequired,
@@ -1443,7 +1550,7 @@ Sidebar.propTypes = {
           step: PropTypes.string.isRequired,
           sourceIds: PropTypes.arrayOf(PropTypes.string),
         }),
-      ])
+      ]),
     ).isRequired,
     exit: PropTypes.arrayOf(
       PropTypes.oneOfType([
@@ -1452,7 +1559,7 @@ Sidebar.propTypes = {
           step: PropTypes.string.isRequired,
           sourceIds: PropTypes.arrayOf(PropTypes.string),
         }),
-      ])
+      ]),
     ).isRequired,
     trailAngelNotes: PropTypes.string.isRequired,
   }).isRequired,
@@ -1473,7 +1580,7 @@ Sidebar.propTypes = {
       PropTypes.shape({
         name: PropTypes.string.isRequired,
         items: PropTypes.arrayOf(PropTypes.string).isRequired,
-      })
+      }),
     ).isRequired,
     personalPriorities: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
@@ -1498,35 +1605,35 @@ Sidebar.propTypes = {
             detail: PropTypes.string.isRequired,
             weight: PropTypes.string.isRequired,
             defaultPacked: PropTypes.bool,
-          })
+          }),
         ).isRequired,
-      })
+      }),
     ).isRequired,
     stashZones: PropTypes.arrayOf(
       PropTypes.shape({
         label: PropTypes.string.isRequired,
         focus: PropTypes.string.isRequired,
         suggestions: PropTypes.arrayOf(PropTypes.string).isRequired,
-      })
+      }),
     ).isRequired,
     resourceLinks: PropTypes.arrayOf(
       PropTypes.shape({
         label: PropTypes.string.isRequired,
         href: PropTypes.string.isRequired,
-      })
+      }),
     ).isRequired,
   }).isRequired,
   riskPlaybook: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       detail: PropTypes.string.isRequired,
-    })
+    }),
   ).isRequired,
   nextStepsChecklist: PropTypes.arrayOf(
     PropTypes.shape({
       task: PropTypes.string.isRequired,
       status: PropTypes.string.isRequired,
-    })
+    }),
   ).isRequired,
   liveSatelliteData: PropTypes.shape({
     updatedAt: PropTypes.string,
