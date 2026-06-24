@@ -1,12 +1,6 @@
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- DDG TEAM AUTHENTICATION & ACCESS CONTROL
 -- ═══════════════════════════════════════════════════════════════════════════════
--- Only these emails can access the app:
---   • smileyguy@aol.com (Dan - Dad)
---   • andrew.d.hostetler@gmail.com (Drew - Brother)
---   • gunnarguy@me.com (Gunnar)
---   • gunnarguy@aol.com (Gunnar alt)
--- ═══════════════════════════════════════════════════════════════════════════════
 
 -- 1. Allowed emails table (whitelist)
 create table if not exists allowed_emails (
@@ -18,12 +12,8 @@ create table if not exists allowed_emails (
 );
 
 -- Populate the whitelist
-insert into allowed_emails (email, hiker_id, name, role) values
-  ('smileyguy@aol.com', 'dan', 'Dan', 'member'),
-  ('andrew.d.hostetler@gmail.com', 'drew', 'Drew', 'member'),
-  ('gunnarguy@me.com', 'gunnar', 'Gunnar', 'admin'),
-  ('gunnarguy@aol.com', 'gunnar', 'Gunnar', 'admin')
-on conflict (email) do nothing;
+-- Emails are no longer hardcoded here for security reasons.
+-- Please use the supabase dashboard or the seed script to insert allowed emails.
 
 -- 2. Access requests table (for people who try to sign up but aren't whitelisted)
 create table if not exists access_requests (

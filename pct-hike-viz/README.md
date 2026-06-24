@@ -40,6 +40,7 @@ Open the printed URL (usually `http://localhost:5173`) and start exploring. Buil
 	- If you fork this repo, replace the Supabase URL + anon key with your own project values.
 2) Fast path (idempotent): `npm run supabase:apply` — this runs `supabase/combined.sql` (tables, publication, seed loadouts, RLS enabled, permissive anon policies).
 	- Uses `psql` if `SUPABASE_DB_URL` is set; falls back to Supabase CLI `db execute`. If both are missing, paste `supabase/combined.sql` into the SQL editor.
+	- **Security Note:** Team access emails are no longer hardcoded in `combined.sql`. Add emails directly via the Supabase Dashboard (`allowed_emails` table) or use `npm run supabase:seed-emails` (requires `ALLOWED_EMAILS_SEED` environment variable).
 3) Smoke check: `npm run supabase:smoke` (uses anon key) inserts/reads `ops_logs`, upserts a `gear_loadouts` row (`smoke-bot`), and inserts/deletes a `custom_items` row.
 4) Verify manually: in SQL editor `select id, type, status, context_id from ops_logs limit 5;` — you should see `status` defaulting to `OPEN`.
 

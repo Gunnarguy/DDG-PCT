@@ -13,7 +13,8 @@
     "fetch:pct": "node ./scripts/fetch-pct-route.js",
     "supabase:apply": "scripts/apply_supabase.sh",
     "supabase:smoke": "node scripts/smoke_supabase.js",
-    "supabase:provision-user": "node scripts/provision_auth_user.js"
+    "supabase:provision-user": "node scripts/provision_auth_user.js",
+    "supabase:seed-emails": "node scripts/seed_allowed_emails.js"
   },
   "dependencies": {
     "@deck.gl/core": "^9.2.2",

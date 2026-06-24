@@ -138,13 +138,8 @@ create policy "gear_loadouts_upsert_all" on gear_loadouts for insert with check 
 create policy "gear_loadouts_update_all" on gear_loadouts for update using (true) with check (true);
 
 -- Seed allowed emails for DDG team
-insert into allowed_emails (email, hiker_id, name)
-values
-  ('smileyguy@aol.com', 'dan', 'Dan'),
-  ('andrew.d.hostetler@gmail.com', 'drew', 'Drew'),
-  ('gunnarguy@me.com', 'gunnar', 'Gunnar'),
-  ('gunnarguy@aol.com', 'gunnar', 'Gunnar')
-on conflict (email) do nothing;
+-- Emails are no longer hardcoded here for security reasons.
+-- Please use the supabase dashboard or the seed script to insert allowed emails.
 create policy "custom_items_select_all" on custom_items for select using (true);
 create policy "custom_items_insert_all" on custom_items for insert with check (true);
 create policy "custom_items_update_all" on custom_items for update using (true) with check (true);
