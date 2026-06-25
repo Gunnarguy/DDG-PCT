@@ -464,7 +464,11 @@ function App({ authBanner = null }) {
   const campPoints = useMemo(() => {
     if (!hikeData) return [];
     return [...hikeData.features]
-      .filter((feature) => feature.properties.day >= 0 && feature.properties.itinerary === selectedItinerary)
+      .filter(
+        (feature) =>
+          feature.properties.day >= 0 &&
+          feature.properties.itinerary === selectedItinerary,
+      )
       .sort((a, b) => a.properties.day - b.properties.day);
   }, [hikeData, selectedItinerary]);
 
@@ -549,9 +553,6 @@ function App({ authBanner = null }) {
     setProfileHoverPoint(pointMeta);
   }, []);
 
-  // eslint-disable-next-line no-unused-vars
-  const sidebarSize = `clamp(320px, ${sidebarWidth}%, 50%)`;
-
   if (isLoading) {
     return (
       <div className="app-shell">
@@ -578,7 +579,10 @@ function App({ authBanner = null }) {
   }
 
   return (
-    <div className="app-shell" style={{ "--sidebar-width": `${sidebarWidth}%` }}>
+    <div
+      className="app-shell"
+      style={{ "--sidebar-width": `${sidebarWidth}%` }}
+    >
       {authBanner && (
         <div className="auth-status error" style={{ margin: "12px 12px 0" }}>
           {authBanner}
