@@ -95,6 +95,23 @@ export function AuthProvider({ children }) {
 
     const initAuth = async () => {
       try {
+        if (import.meta.env.DEV) {
+          const savedMock = localStorage.getItem("pct-hike-viz::mock-user");
+          if (savedMock) {
+            try {
+              const { user: mockUser, profile: mockProfile } = JSON.parse(savedMock);
+              if (mounted) {
+                setUser(mockUser);
+                setProfile(mockProfile);
+                setLoading(false);
+              }
+              return;
+            } catch (e) {
+              localStorage.removeItem("pct-hike-viz::mock-user");
+            }
+          }
+        }
+
         if (!supabaseReady) {
           if (mounted) {
             setError(supabaseConfigError);
@@ -401,6 +418,14 @@ export function AuthProvider({ children }) {
    */
   const signOut = async () => {
     setError(null);
+    const isMock = user?.isMock;
+    localStorage.removeItem("pct-hike-viz::mock-user");
+
+    if (isMock) {
+      setUser(null);
+      setProfile(null);
+      return { success: true };
+    }
 
     // Add timeout protection
     const timeoutPromise = new Promise((_, reject) => {
@@ -428,6 +453,40 @@ export function AuthProvider({ children }) {
       console.warn("Sign out timed out, cleared local state anyway:", error);
       return { success: true };
     }
+  };
+
+  /**
+   * Dev bypass login for local development
+   */
+  const devBypassLogin = (hikerId) => {
+    if (!import.meta.env.DEV) return;
+    const nameMap = {
+      gunnar: { name: 'Gunnar', email: 'gunnarguy@me.com', role: 'admin' },
+      dan: { name: 'Dan', email: 'dan@example.com', role: 'architect' },
+      drew: { name: 'Drew', email: 'drew@example.com', role: 'navigator' }
+    };
+    const hiker = nameMap[hikerId] || nameMap.gunnar;
+
+    const mockUser = {
+      id: `mock-id-${hikerId}`,
+      email: hiker.email,
+      user_metadata: { name: hiker.name },
+      isMock: true
+    };
+
+    const mockProfile = {
+      id: `mock-id-${hikerId}`,
+      name: hiker.name,
+      email: hiker.email,
+      role: hiker.role,
+      hiker_id: hikerId
+    };
+
+    localStorage.setItem("pct-hike-viz::mock-user", JSON.stringify({ user: mockUser, profile: mockProfile }));
+    setUser(mockUser);
+    setProfile(mockProfile);
+    setError(null);
+    setAuthUnavailable(false);
   };
 
   /**
@@ -492,6 +551,7 @@ export function AuthProvider({ children }) {
     signInWithGoogle,
     signOut,
     getDisplayInfo,
+    devBypassLogin,
 
     // Utilities
     supabase,

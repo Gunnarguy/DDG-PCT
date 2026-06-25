@@ -15,6 +15,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import { connectivityZones } from "./data/connectivityData";
 import {
   ddgTeam,
+  dayItinerary,
   gearBlueprint,
   nextStepsChecklist,
   packPlanner,
@@ -30,7 +31,7 @@ const TrailMap = React.lazy(() => import("./components/TrailMap"));
 
 // Bump VITE_HIKE_DATA_VERSION whenever hike_data.json changes to invalidate cached copies.
 const DATASET_VERSION =
-  import.meta.env.VITE_HIKE_DATA_VERSION ?? "2025-12-05-supabase-auth";
+  import.meta.env.VITE_HIKE_DATA_VERSION ?? "2026-06-25-fixed-itinerary";
 const HIKEDATA_CACHE_KEY = "pct-hike-viz::hike-data";
 const HIKEDATA_CACHE_META_KEY = `${HIKEDATA_CACHE_KEY}::meta`;
 const USER_STORAGE_KEY = "pct-hike-viz::current-user";
@@ -40,6 +41,46 @@ const FALLBACK_TIMEOUT_MS = 6500;
 const buildDataUrl = () => {
   const basePath = (import.meta.env.BASE_URL ?? "/").replace(/\/?$/, "/");
   return `${basePath}data/hike_data.json`;
+};
+
+const sliceTrailByDistance = (trail, maxDistanceMiles) => {
+  if (!trail || !trail.length) return [];
+  const R = 6371e3; // meters
+  let totalDistMeters = 0;
+  const sliced = [trail[0]];
+
+  for (let i = 1; i < trail.length; i++) {
+    const prev = trail[i - 1];
+    const curr = trail[i];
+    
+    const lon1 = prev[0];
+    const lat1 = prev[1];
+    const lon2 = curr[0];
+    const lat2 = curr[1];
+    
+    const φ1 = (lat1 * Math.PI) / 180;
+    const φ2 = (lat2 * Math.PI) / 180;
+    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+    const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) *
+        Math.cos(φ2) *
+        Math.sin(Δλ / 2) *
+        Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c;
+
+    totalDistMeters += d;
+    const totalDistMiles = totalDistMeters / 1609.344;
+    
+    sliced.push(curr);
+    if (totalDistMiles > maxDistanceMiles) {
+      break;
+    }
+  }
+  return sliced;
 };
 
 // Basic helpers for derived stats so the UI always reflects the loaded dataset, not stale copy text.
@@ -462,6 +503,95 @@ function App({ authBanner = null }) {
 
   const campPoints = useMemo(() => {
     if (!hikeData) return [];
+
+    if (selectedItinerary === "express") {
+      const R = 6371e3; // meters
+      const rawPath =
+        hikeData.route?.path ?? hikeData.route?.geometry?.coordinates ?? [];
+      const trailPoints = rawPath.filter(
+        (pt) =>
+          Array.isArray(pt) &&
+          pt.length >= 3 &&
+          pt[0] != null &&
+          pt[1] != null &&
+          pt[2] != null,
+      );
+
+      const trailPointsWithDistance = [];
+      let totalDistM = 0;
+      if (trailPoints.length) {
+        trailPointsWithDistance.push({ pt: trailPoints[0], distM: 0 });
+        for (let i = 1; i < trailPoints.length; i++) {
+          const prev = trailPoints[i - 1];
+          const curr = trailPoints[i];
+          const φ1 = (prev[1] * Math.PI) / 180;
+          const φ2 = (curr[1] * Math.PI) / 180;
+          const Δφ = ((curr[1] - prev[1]) * Math.PI) / 180;
+          const Δλ = ((curr[0] - prev[0]) * Math.PI) / 180;
+          const a =
+            Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+            Math.cos(φ1) *
+              Math.cos(φ2) *
+              Math.sin(Δλ / 2) *
+              Math.sin(Δλ / 2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          const d = R * c;
+          totalDistM += d;
+          trailPointsWithDistance.push({ pt: curr, distM: totalDistM });
+        }
+      }
+
+      const getCoordsAtMile = (mile) => {
+        const targetM = mile * 1609.344;
+        if (!trailPointsWithDistance.length) return [0, 0, 0];
+        if (targetM <= 0) return trailPointsWithDistance[0].pt;
+
+        let bestPt = trailPointsWithDistance[0].pt;
+        let minDiff = Infinity;
+
+        for (const item of trailPointsWithDistance) {
+          const diff = Math.abs(item.distM - targetM);
+          if (diff < minDiff) {
+            minDiff = diff;
+            bestPt = item.pt;
+          }
+        }
+        return bestPt;
+      };
+
+      let milesAccumulated = 0;
+      return dayItinerary.map((dayItem) => {
+        milesAccumulated += dayItem.distance;
+        const coords = getCoordsAtMile(milesAccumulated);
+        return {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: coords,
+          },
+          properties: {
+            name:
+              dayItem.day === 0
+                ? "Burney Falls State Park (Start)"
+                : dayItem.day === 6
+                ? "Castle Crags State Park (End)"
+                : dayItem.to,
+            day: dayItem.day,
+            itinerary: "express",
+            segment: dayItem.notes || dayItem.terrain,
+            mile: 1420.7 + milesAccumulated,
+            routeMile: milesAccumulated,
+            type:
+              dayItem.day === 0
+                ? "Trailhead"
+                : dayItem.day === 6
+                ? "Finish"
+                : "Camp",
+          },
+        };
+      });
+    }
+
     return [...hikeData.features]
       .filter(
         (feature) =>
@@ -476,7 +606,7 @@ function App({ authBanner = null }) {
     const rawPath =
       hikeData.route?.path ?? hikeData.route?.geometry?.coordinates ?? [];
     // Filter out any malformed points to keep elevation profile rendering
-    return rawPath.filter(
+    const filtered = rawPath.filter(
       (pt) =>
         Array.isArray(pt) &&
         pt.length >= 3 &&
@@ -484,10 +614,34 @@ function App({ authBanner = null }) {
         pt[1] != null &&
         pt[2] != null,
     );
-  }, [hikeData]);
+    if (selectedItinerary === "express") {
+      return sliceTrailByDistance(filtered, 52.0);
+    }
+    return filtered;
+  }, [hikeData, selectedItinerary]);
 
   const routeSegments = useMemo(() => {
     if (!hikeData) return [];
+
+    if (selectedItinerary === "express") {
+      const fallbackSegments = [];
+      for (let i = 1; i < campPoints.length; i += 1) {
+        const previous = campPoints[i - 1];
+        const current = campPoints[i];
+
+        fallbackSegments.push({
+          day: current.properties.day,
+          distance: current.properties.routeMile - previous.properties.routeMile,
+          start: previous.properties.name,
+          end: current.properties.name,
+          focus: current.properties.segment ?? "On-trail push",
+          gain: current.properties.gain ?? "n/a",
+          loss: current.properties.loss ?? "n/a",
+        });
+      }
+      return fallbackSegments;
+    }
+
     if (hikeData.route?.properties?.segments) {
       return hikeData.route.properties.segments;
     }
@@ -509,7 +663,7 @@ function App({ authBanner = null }) {
     }
 
     return fallbackSegments;
-  }, [hikeData, campPoints]);
+  }, [hikeData, campPoints, selectedItinerary]);
 
   const totalMiles = useMemo(
     () =>
@@ -524,7 +678,13 @@ function App({ authBanner = null }) {
 
   const townPins = hikeData?.towns ?? [];
   const transportPoints = hikeData?.transport ?? [];
-  const waterSources = useMemo(() => hikeData?.waterSources ?? [], [hikeData]);
+  const waterSources = useMemo(() => {
+    const rawWater = hikeData?.waterSources ?? [];
+    if (selectedItinerary === "express") {
+      return rawWater.filter((source) => source.mile <= 1420.7 + 52.0);
+    }
+    return rawWater;
+  }, [hikeData, selectedItinerary]);
   const waterSourceMeta = useMemo(
     () => deriveWaterMeta(waterSources),
     [waterSources],
@@ -582,12 +742,12 @@ function App({ authBanner = null }) {
       className="app-shell"
       style={{ "--sidebar-width": `${sidebarWidth}%` }}
     >
-      {authBanner && (
-        <div className="auth-status error" style={{ margin: "12px 12px 0" }}>
-          {authBanner}
-        </div>
-      )}
       <div className="map-column">
+        {authBanner && (
+          <div className="auth-status error" style={{ margin: "12px 12px 0", zIndex: 1000, position: "relative" }}>
+            {authBanner}
+          </div>
+        )}
         <div className="map-panel">
           <Suspense fallback={<MapLoadingFallback />}>
             <TrailMap
@@ -675,7 +835,7 @@ function AuthGatedApp() {
   if (import.meta.env.DEV && authUnavailable && !isAuthenticated) {
     return (
       <App
-        authBanner={`Authentication is unavailable in local dev, so Mission Control is running in offline mode. ${error}`}
+        authBanner={`Authentication is unavailable in local dev, so Mission Control is running in offline mode.${error ? ` (${error.message ?? error})` : ""}`}
       />
     );
   }

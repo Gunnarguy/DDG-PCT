@@ -1042,7 +1042,7 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
                 {/* Camp icon */}
                 <text
                   x={marker.cx}
-                  y={marker.cy - 16}
+                  y={Math.max(14, marker.cy - 16)}
                   textAnchor="middle"
                   fontSize="14"
                 >
@@ -1050,40 +1050,43 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
                 </text>
                 
                 {/* Tooltip on hover */}
-                {hoveredCamp === marker.id && (
-                  <g className="camp-tooltip">
-                    <rect
-                      x={marker.cx - 80}
-                      y={marker.cy - 70}
-                      width="160"
-                      height="50"
-                      rx="8"
-                      fill="rgba(255,255,255,0.95)"
-                      stroke={marker.color}
-                      strokeWidth="2"
-                      filter="url(#markerShadow)"
-                    />
-                    <text
-                      x={marker.cx}
-                      y={marker.cy - 52}
-                      textAnchor="middle"
-                      fontSize="11"
-                      fontWeight="700"
-                      fill="#333"
-                    >
-                      {marker.name?.length > 20 ? marker.name.slice(0, 18) + '…' : marker.name}
-                    </text>
-                    <text
-                      x={marker.cx}
-                      y={marker.cy - 38}
-                      textAnchor="middle"
-                      fontSize="10"
-                      fill="#666"
-                    >
-                      Mile {marker.mile.toFixed(1)} · {formatElevation(marker.elevation)}
-                    </text>
-                  </g>
-                )}
+                {hoveredCamp === marker.id && (() => {
+                  const tooltipY = Math.max(5, marker.cy - 70);
+                  return (
+                    <g className="camp-tooltip">
+                      <rect
+                        x={marker.cx - 80}
+                        y={tooltipY}
+                        width="160"
+                        height="50"
+                        rx="8"
+                        fill="rgba(255,255,255,0.95)"
+                        stroke={marker.color}
+                        strokeWidth="2"
+                        filter="url(#markerShadow)"
+                      />
+                      <text
+                        x={marker.cx}
+                        y={tooltipY + 18}
+                        textAnchor="middle"
+                        fontSize="11"
+                        fontWeight="700"
+                        fill="#333"
+                      >
+                        {marker.name?.length > 20 ? marker.name.slice(0, 18) + '…' : marker.name}
+                      </text>
+                      <text
+                        x={marker.cx}
+                        y={tooltipY + 32}
+                        textAnchor="middle"
+                        fontSize="10"
+                        fill="#666"
+                      >
+                        Mile {marker.mile.toFixed(1)} · {formatElevation(marker.elevation)}
+                      </text>
+                    </g>
+                  );
+                })()}
               </g>
             ))}
             

@@ -71,7 +71,7 @@ UserBadge.propTypes = {
  * Login modal with magic link and Google options
  */
 function LoginModal({ onClose }) {
-  const { signInWithEmail, error } = useAuth();
+  const { signInWithEmail, devBypassLogin, error } = useAuth();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -129,6 +129,27 @@ function LoginModal({ onClose }) {
           <div className={`auth-status ${status?.type || 'error'}`}>
             {status?.message || error}
           </div>
+        )}
+
+        {import.meta.env.DEV && (
+          <>
+            <div className="auth-divider">
+              <span>Or Bypass (Dev Mode)</span>
+            </div>
+            <div className="dev-bypass-options">
+              <div className="dev-bypass-buttons-horizontal">
+                <button type="button" onClick={() => { devBypassLogin('gunnar'); onClose(); }} className="auth-btn dev-bypass-btn gunnar-btn">
+                  <span>⚡ Gunnar</span>
+                </button>
+                <button type="button" onClick={() => { devBypassLogin('dan'); onClose(); }} className="auth-btn dev-bypass-btn dan-btn">
+                  <span>🧭 Dan</span>
+                </button>
+                <button type="button" onClick={() => { devBypassLogin('drew'); onClose(); }} className="auth-btn dev-bypass-btn drew-btn">
+                  <span>🏔️ Drew</span>
+                </button>
+              </div>
+            </div>
+          </>
         )}
 
         <div className="modal-footer">
@@ -203,7 +224,7 @@ UserModal.propTypes = {
  * Full-page login screen for gated access
  */
 export function LoginScreen() {
-  const { signInWithEmail, error } = useAuth();
+  const { signInWithEmail, devBypassLogin, error } = useAuth();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -260,6 +281,28 @@ export function LoginScreen() {
             <div className={`auth-status ${status?.type || 'error'}`}>
               {status?.message || error}
             </div>
+          )}
+
+          {import.meta.env.DEV && (
+            <>
+              <div className="auth-divider">
+                <span>Or Bypass (Dev Mode)</span>
+              </div>
+              <div className="dev-bypass-options">
+                <p className="dev-bypass-title">Select a team profile to mock login:</p>
+                <div className="dev-bypass-buttons">
+                  <button type="button" onClick={() => devBypassLogin('gunnar')} className="auth-btn dev-bypass-btn gunnar-btn">
+                    <span>⚡ Gunnar (Pace Setter)</span>
+                  </button>
+                  <button type="button" onClick={() => devBypassLogin('dan')} className="auth-btn dev-bypass-btn dan-btn">
+                    <span>🧭 Dan (Architect)</span>
+                  </button>
+                  <button type="button" onClick={() => devBypassLogin('drew')} className="auth-btn dev-bypass-btn drew-btn">
+                    <span>🏔️ Drew (Navigator)</span>
+                  </button>
+                </div>
+              </div>
+            </>
           )}
 
           <div className="login-footer">
