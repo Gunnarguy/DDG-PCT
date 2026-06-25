@@ -1,4 +1,4 @@
-const xmlEscape = (str) => {
+export const xmlEscape = (str) => {
   if (typeof str !== 'string') return str;
   return str.replace(/[<>&'"]/g, c => {
     switch (c) {

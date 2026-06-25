@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateGPX } from './gpxExporter';
+import { generateGPX, xmlEscape } from './gpxExporter';
 
 describe('generateGPX', () => {
   it('should generate basic GPX structure with empty inputs', () => {
@@ -71,5 +71,33 @@ describe('generateGPX', () => {
 
     expect(result).toContain('<name>Camp &lt; &amp; &gt;</name>');
     expect(result).toContain('<desc>&quot;Quotes&quot; &amp; &apos;Apos&apos;</desc>');
+  });
+});
+
+describe('xmlEscape', () => {
+  it('should return non-string inputs unaffected', () => {
+    expect(xmlEscape(undefined)).toBeUndefined();
+    expect(xmlEscape(null)).toBeNull();
+    expect(xmlEscape(123)).toBe(123);
+    expect(xmlEscape(true)).toBe(true);
+
+    const obj = { key: 'value' };
+    expect(xmlEscape(obj)).toBe(obj);
+
+    const arr = [1, 2, 3];
+    expect(xmlEscape(arr)).toBe(arr);
+  });
+
+  it('should escape xml characters in strings', () => {
+    expect(xmlEscape('<')).toBe('&lt;');
+    expect(xmlEscape('>')).toBe('&gt;');
+    expect(xmlEscape('&')).toBe('&amp;');
+    expect(xmlEscape('\'')).toBe('&apos;');
+    expect(xmlEscape('"')).toBe('&quot;');
+    expect(xmlEscape('<test> & "quotes" \'apos\'')).toBe('&lt;test&gt; &amp; &quot;quotes&quot; &apos;apos&apos;');
+  });
+
+  it('should return string without xml characters unaffected', () => {
+    expect(xmlEscape('hello world')).toBe('hello world');
   });
 });
