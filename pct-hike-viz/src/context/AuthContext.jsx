@@ -72,7 +72,7 @@ export function AuthProvider({ children }) {
       
       setProfile(teamProfile);
     } catch (err) {
-      console.warn("Failed to fetch team profile:", err);
+      console.error("Failed to fetch team profile:", err);
       const userEmail = authUser.email?.trim().toLowerCase();
       if (userEmail === 'gunnarguy@me.com') {
         setProfile({
