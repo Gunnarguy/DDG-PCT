@@ -441,7 +441,6 @@ function App({ authBanner = null }) {
         if (!isMounted || error.name === "AbortError") {
           return;
         }
-        console.error("Failed to load live satellite coverage.", error);
         setLiveSatelliteError(error);
         setLiveSatelliteStatus("error");
       }
