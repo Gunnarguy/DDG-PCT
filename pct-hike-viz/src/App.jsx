@@ -595,8 +595,7 @@ function App({ authBanner = null }) {
     return [...hikeData.features]
       .filter(
         (feature) =>
-          feature.properties.day >= 0 &&
-          feature.properties.itinerary === selectedItinerary,
+          feature.properties.day >= 0,
       )
       .sort((a, b) => a.properties.day - b.properties.day);
   }, [hikeData, selectedItinerary]);
