@@ -379,15 +379,14 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
         profileIndex++;
       }
 
-      let pointsInSegment = 0;
+      const points = [];
       let tempIndex = profileIndex;
       while (tempIndex < profileData.length && profileData[tempIndex].dist <= endMile) {
-        pointsInSegment++;
-        if (pointsInSegment >= 2) break;
+        points.push(profileData[tempIndex]);
         tempIndex++;
       }
 
-      if (pointsInSegment < 2) continue;
+      if (points.length < 2) continue;
       
       const x1 = xScale(startMile);
       const x2 = xScale(endMile);
@@ -399,7 +398,8 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
         x1,
         x2,
         color: DAY_COLORS[colorIdx],
-        name: sortedCamps[i + 1].properties?.name ?? `Day ${day}`
+        name: sortedCamps[i + 1].properties?.name ?? `Day ${day}`,
+        points
       });
     }
     
@@ -424,8 +424,22 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
   const getElevationAtMile = useCallback((mile) => {
     if (!profileData.length) return null;
     if (mile <= 0) return profileData[0].ele;
-    const point = profileData.find((d) => d.dist >= mile);
-    return (point ?? profileData[profileData.length - 1]).ele;
+
+    let low = 0;
+    let high = profileData.length - 1;
+    let result = profileData[high];
+
+    while (low <= high) {
+      const mid = (low + high) >> 1;
+      if (profileData[mid].dist >= mile) {
+        result = profileData[mid];
+        high = mid - 1;
+      } else {
+        low = mid + 1;
+      }
+    }
+
+    return result.ele;
   }, [profileData]);
 
   // Map camp points to the profile with enhanced data
@@ -866,8 +880,8 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
             
             {/* Day segment backgrounds */}
             {daySegments.map((seg, idx) => {
-              const segPoints = profileData.filter(p => p.dist >= seg.startMile && p.dist <= seg.endMile);
-              if (segPoints.length < 2) return null;
+              const segPoints = seg.points;
+              if (!segPoints || segPoints.length < 2) return null;
               
               const segPath = `
                 M ${xScale(seg.startMile)} ${height - margin.bottom}
