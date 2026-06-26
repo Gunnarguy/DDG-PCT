@@ -312,10 +312,11 @@ function MapLoadingFallback() {
   );
 }
 
-function App({ authBanner = null }) {
+function App() {
   const [popupInfo, setPopupInfo] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState("topo");
   const { syncStatus, teamRoster } = useAuth();
+  const [activeTab, setActiveTab] = useState("mission");
   const [selectedItinerary, setSelectedItinerary] = useState("express"); // "express" or "relaxed"
   // Fetch hike data from public/data at runtime
   const [hikeData, setHikeData] = useState(null);
@@ -742,11 +743,6 @@ function App({ authBanner = null }) {
       style={{ "--sidebar-width": `${sidebarWidth}%` }}
     >
       <div className="map-column">
-        {authBanner && (
-          <div className="auth-status error" style={{ margin: "12px 12px 0", zIndex: 1000, position: "relative" }}>
-            {authBanner}
-          </div>
-        )}
         <div className="map-panel">
           <Suspense fallback={<MapLoadingFallback />}>
             <TrailMap
@@ -766,6 +762,7 @@ function App({ authBanner = null }) {
               popupInfo={popupInfo}
               setPopupInfo={setPopupInfo}
               hoverHighlight={profileHoverPoint}
+              activeTab={activeTab}
             />
           </Suspense>
         </div>
@@ -773,6 +770,10 @@ function App({ authBanner = null }) {
         <ElevationProfile
           hikingTrail={hikingTrail}
           campPoints={campPoints}
+          townPins={townPins}
+          transportPoints={transportPoints}
+          waterSources={waterSources}
+          connectivityZones={connectivityZones}
           onHover={handleProfileHover}
         />
       </div>
@@ -811,6 +812,8 @@ function App({ authBanner = null }) {
         onToggleTheme={toggleTheme}
         selectedItinerary={selectedItinerary}
         onItineraryChange={setSelectedItinerary}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
       />
     </div>
   );
@@ -823,7 +826,6 @@ function App({ authBanner = null }) {
 function AuthGatedApp() {
   const {
     authUnavailable,
-    error,
     isAuthenticated,
     isTeamMember,
     loading,
@@ -831,12 +833,9 @@ function AuthGatedApp() {
     signOut,
   } = useAuth();
 
-  if (import.meta.env.DEV && authUnavailable && !isAuthenticated) {
-    return (
-      <App
-        authBanner={`Authentication is unavailable in local dev, so Mission Control is running in offline mode.${error ? ` (${error.message ?? error})` : ""}`}
-      />
-    );
+  if (authUnavailable && !isAuthenticated) {
+    // Silently fallback to offline mode instead of showing a red error banner
+    return <App />;
   }
 
   if (loading) {

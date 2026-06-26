@@ -136,6 +136,7 @@ function Sidebar({
   campPoints,
   waterSources,
   waterSourceMeta,
+  scheduleOptions,
   travelPlan,
   resupplyPlan,
   permitChecklist,
@@ -156,8 +157,9 @@ function Sidebar({
   onToggleTheme,
   selectedItinerary,
   onItineraryChange,
+  activeTab,
+  onTabChange,
 }) {
-  const [activeTab, setActiveTab] = useState("mission");
   const tabsRef = useRef(null);
   const tabs = [
     { id: "mission", label: "Mission" },
@@ -521,14 +523,14 @@ function Sidebar({
         <div className="quick-ref-dates">
           <span className="date-badge">
             📅{" "}
-            {selectedItinerary === "express"
-              ? "Aug 29 – Sept 6"
-              : "Aug 22 – Sept 6"}
+            {scheduleOptions 
+              ? scheduleOptions.find(opt => opt.title.toLowerCase().includes(selectedItinerary === "relaxed" ? "detox" : "express"))?.dates 
+              : (selectedItinerary === "express" ? "Aug 29 – Sept 6" : "Aug 22 – Sept 6")}
           </span>
           <span className="date-note">
-            {selectedItinerary === "express"
-              ? "9-day express schedule"
-              : "16-day relaxed schedule"}
+            {scheduleOptions 
+              ? scheduleOptions.find(opt => opt.title.toLowerCase().includes(selectedItinerary === "relaxed" ? "detox" : "express"))?.title + " schedule"
+              : (selectedItinerary === "express" ? "9-day express schedule" : "16-day relaxed schedule")}
           </span>
         </div>
       </section>
@@ -1420,61 +1422,18 @@ function Sidebar({
 
       {presenceRow}
 
-      <div
-        className="global-itinerary-toggle"
-        style={{
-          margin: "0 16px 16px 16px",
-          display: "flex",
-          gap: "8px",
-          background: "var(--dash-panel)",
-          padding: "4px",
-          borderRadius: "8px",
-          border: "1px solid var(--dash-border)",
-        }}
-      >
+      <div className="itinerary-toggle-container" style={{ margin: "0 16px 16px 16px" }}>
         <button
           type="button"
           onClick={() => onItineraryChange("express")}
-          style={{
-            flex: 1,
-            padding: "8px",
-            borderRadius: "4px",
-            background:
-              selectedItinerary === "express"
-                ? "var(--pine-500)"
-                : "transparent",
-            color:
-              selectedItinerary === "express"
-                ? "#ffffff"
-                : "var(--dash-text-muted)",
-            border: "none",
-            cursor: "pointer",
-            fontWeight: "bold",
-            fontSize: "0.85rem",
-          }}
+          className={`itinerary-toggle-btn ${selectedItinerary === "express" ? "is-active" : ""}`}
         >
           ⚡ 9-Day Express
         </button>
         <button
           type="button"
           onClick={() => onItineraryChange("relaxed")}
-          style={{
-            flex: 1,
-            padding: "8px",
-            borderRadius: "4px",
-            background:
-              selectedItinerary === "relaxed"
-                ? "var(--pine-500)"
-                : "transparent",
-            color:
-              selectedItinerary === "relaxed"
-                ? "#ffffff"
-                : "var(--dash-text-muted)",
-            border: "none",
-            cursor: "pointer",
-            fontWeight: "bold",
-            fontSize: "0.85rem",
-          }}
+          className={`itinerary-toggle-btn ${selectedItinerary === "relaxed" ? "is-active" : ""}`}
         >
           🏕️ 16-Day Relaxed
         </button>
@@ -1490,7 +1449,7 @@ function Sidebar({
             key={tab.id}
             type="button"
             className={tab.id === activeTab ? "tab-btn is-active" : "tab-btn"}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => onTabChange(tab.id)}
           >
             {tab.label}
           </button>

@@ -5877,3 +5877,37 @@
 @media (prefers-color-scheme: dark) {
   /* Placeholder for dark mode if needed */
 }
+
+/* Itinerary Toggle (Segmented Control) */
+.itinerary-toggle-container {
+  display: flex;
+  background: var(--dash-panel);
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid var(--dash-border);
+  gap: 4px;
+}
+
+.itinerary-toggle-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--dash-text-muted);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.itinerary-toggle-btn.is-active {
+  background: var(--pine-500);
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.itinerary-toggle-btn:hover:not(.is-active) {
+  background: var(--dash-border);
+  color: var(--dash-text);
+}

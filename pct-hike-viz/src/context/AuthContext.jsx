@@ -106,7 +106,7 @@ export function AuthProvider({ children }) {
                 setLoading(false);
               }
               return;
-            } catch (e) {
+            } catch {
               localStorage.removeItem("pct-hike-viz::mock-user");
             }
           }

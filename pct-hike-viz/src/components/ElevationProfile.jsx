@@ -123,7 +123,15 @@ function getGradeColor(gradePercent) {
   return '#F44336';
 }
 
-const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
+const ElevationProfile = ({ 
+  hikingTrail, 
+  campPoints = [], 
+  townPins = [],
+  transportPoints = [],
+  waterSources = [],
+  connectivityZones = [],
+  onHover 
+}) => {
   const containerRef = useRef(null);
   const [hoverX, setHoverX] = useState(null);
   const [hoverMeta, setHoverMeta] = useState(null);
@@ -474,6 +482,74 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
     }).filter(Boolean);
   }, [campPoints, getElevationAtMile, profileData.length, totalDistance, xScale, yScale]);
 
+  const getMileFromCoordinates = useCallback((coord) => {
+    if (!profileData.length || !coord) return null;
+    let closestPoint = profileData[0];
+    let minDiff = Infinity;
+    for (const pt of profileData) {
+      if (!pt.original) continue;
+      const d = getDistanceFromLatLonInMeters(coord[1], coord[0], pt.original[1], pt.original[0]);
+      if (d < minDiff) {
+        minDiff = d;
+        closestPoint = pt;
+      }
+    }
+    return closestPoint.dist;
+  }, [profileData]);
+
+  const getTransportIcon = (type) => {
+    switch (type) {
+      case "airport": return "✈️";
+      case "trailhead-parking": return "🅿️";
+      case "shuttle-point": return "🚐";
+      default: return "📍";
+    }
+  };
+
+  const extraMarkers = useMemo(() => {
+    if (!profileData.length || !xScale || !yScale) return [];
+    const markers = [];
+
+    const processPoints = (points, typeFn, iconFn) => {
+      points.forEach((pt, idx) => {
+        let mile = pt.mile;
+        if (typeof mile !== 'number' && pt.coordinates) {
+          mile = getMileFromCoordinates(pt.coordinates);
+        }
+        if (typeof mile !== 'number') return;
+        
+        const clampedMile = Math.max(0, Math.min(mile, totalDistance));
+        const eleAtPt = getElevationAtMile(clampedMile);
+        if (eleAtPt === null) return;
+        const cx = xScale(clampedMile);
+        const cy = yScale(eleAtPt);
+        if (Number.isNaN(cx) || Number.isNaN(cy)) return;
+
+        markers.push({
+          id: `${typeFn(pt)}-${idx}-${mile}`,
+          name: pt.name || pt.waypoint || typeFn(pt),
+          cx,
+          cy,
+          mile: clampedMile,
+          elevation: eleAtPt,
+          type: typeFn(pt),
+          icon: iconFn(pt),
+          color: '#666', // Neutral color for non-camp markers
+          notes: pt.notes || pt.report || (pt.cellCoverage ? 'Cell coverage check' : null)
+        });
+      });
+    };
+
+    processPoints(townPins, () => 'Town', () => '🏘️');
+    processPoints(transportPoints, (pt) => pt.type || 'Transport', (pt) => getTransportIcon(pt.type));
+    processPoints(waterSources, () => 'Water', () => '💧');
+    processPoints(connectivityZones, () => 'Connectivity', () => '📡');
+
+    return markers;
+  }, [townPins, transportPoints, waterSources, connectivityZones, profileData.length, xScale, yScale, getMileFromCoordinates, getElevationAtMile, totalDistance]);
+
+  const allMarkers = useMemo(() => [...campMarkers, ...extraMarkers], [campMarkers, extraMarkers]);
+
   // Y-axis tick marks
   const yTicks = useMemo(() => {
     if (!yScale) return [];
@@ -602,8 +678,7 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
             <span className="badge-icon">🥾</span>
             <span className="badge-text">DDG PCT MISSION</span>
           </div>
-          <h3 className="elevation-profile-title">Section O: Burney Falls → Castle Crags</h3>
-          <p className="elevation-endpoints">{startLabel} → {finishLabel}</p>
+          <h3 className="elevation-profile-title">Section O: {startLabel} → {finishLabel}</h3>
         </div>
         
         {/* DDG Team Avatars */}
@@ -1006,7 +1081,7 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
             </text>
             
             {/* Camp Markers */}
-            {campMarkers.map((marker) => (
+            {allMarkers.map((marker) => (
               <g 
                 key={marker.id} 
                 className={`camp-marker-group ${hoveredCamp === marker.id ? 'is-hovered' : ''}`}
@@ -1030,23 +1105,23 @@ const ElevationProfile = ({ hikingTrail, campPoints = [], onHover }) => {
                 <circle 
                   cx={marker.cx} 
                   cy={marker.cy} 
-                  r={hoveredCamp === marker.id ? 8 : 6}
+                  r={hoveredCamp === marker.id ? 8 : (marker.icon ? 5 : 6)}
                   fill="#fff" 
                   stroke={marker.color} 
-                  strokeWidth="3"
+                  strokeWidth={marker.icon ? "2" : "3"}
                   filter="url(#markerShadow)"
                   className="camp-marker-circle"
                   style={{ transition: 'r 0.2s ease, transform 0.2s ease' }}
                 />
                 
-                {/* Camp icon */}
+                {/* Marker icon */}
                 <text
                   x={marker.cx}
                   y={Math.max(14, marker.cy - 16)}
                   textAnchor="middle"
-                  fontSize="14"
+                  fontSize={marker.icon ? "12" : "14"}
                 >
-                  {marker.type === 'Trailhead' ? '🚗' : marker.type === 'Finish' ? '🏁' : '⛺'}
+                  {marker.icon || (marker.type === 'Trailhead' ? '🚗' : marker.type === 'Finish' ? '🏁' : '⛺')}
                 </text>
                 
                 {/* Tooltip on hover */}
@@ -1263,6 +1338,10 @@ ElevationProfile.propTypes = {
   campPoints: PropTypes.arrayOf(PropTypes.shape({
     properties: PropTypes.object
   })),
+  townPins: PropTypes.arrayOf(PropTypes.object),
+  transportPoints: PropTypes.arrayOf(PropTypes.object),
+  waterSources: PropTypes.arrayOf(PropTypes.object),
+  connectivityZones: PropTypes.arrayOf(PropTypes.object),
   onHover: PropTypes.func
 };
 

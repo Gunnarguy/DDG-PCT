@@ -1,7 +1,7 @@
 import { PathLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import PropTypes from "prop-types";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import Map, {
   FullscreenControl,
   Marker,
@@ -50,7 +50,26 @@ function TrailMap({
   popupInfo,
   setPopupInfo,
   hoverHighlight,
+  activeTab,
 }) {
+  const mapRef = useRef(null);
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const map = mapRef.current.getMap();
+    if (!map) return;
+
+    if (activeTab === "mission" || activeTab === "itinerary") {
+      map.flyTo({ center: [-121.95, 40.95], zoom: 8, duration: 1500 });
+    } else if (activeTab === "safety") {
+      map.flyTo({ center: [-122.2, 41.0], zoom: 7.5, duration: 1500 });
+    } else if (activeTab === "connectivity") {
+      map.flyTo({ center: [-121.5, 40.8], zoom: 9, duration: 1500 });
+    } else if (activeTab === "logistics") {
+      map.flyTo({ center: [-122.3, 41.15], zoom: 9.5, duration: 1500 });
+    }
+  }, [activeTab]);
+
   // Strip elevation (3rd coordinate) so Deck.gl doesn't render the trail floating in 3D space
   const flatTrail = useMemo(() => {
     if (!hikingTrail?.length) return [];
@@ -181,6 +200,7 @@ function TrailMap({
         </div>
       </div>
       <Map
+        ref={mapRef}
         initialViewState={{
           longitude: -121.95,
           latitude: 40.95,

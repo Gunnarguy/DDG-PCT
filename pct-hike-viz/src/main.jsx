@@ -13,10 +13,14 @@ const hideLoader = () => {
   }
 };
 
+import { ErrorBoundary } from './components/ErrorBoundary.jsx';
+
 const root = createRoot(document.getElementById('root'));
 root.render(
   <StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </StrictMode>
 );
 
