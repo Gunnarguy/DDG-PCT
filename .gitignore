@@ -56,3 +56,22 @@ logs/
 # Temporary
 .tmp/
 temp/
+
+# Xcode
+build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.moved-aside
+*.xcuserstate
+*.xsyncdest
+*.xccheckout
+*.xcscmblueprint
+
+# Swift Package Manager build artifacts
+.build/
+.swiftpm/
+
+# Local Secrets
+DDG-Mobile/DDG-Mobile/Data/Secrets.swift
+

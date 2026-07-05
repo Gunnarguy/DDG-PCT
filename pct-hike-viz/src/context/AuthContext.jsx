@@ -60,7 +60,7 @@ export function AuthProvider({ children }) {
       
       // Fallback if Gunnar's profile is missing from the database
       const userEmail = authUser.email?.trim().toLowerCase();
-      if (!teamProfile && userEmail === 'gunnarguy@me.com') {
+      if (!teamProfile && (userEmail === 'gunnarguy@me.com' || userEmail === 'gunnarguy@aol.com')) {
         teamProfile = {
           id: authUser.id,
           name: 'Gunnar',
@@ -74,7 +74,7 @@ export function AuthProvider({ children }) {
     } catch (err) {
       console.error("Failed to fetch team profile:", err);
       const userEmail = authUser.email?.trim().toLowerCase();
-      if (userEmail === 'gunnarguy@me.com') {
+      if (userEmail === 'gunnarguy@me.com' || userEmail === 'gunnarguy@aol.com') {
         setProfile({
           id: authUser.id,
           name: 'Gunnar',
@@ -309,23 +309,28 @@ export function AuthProvider({ children }) {
     }
 
     // Check database to ensure email is allowlisted before attempting sign in
-    try {
-      const { data, error: allowlistError } = await supabase
-        .from('allowed_emails')
-        .select('email')
-        .ilike('email', normalizedEmail)
-        .maybeSingle();
+    const adminEmails = ["gunnarguy@me.com", "gunnarguy@aol.com"];
+    const isAdminEmail = adminEmails.includes(normalizedEmail);
 
-      if (allowlistError || !data) {
-        const msg =
-          "This email is not on the DDG allowlist. Ask Gunnar to add it before signing in.";
-        setError(msg);
-        return { success: false, error: msg };
+    if (!isAdminEmail) {
+      try {
+        const { data, error: allowlistError } = await supabase
+          .from('allowed_emails')
+          .select('email')
+          .ilike('email', normalizedEmail)
+          .maybeSingle();
+
+        if (allowlistError || !data) {
+          const msg =
+            "This email is not on the DDG allowlist. Ask Gunnar to add it before signing in.";
+          setError(msg);
+          return { success: false, error: msg };
+        }
+      } catch (err) {
+        console.warn("Allowlist check failed, proceeding to attempt sign in:", err);
+        // If we can't check the allowlist (e.g., network error or permissions),
+        // we'll still let Supabase try, but this prevents most accidental signups.
       }
-    } catch (err) {
-      console.warn("Allowlist check failed, proceeding to attempt sign in:", err);
-      // If we can't check the allowlist (e.g., network error or permissions),
-      // we'll still let Supabase try, but this prevents most accidental signups.
     }
 
     // IMPORTANT: On GitHub Pages the app lives under /DDG-PCT/ (Vite base).
@@ -541,8 +546,8 @@ export function AuthProvider({ children }) {
     error,
     authUnavailable,
     isAuthenticated: !!user,
-    isTeamMember: !!profile || user?.email?.trim().toLowerCase() === "gunnarguy@me.com",
-    isAdmin: profile?.role === "admin" || user?.email?.trim().toLowerCase() === "gunnarguy@me.com",
+    isTeamMember: !!profile || ["gunnarguy@me.com", "gunnarguy@aol.com"].includes(user?.email?.trim().toLowerCase() ?? ""),
+    isAdmin: profile?.role === "admin" || ["gunnarguy@me.com", "gunnarguy@aol.com"].includes(user?.email?.trim().toLowerCase() ?? ""),
     syncStatus,
     teamRoster,
 
