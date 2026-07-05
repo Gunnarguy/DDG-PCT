@@ -13,6 +13,8 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B09F58742F6F657F00FB2024 /* DDG-Mobile */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = "DDG-Mobile";
 			sourceTree = "<group>";
 		};
@@ -65,6 +67,8 @@
 			);
 			name = "DDG-Mobile";
 			packageProductDependencies = (
+				AC014091FF182DA75D0080E6 /* Supabase */,
+				21BD9963217B348151BFE3B0 /* Auth */,
 			);
 			productName = "DDG-Mobile";
 			productReference = B09F58722F6F657F00FB2024 /* DDG-Mobile.app */;
@@ -94,6 +98,9 @@
 			);
 			mainGroup = B09F58692F6F657F00FB2024;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				611E8D54F7CFA635D6A8EAB2 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B09F58732F6F657F00FB2024 /* Products */;
 			projectDirPath = "";
@@ -355,6 +362,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		611E8D54F7CFA635D6A8EAB2 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		21BD9963217B348151BFE3B0 /* Auth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 611E8D54F7CFA635D6A8EAB2 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Auth;
+		};
+		AC014091FF182DA75D0080E6 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 611E8D54F7CFA635D6A8EAB2 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B09F586A2F6F657F00FB2024 /* Project object */;
 }
