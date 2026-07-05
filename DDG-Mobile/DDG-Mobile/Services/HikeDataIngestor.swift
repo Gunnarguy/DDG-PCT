@@ -11,10 +11,9 @@ struct HikeDataIngestor {
     /// Check if data has already been ingested (avoid re-parsing 48k points)
     static func needsIngest(modelContext: ModelContext) -> Bool {
         print("DEBUG [HikeDataIngestor]: Checking database state...")
-        var descriptor = FetchDescriptor<TrailPoint>()
-        descriptor.fetchLimit = 100
+        let descriptor = FetchDescriptor<TrailPoint>()
         let count = (try? modelContext.fetchCount(descriptor)) ?? 0
-        let needs = count < 100
+        let needs = count < 5000
         print("DEBUG [HikeDataIngestor]: Current database count - \(count) trail points found. Needs ingest: \(needs)")
         return needs
     }
