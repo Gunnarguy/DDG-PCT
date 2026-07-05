@@ -372,7 +372,7 @@ struct WildfireMonitorView: View {
 
         fires = await WildfireService.shared.fetchWildfiresWithCache(modelContext: modelContext)
 
-        let epaKey = await SupabaseManager.shared.config.epaApiKey
+        let epaKey = SupabaseManager.shared.config.epaApiKey
         if !epaKey.isEmpty {
             aqiReadings = await WildfireService.shared.fetchAQIWithCache(
                 modelContext: modelContext, apiKey: epaKey
