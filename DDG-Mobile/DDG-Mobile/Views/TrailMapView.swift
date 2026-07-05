@@ -70,7 +70,6 @@ struct TrailMapView: View {
                 }
                 .padding(8)
             }
-            }
             .sheet(item: $selectedCamp) { camp in
                 CampDetailSheet(camp: camp)
                     .presentationDetents([.medium])
