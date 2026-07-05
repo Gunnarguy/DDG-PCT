@@ -19,44 +19,44 @@ struct ContentView: View {
     }
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            Tab("Mission", systemImage: "flag.fill", value: 0) {
-                MissionView()
+        ZStack(alignment: .topTrailing) {
+            TabView(selection: $selectedTab) {
+                Tab("Mission", systemImage: "flag.fill", value: 0) {
+                    MissionView()
+                }
+                Tab("Prep", systemImage: "checklist", value: 1) {
+                    PrepView()
+                }
+                Tab("Map", systemImage: "map.fill", value: 2) {
+                    MapContainerView()
+                }
+                Tab("Itinerary", systemImage: "calendar", value: 3) {
+                    ItineraryView()
+                }
+                Tab("Safety", systemImage: "exclamationmark.shield.fill", value: 4) {
+                    SafetyView()
+                }
+                Tab("Gear", systemImage: "backpack.fill", value: 5) {
+                    GearPlannerView()
+                }
+                Tab("Ops Log", systemImage: "list.bullet.clipboard.fill", value: 6) {
+                    OpsLogView()
+                }
+                Tab("Info", systemImage: "info.circle.fill", value: 7) {
+                    InfoView()
+                }
             }
-            Tab("Prep", systemImage: "checklist", value: 1) {
-                PrepView()
-            }
-            Tab("Map", systemImage: "map.fill", value: 2) {
-                MapContainerView()
-            }
-            Tab("Itinerary", systemImage: "calendar", value: 3) {
-                ItineraryView()
-            }
-            Tab("Safety", systemImage: "exclamationmark.shield.fill", value: 4) {
-                SafetyView()
-            }
-            Tab("Gear", systemImage: "backpack.fill", value: 5) {
-                GearPlannerView()
-            }
-            Tab("Ops Log", systemImage: "list.bullet.clipboard.fill", value: 6) {
-                OpsLogView()
-            }
-            Tab("Info", systemImage: "info.circle.fill", value: 7) {
-                InfoView()
-            }
-        }
-        .overlay(alignment: .topTrailing) {
+
+            // Global Status Indicator (does not block touches)
             HStack(spacing: 8) {
-                // User badge
                 if let user = auth.currentUser {
                     Text(user.emoji)
                         .font(.caption)
                 }
-
                 SyncIndicator(isConnected: network.isConnected, pendingCount: pendingSyncCount)
             }
             .padding(.trailing, 16)
-            .padding(.top, 4)
+            .padding(.top, 60)
             .allowsHitTesting(false)
         }
     }
