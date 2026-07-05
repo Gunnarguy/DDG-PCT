@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 /// Container view that stacks the Trail Map and the Elevation Profile chart,
 /// sharing a state binding to synchronize the interactive hover/crosshair cursor.

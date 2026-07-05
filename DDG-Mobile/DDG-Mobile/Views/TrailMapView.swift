@@ -75,7 +75,6 @@ struct TrailMapView: View {
                     .presentationDetents([.medium])
             }
         }
-    }
 
     // MARK: - Day Segments
 
