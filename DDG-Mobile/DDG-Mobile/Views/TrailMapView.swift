@@ -74,6 +74,9 @@ struct TrailMapView: View {
                 CampDetailSheet(camp: camp)
                     .presentationDetents([.medium])
             }
+            .onAppear {
+                print("DEBUG [TrailMapView]: Mounted on screen. Camps database count: \(camps.count) | TrailPoints database count: \(trailPoints.count) | WaterSources database count: \(waterSources.count)")
+            }
         }
 
     // MARK: - Day Segments

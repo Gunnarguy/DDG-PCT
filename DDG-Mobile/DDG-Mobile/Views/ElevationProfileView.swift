@@ -31,6 +31,9 @@ struct ElevationProfileView: View {
                 hoverPoint = nil
             }
         }
+        .onAppear {
+            print("DEBUG [ElevationProfileView]: Mounted on screen. TrailPoints database count: \(trailPoints.count) | Camps database count: \(camps.count) | Generated ProfilePoints count: \(profileData.count)")
+        }
     }
 
     private func findClosestPoint(to mile: Double) -> HoverPoint? {

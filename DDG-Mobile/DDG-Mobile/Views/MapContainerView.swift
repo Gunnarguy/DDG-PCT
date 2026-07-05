@@ -20,6 +20,16 @@ struct MapContainerView: View {
             }
             .navigationTitle("Trail Map")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                print("DEBUG [MapContainerView]: Mounted on screen.")
+            }
+            .onChange(of: hoverPoint) { oldValue, newValue in
+                if let newValue {
+                    print("DEBUG [MapContainerView]: Active hover point - Mile: \(String(format: "%.2f", newValue.mile)) | Elevation: \(String(format: "%.1f", newValue.elevationFeet))ft | Coordinate: (\(newValue.latitude), \(newValue.longitude))")
+                } else if oldValue != nil {
+                    print("DEBUG [MapContainerView]: Hover point cleared.")
+                }
+            }
         }
     }
 }

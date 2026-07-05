@@ -10,34 +10,45 @@ struct HikeDataIngestor {
 
     /// Check if data has already been ingested (avoid re-parsing 48k points)
     static func needsIngest(modelContext: ModelContext) -> Bool {
+        print("DEBUG [HikeDataIngestor]: Checking database state...")
         var descriptor = FetchDescriptor<TrailPoint>()
         descriptor.fetchLimit = 1
         let count = (try? modelContext.fetchCount(descriptor)) ?? 0
+        print("DEBUG [HikeDataIngestor]: Current database count - \(count) trail points found. Needs ingest: \(count == 0)")
         return count == 0
     }
 
     /// Parse bundled hike_data.json and insert all models into SwiftData
     static func ingest(modelContext: ModelContext) throws {
+        print("DEBUG [HikeDataIngestor]: Beginning data ingestion from bundle resource 'hike_data.json'...")
         guard let url = Bundle.main.url(forResource: "hike_data", withExtension: "json") else {
+            print("ERROR [HikeDataIngestor]: Bundled 'hike_data.json' file not found in main bundle!")
             assertionFailure("hike_data.json not found in bundle")
             return
         }
 
         let data = try Data(contentsOf: url)
+        print("DEBUG [HikeDataIngestor]: Successfully read \(data.count) bytes from JSON file.")
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] ?? [:]
 
         // Parse camp/waypoint features
+        var campCount = 0
         if let features = json["features"] as? [[String: Any]] {
+            print("DEBUG [HikeDataIngestor]: Parsing \(features.count) waypoint features...")
             for feature in features {
                 if let camp = parseCampSite(from: feature) {
                     modelContext.insert(camp)
+                    campCount += 1
                 }
             }
+            print("DEBUG [HikeDataIngestor]: Successfully inserted \(campCount)/\(features.count) campsites.")
         }
 
         // Parse route path (trail coordinates)
+        var pathCount = 0
         if let route = json["route"] as? [String: Any],
            let path = route["path"] as? [[Double]] {
+            print("DEBUG [HikeDataIngestor]: Parsing \(path.count) trail points...")
             for (index, point) in path.enumerated() where point.count >= 3 {
                 let trailPoint = TrailPoint(
                     latitude: point[1],
@@ -46,10 +57,14 @@ struct HikeDataIngestor {
                     index: index
                 )
                 modelContext.insert(trailPoint)
+                pathCount += 1
             }
+            print("DEBUG [HikeDataIngestor]: Successfully inserted \(pathCount)/\(path.count) trail points.")
         }
 
+        print("DEBUG [HikeDataIngestor]: Saving ModelContext...")
         try modelContext.save()
+        print("DEBUG [HikeDataIngestor]: Data ingestion complete.")
     }
 
     // MARK: - Private Parsing
