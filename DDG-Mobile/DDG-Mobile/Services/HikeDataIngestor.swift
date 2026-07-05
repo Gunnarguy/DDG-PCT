@@ -12,15 +12,21 @@ struct HikeDataIngestor {
     static func needsIngest(modelContext: ModelContext) -> Bool {
         print("DEBUG [HikeDataIngestor]: Checking database state...")
         var descriptor = FetchDescriptor<TrailPoint>()
-        descriptor.fetchLimit = 1
+        descriptor.fetchLimit = 100
         let count = (try? modelContext.fetchCount(descriptor)) ?? 0
-        print("DEBUG [HikeDataIngestor]: Current database count - \(count) trail points found. Needs ingest: \(count == 0)")
-        return count == 0
+        let needs = count < 100
+        print("DEBUG [HikeDataIngestor]: Current database count - \(count) trail points found. Needs ingest: \(needs)")
+        return needs
     }
 
     /// Parse bundled hike_data.json and insert all models into SwiftData
     static func ingest(modelContext: ModelContext) throws {
         print("DEBUG [HikeDataIngestor]: Beginning data ingestion from bundle resource 'hike_data.json'...")
+        
+        // Clear any old/corrupt data first to prevent duplicate entries
+        try? modelContext.delete(model: TrailPoint.self)
+        try? modelContext.delete(model: CampSite.self)
+        
         guard let url = Bundle.main.url(forResource: "hike_data", withExtension: "json") else {
             print("ERROR [HikeDataIngestor]: Bundled 'hike_data.json' file not found in main bundle!")
             assertionFailure("hike_data.json not found in bundle")
