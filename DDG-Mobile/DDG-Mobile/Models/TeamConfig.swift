@@ -15,8 +15,8 @@ enum DDGTeam {
     }
 
     static let roster: [Member] = [
-        Member(id: "dan",    name: "Dan",    emoji: "🧔", role: "Trail Boss",  color: "#2E7D32", emails: ["smileyguy@aol.com"]),
-        Member(id: "drew",   name: "Drew",   emoji: "🏔️", role: "Navigator",  color: "#1565C0", emails: ["andrew.d.hostetler@gmail.com"]),
+        Member(id: "dan",    name: "Dan",    emoji: "🧔", role: "Trail Boss",  color: "#2E7D32", emails: ["smileyguy@aol.com", "smileyguy@gmail.com"]),
+        Member(id: "drew",   name: "Drew",   emoji: "🏔️", role: "Navigator",  color: "#1565C0", emails: ["andrew.d.hostetler@gmail.com", "hisroyaldrewness@aol.com"]),
         Member(id: "gunnar", name: "Gunnar", emoji: "⚡", role: "Pace Setter", color: "#F57C00", emails: ["gunnarguy@me.com", "gunnarguy@aol.com"]),
     ]
 
