@@ -12,7 +12,7 @@ struct HikeDataIngestor {
     static func needsIngest(modelContext: ModelContext) -> Bool {
         print("DEBUG [HikeDataIngestor]: Checking database state...")
         
-        let currentVersion = 4 // Bump this to force re-ingestion when json structure/content changes
+        let currentVersion = 4 // Bump this to force re-ingestion when json structure/content changes.
         let ingestedVersion = UserDefaults.standard.integer(forKey: "hikeDataIngestVersion")
         if ingestedVersion < currentVersion {
             print("DEBUG [HikeDataIngestor]: Forced re-ingestion triggered (version \(ingestedVersion) < \(currentVersion))")
