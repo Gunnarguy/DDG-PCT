@@ -1527,7 +1527,7 @@ export const dayItinerary = [
     day: 6,
     label: 'Day 6',
     from: 'Castle Crags Vista',
-    to: 'Castle Crags State Park',
+    to: 'Castle Crags (Soda Creek Exit)',
     distance: 8.0, // GPS-measured; PDF estimate was ~8mi
     pdfEstimate: 8,
     type: 'hike',

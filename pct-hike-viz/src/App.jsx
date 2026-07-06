@@ -575,7 +575,7 @@ function App() {
               dayItem.day === 0
                 ? "Burney Falls State Park (Start)"
                 : dayItem.day === 6
-                ? "Castle Crags State Park (End)"
+                ? "Castle Crags (Soda Creek Exit)"
                 : dayItem.to,
             day: dayItem.day,
             itinerary: "express",
