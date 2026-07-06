@@ -759,6 +759,16 @@ function Sidebar({
           </span>
         </div>
         <div className="itinerary-list itinerary-list--detailed">
+          <button type="button" className="day-card day-card--detailed" style={{ borderLeftColor: 'var(--orange-500)' }}>
+            <div className="day-card__header">
+              <div className="day-card__day-info">
+                <span className="day-pill" style={{ backgroundColor: 'var(--orange-500)' }}>Aug 28</span>
+              </div>
+            </div>
+            <h3 className="day-card__route">Arrival & Assembly</h3>
+            <p className="day-card__terrain">✈️ Dan & Drew fly Chicago (ORD) to SJC via UA481 (arriving 6:03 PM PST).<br/>🚙 Mikaela drives Kia Sportage from 2800 Joseph Ave to SJC pickup, then straight to Burney Falls drop-off (270 mi, ~4.5 hrs).</p>
+          </button>
+          
           {campPoints.slice(1).map((camp, idx) => {
             const day = camp.properties.day;
             const prevCamp = campPoints[idx];
@@ -806,6 +816,36 @@ function Sidebar({
               </button>
             );
           })}
+          
+          <button type="button" className="day-card day-card--detailed" style={{ borderLeftColor: 'var(--stone-400)' }}>
+            <div className="day-card__header">
+              <div className="day-card__day-info">
+                <span className="day-pill" style={{ backgroundColor: 'var(--stone-400)' }}>Sept 5</span>
+              </div>
+            </div>
+            <h3 className="day-card__route">Buffer Day / Zero</h3>
+            <p className="day-card__terrain">Extra day for delays or resting.</p>
+          </button>
+          
+          <button type="button" className="day-card day-card--detailed" style={{ borderLeftColor: 'var(--orange-500)' }}>
+            <div className="day-card__header">
+              <div className="day-card__day-info">
+                <span className="day-pill" style={{ backgroundColor: 'var(--orange-500)' }}>Sept 6</span>
+              </div>
+            </div>
+            <h3 className="day-card__route">Return Transit</h3>
+            <p className="day-card__terrain">Travel from Trailhead back to Bay Area.</p>
+          </button>
+          
+          <button type="button" className="day-card day-card--detailed" style={{ borderLeftColor: 'var(--orange-500)' }}>
+            <div className="day-card__header">
+              <div className="day-card__day-info">
+                <span className="day-pill" style={{ backgroundColor: 'var(--orange-500)' }}>Sept 7</span>
+              </div>
+            </div>
+            <h3 className="day-card__route">Departure</h3>
+            <p className="day-card__terrain">✈️ Dan & Drew depart SJC to Chicago (ORD) on UA1317 (12:45 PM CT).</p>
+          </button>
         </div>
       </section>
 

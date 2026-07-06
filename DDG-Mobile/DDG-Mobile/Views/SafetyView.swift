@@ -8,170 +8,192 @@ struct SafetyView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section("Wildfire & Air Quality") {
-                    NavigationLink {
-                        WildfireMonitorView()
-                    } label: {
-                        Label("Active Fires & AQI", systemImage: "flame.fill")
-                    }
-                }
-
-                Section("Altitude Zones") {
-                    ForEach(altitudeZones) { zone in
-                        VStack(alignment: .leading, spacing: 4) {
+            ZStack {
+                Color(uiColor: .systemGroupedBackground).ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(spacing: 20) {
+                        // Wildfire Link
+                        NavigationLink {
+                            WildfireMonitorView()
+                        } label: {
                             HStack {
-                                Circle()
-                                    .fill(riskColor(zone.risk))
-                                    .frame(width: 12, height: 12)
-                                VStack(alignment: .leading) {
-                                    Text(zone.name)
-                                        .font(.body)
-                                    Text("\(Int(zone.minFt))–\(Int(zone.maxFt)) ft · \(zone.risk) risk")
+                                Image(systemName: "flame.fill")
+                                    .font(.system(size: 32))
+                                    .foregroundStyle(.red)
+                                    .shadow(color: .red.opacity(0.6), radius: 8)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Wildfire & AQI Monitor")
+                                        .font(.headline.bold())
+                                        .foregroundStyle(.primary)
+                                    Text("Live satellite scans and EPA air quality")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
+                                Spacer()
+                                Image(systemName: "chevron.right").foregroundStyle(.secondary)
                             }
-                            Text(zone.description)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            if !zone.symptoms.isEmpty {
-                                Text("Watch for: \(zone.symptoms.joined(separator: ", "))")
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                            }
-                            if zone.risk != "none" {
-                                Label(zone.mitigation, systemImage: "heart.text.clipboard")
-                                    .font(.caption2)
-                                    .foregroundStyle(.orange)
+                            .padding()
+                            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+                            .overlay(RoundedRectangle(cornerRadius: 16).stroke(.red.opacity(0.3), lineWidth: 1))
+                        }
+                        
+                        // Altitude Zones
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Altitude Risk Zones")
+                                .font(.title3.bold())
+                            
+                            ForEach(altitudeZones) { zone in
+                                HStack(spacing: 16) {
+                                    Circle()
+                                        .fill(riskColor(zone.risk))
+                                        .frame(width: 16, height: 16)
+                                        .shadow(color: riskColor(zone.risk).opacity(0.6), radius: 5)
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        HStack {
+                                            Text(zone.name)
+                                                .font(.headline)
+                                            Spacer()
+                                            Text("\(Int(zone.minFt))–\(Int(zone.maxFt)) ft")
+                                                .font(.caption.bold())
+                                                .foregroundStyle(.secondary)
+                                        }
+                                        Text(zone.description)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        if zone.risk != "none" {
+                                            Text(zone.mitigation)
+                                                .font(.caption2.bold())
+                                                .foregroundStyle(.orange)
+                                        }
+                                    }
+                                }
+                                .padding()
+                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
                             }
                         }
-                    }
-                }
-
-                Section {
-                    // AI Connectivity Briefing
-                    if let briefing = commsBriefing {
-                        VStack(alignment: .leading, spacing: 4) {
+                        
+                        // Connectivity
+                        VStack(alignment: .leading, spacing: 16) {
                             HStack {
-                                Image(systemName: "sparkles")
-                                    .foregroundStyle(.purple)
-                                Text("Comms Strategy")
-                                    .font(.caption.bold())
+                                Text("Comms & Connectivity")
+                                    .font(.title3.bold())
                                 Spacer()
                                 Button {
-                                    commsBriefing = nil
+                                    Task { await generateCommsBriefing() }
                                 } label: {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundStyle(.secondary)
+                                    if isGeneratingComms {
+                                        ProgressView().controlSize(.small)
+                                    } else {
+                                        Image(systemName: "sparkles")
+                                            .font(.title3)
+                                            .foregroundStyle(.purple)
+                                    }
                                 }
-                                .buttonStyle(.plain)
+                                .disabled(isGeneratingComms)
                             }
-                            Text(briefing)
-                                .font(.callout)
-                        }
-                    }
-
-                    ForEach(connectivityZones) { zone in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(zone.name)
-                                .font(.body.bold())
-                            HStack(spacing: 12) {
-                                CoverageChip(carrier: "VZW", level: zone.cellCoverage.verizon)
-                                CoverageChip(carrier: "ATT", level: zone.cellCoverage.att)
-                                CoverageChip(carrier: "TMO", level: zone.cellCoverage.tmobile)
+                            
+                            if let briefing = commsBriefing {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        Image(systemName: "sparkles")
+                                            .foregroundStyle(.purple)
+                                        Text("Siri Comms Strategy")
+                                            .font(.caption.bold())
+                                            .foregroundStyle(.purple)
+                                    }
+                                    Text(briefing)
+                                        .font(.callout)
+                                }
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(LinearGradient(colors: [.purple.opacity(0.15), .blue.opacity(0.05)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                                )
+                                .overlay(RoundedRectangle(cornerRadius: 12).stroke(.purple.opacity(0.2), lineWidth: 1))
                             }
-                            Text(zone.notes)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding(.vertical, 4)
-                    }
-                } header: {
-                    HStack {
-                        Text("Connectivity")
-                        Spacer()
-                        Button {
-                            Task { await generateCommsBriefing() }
-                        } label: {
-                            if isGeneratingComms {
-                                ProgressView()
-                                    .controlSize(.mini)
-                            } else {
-                                Image(systemName: "sparkles")
-                                    .font(.caption)
-                            }
-                        }
-                        .disabled(isGeneratingComms)
-                    }
-                }
-
-                Section("Water Sources") {
-                    if waterSources.isEmpty {
-                        Text("No water source data loaded")
-                            .foregroundStyle(.secondary)
-                    } else {
-                        ForEach(waterSources) { source in
-                            VStack(alignment: .leading, spacing: 2) {
-                                HStack {
-                                    Image(systemName: "drop.fill")
-                                        .foregroundStyle(waterColor(source.reliability))
-                                    Text(source.name)
-                                        .font(.body)
-                                    Spacer()
-                                    Text(source.reliability)
+                            
+                            ForEach(connectivityZones) { zone in
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text(zone.name).font(.headline)
+                                    HStack(spacing: 8) {
+                                        CoverageChip(carrier: "VZW", level: zone.cellCoverage.verizon)
+                                        CoverageChip(carrier: "ATT", level: zone.cellCoverage.att)
+                                        CoverageChip(carrier: "TMO", level: zone.cellCoverage.tmobile)
+                                    }
+                                    Text(zone.notes)
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
-                                if let notes = source.notes, !notes.isEmpty {
-                                    Text(notes)
-                                        .font(.caption2)
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
+                            }
+                        }
+                        
+                        // Sat Devices
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Satellite Uplink").font(.title3.bold())
+                            ForEach(satelliteDevices) { device in
+                                VStack(alignment: .leading, spacing: 6) {
+                                    HStack {
+                                        Image(systemName: "antenna.radiowaves.left.and.right")
+                                            .foregroundStyle(.blue)
+                                        Text(device.device).font(.headline)
+                                        Spacer()
+                                        Text(device.cost)
+                                            .font(.caption2.bold())
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(.blue.opacity(0.1), in: Capsule())
+                                            .foregroundStyle(.blue)
+                                    }
+                                    Text(device.features.joined(separator: " · "))
+                                        .font(.caption)
                                         .foregroundStyle(.secondary)
+                                    Text(device.trailNotes)
+                                        .font(.caption2.bold())
+                                        .foregroundStyle(.orange)
                                 }
+                                .padding()
+                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
                             }
                         }
-                    }
-                }
-
-                Section("Satellite Devices") {
-                    ForEach(satelliteDevices) { device in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(device.device)
-                                .font(.body.bold())
-                            Text(device.features.joined(separator: " · "))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-
-                            Text(device.coverage)
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-
-                            Text(device.compatibility)
-                                .font(.caption2)
-                                .foregroundStyle(.tertiary)
-
-                            Text(device.trailNotes)
-                                .font(.caption)
-                                .foregroundStyle(.orange)
-                            HStack {
-                                Text(device.cost)
-                                    .font(.caption2)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(.quaternary, in: Capsule())
+                        
+                        // Emergency Contacts
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Emergency Protocol").font(.title3.bold())
+                            VStack(spacing: 12) {
+                                emergencyRow(icon: "phone.fill", color: .red, title: "911", subtitle: "When cell coverage is available")
+                                emergencyRow(icon: "star.fill", color: .yellow, title: "Shasta County SAR", subtitle: "(530) 245-6540")
+                                emergencyRow(icon: "cross.fill", color: .orange, title: "Poison Control", subtitle: "1-800-222-1222")
                             }
+                            .padding()
+                            .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
                         }
-                        .padding(.vertical, 2)
                     }
-                }
-
-                Section("Emergency Contacts") {
-                    Label("911 (when cell available)", systemImage: "phone.fill")
-                    Label("Shasta County SAR: (530) 245-6540", systemImage: "person.badge.shield.checkmark.fill")
-                    Label("Poison Control: 1-800-222-1222", systemImage: "cross.fill")
+                    .padding()
+                    .padding(.bottom, 40)
                 }
             }
-            .navigationTitle("Safety")
+            .navigationTitle("Safety & Survival")
+        }
+    }
+    
+    private func emergencyRow(icon: String, color: Color, title: String, subtitle: String) -> some View {
+        HStack {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundStyle(color)
+                .frame(width: 32)
+            VStack(alignment: .leading) {
+                Text(title).font(.headline)
+                Text(subtitle).font(.caption).foregroundStyle(.secondary)
+            }
+            Spacer()
+            Image(systemName: "arrow.up.right.circle.fill")
+                .foregroundStyle(.tertiary)
         }
     }
 
@@ -188,20 +210,20 @@ struct SafetyView: View {
 
     private func riskColor(_ risk: String) -> Color {
         switch risk {
-        case "none":     .green
-        case "low":      .yellow
-        case "moderate": .orange
-        default:         .red
+        case "none": return .green
+        case "low": return .yellow
+        case "moderate": return .orange
+        default: return .red
         }
     }
 
     private func waterColor(_ reliability: String) -> Color {
         switch reliability.lowercased() {
-        case "excellent": .blue
-        case "good":      .cyan
-        case "seasonal":  .orange
-        case "sketchy":   .red
-        default:          .gray
+        case "excellent": return .blue
+        case "good": return .cyan
+        case "seasonal": return .orange
+        case "sketchy": return .red
+        default: return .gray
         }
     }
 }
@@ -211,35 +233,33 @@ struct CoverageChip: View {
     let level: String
 
     var body: some View {
-        HStack(spacing: 3) {
+        HStack(spacing: 4) {
             Text(carrier)
-                .font(.system(size: 10, weight: .bold))
+                .font(.system(size: 11, weight: .bold))
             Image(systemName: iconFor(level))
-                .font(.system(size: 9))
+                .font(.system(size: 10))
                 .foregroundStyle(colorFor(level))
         }
-        .padding(.horizontal, 6)
-        .padding(.vertical, 2)
-        .background(.quaternary, in: Capsule())
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(colorFor(level).opacity(0.15), in: Capsule())
+        .foregroundStyle(colorFor(level))
     }
 
     private func iconFor(_ level: String) -> String {
         switch level {
-        case "excellent": "cellularbars"
-        case "good":      "cellularbars"
-        case "fair":      "cellularbars"
-        case "spotty":    "cellularbars"
-        default:          "xmark"
+        case "excellent", "good": return "cellularbars"
+        case "fair", "spotty": return "cellularbars"
+        default: return "xmark"
         }
     }
 
     private func colorFor(_ level: String) -> Color {
         switch level {
-        case "excellent": .green
-        case "good":      .green
-        case "fair":      .yellow
-        case "spotty":    .orange
-        default:          .red
+        case "excellent", "good": return .green
+        case "fair": return .yellow
+        case "spotty": return .orange
+        default: return .red
         }
     }
 }
@@ -257,100 +277,111 @@ struct WildfireMonitorView: View {
     @State private var network = NetworkMonitor.shared
 
     var body: some View {
-        List {
-            // AI Safety Briefing
-            if let briefing = safetyBriefing {
-                Section {
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack {
-                            Image(systemName: "sparkles")
-                                .foregroundStyle(.purple)
-                            Text("AI Safety Briefing")
-                                .font(.caption.bold())
-                        }
-                        Text(briefing)
-                            .font(.callout)
-                    }
-                }
-            }
-
-            // Active Fires
-            Section("Active Fires") {
-                if fires.isEmpty && !isLoading {
-                    Label("No active fires in Section O corridor", systemImage: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
-                } else {
-                    ForEach(fires, id: \.name) { fire in
-                        VStack(alignment: .leading, spacing: 4) {
+        ZStack {
+            Color(uiColor: .systemGroupedBackground).ignoresSafeArea()
+            
+            ScrollView {
+                VStack(spacing: 20) {
+                    // AI Safety Briefing
+                    if let briefing = safetyBriefing {
+                        VStack(alignment: .leading, spacing: 8) {
                             HStack {
-                                Image(systemName: "flame.fill")
-                                    .foregroundStyle(.red)
-                                Text(fire.name)
-                                    .font(.body.bold())
+                                Image(systemName: "sparkles")
+                                    .foregroundStyle(.purple)
+                                Text("Siri Safety Analysis")
+                                    .font(.caption.bold())
+                                    .foregroundStyle(.purple)
                             }
-                            HStack(spacing: 16) {
-                                Label("\(fire.acres) acres", systemImage: "rectangle.dashed")
-                                Label("\(fire.containment)%", systemImage: "circle.circle")
-                            }
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            if let discovered = fire.discovered {
-                                Text("Discovered \(discovered, style: .relative) ago")
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                            }
+                            Text(briefing)
+                                .font(.callout)
                         }
-                        .padding(.vertical, 2)
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(LinearGradient(colors: [.purple.opacity(0.15), .red.opacity(0.05)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        )
+                        .overlay(RoundedRectangle(cornerRadius: 16).stroke(.purple.opacity(0.2), lineWidth: 1))
                     }
-                }
-            }
-
-            // Air Quality
-            Section("Air Quality Index") {
-                ForEach(aqiReadings, id: \.location) { reading in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(reading.location)
-                                .font(.body)
-                            if let category = reading.category {
-                                Text(category)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                    
+                    // Active Fires
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Active Fire Threats").font(.title3.bold())
+                        if fires.isEmpty && !isLoading {
+                            HStack {
+                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                                Text("No active fires in Section O corridor")
+                                    .font(.subheadline.bold())
                             }
-                        }
-                        Spacer()
-                        if let aqi = reading.aqi {
-                            Text("\(aqi)")
-                                .font(.title2.bold())
-                                .foregroundStyle(aqiColor(aqi))
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(.green.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
                         } else {
-                            Text("--")
-                                .font(.title2)
-                                .foregroundStyle(.secondary)
+                            ForEach(fires, id: \.name) { fire in
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        Image(systemName: "flame.fill").foregroundStyle(.red)
+                                        Text(fire.name).font(.headline)
+                                    }
+                                    HStack(spacing: 16) {
+                                        Label("\(fire.acres) acres", systemImage: "rectangle.dashed")
+                                        Label("\(fire.containment)%", systemImage: "circle.circle")
+                                    }
+                                    .font(.caption.bold())
+                                    .foregroundStyle(.secondary)
+                                    if let discovered = fire.discovered {
+                                        Text("Discovered \(discovered, style: .relative) ago")
+                                            .font(.caption2)
+                                            .foregroundStyle(.tertiary)
+                                    }
+                                }
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
+                            }
                         }
                     }
-                }
-
-                if aqiReadings.isEmpty && !isLoading {
-                    Text("No AQI data available")
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            // Cache info
-            if let refresh = lastRefresh {
-                Section {
-                    HStack {
-                        Text("Last updated")
-                        Spacer()
-                        Text(refresh, style: .relative)
-                            .foregroundStyle(.secondary)
+                    
+                    // AQI
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Air Quality Index").font(.title3.bold())
+                        if aqiReadings.isEmpty && !isLoading {
+                            Text("No AQI data available")
+                                .foregroundStyle(.secondary)
+                        } else {
+                            ForEach(aqiReadings, id: \.location) { reading in
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text(reading.location).font(.headline)
+                                        if let category = reading.category {
+                                            Text(category).font(.caption).foregroundStyle(.secondary)
+                                        }
+                                    }
+                                    Spacer()
+                                    if let aqi = reading.aqi {
+                                        Text("\(aqi)")
+                                            .font(.title.bold())
+                                            .foregroundStyle(aqiColor(aqi))
+                                    } else {
+                                        Text("--").font(.title).foregroundStyle(.secondary)
+                                    }
+                                }
+                                .padding()
+                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
+                            }
+                        }
                     }
-                    .font(.caption)
+                    
+                    if let refresh = lastRefresh {
+                        Text("Last updated: \(refresh.formatted(date: .omitted, time: .shortened))")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .padding(.top)
+                    }
                 }
+                .padding()
             }
         }
-        .navigationTitle("Active Fires & AQI")
+        .navigationTitle("Threat Monitor")
         .refreshable {
             await refreshData()
         }
@@ -361,7 +392,12 @@ struct WildfireMonitorView: View {
         }
         .overlay {
             if isLoading && fires.isEmpty {
-                ProgressView("Loading conditions...")
+                VStack {
+                    ProgressView()
+                    Text("Scanning satellite imagery...").font(.caption).foregroundStyle(.secondary)
+                }
+                .padding()
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
             }
         }
     }
@@ -381,11 +417,8 @@ struct WildfireMonitorView: View {
 
         lastRefresh = .now
 
-        // Generate AI briefing with full context
         do {
-            // Determine current altitude zone (default to moderate for Section O)
             let currentZone = altitudeZones.first { $0.id == "moderate" }
-
             safetyBriefing = try await OnDeviceLLM.shared.safetyBriefing(
                 fires: fires.map { ($0.name, $0.acres, $0.containment) },
                 aqi: aqiReadings.map { ($0.location, $0.aqi, $0.category, nil as Int?) },
@@ -400,12 +433,12 @@ struct WildfireMonitorView: View {
 
     private func aqiColor(_ aqi: Int) -> Color {
         switch aqi {
-        case 0...50:    .green
-        case 51...100:  .yellow
-        case 101...150: .orange
-        case 151...200: .red
-        case 201...300: .purple
-        default:        .brown
+        case 0...50:    return .green
+        case 51...100:  return .yellow
+        case 101...150: return .orange
+        case 151...200: return .red
+        case 201...300: return .purple
+        default:        return .brown
         }
     }
 }

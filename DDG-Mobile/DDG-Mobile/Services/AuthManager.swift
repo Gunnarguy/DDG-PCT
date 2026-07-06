@@ -94,21 +94,22 @@ final class AuthManager {
 
         // Verify the Apple credential is still valid
         let provider = ASAuthorizationAppleIDProvider()
-        provider.getCredentialState(forUserID: appleID) { state, _ in
-            Task { @MainActor [weak self] in
-                guard let self = self else { return }
+        provider.getCredentialState(forUserID: appleID) { [weak self] state, _ in
+            guard let manager = self else { return }
+            Task { @MainActor in
                 switch state {
                 case .authorized:
-                    self.appleUserID = appleID
-                    self.userEmail = email
+                    manager.appleUserID = appleID
+                    manager.userEmail = email
                     if let member = DDGTeam.member(forEmail: email) {
-                        self.currentUser = member
-                        self.authState = .signedIn
+                        manager.currentUser = member
+                        manager.authState = .signedIn
                     } else {
-                        self.authState = .denied
+                        manager.authState = .denied
                     }
                 default:
-                    self.signOut()
+                    manager.authState = .signedOut
+                    manager.clearKeychain()
                 }
             }
         }

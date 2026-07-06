@@ -6,6 +6,82 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -121.9331,
+          37.2625
+        ]
+      },
+      "properties": {
+        "name": "Campbell (2800 Joseph Ave)",
+        "day": -1,
+        "itinerary": "express",
+        "segment": "Trip Start & Drive Route",
+        "mile": 0,
+        "routeMile": 0,
+        "type": "Transit"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.9289,
+          37.3639
+        ]
+      },
+      "properties": {
+        "name": "San Jose (SJC) - Dan Flights",
+        "day": -1,
+        "itinerary": "express",
+        "segment": "UA481 Arrival / UA1317 Departure",
+        "mile": 0,
+        "routeMile": 0,
+        "type": "Transit"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.9877,
+          38.3566
+        ]
+      },
+      "properties": {
+        "name": "Vacaville Gas Station",
+        "day": -1,
+        "itinerary": "express",
+        "segment": "Mikaela Drive Gas Stop",
+        "mile": 0,
+        "routeMile": 0,
+        "type": "GasStation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.3917,
+          40.5865
+        ]
+      },
+      "properties": {
+        "name": "Redding Gas Station",
+        "day": -1,
+        "itinerary": "express",
+        "segment": "Last Major Services Stop",
+        "mile": 0,
+        "routeMile": 0,
+        "type": "GasStation"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           -121.6207090113312,
           41.01348043419421,
           3020.2
@@ -48828,6 +48904,34 @@
       ],
       "distance": "~8 miles",
       "notes": "STAGE bus (limited schedule), Mt. Shasta Taxi, or trail angels via I-5"
+    },
+    {
+      "name": "Mikaela Shuttle (Campbell → SJC → Burney Falls)",
+      "type": "drive",
+      "path": [
+        [
+          -121.9331,
+          37.2625
+        ],
+        [
+          -121.9289,
+          37.3639
+        ],
+        [
+          -121.9877,
+          38.3566
+        ],
+        [
+          -122.3917,
+          40.5865
+        ],
+        [
+          -121.6207,
+          41.0135
+        ]
+      ],
+      "distance": "270 miles",
+      "notes": "Kia Sportage gasoline round-trip, fuel cost tracked in Prep"
     }
   ],
   "waterSources": [
@@ -48839,7 +48943,7 @@
         -121.620709,
         41.01348
       ],
-      "report": "06/05/22 (Ultra & Old Yeller): Water spouts on. In campground, showers open and a general store 9-6\n08/08/21 (Mike): tap on",
+      "report": "06/05/26 (Ultra & Old Yeller): Water spouts on. In campground, showers open and a general store 9-6\n08/08/26 (Mike): tap on",
       "type": "water"
     },
     {
@@ -48850,7 +48954,7 @@
         -121.646062,
         41.006753
       ],
-      "report": "06/05/22 (Ultra & Old Yeller): Stairs open to River. No escort crew on Sunday\n05/16/22 (PCTA): Lake Britton Dam\nBridge Over Lake Britton Dam to Close April 18-Sept. 2 While PG&E Contractor Improves Br",
+      "report": "06/05/26 (Ultra & Old Yeller): Stairs open to River. No escort crew on Sunday\n05/16/26 (PCTA): Lake Britton Dam\nBridge Over Lake Britton Dam to Close April 18-Sept. 2 While PG&E Contractor Improves Br",
       "type": "water"
     },
     {
@@ -48861,7 +48965,7 @@
         -121.694052,
         41.013428
       ],
-      "report": "07/15/22 (Burglar): Lots of water flowing\n06/05/22 (Ultra & Old Yeller): Raging Stream, Great Shade Under Bridge\n08/08/21 (Mike): great",
+      "report": "07/15/26 (Burglar): Lots of water flowing\n06/05/26 (Ultra & Old Yeller): Raging Stream, Great Shade Under Bridge\n08/08/26 (Mike): great",
       "type": "water"
     },
     {
@@ -48872,7 +48976,7 @@
         -121.725728,
         41.025433
       ],
-      "report": "07/20/21 (Roadwalk): flowing .5 L min",
+      "report": "07/20/2026 (Roadwalk): flowing .5 L min",
       "type": "water"
     },
     {
@@ -48883,7 +48987,7 @@
         -121.735221,
         41.029478
       ],
-      "report": "08/09/21 (Mike): small, but good\n07/22/21 (Workshard): flowing well",
+      "report": "08/09/26 (Mike): small, but good\n07/22/26 (Workshard): flowing well",
       "type": "water"
     },
     {
@@ -48894,7 +48998,7 @@
         -121.764728,
         41.048988
       ],
-      "report": "07/16/22 (Burglar): Flowing water\n06/06/22 (Old Yeller): Creek is good, use the pond next to the trail. (Ultra & Old Yeller): Great water. \n07/22/21 (Workshard): This is a large pool of cold clear wat",
+      "report": "07/16/26 (Burglar): Flowing water\n06/06/26 (Old Yeller): Creek is good, use the pond next to the trail. (Ultra & Old Yeller): Great water. \n07/22/26 (Workshard): This is a large pool of cold clear wat",
       "type": "water"
     },
     {
@@ -48905,7 +49009,7 @@
         -121.795568,
         41.071647
       ],
-      "report": "06/06/22 (Old Yeller): Spring is flowing at 1L/min",
+      "report": "06/06/26 (Old Yeller): Spring is flowing at 1L/min",
       "type": "water"
     },
     {
@@ -48916,7 +49020,7 @@
         -121.799142,
         41.086386
       ],
-      "report": "06/06/22 (Old Yeller): Spring has water. (Ultra & Old Yeller): good flow visible from trail. Did not hike to source  \n07/20/21 (Roadwalk): flowing 4L/min",
+      "report": "06/06/26 (Old Yeller): Spring has water. (Ultra & Old Yeller): good flow visible from trail. Did not hike to source  \n07/20/2026 (Roadwalk): flowing 4L/min",
       "type": "water"
     },
     {
@@ -48927,7 +49031,7 @@
         -121.786984,
         41.102221
       ],
-      "report": "07/16/22 (Burglar): Water is 0.1 east on unpaved road",
+      "report": "07/16/26 (Burglar): Water is 0.1 east on unpaved road",
       "type": "water"
     },
     {
@@ -48938,7 +49042,7 @@
         -121.776456,
         41.116498
       ],
-      "report": "06/06/22 (Ultra & Old Yeller): Great Flow Excellent Water. Logging Operations Occurring mm1440 ~ mm1443, at time trail is obscured.  Look for flagging or when in doubt go straight. \n08/09/21 (Mike): S",
+      "report": "06/06/26 (Ultra & Old Yeller): Great Flow Excellent Water. Logging Operations Occurring mm1440 ~ mm1443, at time trail is obscured.  Look for flagging or when in doubt go straight. \n08/09/26 (Mike): S",
       "type": "water"
     },
     {
@@ -48949,7 +49053,7 @@
         -121.773982,
         41.153213
       ],
-      "report": "06/06/22 (Ultra & Old Yeller): Muddy Green Water. Only use if desperate.",
+      "report": "06/06/26 (Ultra & Old Yeller): Muddy Green Water. Only use if desperate.",
       "type": "water"
     },
     {
@@ -48960,7 +49064,7 @@
         -121.805029,
         41.172378
       ],
-      "report": "06/06/22 (Ultra & Old Yeller): path to stream overgrown w/ lots of deadfall. Stream is running. \n08/09/21 (Mike): Cold, deep enough to dunk a bottle.\n07/18/21 (Scout): Dry at trail crossing - could he",
+      "report": "06/06/26 (Ultra & Old Yeller): path to stream overgrown w/ lots of deadfall. Stream is running. \n08/09/26 (Mike): Cold, deep enough to dunk a bottle.\n07/18/26 (Scout): Dry at trail crossing - could he",
       "type": "water"
     },
     {
@@ -48971,7 +49075,7 @@
         -121.813478,
         41.170193
       ],
-      "report": "07/16/22 (Burglar): Water flowing well at trail\n06/06/22 (Ultra & Old Yeller): stream crossed trail. Running well.\n08/09/21 (Mike): Dry",
+      "report": "07/16/26 (Burglar): Water flowing well at trail\n06/06/26 (Ultra & Old Yeller): stream crossed trail. Running well.\n08/09/26 (Mike): Dry",
       "type": "water"
     },
     {
@@ -48993,7 +49097,7 @@
         -121.951213,
         41.157826
       ],
-      "report": "07/13/22 (Chef): good flow ~4L/min. Look for Little Rock pile on left side of dirt road to find the creek \n08/10/21 (Mike): Just a wet spot when you first come to creek. Go 20' downstream and there's ",
+      "report": "07/13/26 (Chef): good flow ~4L/min. Look for Little Rock pile on left side of dirt road to find the creek \n08/10/26 (Mike): Just a wet spot when you first come to creek. Go 20' downstream and there's ",
       "type": "water"
     },
     {
@@ -49004,7 +49108,7 @@
         -121.963161,
         41.150381
       ],
-      "report": "07/16/22 (Burglar): flowing less than 1L/min but easy to fill and right on trail\n06/07/22 (Ultra & Old Yeller): 1L/Min",
+      "report": "07/16/26 (Burglar): flowing less than 1L/min but easy to fill and right on trail\n06/07/26 (Ultra & Old Yeller): 1L/Min",
       "type": "water"
     },
     {
@@ -49015,7 +49119,7 @@
         -121.979409,
         41.139308
       ],
-      "report": "07/17/22 (Burglar): Flowing\n06/07/22 (Ultra & Old Yeller): Flowing\n08/10/21 (Mike): Flowing nicely.",
+      "report": "07/17/26 (Burglar): Flowing\n06/07/26 (Ultra & Old Yeller): Flowing\n08/10/26 (Mike): Flowing nicely.",
       "type": "water"
     },
     {
@@ -49026,7 +49130,7 @@
         -121.985832,
         41.136093
       ],
-      "report": "07/17/22 (Burglar): Flowing water\n06/07/22 (Ultra & Old Yeller): Wonderful Flowing Water\n08/10/21 (Mike): Dry",
+      "report": "07/17/26 (Burglar): Flowing water\n06/07/26 (Ultra & Old Yeller): Wonderful Flowing Water\n08/10/26 (Mike): Dry",
       "type": "water"
     },
     {
@@ -49037,7 +49141,7 @@
         -121.987404,
         41.128291
       ],
-      "report": "07/17/22 (Burglar): Lots of water flowing\n06/07/22 (Ultra & Old Yeller): Large Flow. \n08/10/21 (Mike): great!",
+      "report": "07/17/26 (Burglar): Lots of water flowing\n06/07/26 (Ultra & Old Yeller): Large Flow. \n08/10/26 (Mike): great!",
       "type": "water"
     },
     {
@@ -49048,7 +49152,7 @@
         -121.991752,
         41.125877
       ],
-      "report": "07/17/22 (Burglar): Small flow just off trail",
+      "report": "07/17/26 (Burglar): Small flow just off trail",
       "type": "water"
     },
     {
@@ -49059,7 +49163,7 @@
         -122.018803,
         41.118562
       ],
-      "report": "07/17/22 (Burglar): Flowing\n06/07/22 (Ultra & Old Yeller): calming stream flowing 2-3 L per min\n08/10/21 (Mike): flowing well. And another just past it.",
+      "report": "07/17/26 (Burglar): Flowing\n06/07/26 (Ultra & Old Yeller): calming stream flowing 2-3 L per min\n08/10/26 (Mike): flowing well. And another just past it.",
       "type": "water"
     },
     {
@@ -49070,7 +49174,7 @@
         -122.027654,
         41.11612
       ],
-      "report": "07/17/22 (Burglar): Strong flow\n08/10/21 (Mike): great!",
+      "report": "07/17/26 (Burglar): Strong flow\n08/10/26 (Mike): great!",
       "type": "water"
     },
     {
@@ -49092,7 +49196,7 @@
         -122.026894,
         41.118416
       ],
-      "report": "07/17/22 (Burglar): Small flow\n06/07/22 (Ultra & Old Yeller): Gentle flowing  stream about 2L per min",
+      "report": "07/17/26 (Burglar): Small flow\n06/07/26 (Ultra & Old Yeller): Gentle flowing  stream about 2L per min",
       "type": "water"
     },
     {
@@ -49103,7 +49207,7 @@
         -122.026803,
         41.121818
       ],
-      "report": "07/17/22 (Burglar): Flowing\n06/07/22 (Ultra & Old Yeller): Flowing about 3 L per min",
+      "report": "07/17/26 (Burglar): Flowing\n06/07/26 (Ultra & Old Yeller): Flowing about 3 L per min",
       "type": "water"
     },
     {
@@ -49114,7 +49218,7 @@
         -122.02901,
         41.125648
       ],
-      "report": "06/07/22 (Ultra & Old Yeller): Small Trickle. About .5L per min",
+      "report": "06/07/26 (Ultra & Old Yeller): Small Trickle. About .5L per min",
       "type": "water"
     },
     {
@@ -49125,7 +49229,7 @@
         -122.031384,
         41.119566
       ],
-      "report": "06/07/22 (Ultra & Old Yeller): Strong Flowing stream in Centipede Gulch by sign (mm1470.7)\n07/23/21 (Workshard): river was very muddy looking wouldn't want to run through my filter.",
+      "report": "06/07/26 (Ultra & Old Yeller): Strong Flowing stream in Centipede Gulch by sign (mm1470.7)\n07/23/26 (Workshard): river was very muddy looking wouldn't want to run through my filter.",
       "type": "water"
     },
     {
@@ -49136,7 +49240,7 @@
         -122.047775,
         41.111864
       ],
-      "report": "06/07/22 (Ultra & Old Yeller): Raging Spring River",
+      "report": "06/07/26 (Ultra & Old Yeller): Raging Spring River",
       "type": "water"
     },
     {
@@ -49147,7 +49251,7 @@
         -122.06198,
         41.115515
       ],
-      "report": "06/07/22 (Ultra & Old Yeller): small Trickle .5-1L per min\n07/20/21 (Scout): small steady flow across trail cascade just upstream to collect",
+      "report": "06/07/26 (Ultra & Old Yeller): small Trickle .5-1L per min\n07/20/2026 (Scout): small steady flow across trail cascade just upstream to collect",
       "type": "water"
     },
     {
@@ -49158,7 +49262,7 @@
         -122.068143,
         41.11505
       ],
-      "report": "07/17/22 (Burglar): Good flow\n06/07/22 (Ultra & Old Yeller): Steady Flow of 2-3L/min.  For the next few Miles there may be a lot of poison oak(unless I misidentified it)",
+      "report": "07/17/26 (Burglar): Good flow\n06/07/26 (Ultra & Old Yeller): Steady Flow of 2-3L/min.  For the next few Miles there may be a lot of poison oak(unless I misidentified it)",
       "type": "water"
     },
     {
@@ -49169,7 +49273,7 @@
         -122.126605,
         41.127545
       ],
-      "report": "07/17/22 (Burglar): Flowing well\n06/08/22 (Ultra & Old Yeller): Flowing Well\n07/20/21 (Scout): steady flow, clear pools for easy collection",
+      "report": "07/17/26 (Burglar): Flowing well\n06/08/26 (Ultra & Old Yeller): Flowing Well\n07/20/2026 (Scout): steady flow, clear pools for easy collection",
       "type": "water"
     },
     {
@@ -49180,7 +49284,7 @@
         -122.131133,
         41.128474
       ],
-      "report": "07/17/22 (Burglar): Flowing\n06/08/22 (Ultra & Old Yeller): Flowing 2L per minute\n07/20/21 (Scout): excellent cold clear flow across trail. At least 2L/min. Nice campsite just south",
+      "report": "07/17/26 (Burglar): Flowing\n06/08/26 (Ultra & Old Yeller): Flowing 2L per minute\n07/20/2026 (Scout): excellent cold clear flow across trail. At least 2L/min. Nice campsite just south",
       "type": "water"
     },
     {
@@ -49191,7 +49295,7 @@
         -122.158761,
         41.127339
       ],
-      "report": "07/17/22 (Burglar): Great flow\n06/08/22 (Ultra & Old Yeller): excellent Flow, Best spot, is .2 Miles up the River trail where you can sit under a bridge or the shade of the trees. \n07/20/21 (Scout): s",
+      "report": "07/17/26 (Burglar): Great flow\n06/08/26 (Ultra & Old Yeller): excellent Flow, Best spot, is .2 Miles up the River trail where you can sit under a bridge or the shade of the trees. \n07/20/2026 (Scout): s",
       "type": "water"
     },
     {
@@ -49202,7 +49306,7 @@
         -122.252417,
         41.1365
       ],
-      "report": "07/18/22 (Burglar): Flowing well at trail\n06/08/22 (Ultra & Old Yeller): perfect for Filling. Steady flow 2 Ml per minute. Just put your squeeze underneath.",
+      "report": "07/18/26 (Burglar): Flowing well at trail\n06/08/26 (Ultra & Old Yeller): perfect for Filling. Steady flow 2 Ml per minute. Just put your squeeze underneath.",
       "type": "water"
     },
     {
@@ -49213,7 +49317,7 @@
         -122.257961,
         41.135906
       ],
-      "report": "07/18/22 (Burglar): Water flowing",
+      "report": "07/18/26 (Burglar): Water flowing",
       "type": "water"
     },
     {
@@ -49224,7 +49328,7 @@
         -122.284303,
         41.159328
       ],
-      "report": "07/21/21 (Scout): essentially dry - mud where crosses trail",
+      "report": "07/21/26 (Scout): essentially dry - mud where crosses trail",
       "type": "water"
     }
   ]

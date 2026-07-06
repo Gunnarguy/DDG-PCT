@@ -5,17 +5,19 @@ import SwiftData
 /// sharing a state binding to synchronize the interactive hover/crosshair cursor.
 struct MapContainerView: View {
     @State private var hoverPoint: HoverPoint? = nil
+    @State private var selectedDay: Int? = nil
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                TrailMapView(hoverPoint: $hoverPoint)
+                TrailMapView(hoverPoint: $hoverPoint, selectedDay: $selectedDay)
                     .frame(maxHeight: .infinity)
                 
                 Divider()
                 
-                ElevationProfileView(hoverPoint: $hoverPoint)
-                    .frame(height: 260)
+                ElevationProfileView(hoverPoint: $hoverPoint, selectedDay: $selectedDay)
+                    .frame(height: 300)
+                    .padding(.bottom, 50)
                     .background(Color(uiColor: .systemBackground))
             }
             .navigationTitle("Trail Map")

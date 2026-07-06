@@ -1,4 +1,4 @@
-import { PathLayer } from "@deck.gl/layers";
+import { PathLayer, ScatterplotLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import PropTypes from "prop-types";
 import { useEffect, useState, useMemo, useRef } from "react";
@@ -113,8 +113,41 @@ function TrailMap({
       );
     }
 
+    // Add cell coverage circles
+    if (connectivityZones?.length) {
+      layers.push(
+        new ScatterplotLayer({
+          id: "cell-coverage",
+          data: connectivityZones,
+          getPosition: (d) => [d.coordinates[0], d.coordinates[1]],
+          getRadius: (d) => {
+            const coverages = [d.cellCoverage.verizon, d.cellCoverage.att, d.cellCoverage.tmobile];
+            let maxRadiusMiles = 0;
+            coverages.forEach((c) => {
+              let r = 0;
+              switch (c?.toLowerCase()) {
+                case "excellent": r = 8.0; break;
+                case "good":      r = 4.0; break;
+                case "fair":      r = 2.0; break;
+                case "spotty":    r = 0.8; break;
+                default:          r = 0;
+              }
+              if (r > maxRadiusMiles) maxRadiusMiles = r;
+            });
+            return maxRadiusMiles * 1609.34;
+          },
+          radiusUnits: "meters",
+          getFillColor: [147, 51, 234, 35], // purple opacity
+          getLineColor: [147, 51, 234, 100],
+          lineWidthUnits: "pixels",
+          getLineWidth: 1.5,
+          pickable: false,
+        })
+      );
+    }
+
     return layers;
-  }, [flatTrail, driveSegments]);
+  }, [flatTrail, driveSegments, connectivityZones]);
 
   const plannedMiles = basePlanMiles ?? totalMiles ?? 0;
   const optionalExtension =
@@ -221,20 +254,31 @@ function TrailMap({
         <ScaleControl maxWidth={120} unit="imperial" position="bottom-left" />
         <FullscreenControl position="top-left" />
 
-        {campPoints.map((feature, idx) => (
-          <Marker
-            key={`camp-${feature.properties?.name || idx}`}
-            longitude={feature.geometry.coordinates[0]}
-            latitude={feature.geometry.coordinates[1]}
-            anchor="bottom"
-            onClick={(e) => {
-              e.originalEvent.stopPropagation();
-              setPopupInfo(feature);
-            }}
-          >
-            <div className="marker marker--camp">⛺</div>
-          </Marker>
-        ))}
+        {campPoints.map((feature, idx) => {
+          const type = feature.properties?.type;
+          const isSJC = feature.properties?.name?.includes("SJC");
+          const icon = type === "Transit" 
+            ? (isSJC ? "✈️" : "🚙") 
+            : type === "GasStation" 
+              ? "⛽" 
+              : "⛺";
+          const markerClass = type === "Transit" || type === "GasStation" ? "transport" : "camp";
+          
+          return (
+            <Marker
+              key={`camp-${feature.properties?.name || idx}`}
+              longitude={feature.geometry.coordinates[0]}
+              latitude={feature.geometry.coordinates[1]}
+              anchor="bottom"
+              onClick={(e) => {
+                e.originalEvent.stopPropagation();
+                setPopupInfo(feature);
+              }}
+            >
+              <div className={`marker marker--${markerClass}`}>{icon}</div>
+            </Marker>
+          );
+        })}
 
         {townPins.map((town, idx) => (
           <Marker
@@ -289,20 +333,28 @@ function TrailMap({
           </Marker>
         )}
 
-        {connectivityZones.map((zone, idx) => (
-          <Marker
-            key={`conn-${zone.mile || idx}`}
-            longitude={zone.coordinates[0]}
-            latitude={zone.coordinates[1]}
-            anchor="bottom"
-            onClick={(e) => {
-              e.originalEvent.stopPropagation();
-              setPopupInfo({ ...zone, type: "connectivity" });
-            }}
-          >
-            <div className="marker marker--connectivity">📡</div>
-          </Marker>
-        ))}
+        {connectivityZones.map((zone, idx) => {
+          const hasSignal = zone.cellCoverage.verizon !== "none" || zone.cellCoverage.att !== "none" || zone.cellCoverage.tmobile !== "none";
+          return (
+            <Marker
+              key={`conn-${zone.mile || idx}`}
+              longitude={zone.coordinates[0]}
+              latitude={zone.coordinates[1]}
+              anchor="bottom"
+              onClick={(e) => {
+                e.originalEvent.stopPropagation();
+                setPopupInfo({ ...zone, type: "connectivity" });
+              }}
+            >
+              <div 
+                className="marker marker--connectivity" 
+                style={{ opacity: hasSignal ? 0.95 : 0.45 }}
+              >
+                {hasSignal ? "📡" : "📵"}
+              </div>
+            </Marker>
+          );
+        })}
 
         {popupInfo && (
           <Popup

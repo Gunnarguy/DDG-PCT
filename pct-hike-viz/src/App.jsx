@@ -561,7 +561,7 @@ function App() {
       };
 
       let milesAccumulated = 0;
-      return dayItinerary.map((dayItem) => {
+      const expressCamps = dayItinerary.map((dayItem) => {
         milesAccumulated += dayItem.distance;
         const coords = getCoordsAtMile(milesAccumulated);
         return {
@@ -591,12 +591,17 @@ function App() {
           },
         };
       });
+
+      const transitFeatures = [...hikeData.features].filter(
+        (f) => f.properties.day === -1,
+      );
+      return [...transitFeatures, ...expressCamps];
     }
 
     return [...hikeData.features]
       .filter(
         (feature) =>
-          feature.properties.day >= 0,
+          feature.properties.day >= 0 || feature.properties.day === -1,
       )
       .sort((a, b) => a.properties.day - b.properties.day);
   }, [hikeData, selectedItinerary]);

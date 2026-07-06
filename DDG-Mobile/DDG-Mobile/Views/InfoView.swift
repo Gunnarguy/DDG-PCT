@@ -4,226 +4,278 @@ import SwiftUI
 struct InfoView: View {
     var body: some View {
         NavigationStack {
-            List {
-                Section("Transit & Logistics") {
-                    ForEach(transitRoutes) { route in
-                        VStack(alignment: .leading, spacing: 6) {
-                            HStack {
-                                Text(route.emoji)
-                                Text(route.name)
-                                    .font(.body.bold())
-                                Spacer()
-                                Text(route.type.capitalized)
-                                    .font(.system(size: 10, weight: .bold))
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(transitTypeColor(route.type).opacity(0.15), in: Capsule())
-                                    .foregroundStyle(transitTypeColor(route.type))
-                            }
+            ZStack {
+                Color(uiColor: .systemGroupedBackground).ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(spacing: 24) {
+                        
+                        // Transit & Logistics
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Transit & Logistics").font(.title3.bold())
+                            ForEach(transitRoutes) { route in
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        Text(route.emoji)
+                                        Text(route.name)
+                                            .font(.headline)
+                                        Spacer()
+                                        Text(route.type.uppercased())
+                                            .font(.system(size: 10, weight: .bold))
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 2)
+                                            .background(transitTypeColor(route.type).opacity(0.15), in: Capsule())
+                                            .foregroundStyle(transitTypeColor(route.type))
+                                    }
 
-                            Text("\(route.agency) · \(route.route)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                    Text("\(route.agency) · \(route.route)")
+                                        .font(.subheadline.bold())
+                                        .foregroundStyle(.secondary)
 
-                            Text(route.relevantFor)
-                                .font(.caption)
-                                .foregroundStyle(.tint)
+                                    Text(route.relevantFor)
+                                        .font(.caption)
+                                        .foregroundStyle(.tint)
 
-                            // Stops
-                            HStack(spacing: 4) {
-                                ForEach(Array(route.stops.enumerated()), id: \.offset) { idx, stop in
-                                    Text(stop)
-                                        .font(.system(size: 9))
-                                    if idx < route.stops.count - 1 {
-                                        Image(systemName: "arrow.right")
-                                            .font(.system(size: 7))
-                                            .foregroundStyle(.tertiary)
+                                    // Stops
+                                    HStack(spacing: 4) {
+                                        ForEach(Array(route.stops.enumerated()), id: \.offset) { idx, stop in
+                                            Text(stop)
+                                                .font(.system(size: 10))
+                                            if idx < route.stops.count - 1 {
+                                                Image(systemName: "arrow.right")
+                                                    .font(.system(size: 8))
+                                                    .foregroundStyle(.tertiary)
+                                            }
+                                        }
+                                    }
+                                    .foregroundStyle(.secondary)
+                                    .padding(.top, 4)
+
+                                    HStack(spacing: 12) {
+                                        Text(route.frequency)
+                                            .font(.caption2.bold())
+                                            .foregroundStyle(.secondary)
+                                        Spacer()
+                                        if let cost = route.cost {
+                                            Text(cost)
+                                                .font(.caption.bold())
+                                                .foregroundStyle(.green)
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 4)
+                                                .background(.green.opacity(0.1), in: Capsule())
+                                        }
+                                    }
+                                    .padding(.top, 4)
+
+                                    if !route.notes.isEmpty {
+                                        Text(route.notes)
+                                            .font(.caption2)
+                                            .foregroundStyle(.orange)
+                                    }
+
+                                    if let url = URL(string: route.url) {
+                                        Link(destination: url) {
+                                            Label(route.url.replacingOccurrences(of: "https://www.", with: ""), systemImage: "link")
+                                                .font(.caption2)
+                                        }
                                     }
                                 }
-                            }
-                            .foregroundStyle(.secondary)
-
-                            HStack(spacing: 12) {
-                                Text(route.frequency)
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                                if let cost = route.cost {
-                                    Text(cost)
-                                        .font(.caption2.bold())
-                                        .foregroundStyle(.green)
-                                }
-                            }
-
-                            if !route.notes.isEmpty {
-                                Text(route.notes)
-                                    .font(.caption2)
-                                    .foregroundStyle(.orange)
-                            }
-
-                            if let url = URL(string: route.url) {
-                                Link(destination: url) {
-                                    Label(route.url.replacingOccurrences(of: "https://www.", with: ""), systemImage: "link")
-                                        .font(.caption2)
-                                }
+                                .padding()
+                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
+                                .overlay(RoundedRectangle(cornerRadius: 16).stroke(.gray.opacity(0.2), lineWidth: 1))
                             }
                         }
-                        .padding(.vertical, 4)
-                    }
-                }
 
-                Section("Airports & Rental Cars") {
-                    ForEach(airportOptions) { airport in
-                        VStack(alignment: .leading, spacing: 4) {
-                            HStack {
-                                Text(airport.id)
-                                    .font(.caption.bold().monospaced())
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(.blue.opacity(0.15), in: RoundedRectangle(cornerRadius: 4))
-                                Text(airport.name)
-                                    .font(.body)
-                                if airport.recommended {
-                                    Image(systemName: "star.fill")
+                        // Airports & Rental Cars
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Airports & Rental Cars").font(.title3.bold())
+                            ForEach(airportOptions) { airport in
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        Text(airport.id)
+                                            .font(.caption.bold().monospaced())
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(.blue.opacity(0.15), in: RoundedRectangle(cornerRadius: 6))
+                                            .foregroundStyle(.blue)
+                                        Text(airport.name)
+                                            .font(.headline)
+                                        if airport.recommended {
+                                            Image(systemName: "star.fill")
+                                                .font(.caption)
+                                                .foregroundStyle(.yellow)
+                                        }
+                                    }
+                                    
+                                    HStack {
+                                        Text(airport.distanceToBurney)
+                                            .font(.caption.bold())
+                                            .foregroundStyle(.secondary)
+                                    }
+
+                                    Text(airport.notes)
                                         .font(.caption)
-                                        .foregroundStyle(.yellow)
+                                        .foregroundStyle(.secondary)
+
+                                    if !airport.rentalAgencies.isEmpty {
+                                        HStack(spacing: 6) {
+                                            Image(systemName: "car.fill")
+                                                .font(.caption2)
+                                                .foregroundStyle(.tint)
+                                            Text(airport.rentalAgencies.joined(separator: " · "))
+                                                .font(.caption2.bold())
+                                                .foregroundStyle(.secondary)
+                                        }
+                                        .padding(.top, 4)
+                                    }
                                 }
+                                .padding()
+                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
+                                .overlay(RoundedRectangle(cornerRadius: 16).stroke(.gray.opacity(0.2), lineWidth: 1))
                             }
-                            Text(airport.distanceToBurney)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                        }
 
-                            Text(airport.notes)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                        // Trailhead Parking
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Trailhead Parking").font(.title3.bold())
+                            ForEach(parkingLocations) { lot in
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text(lot.location)
+                                        .font(.headline)
 
-                            if !airport.rentalAgencies.isEmpty {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "car.fill")
-                                        .font(.caption2)
-                                        .foregroundStyle(.tint)
-                                    Text(airport.rentalAgencies.joined(separator: ", "))
+                                    Label(lot.address, systemImage: "mappin")
+                                        .font(.caption.bold())
+                                        .foregroundStyle(.secondary)
+
+                                    HStack(spacing: 12) {
+                                        Label(lot.cost, systemImage: "dollarsign.circle")
+                                            .font(.caption)
+                                        Spacer()
+                                        Label(lot.phone, systemImage: "phone")
+                                            .font(.caption.bold())
+                                            .foregroundStyle(.blue)
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(.blue.opacity(0.1), in: Capsule())
+                                    }
+                                    .padding(.vertical, 4)
+
+                                    Label(lot.security, systemImage: "lock.shield")
                                         .font(.caption2)
                                         .foregroundStyle(.secondary)
+
+                                    if !lot.notes.isEmpty {
+                                        Text(lot.notes)
+                                            .font(.caption2)
+                                            .foregroundStyle(.orange)
+                                    }
                                 }
+                                .padding()
+                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
+                                .overlay(RoundedRectangle(cornerRadius: 16).stroke(.gray.opacity(0.2), lineWidth: 1))
                             }
                         }
-                        .padding(.vertical, 2)
-                    }
-                }
 
-                Section("Trailhead Parking") {
-                    ForEach(parkingLocations) { lot in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(lot.location)
-                                .font(.body.bold())
+                        // Resupply Towns
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Resupply Towns").font(.title3.bold())
+                            ForEach(resupplyTowns) { town in
+                                VStack(alignment: .leading, spacing: 6) {
+                                    HStack {
+                                        Text(town.town)
+                                            .font(.headline)
+                                        Spacer()
+                                        Text(town.trailDistance)
+                                            .font(.caption2.bold())
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(.green.opacity(0.15), in: Capsule())
+                                            .foregroundStyle(.green)
+                                    }
 
-                            Label(lot.address, systemImage: "mappin")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                    Text(town.services.joined(separator: " · "))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
 
-                            HStack(spacing: 12) {
-                                Label(lot.cost, systemImage: "dollarsign.circle")
-                                    .font(.caption)
-                                Label(lot.phone, systemImage: "phone")
-                                    .font(.caption)
-                                    .foregroundStyle(.blue)
-                            }
+                                    Label(town.transitAccess, systemImage: "bus.fill")
+                                        .font(.caption.bold())
+                                        .foregroundStyle(.secondary)
 
-                            Label(lot.security, systemImage: "lock.shield")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-
-                            if !lot.notes.isEmpty {
-                                Text(lot.notes)
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .padding(.vertical, 2)
-                    }
-                }
-
-                Section("Resupply Towns") {
-                    ForEach(resupplyTowns) { town in
-                        VStack(alignment: .leading, spacing: 4) {
-                            HStack {
-                                Text(town.town)
-                                    .font(.body.bold())
-                                Spacer()
-                                Text(town.trailDistance)
-                                    .font(.caption2)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(.green.opacity(0.12), in: Capsule())
-                            }
-
-                            Text(town.services.joined(separator: " · "))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-
-                            Label(town.transitAccess, systemImage: "bus.fill")
-                                .font(.caption)
-
-                            if !town.notes.isEmpty {
-                                Text(town.notes)
-                                    .font(.caption2)
-                                    .foregroundStyle(.orange)
-                            }
-                        }
-                        .padding(.vertical, 2)
-                    }
-                }
-
-                Section("Satellite Devices") {
-                    ForEach(satelliteDevices) { device in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(device.device)
-                                .font(.body.bold())
-
-                            // Features as individual chips
-                            FlowLayout(spacing: 4) {
-                                ForEach(device.features, id: \.self) { feature in
-                                    Text(feature)
-                                        .font(.system(size: 10))
-                                        .padding(.horizontal, 6)
-                                        .padding(.vertical, 2)
-                                        .background(.blue.opacity(0.1), in: Capsule())
+                                    if !town.notes.isEmpty {
+                                        Text(town.notes)
+                                            .font(.caption2)
+                                            .foregroundStyle(.orange)
+                                    }
                                 }
+                                .padding()
+                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
+                                .overlay(RoundedRectangle(cornerRadius: 16).stroke(.gray.opacity(0.2), lineWidth: 1))
                             }
-
-                            Text(device.coverage)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-
-                            Text(device.compatibility)
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-
-                            HStack {
-                                Text(device.cost)
-                                    .font(.caption.bold())
-                                    .foregroundStyle(.tint)
-                                Spacer()
-                            }
-
-                            Text(device.trailNotes)
-                                .font(.caption)
-                                .foregroundStyle(.orange)
                         }
-                        .padding(.vertical, 4)
+
+                        // Satellite Devices
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Satellite Devices").font(.title3.bold())
+                            ForEach(satelliteDevices) { device in
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        Text(device.device)
+                                            .font(.headline)
+                                        Spacer()
+                                        Text(device.cost)
+                                            .font(.caption.bold())
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(.purple.opacity(0.1), in: Capsule())
+                                            .foregroundStyle(.purple)
+                                    }
+
+                                    // Features as individual chips
+                                    FlowLayout(spacing: 6) {
+                                        ForEach(device.features, id: \.self) { feature in
+                                            Text(feature)
+                                                .font(.system(size: 10, weight: .bold))
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 4)
+                                                .background(.blue.opacity(0.1), in: Capsule())
+                                                .foregroundStyle(.blue)
+                                        }
+                                    }
+
+                                    Text(device.coverage)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+
+                                    Text(device.compatibility)
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+
+                                    if !device.trailNotes.isEmpty {
+                                        Text(device.trailNotes)
+                                            .font(.caption2)
+                                            .foregroundStyle(.orange)
+                                    }
+                                }
+                                .padding()
+                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
+                                .overlay(RoundedRectangle(cornerRadius: 16).stroke(.gray.opacity(0.2), lineWidth: 1))
+                            }
+                        }
                     }
+                    .padding()
+                    .padding(.bottom, 40)
                 }
             }
-            .navigationTitle("Info & Resources")
+            .navigationTitle("Intel & Logistics")
         }
     }
 
     private func transitTypeColor(_ type: String) -> Color {
         switch type {
-        case "train": .purple
-        case "rail":  .blue
-        case "bus":   .green
-        default:      .gray
+        case "train": return .purple
+        case "rail":  return .blue
+        case "bus":   return .green
+        default:      return .gray
         }
     }
 }

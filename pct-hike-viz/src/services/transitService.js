@@ -11,6 +11,20 @@
  */
 export const transitRoutes = [
   {
+    id: "dan-sjc-ua",
+    type: "flight",
+    name: "Dan's SJC Flights (UA481 · UA1317)",
+    agency: "United Airlines",
+    route: "SJC ↔ ORD",
+    stops: ["SJC", "ORD"],
+    frequency: "Aug 28 Inbound / Sep 7 Outbound",
+    relevantFor: "Dan's Arrival & Departure",
+    notes: "Arrives Aug 28 6:03 PM PST. Departs Sep 7 12:45 PM CT.",
+    url: "",
+    distance: "N/A",
+    emoji: "✈️",
+  },
+  {
     id: "diridon-redding",
     type: "train",
     name: "San Jose Diridon → Redding (Amtrak Coast Starlight 14)",

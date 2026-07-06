@@ -20,6 +20,28 @@ struct TransitRoute: Identifiable, Sendable {
 
 let transitRoutes: [TransitRoute] = [
     TransitRoute(
+        id: "mikaela-shuttle", type: "car",
+        name: "Mikaela's Shuttle",
+        agency: "Personal Vehicle", route: "Campbell → SJC → Burney Falls",
+        stops: ["2800 Joseph Ave", "SJC", "Burney Falls"],
+        frequency: "Aug 28 Drop-off",
+        relevantFor: "Outbound Logistics",
+        notes: "Mikaela driving. Real-time gas tracking in Prep tab.",
+        url: "",
+        distance: "270 miles", cost: nil, emoji: "🚙"
+    ),
+    TransitRoute(
+        id: "dan-sjc-ua", type: "flight",
+        name: "Dan's SJC Flights",
+        agency: "United Airlines", route: "UA481 · UA1317",
+        stops: ["SJC", "ORD"],
+        frequency: "Aug 28 Inbound / Sep 7 Outbound",
+        relevantFor: "Dan's Arrival & Departure",
+        notes: "Arrives Aug 28 6:03 PM PST. Departs Sep 7.",
+        url: "",
+        distance: nil, cost: nil, emoji: "✈️"
+    ),
+    TransitRoute(
         id: "amtrak-cs-sj", type: "train",
         name: "San Jose Diridon → Redding",
         agency: "Amtrak", route: "Coast Starlight 14",

@@ -11,10 +11,24 @@ struct HikeDataIngestor {
     /// Check if data has already been ingested (avoid re-parsing 48k points)
     static func needsIngest(modelContext: ModelContext) -> Bool {
         print("DEBUG [HikeDataIngestor]: Checking database state...")
-        let descriptor = FetchDescriptor<TrailPoint>()
-        let count = (try? modelContext.fetchCount(descriptor)) ?? 0
-        let needs = count < 5000
-        print("DEBUG [HikeDataIngestor]: Current database count - \(count) trail points found. Needs ingest: \(needs)")
+        
+        let currentVersion = 3 // Bump this to force re-ingestion when json structure/content changes
+        let ingestedVersion = UserDefaults.standard.integer(forKey: "hikeDataIngestVersion")
+        if ingestedVersion < currentVersion {
+            print("DEBUG [HikeDataIngestor]: Forced re-ingestion triggered (version \(ingestedVersion) < \(currentVersion))")
+            return true
+        }
+
+        let tpCount = (try? modelContext.fetchCount(FetchDescriptor<TrailPoint>())) ?? 0
+        let wsCount = (try? modelContext.fetchCount(FetchDescriptor<WaterSource>())) ?? 0
+        let campCount = (try? modelContext.fetchCount(FetchDescriptor<CampSite>())) ?? 0
+        
+        // Ensure we have at least 3 distinct day values (e.g. -1, 0, 1) otherwise re-ingest
+        let camps = (try? modelContext.fetch(FetchDescriptor<CampSite>())) ?? []
+        let distinctDays = Set(camps.map(\.day))
+        
+        let needs = tpCount < 5000 || wsCount == 0 || campCount < 10 || distinctDays.count < 4
+        print("DEBUG [HikeDataIngestor]: Current database count - \(tpCount) points, \(wsCount) water sources, \(campCount) camps, \(distinctDays.count) distinct days. Needs ingest: \(needs)")
         return needs
     }
 
@@ -25,6 +39,7 @@ struct HikeDataIngestor {
         // Clear any old/corrupt data first to prevent duplicate entries
         try? modelContext.delete(model: TrailPoint.self)
         try? modelContext.delete(model: CampSite.self)
+        try? modelContext.delete(model: WaterSource.self)
         
         guard let url = Bundle.main.url(forResource: "hike_data", withExtension: "json") else {
             print("ERROR [HikeDataIngestor]: Bundled 'hike_data.json' file not found in main bundle!")
@@ -66,9 +81,25 @@ struct HikeDataIngestor {
             }
             print("DEBUG [HikeDataIngestor]: Successfully inserted \(pathCount)/\(path.count) trail points.")
         }
+        
+        // Parse water sources
+        var waterCount = 0
+        if let sources = json["waterSources"] as? [[String: Any]] {
+            print("DEBUG [HikeDataIngestor]: Parsing \(sources.count) water sources...")
+            for sourceDict in sources {
+                if let water = parseWaterSource(from: sourceDict) {
+                    modelContext.insert(water)
+                    waterCount += 1
+                }
+            }
+            print("DEBUG [HikeDataIngestor]: Successfully inserted \(waterCount)/\(sources.count) water sources.")
+        }
 
         print("DEBUG [HikeDataIngestor]: Saving ModelContext...")
         try modelContext.save()
+        
+        // Save current version to UserDefaults to track ingestion state
+        UserDefaults.standard.set(3, forKey: "hikeDataIngestVersion")
         print("DEBUG [HikeDataIngestor]: Data ingestion complete.")
     }
 
@@ -86,7 +117,7 @@ struct HikeDataIngestor {
             name: name,
             latitude: coords[1],
             longitude: coords[0],
-            day: props["day"] as? Int ?? 0,
+            day: (props["day"] as? NSNumber)?.intValue ?? (props["day"] as? Int) ?? 0,
             type: props["type"] as? String ?? "Camp",
             distance: props["distance"] as? Double ?? 0,
             routeMile: props["routeMile"] as? Double ?? 0,
@@ -94,6 +125,33 @@ struct HikeDataIngestor {
             endElevation: props["endElevation"] as? String ?? "",
             segment: props["segment"] as? String ?? "",
             notes: props["notes"] as? String ?? ""
+        )
+    }
+
+    private static func parseWaterSource(from dict: [String: Any]) -> WaterSource? {
+        guard let coords = dict["coordinates"] as? [Double], coords.count >= 2,
+              let name = dict["name"] as? String else {
+            return nil
+        }
+
+        let report = dict["report"] as? String ?? ""
+        var reliability = "unknown"
+        if report.lowercased().contains("flowing") || report.lowercased().contains("great") || report.lowercased().contains("tap on") {
+            reliability = "excellent"
+        } else if report.lowercased().contains("trickle") || report.lowercased().contains("seasonal") {
+            reliability = "seasonal"
+        } else if report.lowercased().contains("dry") {
+            reliability = "sketchy"
+        } else {
+            reliability = "good"
+        }
+
+        return WaterSource(
+            name: name,
+            latitude: coords[1],
+            longitude: coords[0],
+            reliability: reliability,
+            notes: report
         )
     }
 }

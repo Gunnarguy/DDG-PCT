@@ -7,113 +7,184 @@ struct PrepView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section("Permits & Reservations") {
-                    ChecklistRow(title: "PCT Long-Distance Permit", subtitle: "PCTA — apply early")
-                    ChecklistRow(title: "Burney Falls Day Use", subtitle: "$10/vehicle")
-                    ChecklistRow(title: "Castle Crags Parking", subtitle: "$10/day")
-                    ChecklistRow(title: "Campfire Permit", subtitle: "CAL FIRE — free")
-                }
-
-                Section("Pre-Trip Checklist") {
-                    ChecklistRow(title: "Water filter serviced", subtitle: "Sawyer Squeeze backflush")
-                    ChecklistRow(title: "Bear canister packed", subtitle: "Required in wilderness areas")
-                    ChecklistRow(title: "Emergency contacts shared", subtitle: "InReach share link to family")
-                    ChecklistRow(title: "Trail register signed", subtitle: "At trailhead kiosk")
-                    ChecklistRow(title: "Weather forecast checked", subtitle: "48hr before departure")
-                    ChecklistRow(title: "Offline maps downloaded", subtitle: "Apple Maps or Gaia GPS")
-                }
-
-                Section("Parking Logistics") {
-                    ForEach(parking) { lot in
-                        VStack(alignment: .leading, spacing: 4) {
-                            ChecklistRow(
-                                title: "Parking: \(lot.location)",
-                                subtitle: "\(lot.cost) · \(lot.address)"
-                            )
-                            if !lot.security.isEmpty {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "lock.shield")
-                                        .font(.caption2)
-                                        .foregroundStyle(.secondary)
-                                    Text(lot.security)
-                                        .font(.caption2)
-                                        .foregroundStyle(.secondary)
-                                }
-                                .padding(.leading, 28)
-                            }
-                            if !lot.notes.isEmpty {
-                                Text(lot.notes)
-                                    .font(.caption2)
-                                    .foregroundStyle(.orange)
-                                    .padding(.leading, 28)
+            ZStack {
+                Color(uiColor: .systemGroupedBackground).ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(spacing: 32) {
+                        
+                        // Action Required Section
+                        VStack(alignment: .leading, spacing: 12) {
+                            SectionHeader(title: "Critical Path", icon: "exclamationmark.triangle.fill", color: .orange)
+                            PrepTaskCard(title: "PCT Long-Distance Permit", subtitle: "PCTA — Apply early", icon: "doc.plaintext.fill")
+                            PrepTaskCard(title: "Burney Falls Day Use", subtitle: "$10/vehicle", icon: "car.fill")
+                            PrepTaskCard(title: "Campfire Permit", subtitle: "CAL FIRE — Free", icon: "flame.fill")
+                        }
+                        
+                        // Pre-Trip Checklist
+                        VStack(alignment: .leading, spacing: 12) {
+                            SectionHeader(title: "Pre-Flight Checklist", icon: "checklist", color: .blue)
+                            PrepTaskCard(title: "Water filter serviced", subtitle: "Sawyer Squeeze backflush", icon: "drop.fill")
+                            PrepTaskCard(title: "Bear canister packed", subtitle: "Required in wilderness areas", icon: "lock.shield.fill")
+                            PrepTaskCard(title: "Emergency contacts shared", subtitle: "InReach share link to family", icon: "antenna.radiowaves.left.and.right")
+                            PrepTaskCard(title: "Weather forecast checked", subtitle: "48hr before departure", icon: "cloud.sun.fill")
+                            PrepTaskCard(title: "Offline maps downloaded", subtitle: "Apple Maps or Gaia GPS", icon: "map.fill")
+                        }
+                        
+                        // Resupply Points
+                        VStack(alignment: .leading, spacing: 12) {
+                            SectionHeader(title: "Resupply Depots", icon: "shippingbox.fill", color: .green)
+                            ForEach(resupply) { town in
+                                InfoCard(
+                                    title: "\(town.town) Resupply",
+                                    subtitle: town.services.joined(separator: " · "),
+                                    notes: town.notes,
+                                    icon: "cart.fill"
+                                )
                             }
                         }
-                    }
-                }
-
-                Section("Resupply Points") {
-                    ForEach(resupply) { town in
-                        VStack(alignment: .leading, spacing: 2) {
-                            ChecklistRow(
-                                title: "\(town.town) resupply",
-                                subtitle: town.services.joined(separator: ", ")
-                            )
-                            if !town.notes.isEmpty {
-                                Text(town.notes)
-                                    .font(.caption2)
-                                    .foregroundStyle(.orange)
-                                    .padding(.leading, 28)
+                        
+                        // Logistics (Parking & Transit)
+                        VStack(alignment: .leading, spacing: 12) {
+                            SectionHeader(title: "Extraction & Insertion", icon: "car.fill", color: .purple)
+                            
+                            DriveTrackerView()
+                            
+                            ForEach(parking) { lot in
+                                InfoCard(
+                                    title: "Parking: \(lot.location)",
+                                    subtitle: "\(lot.cost) · \(lot.address)",
+                                    notes: lot.notes,
+                                    icon: "parkingsign.circle.fill"
+                                )
                             }
                         }
                     }
-                }
-
-                Section("Transit to Trailhead") {
-                    ForEach(transit.filter { $0.relevantFor.lowercased().contains("approach") || $0.relevantFor.lowercased().contains("trailhead") || $0.relevantFor.lowercased().contains("all") }) { route in
-                        ChecklistRow(
-                            title: "\(route.agency) \(route.route)",
-                            subtitle: "\(route.frequency) · \(route.cost ?? "")"
-                        )
-                    }
-                    if transit.filter({ $0.relevantFor.lowercased().contains("approach") || $0.relevantFor.lowercased().contains("trailhead") || $0.relevantFor.lowercased().contains("all") }).isEmpty {
-                        ForEach(transit.prefix(3)) { route in
-                            ChecklistRow(
-                                title: "\(route.agency) \(route.route)",
-                                subtitle: "\(route.frequency) · \(route.cost ?? "")"
-                            )
-                        }
-                    }
+                    .padding()
+                    .padding(.bottom, 40)
                 }
             }
-            .navigationTitle("Trip Prep")
+            .navigationTitle("Mission Prep")
         }
     }
 }
 
-struct ChecklistRow: View {
+// MARK: - Section Header
+
+struct SectionHeader: View {
+    let title: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .foregroundStyle(color)
+            Text(title)
+                .font(.title3.bold())
+        }
+        .padding(.bottom, 4)
+    }
+}
+
+// MARK: - Prep Task Card
+
+struct PrepTaskCard: View {
     let title: String
     let subtitle: String
+    let icon: String?
     @State private var isChecked = false
 
     var body: some View {
-        HStack {
-            Button {
+        Button {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                 isChecked.toggle()
-            } label: {
-                Image(systemName: isChecked ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isChecked ? .green : .secondary)
             }
-            .buttonStyle(.plain)
+        } label: {
+            HStack(spacing: 16) {
+                // Check circle
+                ZStack {
+                    Circle()
+                        .strokeBorder(isChecked ? .green : .gray.opacity(0.4), lineWidth: 2)
+                        .frame(width: 28, height: 28)
+                    
+                    if isChecked {
+                        Circle()
+                            .fill(.green)
+                            .frame(width: 20, height: 20)
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundStyle(.white)
+                    }
+                }
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.headline)
+                        .strikethrough(isChecked)
+                        .foregroundStyle(isChecked ? .secondary : .primary)
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                
+                Spacer()
+                
+                if let icon = icon {
+                    Image(systemName: icon)
+                        .font(.title3)
+                        .foregroundStyle(isChecked ? AnyShapeStyle(.green.opacity(0.5)) : AnyShapeStyle(.tertiary))
+                }
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(isChecked ? Color.green.opacity(0.05) : Color(uiColor: .secondarySystemGroupedBackground))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(isChecked ? .green.opacity(0.3) : .gray.opacity(0.2), lineWidth: 1)
+            )
+            .scaleEffect(isChecked ? 0.98 : 1.0)
+        }
+        .buttonStyle(.plain)
+    }
+}
 
-            VStack(alignment: .leading) {
+// MARK: - Info Card
+
+struct InfoCard: View {
+    let title: String
+    let subtitle: String
+    let notes: String
+    let icon: String
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 16) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundStyle(.purple)
+                .frame(width: 28)
+                .padding(.top, 2)
+            
+            VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .strikethrough(isChecked)
+                    .font(.headline)
                 Text(subtitle)
-                    .font(.caption)
+                    .font(.caption.bold())
                     .foregroundStyle(.secondary)
+                if !notes.isEmpty {
+                    Text(notes)
+                        .font(.caption2)
+                        .foregroundStyle(.orange)
+                        .padding(.top, 2)
+                }
             }
         }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(.gray.opacity(0.2), lineWidth: 1))
     }
 }
 

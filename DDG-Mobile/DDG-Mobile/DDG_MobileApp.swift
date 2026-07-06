@@ -25,7 +25,21 @@ struct DDG_MobileApp: App {
             AirQualityCache.self,
         ])
         let config = ModelConfiguration(isStoredInMemoryOnly: false)
-        modelContainer = try! ModelContainer(for: schema, configurations: config)
+        do {
+            modelContainer = try ModelContainer(for: schema, configurations: config)
+        } catch {
+            // Recreate database on schema mismatch in development
+            let urls = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
+            if let appSupportURL = urls.first {
+                let sqliteURL = appSupportURL.appendingPathComponent("default.store")
+                let shmURL = appSupportURL.appendingPathComponent("default.store-shm")
+                let walURL = appSupportURL.appendingPathComponent("default.store-wal")
+                try? FileManager.default.removeItem(at: sqliteURL)
+                try? FileManager.default.removeItem(at: shmURL)
+                try? FileManager.default.removeItem(at: walURL)
+            }
+            modelContainer = try! ModelContainer(for: schema, configurations: config)
+        }
 
         // Initialize Supabase config
         SupabaseManager.shared.config.url = Secrets.supabaseURL

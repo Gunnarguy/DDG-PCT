@@ -28,6 +28,7 @@ final class GearLoadout {
 @Model
 final class CustomItem {
     @Attribute(.unique) var remoteId: Int64?
+    var stableId: String
     var name: String
     var detail: String?
     var weightVal: Double?
@@ -41,6 +42,7 @@ final class CustomItem {
 
     init(
         remoteId: Int64? = nil,
+        stableId: String = UUID().uuidString,
         name: String,
         detail: String? = nil,
         weightVal: Double? = nil,
@@ -53,6 +55,7 @@ final class CustomItem {
         syncStatus: SyncStatus = .local
     ) {
         self.remoteId = remoteId
+        self.stableId = stableId
         self.name = name
         self.detail = detail
         self.weightVal = weightVal

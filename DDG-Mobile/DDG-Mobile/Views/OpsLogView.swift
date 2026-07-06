@@ -23,52 +23,61 @@ struct OpsLogView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                // AI Summary banner
-                if let summary = summaryText {
-                    summaryBanner(summary)
-                }
+            ZStack {
+                Color.black.ignoresSafeArea()
+                
+                VStack(spacing: 0) {
+                    // AI Summary banner
+                    if let summary = summaryText {
+                        summaryBanner(summary)
+                    }
 
-                // Filter bar
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        FilterChip(label: "All", isActive: filterType == nil) {
-                            filterType = nil
-                        }
-                        ForEach(LogType.allCases, id: \.self) { type in
-                            FilterChip(label: type.rawValue, isActive: filterType == type) {
-                                filterType = filterType == type ? nil : type
+                    // Filter bar
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            FilterChip(label: "ALL", isActive: filterType == nil) { filterType = nil }
+                            ForEach(LogType.allCases, id: \.self) { type in
+                                FilterChip(label: type.rawValue.uppercased(), isActive: filterType == type) {
+                                    filterType = filterType == type ? nil : type
+                                }
                             }
                         }
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
-                }
-                .padding(.vertical, 4)
+                    .padding(.vertical, 8)
+                    .background(Color(white: 0.05))
 
-                // Log entries
-                ScrollView {
-                    LazyVStack(spacing: 8) {
-                        ForEach(filteredEntries) { entry in
-                            LogEntryCard(entry: entry)
+                    // Log entries
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 16) {
+                            ForEach(filteredEntries) { entry in
+                                LogEntryCard(entry: entry)
+                            }
                         }
+                        .padding()
                     }
-                    .padding()
-                }
 
-                if filteredEntries.isEmpty {
-                    Spacer()
-                    ContentUnavailableView(
-                        "No Ops Logs Yet",
-                        systemImage: "list.bullet.clipboard",
-                        description: Text("Start logging tasks, notes, and alerts for the team")
-                    )
-                    Spacer()
-                }
+                    if filteredEntries.isEmpty {
+                        Spacer()
+                        ContentUnavailableView(
+                            "AWAITING TELEMETRY",
+                            systemImage: "terminal",
+                            description: Text("Terminal is empty. Start logging tasks, notes, and alerts.")
+                        )
+                        .foregroundStyle(.green)
+                        .environment(\.colorScheme, .dark)
+                        Spacer()
+                    }
 
-                // Input bar
-                inputBar
+                    // Input bar
+                    inputBar
+                }
             }
-            .navigationTitle("Ops Log")
+            .navigationTitle("Ops Telemetry")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+            .toolbarBackground(.black, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
@@ -76,21 +85,20 @@ struct OpsLogView: View {
                             Task { await summarizeToday() }
                         } label: {
                             Label(
-                                isSummarizing ? "Summarizing..." : "Summarize Today",
+                                isSummarizing ? "Processing..." : "Generate Intel",
                                 systemImage: "sparkles"
                             )
                         }
                         .disabled(todayEntries.isEmpty || isSummarizing)
 
                         Button {
-                            Task {
-                                await SyncEngine.shared.syncPendingChanges(modelContext: modelContext)
-                            }
+                            Task { await SyncEngine.shared.syncPendingChanges(modelContext: modelContext) }
                         } label: {
-                            Label("Force Sync", systemImage: "arrow.triangle.2.circlepath")
+                            Label("Force Uplink", systemImage: "antenna.radiowaves.left.and.right")
                         }
                     } label: {
-                        Image(systemName: "ellipsis.circle")
+                        Image(systemName: "terminal.fill")
+                            .foregroundStyle(.green)
                     }
                 }
             }
@@ -100,28 +108,29 @@ struct OpsLogView: View {
     // MARK: - AI Summary Banner
 
     private func summaryBanner(_ text: String) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Image(systemName: "sparkles")
+                Text("> SYSTEM INTEL GENERATED")
+                    .font(.system(size: 11, weight: .bold, design: .monospaced))
                     .foregroundStyle(.purple)
-                Text("Today's Summary")
-                    .font(.caption.bold())
                 Spacer()
                 Button {
                     summaryText = nil
                 } label: {
-                    Image(systemName: "xmark.circle.fill")
+                    Image(systemName: "xmark")
+                        .font(.system(size: 11, weight: .bold, design: .monospaced))
                         .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
             }
             Text(text)
-                .font(.callout)
+                .font(.system(size: 13, design: .monospaced))
+                .foregroundStyle(.white)
         }
         .padding()
-        .background(.purple.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
-        .padding(.horizontal)
-        .padding(.top, 8)
+        .background(Color.purple.opacity(0.1))
+        .border(Color.purple.opacity(0.5), width: 1)
+        .padding()
     }
 
     // MARK: - Summarize
@@ -142,27 +151,38 @@ struct OpsLogView: View {
         do {
             summaryText = try await OnDeviceLLM.shared.summarizeOpsLog(entries: entryData)
         } catch {
-            summaryText = "Could not generate summary: \(error.localizedDescription)"
+            summaryText = "ERROR: \(error.localizedDescription)"
         }
     }
 
     // MARK: - Input Bar
 
     private var inputBar: some View {
-        HStack(spacing: 8) {
-            TextField("Log a note, /task, or alert...", text: $newMessage)
-                .textFieldStyle(.roundedBorder)
+        HStack(spacing: 12) {
+            Text(">")
+                .font(.system(.title3, design: .monospaced))
+                .foregroundStyle(.green)
+            
+            TextField("Enter command, /task, or log...", text: $newMessage)
+                .font(.system(.body, design: .monospaced))
+                .foregroundStyle(.green)
+                .tint(.green)
 
             Button {
                 sendMessage()
             } label: {
-                Image(systemName: "arrow.up.circle.fill")
-                    .font(.title2)
+                Image(systemName: "return")
+                    .font(.title3.bold())
+                    .foregroundStyle(.black)
+                    .padding(8)
+                    .background(.green, in: RoundedRectangle(cornerRadius: 6))
             }
             .disabled(newMessage.trimmingCharacters(in: .whitespaces).isEmpty)
+            .opacity(newMessage.trimmingCharacters(in: .whitespaces).isEmpty ? 0.5 : 1.0)
         }
         .padding()
-        .background(.bar)
+        .background(Color(white: 0.08))
+        .border(Color(white: 0.2), width: 1)
     }
 
     // MARK: - Send
@@ -197,12 +217,12 @@ private struct FilterChip: View {
     var body: some View {
         Button(action: action) {
             Text(label)
-                .font(.caption.bold())
-                .padding(.horizontal, 10)
-                .padding(.vertical, 5)
-                .background(isActive ? Color.accentColor : Color.clear, in: Capsule())
-                .foregroundStyle(isActive ? .white : .primary)
-                .overlay(Capsule().strokeBorder(.quaternary))
+                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(isActive ? Color.green.opacity(0.2) : Color.clear)
+                .foregroundStyle(isActive ? Color.green : Color.gray)
+                .border(isActive ? Color.green : Color.gray, width: 1)
         }
         .buttonStyle(.plain)
     }
@@ -214,106 +234,94 @@ struct LogEntryCard: View {
     let entry: OpsLogEntry
 
     var body: some View {
-        HStack(alignment: .top, spacing: 10) {
-            // Type indicator
-            Image(systemName: iconFor(entry.type))
-                .foregroundStyle(colorFor(entry.type))
-                .frame(width: 24)
-
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text(entry.userName)
-                        .font(.caption.bold())
-                    Spacer()
-                    Text(entry.createdAt, style: .relative)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("[\(entry.createdAt.formatted(date: .omitted, time: .standard))]")
+                    .foregroundStyle(.secondary)
+                
+                Text(entry.userName.uppercased())
+                    .foregroundStyle(.cyan)
+                
+                Text(entry.type.rawValue.uppercased())
+                    .foregroundStyle(colorFor(entry.type))
+                
+                Spacer()
+                
+                // Sync status
+                Text("[\(syncText(entry.syncStatus))]")
+                    .foregroundStyle(syncColor(entry.syncStatus))
+            }
+            .font(.system(size: 11, weight: .bold, design: .monospaced))
+            
+            HStack(alignment: .top) {
+                Text(">")
+                    .foregroundStyle(colorFor(entry.type))
                 Text(entry.content)
-                    .font(.body)
-
-                HStack(spacing: 8) {
-                    // Type badge
-                    Text(entry.type.rawValue)
-                        .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(contentColorFor(entry.type))
+            }
+            .font(.system(size: 14, design: .monospaced))
+            
+            if entry.type == .task {
+                Button {
+                    entry.cycleStatus()
+                } label: {
+                    Text("STATUS: \(entry.status?.rawValue.uppercased() ?? "UNKNOWN")")
+                        .font(.system(size: 11, weight: .bold, design: .monospaced))
+                        .foregroundStyle(statusColor(entry.status))
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(colorFor(entry.type).opacity(0.15), in: Capsule())
-                        .foregroundStyle(colorFor(entry.type))
-
-                    // Status badge (tappable to cycle)
-                    if entry.type == .task {
-                        Button {
-                            entry.cycleStatus()
-                        } label: {
-                            Text(entry.status?.rawValue.replacingOccurrences(of: "_", with: " ") ?? "—")
-                                .font(.system(size: 10, weight: .bold))
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(statusColor(entry.status).opacity(0.15), in: Capsule())
-                                .foregroundStyle(statusColor(entry.status))
-                        }
-                        .buttonStyle(.plain)
-                    } else if let status = entry.status {
-                        Text(status.rawValue.replacingOccurrences(of: "_", with: " "))
-                            .font(.system(size: 10, weight: .bold))
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(.quaternary, in: Capsule())
-                    }
-
-                    // Sync status
-                    Image(systemName: syncIcon(entry.syncStatus))
-                        .font(.system(size: 10))
-                        .foregroundStyle(syncColor(entry.syncStatus))
+                        .background(statusColor(entry.status).opacity(0.15))
+                        .border(statusColor(entry.status), width: 1)
                 }
+                .buttonStyle(.plain)
+                .padding(.top, 4)
             }
         }
         .padding(12)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
-    }
-
-    private func iconFor(_ type: LogType) -> String {
-        switch type {
-        case .note:  "note.text"
-        case .task:  "checkmark.circle"
-        case .alert: "exclamationmark.triangle.fill"
-        }
+        .background(Color(white: 0.08))
+        .border(Color(white: 0.15), width: 1)
     }
 
     private func colorFor(_ type: LogType) -> Color {
         switch type {
-        case .note:  .blue
-        case .task:  .green
-        case .alert: .red
+        case .note:  return .blue
+        case .task:  return .green
+        case .alert: return .red
+        }
+    }
+    
+    private func contentColorFor(_ type: LogType) -> Color {
+        switch type {
+        case .note:  return .white
+        case .task:  return .green
+        case .alert: return .red
         }
     }
 
-    private func syncIcon(_ status: SyncStatus) -> String {
+    private func syncText(_ status: SyncStatus) -> String {
         switch status {
-        case .local:      "icloud.slash"
-        case .syncing:    "arrow.triangle.2.circlepath"
-        case .synced:     "checkmark.icloud"
-        case .conflicted: "exclamationmark.icloud"
+        case .local:      return "LOCAL"
+        case .syncing:    return "UPLINK"
+        case .synced:     return "SYNCED"
+        case .conflicted: return "CONFLICT"
         }
     }
 
     private func syncColor(_ status: SyncStatus) -> Color {
         switch status {
-        case .local:      .secondary
-        case .syncing:    .blue
-        case .synced:     .green
-        case .conflicted: .red
+        case .local:      return .gray
+        case .syncing:    return .blue
+        case .synced:     return .green
+        case .conflicted: return .red
         }
     }
 
     private func statusColor(_ status: LogStatus?) -> Color {
         switch status {
-        case .open:       .orange
-        case .inProgress: .blue
-        case .done:       .green
-        case nil:         .secondary
+        case .open:       return .orange
+        case .inProgress: return .blue
+        case .done:       return .green
+        case nil:         return .gray
         }
     }
 }

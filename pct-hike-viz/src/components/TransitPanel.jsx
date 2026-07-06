@@ -5,6 +5,7 @@ import {
   shuttleServices,
   transitRoutes,
 } from "../services/transitService";
+import DriveTracker from "./DriveTracker";
 import "../styles/TransitPanel.css";
 
 /**
@@ -46,6 +47,8 @@ function TransitPanel() {
           Public transit, shuttles, and rental car options for Section O
         </p>
       </div>
+
+      <DriveTracker />
 
       {/* Quick access summary */}
       <div className="access-summary">
