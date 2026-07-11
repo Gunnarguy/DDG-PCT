@@ -1,6 +1,9 @@
 import PropTypes from "prop-types";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import GearHeader from "./GearHeader";
+import GearShed from "./GearShed";
+import GearLoadout from "./GearLoadout";
 import { ddgTeam } from "../data/planContent";
 import { resourcesById } from "../data/resourcesIndex";
 import supabase, { supabaseReady } from "../lib/supabase";
@@ -104,14 +107,7 @@ const getWeightBucket = (item) => {
 
 // Category metadata for RPG-style gear slots
 // Maps module labels to icons and stat names for the loadout UI
-const SLOT_METADATA = {
-  "Shelter + Sleep": { icon: "🛖", stat: "Fortitude", color: "#6B4423" },
-  "Kitchen + Hydration": { icon: "🔥", stat: "Sustenance", color: "#E65100" },
-  "Navigation + Tech": { icon: "🧭", stat: "Intel", color: "#1565C0" },
-  "Layers + Fuel Buffer": { icon: "🧥", stat: "Resilience", color: "#7B1FA2" },
-  "Safety + Hygiene": { icon: "🩹", stat: "Endurance", color: "#C62828" },
-  Custom: { icon: "✨", stat: "Wildcard", color: "#F57C00" },
-};
+import { SLOT_METADATA } from "../utils/gearUtils";
 
 // DDG Team pack configurations - built from ddgTeam data
 const HIKERS = [
@@ -772,95 +768,20 @@ function GearPlanner({ data, currentUser }) {
             {consumableWeight.toFixed(1)} lb
           </div>
         </div>
-        <div className="summary-card">
-          <div className="summary-label">Sync</div>
-          <div className="summary-value">
-            {supabaseReady ? "Online" : "Offline"}
-          </div>
-          <div className="summary-sub">
-            {syncError ? syncError.message : "Supabase"}
-          </div>
-        </div>
-        <div className="summary-card">
-          <div className="summary-label">Team Snapshot</div>
-          <div className="summary-tags">
-            {HIKERS.map((h) => {
-              const loadout = loadouts[h.id] || new Set();
-              let w = 0;
-              loadout.forEach((id) => {
-                const i = inventoryMap.get(id);
-                if (i && getWeightBucket(i) === "carried") {
-                  w += i.weightVal || 0;
-                }
-              });
-              return (
-                <span
-                  key={h.id}
-                  className={`team-weight-chip ${
-                    h.id === activeHikerId ? "active" : ""
-                  }`}
-                  style={{ "--chip-color": h.color }}
-                >
-                  {h.emoji} {w.toFixed(1)}lb
-                </span>
-              );
-            })}
-          </div>
-          <div className="summary-sub">
-            Total equipped {totalEquippedWeight.toFixed(1)} lb
-          </div>
-        </div>
       </div>
 
-      {/* Active Hiker Stats Header - DDG Enhanced */}
-      <header className="gear-rpg-header ddg-gear-header">
-        <div
-          className="gear-avatar-card"
-          style={{ "--hiker-color": activeHiker.color }}
-        >
-          <div className="gear-avatar-crest">{activeHiker.emoji}</div>
-          <div className="gear-avatar-content">
-            <p className="eyebrow">{activeHiker.role}</p>
-            <h3>{activeHiker.name}'s Loadout</h3>
-            <div className="gear-avatar-meta">
-              <span className={`status-${weightStatus}`}>
-                {carriedWeight.toFixed(1)} lb base / {baseWeightGoal || "—"} lb
-                Goal
-              </span>
-              <span className="pack-info">{activeHiker.pack}</span>
-            </div>
-            {activeHiker.packNotes && (
-              <p className="pack-notes">{activeHiker.packNotes}</p>
-            )}
-          </div>
-        </div>
-
-        {/* Team Weight Comparison */}
-        <div className="ddg-team-weights">
-          <span className="team-weights-label">Team Weights:</span>
-          {HIKERS.map((h) => {
-            const loadout = loadouts[h.id] || new Set();
-            let w = 0;
-            loadout.forEach((id) => {
-              const i = inventoryMap.get(id);
-              if (i && getWeightBucket(i) === "carried") {
-                w += i.weightVal || 0;
-              }
-            });
-            return (
-              <span
-                key={h.id}
-                className={`team-weight-chip ${
-                  h.id === activeHikerId ? "active" : ""
-                }`}
-                style={{ "--chip-color": h.color }}
-              >
-                {h.emoji} {w.toFixed(1)}lb
-              </span>
-            );
-          })}
-        </div>
-      </header>
+      <GearHeader
+        activeHikerId={activeHikerId}
+        activeHiker={activeHiker}
+        loadouts={loadouts}
+        inventoryMap={inventoryMap}
+        totalEquippedWeight={totalEquippedWeight}
+        carriedWeight={carriedWeight}
+        weightStatus={weightStatus}
+        baseWeightGoal={baseWeightGoal}
+        supabaseReady={supabaseReady}
+        syncError={syncError}
+      />
 
       {isSyncing && (
         <p className="note" aria-live="polite">
@@ -872,256 +793,49 @@ function GearPlanner({ data, currentUser }) {
       )}
 
       <div className="gear-rpg-interface">
-        {/* Left Column: The "Shed" (Available Gear) */}
-        <div className="gear-panel gear-inventory">
-          <div className="panel-header">
-            <h4>🏚️ Gear Shed</h4>
-            <span className="panel-subtitle">
-              {isSelf
-                ? "Click to equip →"
-                : `Editing ${activeHiker.name}'s pack`}
-            </span>
-          </div>
-          <div className="gear-filters">
-            <input
-              type="search"
-              className="rpg-input"
-              placeholder="Search gear..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <div className="filter-pills" role="list">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  role="listitem"
-                  className={`pill ${categoryFilter === cat ? "active" : ""}`}
-                  onClick={() => setCategoryFilter(cat)}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
+        <GearShed
+          isSelf={isSelf}
+          activeHiker={activeHiker}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          categories={categories}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          itemsByCategory={itemsByCategory}
+          currentLoadoutIds={currentLoadoutIds}
+          matchesFilters={matchesFilters}
+          toggleItem={toggleItem}
+          inventory={inventory}
+          handleAddItem={handleAddItem}
+          newItemName={newItemName}
+          setNewItemName={setNewItemName}
+          newItemWeight={newItemWeight}
+          setNewItemWeight={setNewItemWeight}
+          newItemCategory={newItemCategory}
+          setNewItemCategory={setNewItemCategory}
+          isGroupGear={isGroupGear}
+          setIsGroupGear={setIsGroupGear}
+          groupAssignee={groupAssignee}
+          setGroupAssignee={setGroupAssignee}
+          HIKERS={HIKERS}
+        />
 
-          <div className="inventory-list">
-            {Object.entries(itemsByCategory).map(([category, items]) => {
-              const availableItems = items
-                .filter((i) => !currentLoadoutIds.has(i.id))
-                .filter(matchesFilters);
-              if (availableItems.length === 0) return null;
-
-              return (
-                <div key={category} className="inventory-group">
-                  <h5 className="group-header">{category}</h5>
-                  {availableItems.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className="rpg-item-row rpg-item-row--add"
-                      onClick={() => toggleItem(item.id)}
-                      title={`Click to equip ${item.name} to ${activeHiker.name}'s pack`}
-                      aria-label={`Equip ${item.name}, ${
-                        item.weightLabel || item.weight
-                      }`}
-                    >
-                      <span className="item-icon">
-                        {SLOT_METADATA[category]?.icon || "📦"}
-                      </span>
-                      <div className="item-info">
-                        <span className="item-name">
-                          {item.name}
-                          {Number(item.qty) > 1 ? (
-                            <span className="item-qty">
-                              ×{Number(item.qty)}
-                            </span>
-                          ) : null}
-                        </span>
-                        <span className="item-weight">
-                          {item.weightLabel || item.weight}
-                        </span>
-                      </div>
-                      <span className="item-action item-action--add">
-                        + Equip
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              );
-            })}
-            {inventory.every((i) => currentLoadoutIds.has(i.id)) && (
-              <p className="empty-state">All items equipped!</p>
-            )}
-          </div>
-
-          <form className="add-item-form" onSubmit={handleAddItem}>
-            <h5>+ Create New Item</h5>
-            <div className="form-row">
-              <input
-                type="text"
-                placeholder="Item Name"
-                value={newItemName}
-                onChange={(e) => setNewItemName(e.target.value)}
-                className="rpg-input"
-              />
-              <input
-                type="text"
-                placeholder="Weight (e.g., 0.5 lb, 8 oz, 120 g)"
-                value={newItemWeight}
-                onChange={(e) => setNewItemWeight(e.target.value)}
-                className="rpg-input weight-input"
-              />
-            </div>
-            <div className="form-row">
-              <select
-                value={newItemCategory}
-                onChange={(e) => setNewItemCategory(e.target.value)}
-                className="rpg-select"
-              >
-                {Object.keys(SLOT_METADATA).map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-              <button type="submit" className="rpg-btn-add">
-                Create & Equip
-              </button>
-            </div>
-            <div className="form-row group-gear-row" style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <label style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'pointer' }}>
-                <input
-                  type="checkbox"
-                  checked={isGroupGear}
-                  onChange={(e) => setIsGroupGear(e.target.checked)}
-                />
-                Group Gear
-              </label>
-              {isGroupGear && (
-                <select
-                  value={groupAssignee}
-                  onChange={(e) => setGroupAssignee(e.target.value)}
-                  className="rpg-select"
-                  style={{ width: 'auto', flex: 1 }}
-                >
-                  {HIKERS.map(h => (
-                    <option key={h.id} value={h.id}>{h.name}</option>
-                  ))}
-                </select>
-              )}
-            </div>
-          </form>
-        </div>
-
-        {/* Right Column: Active Pack */}
-        <div className="gear-panel gear-loadout">
-          <div className="panel-header">
-            <h4>
-              🎒 {activeHiker.name}'s Pack {isSelf ? "" : "(Remote view)"}
-            </h4>
-            <span className="panel-subtitle">
-              Live sync • {equippedItems.length} items
-            </span>
-          </div>
-
-          <div className="loadout-grid">
-            {Object.entries(itemsByCategory).map(([category, items]) => {
-              const equippedInCat = items.filter((i) =>
-                currentLoadoutIds.has(i.id)
-              );
-              if (equippedInCat.length === 0) return null;
-
-              const meta = SLOT_METADATA[category] || {
-                icon: "📦",
-                stat: "Misc",
-              };
-              const categoryWeight = equippedInCat.reduce(
-                (sum, i) => sum + (i.weightVal || 0),
-                0
-              );
-
-              return (
-                <div key={category} className="loadout-slot">
-                  <div className="slot-header">
-                    <span className="slot-icon">{meta.icon}</span>
-                    <span className="slot-name">{category}</span>
-                    <span className="slot-weight">
-                      {formatWeightLabel(categoryWeight)}
-                    </span>
-                  </div>
-                  <div className="slot-items">
-                    {equippedInCat.map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        className="rpg-item-card"
-                        onClick={() => toggleItem(item.id)}
-                        title={`Click to unequip ${item.name}`}
-                        aria-label={`Unequip ${item.name}, ${
-                          item.weightLabel || item.weight
-                        }`}
-                      >
-                        <div className="card-top">
-                          <span className="item-name">
-                            {item.name}
-                            {Number(item.qty) > 1 ? (
-                              <span className="item-qty">
-                                ×{Number(item.qty)}
-                              </span>
-                            ) : null}
-                          </span>
-                          <span className="item-weight">
-                            {item.weightLabel || item.weight}
-                          </span>
-                        </div>
-                        {renderSpecChips(getDisplaySpecs(item))}
-                        <span
-                          className={`item-detail ${
-                            isDetailExpanded(item.id)
-                              ? "item-detail--expanded"
-                              : "item-detail--clamped"
-                          }`}
-                        >
-                          {item.detail}
-                        </span>
-                        {item.detail && item.detail.length > 120 && (
-                          <button
-                            type="button"
-                            className="item-detail-toggle"
-                            onClick={(e) => {
-                              // Don't unequip when expanding/collapsing text.
-                              e.stopPropagation();
-                              toggleDetailExpanded(item.id);
-                            }}
-                          >
-                            {isDetailExpanded(item.id) ? "Less" : "More"}
-                          </button>
-                        )}
-                        {renderSourceChips(item.sourceIds)}
-                        <span className="item-action item-action--remove">
-                          × Unequip
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-            {equippedItems.length === 0 && (
-              <div className="empty-state-large">
-                <span className="empty-icon">🎒</span>
-                <p>Pack is empty</p>
-                <p className="sub">
-                  Click <strong>+ Equip</strong> on items in the Gear Shed →
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
+        <GearLoadout
+          activeHiker={activeHiker}
+          isSelf={isSelf}
+          equippedItems={equippedItems}
+          itemsByCategory={itemsByCategory}
+          currentLoadoutIds={currentLoadoutIds}
+          formatWeightLabel={formatWeightLabel}
+          toggleItem={toggleItem}
+          renderSpecChips={renderSpecChips}
+          getDisplaySpecs={getDisplaySpecs}
+          isDetailExpanded={isDetailExpanded}
+          toggleDetailExpanded={toggleDetailExpanded}
+          renderSourceChips={renderSourceChips}
+        />
       </div>
-    </div>
-  );
+    </div>  );
 }
 
 GearPlanner.propTypes = {
