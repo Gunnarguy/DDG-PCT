@@ -31,10 +31,6 @@ console.log('══════════════════════�
 
 // Check route data
 const route = hikeData.route.path;
-console.log('📍 ROUTE COORDINATES:');
-console.log(`   Points: ${route.length.toLocaleString()}`);
-console.log(`   Start: ${route[0][1].toFixed(6)}, ${route[0][0].toFixed(6)}`);
-console.log(`   End:   ${route[route.length-1][1].toFixed(6)}, ${route[route.length-1][0].toFixed(6)}\n`);
 
 // Calculate distance
 let totalMiles = 0;
@@ -78,8 +74,8 @@ console.log(`   Avg spacing: ${(totalMiles / hikeData.waterSources.length).toFix
 
 // Check transport points
 console.log('🚗 TRANSPORT/RESUPPLY:');
-console.log(`   Count: ${hikeData.transport.length}`);
-hikeData.transport.forEach(t => {
+console.log(`   Count: ${(hikeData.transport || hikeData.transportPoints || []).length}`);
+(hikeData.transport || hikeData.transportPoints || []).forEach(t => {
   console.log(`   - ${t.name} (${t.type})`);
 });
 console.log('');
