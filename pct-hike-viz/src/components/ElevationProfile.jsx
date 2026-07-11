@@ -3,125 +3,24 @@ import PropTypes from 'prop-types';
 import { scaleLinear } from 'd3-scale';
 import sectionProfiles from '../data/sectionProfiles.json';
 
-const MILES_TO_METERS = 1609.34;
-const METERS_TO_FEET = 3.28084;
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// ALTITUDE PHYSIOLOGY ZONES
-// Based on wilderness medicine standards (Wilderness Medical Society guidelines)
-// ═══════════════════════════════════════════════════════════════════════════════
-// Reference: Luks AM, et al. "Wilderness Medical Society Practice Guidelines for
-// the Prevention and Treatment of Acute Altitude Illness." Wilderness Environ Med. 2019
-const ALTITUDE_ZONES = [
-  {
-    id: 'sea-level',
-    name: 'Near Sea Level',
-    minFt: 0,
-    maxFt: 4000,
-    color: 'rgba(76, 175, 80, 0.12)',   // Green - safe zone
-    borderColor: '#4CAF50',
-    risk: 'none',
-    description: 'No altitude-related risk',
-    icon: '✓'
-  },
-  {
-    id: 'moderate',
-    name: 'Moderate Altitude',
-    minFt: 4000,
-    maxFt: 8000,
-    color: 'rgba(255, 193, 7, 0.12)',   // Yellow - mild caution
-    borderColor: '#FFC107',
-    risk: 'low',
-    description: 'Mild symptoms possible in sensitive individuals',
-    icon: '◐',
-    symptoms: ['Slight breathlessness on exertion', 'Possible mild headache'],
-    mitigation: 'Stay hydrated, pace yourself'
-  },
-  {
-    id: 'high',
-    name: 'High Altitude',
-    minFt: 8000,
-    maxFt: 12000,
-    color: 'rgba(255, 152, 0, 0.15)',   // Orange - AMS possible
-    borderColor: '#FF9800',
-    risk: 'moderate',
-    description: 'AMS common without acclimatization',
-    icon: '⚠️',
-    symptoms: ['Headache', 'Nausea', 'Fatigue', 'Dizziness', 'Sleep disturbance'],
-    mitigation: 'Ascend gradually (<1,600ft sleeping elevation gain/day), hydrate, consider Diamox'
-  },
-  {
-    id: 'very-high',
-    name: 'Very High Altitude',
-    minFt: 12000,
-    maxFt: 18000,
-    color: 'rgba(244, 67, 54, 0.18)',   // Red - serious risk
-    borderColor: '#F44336',
-    risk: 'high',
-    description: 'Significant AMS risk; HACE/HAPE possible',
-    icon: '🔺',
-    symptoms: ['Severe headache', 'Confusion', 'Ataxia', 'Persistent cough', 'Chest tightness'],
-    mitigation: 'Mandatory acclimatization, Diamox prophylaxis, descent if symptoms worsen'
-  }
-];
-
-// Get altitude zone for a given elevation
-function getAltitudeZone(elevationFt) {
-  return ALTITUDE_ZONES.find(z => elevationFt >= z.minFt && elevationFt < z.maxFt) || ALTITUDE_ZONES[0];
-}
-
-// DDG Team - Dan, Drew, Gunnar
-const DDG_TEAM = [
-  { id: 'dan', name: 'Dan', emoji: '🧔', role: 'Trail Boss', color: '#2E7D32' },
-  { id: 'drew', name: 'Drew', emoji: '🏔️', role: 'Navigator', color: '#1565C0' },
-  { id: 'gunnar', name: 'Gunnar', emoji: '⚡', role: 'Pace Setter', color: '#F57C00' }
-];
-
-// Day segment colors for visual distinction
-const DAY_COLORS = [
-  { fill: 'rgba(46, 125, 50, 0.15)', stroke: '#2E7D32' },   // Day 1 - Forest green
-  { fill: 'rgba(21, 101, 192, 0.15)', stroke: '#1565C0' },  // Day 2 - Mountain blue
-  { fill: 'rgba(245, 124, 0, 0.15)', stroke: '#F57C00' },   // Day 3 - Sunset orange
-  { fill: 'rgba(156, 39, 176, 0.15)', stroke: '#9C27B0' },  // Day 4 - Alpine purple
-  { fill: 'rgba(0, 150, 136, 0.15)', stroke: '#009688' },   // Day 5 - Vista teal
-  { fill: 'rgba(211, 47, 47, 0.15)', stroke: '#D32F2F' }    // Day 6 - Summit red
-];
-
-const OVERLAY_SECTION_ORDER = ['section-e', 'section-g', 'section-i', 'section-j'];
-const OVERLAY_COLORS = ['#C62828', '#6A1B9A', '#1565C0', '#EF6C00'];
-
-function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
-  const R = 6371000;
-  const dLat = deg2rad(lat2 - lat1);
-  const dLon = deg2rad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-}
-
-function deg2rad(deg) {
-  return deg * (Math.PI / 180);
-}
-
-// Calculate grade difficulty rating
-function getGradeClass(gradePercent) {
-  const absGrade = Math.abs(gradePercent);
-  if (absGrade < 5) return 'easy';
-  if (absGrade < 10) return 'moderate';
-  if (absGrade < 15) return 'steep';
-  return 'brutal';
-}
-
-function getGradeColor(gradePercent) {
-  const absGrade = Math.abs(gradePercent);
-  if (absGrade < 5) return '#4CAF50';
-  if (absGrade < 10) return '#FFC107';
-  if (absGrade < 15) return '#FF9800';
-  return '#F44336';
-}
+import ChartSVG from './ElevationProfileComponents/ChartSVG';
+import ReadoutBar from './ElevationProfileComponents/ReadoutBar';
+import DayLegend from './ElevationProfileComponents/DayLegend';
+import AltitudeLegend from './ElevationProfileComponents/AltitudeLegend';
+import {
+  MILES_TO_METERS,
+  METERS_TO_FEET,
+  ALTITUDE_ZONES,
+  getAltitudeZone,
+  DDG_TEAM,
+  DAY_COLORS,
+  OVERLAY_SECTION_ORDER,
+  OVERLAY_COLORS,
+  getDistanceFromLatLonInMeters,
+  getGradeClass,
+  getGradeColor
+} from './ElevationProfileComponents/utils';
 
 const ElevationProfile = ({ 
   hikingTrail, 
@@ -799,436 +698,36 @@ const ElevationProfile = ({
       {/* Main Profile Chart */}
       <div className="elevation-profile-container" ref={containerRef}>
         {hasProfile ? (
-          <svg
-            width="100%"
-            height="100%"
-            viewBox={`0 0 ${width} ${height}`}
-            preserveAspectRatio="xMidYMid meet"
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            className="elevation-svg"
-          >
-            <defs>
-              {/* Main gradient */}
-              <linearGradient id="elevationGradientDDG" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stopColor="#2E7D32" stopOpacity="0.6"/>
-                <stop offset="50%" stopColor="#4CAF50" stopOpacity="0.4"/>
-                <stop offset="100%" stopColor="#8BC34A" stopOpacity="0.1"/>
-              </linearGradient>
-              
-              {/* Day segment gradients */}
-              {DAY_COLORS.map((colors, idx) => (
-                <linearGradient key={`dayGrad${idx}`} id={`dayGradient${idx}`} x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stopColor={colors.stroke} stopOpacity="0.3"/>
-                  <stop offset="100%" stopColor={colors.stroke} stopOpacity="0.05"/>
-                </linearGradient>
-              ))}
-              
-              {/* Altitude zone pattern for visual distinction */}
-              <pattern id="altitudeHatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
-                <line x1="0" y1="0" x2="0" y2="6" stroke="currentColor" strokeWidth="1" opacity="0.3"/>
-              </pattern>
-              
-              {/* Glow filter for hover */}
-              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-              
-              {/* Drop shadow for markers */}
-              <filter id="markerShadow" x="-50%" y="-50%" width="200%" height="200%">
-                <feDropShadow dx="0" dy="2" stdDeviation="2" floodOpacity="0.3"/>
-              </filter>
-            </defs>
-            
-            {/* Altitude Sickness Risk Zones - Background bands */}
-            <g className="altitude-zones">
-              {ALTITUDE_ZONES.map((zone) => {
-                // Only render zones that intersect with our elevation range
-                const zoneTop = Math.min(zone.maxFt, chartMaxElevation + 500);
-                const zoneBottom = Math.max(zone.minFt, chartMinElevation - 200);
-                if (zoneTop <= zoneBottom) return null;
-                
-                const y1 = yScale(zoneTop);
-                const y2 = yScale(zoneBottom);
-                const zoneHeight = y2 - y1;
-                
-                if (zoneHeight < 5) return null; // Skip tiny zones
-                
-                return (
-                  <g key={zone.id} className={`altitude-zone altitude-zone--${zone.risk}`}>
-                    {/* Zone background band */}
-                    <rect
-                      x={margin.left}
-                      y={y1}
-                      width={width - margin.left - margin.right}
-                      height={zoneHeight}
-                      fill={zone.color}
-                      stroke="none"
-                    />
-                    
-                    {/* Zone boundary line at top */}
-                    {zone.minFt > minElevation - 200 && (
-                      <line
-                        x1={margin.left}
-                        y1={yScale(zone.minFt)}
-                        x2={width - margin.right}
-                        y2={yScale(zone.minFt)}
-                        stroke={zone.borderColor}
-                        strokeWidth="1.5"
-                        strokeDasharray="8,4"
-                        opacity="0.6"
-                      />
-                    )}
-                    
-                    {/* Zone label on right side */}
-                    <g transform={`translate(${width - margin.right + 5}, ${(y1 + y2) / 2})`}>
-                      <text
-                        x="0"
-                        y="0"
-                        fontSize="9"
-                        fontWeight="600"
-                        fill={zone.borderColor}
-                        dominantBaseline="middle"
-                        opacity="0.9"
-                      >
-                        {zone.icon} {zone.risk !== 'none' ? zone.risk.toUpperCase() : ''}
-                      </text>
-                    </g>
-                  </g>
-                );
-              })}
-            </g>
-            
-            {/* Background grid */}
-            <g className="elevation-grid">
-              {yTicks.map((tick) => (
-                <g key={`y-${tick}`}>
-                  <line
-                    x1={margin.left}
-                    y1={yScale(tick)}
-                    x2={width - margin.right}
-                    y2={yScale(tick)}
-                    stroke="#e0e0e0"
-                    strokeDasharray="4,4"
-                    strokeWidth="1"
-                  />
-                  <text
-                    x={margin.left - 8}
-                    y={yScale(tick)}
-                    textAnchor="end"
-                    alignmentBaseline="middle"
-                    fontSize="11"
-                    fill="#666"
-                    fontWeight="500"
-                  >
-                    {tick.toLocaleString()}'
-                  </text>
-                </g>
-              ))}
-              {xTicks.map((tick) => (
-                <g key={`x-${tick}`}>
-                  <line
-                    x1={xScale(tick)}
-                    y1={margin.top}
-                    x2={xScale(tick)}
-                    y2={height - margin.bottom}
-                    stroke="#e8e8e8"
-                    strokeWidth="1"
-                  />
-                  <text
-                    x={xScale(tick)}
-                    y={height - margin.bottom + 20}
-                    textAnchor="middle"
-                    fontSize="11"
-                    fill="#666"
-                    fontWeight="500"
-                  >
-                    {tick}
-                  </text>
-                </g>
-              ))}
-            </g>
-            
-            {/* Day segment backgrounds */}
-            {daySegments.map((seg, idx) => {
-              const segPoints = seg.points;
-              if (!segPoints || segPoints.length < 2) return null;
-              
-              const segPath = `
-                M ${xScale(seg.startMile)} ${height - margin.bottom}
-                L ${segPoints.map((d) => `${xScale(d.dist)} ${yScale(d.ele)}`).join(' L ')}
-                L ${xScale(seg.endMile)} ${height - margin.bottom}
-                Z
-              `;
-              
-              return (
-                <g key={`seg-${idx}`} className="day-segment">
-                  <path
-                    d={segPath}
-                    fill={`url(#dayGradient${(seg.day - 1) % DAY_COLORS.length})`}
-                    stroke="none"
-                    opacity="0.8"
-                  />
-                  {/* Day label at top */}
-                  <text
-                    x={(seg.x1 + seg.x2) / 2}
-                    y={margin.top - 8}
-                    textAnchor="middle"
-                    fontSize="10"
-                    fontWeight="600"
-                    fill={seg.color.stroke}
-                  >
-                    Day {seg.day}
-                  </text>
-                </g>
-              );
-            })}
-            
-            {/* Main elevation area */}
-            <path 
-              d={areaPath} 
-              fill="url(#elevationGradientDDG)" 
-              stroke="none"
-              className="elevation-area"
-            />
-
-            {/* Comparison overlays */}
-            {overlayPaths.map((overlay) => (
-              <g key={`overlay-${overlay.id}`} className="elevation-overlay-line">
-                <path
-                  d={overlay.path}
-                  fill="none"
-                  stroke={overlay.color}
-                  strokeWidth="2"
-                  strokeDasharray="10,6"
-                  opacity="0.7"
-                />
-                <circle
-                  cx={overlay.labelX}
-                  cy={overlay.labelY}
-                  r="4"
-                  fill="#fff"
-                  stroke={overlay.color}
-                  strokeWidth="2"
-                />
-                <text
-                  x={Math.min(overlay.labelX + 8, width - margin.right)}
-                  y={overlay.labelY - 6}
-                  fontSize="10"
-                  fontWeight="700"
-                  fill={overlay.color}
-                  className="overlay-path-label"
-                >
-                  {overlay.label}
-                </text>
-              </g>
-            ))}
-            
-            {/* Elevation line with gradient based on grade */}
-            <path 
-              d={linePath} 
-              fill="none" 
-              stroke="#2E7D32" 
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="elevation-line"
-            />
-            
-            {/* Axes */}
-            <line 
-              x1={margin.left} 
-              y1={height - margin.bottom} 
-              x2={width - margin.right} 
-              y2={height - margin.bottom} 
-              stroke="#999" 
-              strokeWidth="1.5"
-            />
-            <line 
-              x1={margin.left} 
-              y1={margin.top} 
-              x2={margin.left} 
-              y2={height - margin.bottom} 
-              stroke="#999" 
-              strokeWidth="1.5"
-            />
-            
-            {/* Axis labels */}
-            <text
-              x={width / 2}
-              y={height - 5}
-              textAnchor="middle"
-              fontSize="12"
-              fill="#666"
-              fontWeight="600"
-            >
-              Distance (miles)
-            </text>
-            <text
-              x={15}
-              y={height / 2}
-              textAnchor="middle"
-              fontSize="12"
-              fill="#666"
-              fontWeight="600"
-              transform={`rotate(-90, 15, ${height / 2})`}
-            >
-              Elevation (ft)
-            </text>
-            
-            {/* Camp Markers */}
-            {allMarkers.map((marker) => (
-              <g 
-                key={marker.id} 
-                className={`camp-marker-group ${hoveredCamp === marker.id ? 'is-hovered' : ''}`}
-                onMouseEnter={() => setHoveredCamp(marker.id)}
-                onMouseLeave={() => setHoveredCamp(null)}
-                filter={hoveredCamp === marker.id ? 'url(#glow)' : undefined}
-              >
-                {/* Vertical line to base */}
-                <line
-                  x1={marker.cx}
-                  y1={marker.cy}
-                  x2={marker.cx}
-                  y2={height - margin.bottom}
-                  stroke={marker.color}
-                  strokeWidth="1"
-                  strokeDasharray="3,3"
-                  opacity="0.5"
-                />
-                
-                {/* Marker circle */}
-                <circle 
-                  cx={marker.cx} 
-                  cy={marker.cy} 
-                  r={hoveredCamp === marker.id ? 8 : (marker.icon ? 5 : 6)}
-                  fill="#fff" 
-                  stroke={marker.color} 
-                  strokeWidth={marker.icon ? "2" : "3"}
-                  filter="url(#markerShadow)"
-                  className="camp-marker-circle"
-                  style={{ transition: 'r 0.2s ease, transform 0.2s ease' }}
-                />
-                
-                {/* Marker icon */}
-                <text
-                  x={marker.cx}
-                  y={Math.max(14, marker.cy - 16)}
-                  textAnchor="middle"
-                  fontSize={marker.icon ? "12" : "14"}
-                >
-                  {marker.icon || (marker.type === 'Trailhead' ? '🚗' : marker.type === 'Finish' ? '🏁' : '⛺')}
-                </text>
-                
-                {/* Tooltip on hover */}
-                {hoveredCamp === marker.id && (() => {
-                  const tooltipY = Math.max(5, marker.cy - 70);
-                  return (
-                    <g className="camp-tooltip">
-                      <rect
-                        x={marker.cx - 80}
-                        y={tooltipY}
-                        width="160"
-                        height="50"
-                        rx="8"
-                        fill="rgba(255,255,255,0.95)"
-                        stroke={marker.color}
-                        strokeWidth="2"
-                        filter="url(#markerShadow)"
-                      />
-                      <text
-                        x={marker.cx}
-                        y={tooltipY + 18}
-                        textAnchor="middle"
-                        fontSize="11"
-                        fontWeight="700"
-                        fill="#333"
-                      >
-                        {marker.name?.length > 20 ? marker.name.slice(0, 18) + '…' : marker.name}
-                      </text>
-                      <text
-                        x={marker.cx}
-                        y={tooltipY + 32}
-                        textAnchor="middle"
-                        fontSize="10"
-                        fill="#666"
-                      >
-                        Mile {marker.mile.toFixed(1)} · {formatElevation(marker.elevation)}
-                      </text>
-                    </g>
-                  );
-                })()}
-              </g>
-            ))}
-            
-            {/* Hover indicator */}
-            {hoverX && hoverMeta && (
-              <g className="hover-indicator">
-                <line 
-                  x1={hoverX} 
-                  y1={margin.top} 
-                  x2={hoverX} 
-                  y2={height - margin.bottom}
-                  stroke="#FF5722" 
-                  strokeWidth="2" 
-                  strokeDasharray="6,4"
-                  opacity="0.8"
-                />
-                <circle
-                  cx={hoverX}
-                  cy={yScale(hoverMeta.elevation)}
-                  r="6"
-                  fill="#FF5722"
-                  stroke="#fff"
-                  strokeWidth="2"
-                  filter="url(#glow)"
-                />
-                
-                {/* Hover data box */}
-                <g transform={`translate(${hoverX > width / 2 ? hoverX - 140 : hoverX + 10}, ${Math.min(yScale(hoverMeta.elevation) - 20, height - margin.bottom - 80)})`}>
-                  <rect
-                    x="0"
-                    y="0"
-                    width="130"
-                    height="70"
-                    rx="6"
-                    fill="rgba(40,40,40,0.92)"
-                    stroke="#FF5722"
-                    strokeWidth="1"
-                  />
-                  <text x="10" y="18" fontSize="11" fontWeight="700" fill="#fff">
-                    Mile {hoverMeta.mile.toFixed(1)}
-                  </text>
-                  <text x="10" y="33" fontSize="10" fill="#ccc">
-                    Elev: {formatElevation(hoverMeta.elevation)}
-                  </text>
-                  <text x="10" y="48" fontSize="10" fill={getGradeColor(hoverMeta.grade)}>
-                    Grade: {formatGrade(hoverMeta.grade)} ({getGradeClass(hoverMeta.grade)})
-                  </text>
-                  <text x="10" y="63" fontSize="9" fill="#aaa">
-                    ↑{Math.round(hoverMeta.cumulativeGain)}' ↓{Math.round(hoverMeta.cumulativeLoss)}'
-                  </text>
-                  {/* Altitude zone indicator */}
-                  {(() => {
-                    const zone = getAltitudeZone(hoverMeta.elevation);
-                    if (zone.risk === 'none') return null;
-                    return (
-                      <>
-                        <rect x="0" y="72" width="130" height="18" rx="0" ry="0" fill={zone.borderColor} opacity="0.15"/>
-                        <text x="10" y="84" fontSize="9" fontWeight="600" fill={zone.borderColor}>
-                          {zone.icon} {zone.name}
-                        </text>
-                      </>
-                    );
-                  })()}
-                </g>
-              </g>
-            )}
-          </svg>
+          <ChartSVG
+            width={width}
+            height={height}
+            margin={margin}
+            xScale={xScale}
+            yScale={yScale}
+            chartMaxElevation={chartMaxElevation}
+            chartMinElevation={chartMinElevation}
+            minElevation={minElevation}
+            yTicks={yTicks}
+            xTicks={xTicks}
+            hoverX={hoverX}
+            hoverMeta={hoverMeta}
+            hoveredCamp={hoveredCamp}
+            allMarkers={allMarkers}
+            daySegments={daySegments}
+            handleMouseMove={handleMouseMove}
+            handleMouseLeave={handleMouseLeave}
+            setHoveredCamp={setHoveredCamp}
+            formatElevation={formatElevation}
+            formatGrade={formatGrade}
+            getGradeColor={getGradeColor}
+            getGradeClass={getGradeClass}
+            getAltitudeZone={getAltitudeZone}
+            DAY_COLORS={DAY_COLORS}
+            ALTITUDE_ZONES={ALTITUDE_ZONES}
+            overlayPaths={overlayPaths}
+            linePath={linePath}
+            areaPath={areaPath}
+          />
         ) : (
           <div className="elevation-profile-empty">
             <p className="note">Loading Section O elevation data (Mile 1420.7 → 1472.7)...</p>
@@ -1237,90 +736,19 @@ const ElevationProfile = ({
       </div>
       
       {/* Hover readout bar */}
-      <div className="elevation-readout-bar">
-                {hoverMeta ? (
-          <>
-            <span className="readout-item">
-              <strong>Mile {hoverMeta.mile.toFixed(1)}</strong>
-            </span>
-            <span className="readout-divider">|</span>
-            <span className="readout-item">
-              {formatElevation(hoverMeta.elevation)}
-            </span>
-            <span className="readout-divider">|</span>
-            <span className="readout-item" style={{ color: getGradeColor(hoverMeta.grade) }}>
-              {formatGrade(hoverMeta.grade)} grade
-            </span>
-            <span className="readout-divider">|</span>
-            <span className="readout-item readout-cumulative">
-              ↑ {Math.round(hoverMeta.cumulativeGain).toLocaleString()}' gained
-            </span>
-            {(() => {
-              const zone = getAltitudeZone(hoverMeta.elevation);
-              if (zone.risk === 'none') return null;
-              return (
-                <>
-                  <span className="readout-divider">|</span>
-                  <span className="readout-item readout-altitude" style={{ color: zone.borderColor }}>
-                    {zone.icon} {zone.name}
-                  </span>
-                </>
-              );
-            })()}
-          </>
-        ) : (
-          <span className="readout-prompt">
-            🖱️ Hover over the profile to see grade, elevation, and sync with the map
-          </span>
-        )}
-      </div>
+      <ReadoutBar
+        hoverMeta={hoverMeta}
+        formatElevation={formatElevation}
+        formatGrade={formatGrade}
+        getGradeColor={getGradeColor}
+        getAltitudeZone={getAltitudeZone}
+      />
 
       {/* Day segment legend */}
-      <div className="elevation-day-legend">
-        {daySegments.map((seg) => (
-          <div 
-            key={`legend-${seg.day}`} 
-            className="day-legend-item"
-            style={{ '--day-color': seg.color.stroke }}
-          >
-            <span className="day-legend-marker" style={{ background: seg.color.stroke }}></span>
-            <span className="day-legend-label">Day {seg.day}</span>
-            <span className="day-legend-name">{seg.name}</span>
-          </div>
-        ))}
-      </div>
+      <DayLegend daySegments={daySegments} />
 
       {/* Altitude Zone Legend */}
-      <div className="altitude-zone-legend">
-        <div className="altitude-legend-header">
-          <span className="altitude-legend-icon">🏔️</span>
-          <span className="altitude-legend-title">Altitude Physiology Zones</span>
-          <span className="altitude-legend-note">(Wilderness Medical Society guidelines)</span>
-        </div>
-        <div className="altitude-legend-zones">
-          {ALTITUDE_ZONES.filter(z => z.maxFt <= 12000).map((zone) => (
-            <div key={zone.id} className={`altitude-legend-item altitude-legend-item--${zone.risk}`}>
-              <span 
-                className="altitude-legend-swatch" 
-                style={{ backgroundColor: zone.color, borderColor: zone.borderColor }}
-              ></span>
-              <span className="altitude-legend-range">
-                {zone.minFt.toLocaleString()}'–{zone.maxFt.toLocaleString()}'
-              </span>
-              <span className="altitude-legend-name">{zone.name}</span>
-              {zone.risk !== 'none' && (
-                <span className="altitude-legend-risk" style={{ color: zone.borderColor }}>
-                  {zone.icon} {zone.description}
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="altitude-section-context">
-          <span className="context-badge context-badge--safe">✓ Section O Peak: 5,850' (Moderate Altitude)</span>
-          <span className="context-detail">Low AMS risk for most hikers. Stay hydrated, watch for headache/nausea. High Sierra (13,000'+) requires acclimatization.</span>
-        </div>
-      </div>
+      <AltitudeLegend />
 
       <p className="elevation-source-note">
         📊 Elevation from Garmin COURSE_334289912.gpx · Cross-checked with Halfmile PCT dataset · Grade difficulty: 
