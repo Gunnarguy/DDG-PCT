@@ -100,4 +100,12 @@ describe('xmlEscape', () => {
   it('should return string without xml characters unaffected', () => {
     expect(xmlEscape('hello world')).toBe('hello world');
   });
+
+  it('should handle edge cases correctly', () => {
+    expect(xmlEscape('')).toBe('');
+    expect(xmlEscape('<<>>')).toBe('&lt;&lt;&gt;&gt;');
+    expect(xmlEscape('<test>')).toBe('&lt;test&gt;');
+    expect(xmlEscape('<>&\'"')).toBe('&lt;&gt;&amp;&apos;&quot;');
+    expect(xmlEscape('  <  ')).toBe('  &lt;  ');
+  });
 });
