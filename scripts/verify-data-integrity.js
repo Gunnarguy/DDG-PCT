@@ -9,7 +9,7 @@
  *   - Elevation: 2,300 ft → 3,600 ft
  */
 
-const hikeData = require('../pct-hike-viz/src/hike_data.json');
+const hikeData = require('../pct-hike-viz/public/data/hike_data.json');
 
 // Haversine distance calculation
 function haversine(lat1, lon1, lat2, lon2) {
@@ -45,8 +45,6 @@ for(let i=1; i<route.length; i++) {
   );
 }
 
-console.log('📏 DISTANCE:');
-console.log(`   Calculated: ${totalMiles.toFixed(2)} miles`);
 console.log(`   Expected:   78-90 miles (per Original-DDG-PCT-PDF.txt)`);
 console.log(`   ✓ ${totalMiles >= 78 && totalMiles <= 90 ? 'PASS' : 'FAIL'}\n`);
 
