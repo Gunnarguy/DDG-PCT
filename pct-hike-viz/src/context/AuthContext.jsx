@@ -57,30 +57,36 @@ export function AuthProvider({ children }) {
 
     try {
       let teamProfile = await getTeamProfile();
-      
+
       // Fallback if Gunnar's profile is missing from the database
       const userEmail = authUser.email?.trim().toLowerCase();
-      if (!teamProfile && (userEmail === 'gunnarguy@me.com' || userEmail === 'gunnarguy@aol.com')) {
+      if (
+        !teamProfile &&
+        (userEmail === "gunnarguy@me.com" || userEmail === "gunnarguy@aol.com")
+      ) {
         teamProfile = {
           id: authUser.id,
-          name: 'Gunnar',
+          name: "Gunnar",
           email: authUser.email,
-          role: 'admin',
-          hiker_id: 'gunnar'
+          role: "admin",
+          hiker_id: "gunnar",
         };
       }
-      
+
       setProfile(teamProfile);
     } catch (err) {
       console.error("Failed to fetch team profile:", err);
       const userEmail = authUser.email?.trim().toLowerCase();
-      if (userEmail === 'gunnarguy@me.com' || userEmail === 'gunnarguy@aol.com') {
+      if (
+        userEmail === "gunnarguy@me.com" ||
+        userEmail === "gunnarguy@aol.com"
+      ) {
         setProfile({
           id: authUser.id,
-          name: 'Gunnar',
+          name: "Gunnar",
           email: authUser.email,
-          role: 'admin',
-          hiker_id: 'gunnar'
+          role: "admin",
+          hiker_id: "gunnar",
         });
       } else {
         setProfile(null);
@@ -95,23 +101,6 @@ export function AuthProvider({ children }) {
 
     const initAuth = async () => {
       try {
-        if (import.meta.env.DEV) {
-          const savedMock = localStorage.getItem("pct-hike-viz::mock-user");
-          if (savedMock) {
-            try {
-              const { user: mockUser, profile: mockProfile } = JSON.parse(savedMock);
-              if (mounted) {
-                setUser(mockUser);
-                setProfile(mockProfile);
-                setLoading(false);
-              }
-              return;
-            } catch {
-              localStorage.removeItem("pct-hike-viz::mock-user");
-            }
-          }
-        }
-
         if (!supabaseReady) {
           if (mounted) {
             setError(supabaseConfigError);
@@ -315,9 +304,9 @@ export function AuthProvider({ children }) {
     if (!isAdminEmail) {
       try {
         const { data, error: allowlistError } = await supabase
-          .from('allowed_emails')
-          .select('email')
-          .ilike('email', normalizedEmail)
+          .from("allowed_emails")
+          .select("email")
+          .ilike("email", normalizedEmail)
           .maybeSingle();
 
         if (allowlistError || !data) {
@@ -327,7 +316,10 @@ export function AuthProvider({ children }) {
           return { success: false, error: msg };
         }
       } catch (err) {
-        console.warn("Allowlist check failed, proceeding to attempt sign in:", err);
+        console.warn(
+          "Allowlist check failed, proceeding to attempt sign in:",
+          err,
+        );
         // If we can't check the allowlist (e.g., network error or permissions),
         // we'll still let Supabase try, but this prevents most accidental signups.
       }
@@ -423,14 +415,6 @@ export function AuthProvider({ children }) {
    */
   const signOut = async () => {
     setError(null);
-    const isMock = user?.isMock;
-    localStorage.removeItem("pct-hike-viz::mock-user");
-
-    if (isMock) {
-      setUser(null);
-      setProfile(null);
-      return { success: true };
-    }
 
     // Add timeout protection
     const timeoutPromise = new Promise((_, reject) => {
@@ -458,40 +442,6 @@ export function AuthProvider({ children }) {
       console.warn("Sign out timed out, cleared local state anyway:", error);
       return { success: true };
     }
-  };
-
-  /**
-   * Dev bypass login for local development
-   */
-  const devBypassLogin = (hikerId) => {
-    if (!import.meta.env.DEV) return;
-    const nameMap = {
-      gunnar: { name: 'Gunnar', email: 'gunnarguy@me.com', role: 'admin' },
-      dan: { name: 'Dan', email: 'dan@example.com', role: 'architect' },
-      drew: { name: 'Drew', email: 'drew@example.com', role: 'navigator' }
-    };
-    const hiker = nameMap[hikerId] || nameMap.gunnar;
-
-    const mockUser = {
-      id: `mock-id-${hikerId}`,
-      email: hiker.email,
-      user_metadata: { name: hiker.name },
-      isMock: true
-    };
-
-    const mockProfile = {
-      id: `mock-id-${hikerId}`,
-      name: hiker.name,
-      email: hiker.email,
-      role: hiker.role,
-      hiker_id: hikerId
-    };
-
-    localStorage.setItem("pct-hike-viz::mock-user", JSON.stringify({ user: mockUser, profile: mockProfile }));
-    setUser(mockUser);
-    setProfile(mockProfile);
-    setError(null);
-    setAuthUnavailable(false);
   };
 
   /**
@@ -546,8 +496,16 @@ export function AuthProvider({ children }) {
     error,
     authUnavailable,
     isAuthenticated: !!user,
-    isTeamMember: !!profile || ["gunnarguy@me.com", "gunnarguy@aol.com"].includes(user?.email?.trim().toLowerCase() ?? ""),
-    isAdmin: profile?.role === "admin" || ["gunnarguy@me.com", "gunnarguy@aol.com"].includes(user?.email?.trim().toLowerCase() ?? ""),
+    isTeamMember:
+      !!profile ||
+      ["gunnarguy@me.com", "gunnarguy@aol.com"].includes(
+        user?.email?.trim().toLowerCase() ?? "",
+      ),
+    isAdmin:
+      profile?.role === "admin" ||
+      ["gunnarguy@me.com", "gunnarguy@aol.com"].includes(
+        user?.email?.trim().toLowerCase() ?? "",
+      ),
     syncStatus,
     teamRoster,
 
@@ -556,7 +514,6 @@ export function AuthProvider({ children }) {
     signInWithGoogle,
     signOut,
     getDisplayInfo,
-    devBypassLogin,
 
     // Utilities
     supabase,
