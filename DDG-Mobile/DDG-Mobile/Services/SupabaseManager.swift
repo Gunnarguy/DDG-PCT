@@ -51,6 +51,11 @@ final class SupabaseManager {
         return URL(string: "\(config.url)/functions/v1/aqi-proxy")
     }
 
+    var trailConditionsURL: URL? {
+        guard !config.url.isEmpty else { return nil }
+        return URL(string: "\(config.url)/functions/v1/trail-conditions")
+    }
+
     // MARK: - Table Names (match combined.sql)
 
     enum Table {
@@ -60,6 +65,7 @@ final class SupabaseManager {
         static let allowedEmails = "allowed_emails"
         static let accessRequests = "access_requests"
         static let teamProfiles = "ddg_team_profiles"
+        static let trailConditionSnapshots = "trail_condition_snapshots"
     }
 
     // MARK: - Encodable Row Structs (for insert/upsert)

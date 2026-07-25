@@ -13,9 +13,9 @@ struct SafetyView: View {
                 
                 ScrollView {
                     VStack(spacing: 20) {
-                        // Wildfire Link
+                        // Unified daily route-condition monitor
                         NavigationLink {
-                            WildfireMonitorView()
+                            TrailConditionsView()
                         } label: {
                             HStack {
                                 Image(systemName: "flame.fill")
@@ -23,10 +23,10 @@ struct SafetyView: View {
                                     .foregroundStyle(.red)
                                     .shadow(color: .red.opacity(0.6), radius: 8)
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("Wildfire & AQI Monitor")
+                                    Text("Daily Trail Conditions")
                                         .font(.headline.bold())
                                         .foregroundStyle(.primary)
-                                    Text("Live satellite scans and EPA air quality")
+                                    Text("Water · closures · crossings · fire · smoke")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }

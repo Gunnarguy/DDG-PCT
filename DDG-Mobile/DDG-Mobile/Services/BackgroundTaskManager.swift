@@ -72,6 +72,7 @@ final class BackgroundTaskManager {
         let syncTask = Task {
             await SyncEngine.shared.syncPendingChanges(modelContext: context)
             await SyncEngine.shared.pullRemoteChanges(modelContext: context)
+            _ = await TrailConditionsService.shared.refreshForBackgroundTask()
         }
 
         task.expirationHandler = {

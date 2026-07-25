@@ -22,10 +22,14 @@ struct ItineraryView: View {
                     )
                 } else {
                     ScrollView {
-                        VStack(alignment: .leading, spacing: 0) {
+                        VStack(alignment: .leading, spacing: 16) {
+                            TerrainOverviewCard()
+
                             ForEach(timelineDays) { tDay in
                                 dayTimelineBlock(tDay)
                             }
+
+                            ComparableHikerContextView()
                         }
                         .padding()
                     }
@@ -207,7 +211,7 @@ struct ItineraryView: View {
                     }
                     
                     // Footer Stats
-                    DayStatsRow(camps: tDay.camps, trailPoints: trailPoints, color: dayColor)
+                    DayStatsRow(day: tDay.hikeDayIndex ?? 0, camps: tDay.camps, color: dayColor)
                         .padding(.top, 8)
                 }
             }
@@ -326,27 +330,43 @@ struct ItineraryView: View {
 // MARK: - Day Stats Row
 
 private struct DayStatsRow: View {
+    let day: Int
     let camps: [CampSite]
-    let trailPoints: [TrailPoint]
     let color: Color
 
-    private var totalDistance: Double { camps.reduce(0) { $0 + $1.distance } }
-
-    private var elevationGain: Double {
-        guard let camp = camps.first else { return 0 }
-        return TrailConstants.elevationGain(for: camp.day)
-    }
+    private var profile: TrailDayProfile? { TrailConstants.profile(for: day) }
+    private var totalDistance: Double { profile?.miles ?? camps.reduce(0) { $0 + $1.distance } }
 
     var body: some View {
-        HStack {
-            statItem(icon: "figure.hiking", value: String(format: "%.1f", totalDistance), unit: "mi")
-            Spacer()
-            if elevationGain > 0 {
-                statItem(icon: "arrow.up.right", value: String(format: "+%.0f", elevationGain), unit: "ft")
-                Spacer()
+        VStack(alignment: .leading, spacing: 12) {
+            LazyVGrid(columns: [
+                GridItem(.flexible(), alignment: .leading),
+                GridItem(.flexible(), alignment: .leading)
+            ], spacing: 10) {
+                statItem(icon: "figure.hiking", value: String(format: "%.1f", totalDistance), unit: "miles")
+                statItem(icon: "arrow.up.right", value: String(format: "+%.0f", profile?.gainFeet ?? 0), unit: "feet")
+                statItem(icon: "arrow.down.right", value: String(format: "−%.0f", profile?.lossFeet ?? 0), unit: "feet")
+                statItem(icon: "gauge.with.dots.needle.50percent", value: String(format: "%.1f", profile?.effortMiles ?? totalDistance), unit: "effort mi")
             }
-            let estHours = TrailConstants.estimatedTime(miles: totalDistance, gainFeet: elevationGain)
-            statItem(icon: "clock.fill", value: String(format: "%.1f", estHours), unit: "hrs")
+
+            if let profile {
+                Divider()
+
+                HStack {
+                    Label("Difficulty #\(profile.difficultyRank) of 9", systemImage: "chart.bar.fill")
+                    Spacer()
+                    Text("\(profile.kneeLoad.rawValue.capitalized) knee load")
+                        .foregroundStyle(kneeColor(profile.kneeLoad))
+                }
+                .font(.caption.bold())
+
+                Text("Net \(signed(profile.netFeet)) ft · high point \(profile.highPointFeet.formatted(.number.precision(.fractionLength(0)))) ft · \(profile.descentPerMile.formatted(.number.precision(.fractionLength(0)))) ft descent/mi")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+
+                Text(profile.note)
+                    .font(.caption)
+            }
         }
         .padding()
         .background(color.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
@@ -365,6 +385,107 @@ private struct DayStatsRow: View {
                 .font(.caption2.bold())
                 .foregroundStyle(.secondary)
         }
+    }
+
+    private func signed(_ value: Double) -> String {
+        String(format: value >= 0 ? "+%.0f" : "−%.0f", abs(value))
+    }
+
+    private func kneeColor(_ level: KneeLoadLevel) -> Color {
+        switch level {
+        case .low: .green
+        case .moderate: .orange
+        case .high, .veryHigh: .red
+        }
+    }
+}
+
+// MARK: - Terrain Context
+
+private struct TerrainOverviewCard: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("Route Reality Check", systemImage: "mountain.2.fill")
+                .font(.headline)
+
+            Text("This is a 54.2-mile trip—not a flat 6.2 miles every day.")
+                .font(.subheadline.bold())
+
+            HStack {
+                overviewValue(String(format: "%.1f", TrailConstants.totalMiles), "miles")
+                Spacer()
+                overviewValue("+\(TrailConstants.totalGainFeet.formatted(.number.precision(.fractionLength(0))))", "gain ft")
+                Spacer()
+                overviewValue("−\(TrailConstants.totalLossFeet.formatted(.number.precision(.fractionLength(0))))", "loss ft")
+            }
+
+            Text("Day 2 is the hardest climbing day. Day 8 is the most demanding descent and the biggest knee-risk day. “Effort miles” combine distance, climbing, and descending only to compare days—they are not promised hiking times.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .background(.blue.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(.blue.opacity(0.25)))
+    }
+
+    private func overviewValue(_ value: String, _ label: String) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(value)
+                .font(.system(.title3, design: .rounded).bold())
+            Text(label)
+                .font(.caption2.bold())
+                .foregroundStyle(.secondary)
+        }
+    }
+}
+
+private struct ComparableHikerContextView: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("What Other Hikers Actually Did", systemImage: "person.2.fill")
+                .font(.headline)
+
+            Text("These are context—not promises. Pack weight, conditioning, heat, smoke, water carries, trail damage, and stopping time can change the result substantially.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            comparison(
+                "Cabin Creek → Ash Camp",
+                detail: "15 miles and about +2,000 ft in just over 6 hours with a day pack.",
+                url: URL(string: "https://trailhiker.wordpress.com/2017/11/09/pct-section-o-cabin-creek-to-ash-camp/")!
+            )
+            comparison(
+                "Bartle Gap → Ash Camp",
+                detail: "26.4 miles, about +2,400/−5,100 ft in roughly 11.5 hours; the author said they would not repeat it.",
+                url: URL(string: "https://trailhiker.wordpress.com/2018/06/27/pct-section-o-bartle-gap-to-ash-camp/")!
+            )
+            comparison(
+                "2003 PCT journal",
+                detail: "A thru-hiker logged approximately 17, 28, and 23 miles on successive days in this broader section—useful only as a high-conditioning comparison.",
+                url: URL(string: "https://www.bedore.org/2003_PCT_August.html")!
+            )
+        }
+        .padding()
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+    }
+
+    private func comparison(_ title: String, detail: String, url: URL) -> some View {
+        Link(destination: url) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(title)
+                        .font(.subheadline.bold())
+                    Text(detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.leading)
+                }
+                Spacer()
+                Image(systemName: "arrow.up.right.square")
+                    .font(.caption)
+            }
+        }
+        .buttonStyle(.plain)
     }
 }
 
