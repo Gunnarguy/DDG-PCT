@@ -7,7 +7,12 @@ import {
   satelliteDevices,
 } from "../data/connectivityData";
 import { ddgTeam, sectionOMeta, tripStats } from "../data/planContent";
-import { formatTripDate, tripFacts } from "../data/tripFacts";
+import {
+  comparableHikerEvidence,
+  formatTripDate,
+  primaryItinerary,
+  tripFacts,
+} from "../data/tripFacts";
 import GearPlanner from "./GearPlanner";
 import OpsLog from "./OpsLog";
 import SourceChips from "./SourceChips";
@@ -805,7 +810,11 @@ function Sidebar({
           {campPoints.slice(1).map((camp, idx) => {
             const day = camp.properties.day;
             const prevCamp = campPoints[idx];
-            const dist = camp.properties.mile - prevCamp.properties.mile;
+            const leg = primaryItinerary.find((item) => item.day === day);
+            const dist =
+              leg?.distance ?? camp.properties.mile - prevCamp.properties.mile;
+            const elevation = leg?.elevation;
+            const terrainLoad = leg?.terrainLoad;
             return (
               <button
                 type="button"
@@ -824,7 +833,8 @@ function Sidebar({
                       }}
                     >
                       {formatTripDate(
-                        `2026-${day <= 3 ? `08-${28 + day}` : `09-0${day - 3}`}`,
+                        leg?.date ??
+                          `2026-${day <= 3 ? `08-${28 + day}` : `09-0${day - 3}`}`,
                       )} · Day {day}
                     </span>
                   </div>
@@ -834,12 +844,28 @@ function Sidebar({
                   </div>
                 </div>
                 <h3 className="day-card__route">
-                  {prevCamp.properties.name} → {camp.properties.name}
+                  {leg?.from ?? prevCamp.properties.name} →{" "}
+                  {leg?.to ?? camp.properties.name}
                 </h3>
                 <p className="day-card__terrain">
-                  GPS-balanced PCT leg · overnight waypoint is provisional
+                  {elevation
+                    ? `↑ ${elevation.gain.toLocaleString()} ft · ↓ ${elevation.loss.toLocaleString()} ft · net ${terrainLoad.netFeet >= 0 ? "+" : ""}${terrainLoad.netFeet.toLocaleString()} ft`
+                    : "GPS-balanced PCT leg"}
                 </p>
                 <div className="day-card__indicators">
+                  {terrainLoad && (
+                    <>
+                      <span className="indicator-chip">
+                        Effort #{terrainLoad.effortRank} · {terrainLoad.effortMiles} effort-mi
+                      </span>
+                      <span
+                        className={`indicator-chip knee-load knee-load--${terrainLoad.kneeLoad}`}
+                      >
+                        Knees: {terrainLoad.kneeLoad.replace("-", " ")} · ↓{" "}
+                        {terrainLoad.descentPerMile} ft/mi
+                      </span>
+                    </>
+                  )}
                   <span
                     className="indicator-chip indicator-water"
                     title="Water sources"
@@ -847,7 +873,19 @@ function Sidebar({
                     💧 Check water map
                   </span>
                 </div>
-                <p className="day-card__notes">{camp.properties.segment}</p>
+                <p className="day-card__notes">
+                  {terrainLoad?.effortRank === 1 &&
+                    "Hardest aerobic day: the route’s largest climb. "}
+                  {day === 8 &&
+                    "Hardest knee day: sustained 1,780-foot descent. "}
+                  {day === 7 &&
+                    "Hardest mixed up/down day: nearly 2,130 vertical feet. "}
+                  {day === 5 &&
+                    "Short mileage hides a steep climb and dry-camp carry. "}
+                  {day === 9 &&
+                    "Short but descent-heavy; protect pickup timing and avoid rushing. "}
+                  Overnight waypoint remains provisional.
+                </p>
               </button>
             );
           })}
@@ -866,6 +904,40 @@ function Sidebar({
             </p>
           </button>
         </div>
+      </section>
+
+      <section className="sidebar-card sidebar-card--full">
+        <div className="section-header">
+          <h2>What hikers actually did here</h2>
+          <span className="section-subtitle">
+            Context, not a pace target
+          </span>
+        </div>
+        <p className="lede">
+          Published accounts confirm that this terrain can support much longer
+          days, but those hikers had day packs, car staging, or thru-hiker
+          conditioning. Your 8.2 / 8.0 / 7.7 / 6.7 / 4.0 / 3.9 / 6.4 / 5.5 /
+          3.8-mile split is deliberately conservative for loaded packs and knee
+          recovery.
+        </p>
+        <div className="evidence-list">
+          {comparableHikerEvidence.map((item) => (
+            <a href={item.source} target="_blank" rel="noreferrer" key={item.label}>
+              <strong>{item.label}: {item.route}</strong>
+              <span>
+                {item.dailyMiles
+                  ? `${item.dailyMiles.join(" / ")} miles on successive days`
+                  : `${item.distanceMiles} mi · +${item.gainFeet.toLocaleString()} ft${item.lossFeet ? ` / -${item.lossFeet.toLocaleString()} ft` : ""} · ${item.elapsed}`}
+              </span>
+              <small>{item.context}</small>
+            </a>
+          ))}
+        </div>
+        <p className="note">
+          “Effort miles” is a transparent planning estimate: actual miles +
+          ascent/2,000 + descent/4,000. It is for comparing your nine days, not
+          predicting finish time or medical strain.
+        </p>
       </section>
 
       {/* Water Sources - tap to show on map */}

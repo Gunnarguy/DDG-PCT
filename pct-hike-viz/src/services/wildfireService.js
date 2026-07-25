@@ -74,7 +74,7 @@ export const fetchWildfires = async () => {
     // NIFC publishes active fire perimeters as GeoJSON
     // This is a simplified version - production would use their actual API
     const response = await fetch(
-      'https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Current_WildlandFire_Perimeters/FeatureServer/0/query?' +
+      'https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Interagency_Perimeters_Current/FeatureServer/0/query?' +
       new URLSearchParams({
         where: '1=1',
         geometry: JSON.stringify({
@@ -86,7 +86,8 @@ export const fetchWildfires = async () => {
         }),
         geometryType: 'esriGeometryEnvelope',
         spatialRel: 'esriSpatialRelIntersects',
-        outFields: 'IncidentName,GISAcres,PercentContained,FireDiscoveryDateTime,POOState',
+        inSR: '4326',
+        outFields: 'attr_IncidentName,poly_GISAcres,attr_PercentContained,attr_FireDiscoveryDateTime,attr_POOState',
         returnGeometry: 'true',
         f: 'geojson'
       })
@@ -100,11 +101,11 @@ export const fetchWildfires = async () => {
     
     // Transform to simplified format
     const fires = (data.features || []).map(feature => ({
-      name: feature.properties.IncidentName,
-      acres: Math.round(feature.properties.GISAcres || 0),
-      containment: feature.properties.PercentContained || 0,
-      discovered: feature.properties.FireDiscoveryDateTime,
-      state: feature.properties.POOState,
+      name: feature.properties.attr_IncidentName,
+      acres: Math.round(feature.properties.poly_GISAcres || 0),
+      containment: feature.properties.attr_PercentContained || 0,
+      discovered: feature.properties.attr_FireDiscoveryDateTime,
+      state: feature.properties.attr_POOState,
       geometry: feature.geometry,
       distanceToTrail: calculateDistanceToTrail(feature.geometry)
     }));
@@ -284,8 +285,9 @@ export const assessHikingSafety = (wildfireData, airQualityData) => {
   };
   
   // Check for nearby fires
-  const nearbyFires = wildfireData.fires.filter(fire => 
-    fire.distanceToTrail !== null && fire.distanceToTrail < 25
+  const nearbyFires = wildfireData.fires.filter(fire =>
+    (Number.isFinite(fire.distanceToTrail) && fire.distanceToTrail < 25) ||
+    fire.inMonitoringArea === true
   );
   
   if (nearbyFires.length > 0) {
@@ -295,7 +297,11 @@ export const assessHikingSafety = (wildfireData, airQualityData) => {
     );
     nearbyFires.forEach(fire => {
       assessment.warnings.push(
-        `${fire.name}: ${fire.acres.toLocaleString()} acres, ${fire.containment}% contained, ${fire.distanceToTrail} mi away`
+        `${fire.name}: ${fire.acres.toLocaleString()} acres, ${fire.containment}% contained, ${
+          Number.isFinite(fire.distanceToTrail)
+            ? `${fire.distanceToTrail} mi away`
+            : "inside the route monitoring area"
+        }`
       );
     });
   }
@@ -322,8 +328,8 @@ export const assessHikingSafety = (wildfireData, airQualityData) => {
     );
   } else {
     assessment.recommendations.push(
-      'Conditions currently favorable for hiking',
-      'Continue monitoring every 4 hours during trip'
+      'No automated fire or AQI warning is present in the latest readings',
+      'Still complete official closure, restriction, crossing, and campsite checks'
     );
   }
   

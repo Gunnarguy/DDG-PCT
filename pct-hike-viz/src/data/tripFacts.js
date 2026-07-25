@@ -191,11 +191,20 @@ const overnightPlan = [
   },
 ];
 
-export const primaryItinerary = dayDates.map((date, index) => {
+const itineraryWithoutRanks = dayDates.map((date, index) => {
   const day = index + 1;
   const destination = overnightPlan[index];
   const startMile = index === 0 ? 0 : overnightPlan[index - 1].routeMile;
   const endMile = destination.routeMile;
+  const distance = Number((endMile - startMile).toFixed(1));
+  const elevation = elevationByDay[index];
+  const ascentPerMile = Math.round(elevation.gain / distance);
+  const descentPerMile = Math.round(elevation.loss / distance);
+  // A transparent planning estimate, not a physiological measurement:
+  // horizontal miles + climbing penalty + a smaller loaded-descent penalty.
+  const effortMiles = Number(
+    (distance + elevation.gain / 2000 + elevation.loss / 4000).toFixed(1),
+  );
 
   return {
     day,
@@ -203,17 +212,78 @@ export const primaryItinerary = dayDates.map((date, index) => {
     from:
       day === 1 ? "Burney Falls trailhead" : overnightPlan[index - 1].name,
     to: destination.name,
-    distance: Number((endMile - startMile).toFixed(1)),
+    distance,
     routeMileStart: startMile,
     routeMileEnd: endMile,
     pctMileEnd: destination.pctMile,
     coordinates: destination.coordinates,
     water: destination.water,
-    elevation: elevationByDay[index],
+    elevation,
+    terrainLoad: {
+      netFeet: elevation.end - elevation.start,
+      totalVerticalFeet: elevation.gain + elevation.loss,
+      ascentPerMile,
+      descentPerMile,
+      effortMiles,
+      kneeLoad:
+        elevation.loss >= 1400 || descentPerMile >= 300
+          ? "very-high"
+          : elevation.loss >= 900 || descentPerMile >= 225
+            ? "high"
+            : elevation.loss >= 600
+              ? "moderate"
+              : "low",
+    },
     campStatus:
       day === 9 ? "verified-trailhead-finish" : "documented-needs-current-verification",
   };
 });
+
+const effortOrder = [...itineraryWithoutRanks]
+  .sort((a, b) => b.terrainLoad.effortMiles - a.terrainLoad.effortMiles)
+  .map((day) => day.day);
+
+export const primaryItinerary = itineraryWithoutRanks.map((leg) => ({
+  ...leg,
+  terrainLoad: {
+    ...leg.terrainLoad,
+    effortRank: effortOrder.indexOf(leg.day) + 1,
+  },
+}));
+
+export const comparableHikerEvidence = [
+  {
+    label: "Section hiker with day pack",
+    route: "Cabin Creek to Ash Camp",
+    distanceMiles: 15,
+    gainFeet: 2000,
+    elapsed: "just over 6 hours",
+    context:
+      "Included a roughly 900-foot climb in under two miles. Day-pack pace is not equivalent to a nine-day backpack.",
+    source:
+      "https://trailhiker.wordpress.com/2017/11/09/pct-section-o-cabin-creek-to-ash-camp/",
+  },
+  {
+    label: "Long section day with car staging",
+    route: "Bartle Gap to Ash Camp",
+    distanceMiles: 26.4,
+    gainFeet: 2400,
+    lossFeet: 5100,
+    elapsed: "about 11.5 hours",
+    context:
+      "The author called it a very big day and said they would not repeat that mileage. This is evidence of the terrain, not a recommended schedule.",
+    source:
+      "https://trailhiker.wordpress.com/2018/06/27/pct-section-o-bartle-gap-to-ash-camp/",
+  },
+  {
+    label: "Conditioned PCT thru-hiker",
+    route: "Burney-area northbound progression",
+    dailyMiles: [17, 28, 23],
+    context:
+      "Thru-hiker mileage after extensive conditioning. It is explicitly unsuitable as the DDG team's starting template.",
+    source: "https://www.bedore.org/2003_PCT_August.html",
+  },
+];
 
 export const formatTripDate = (isoDate) =>
   new Intl.DateTimeFormat("en-US", {

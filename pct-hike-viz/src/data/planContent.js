@@ -1619,13 +1619,15 @@ export const dayItinerary = [
       loss: leg.elevation.loss
     },
     terrain:
-      leg.day === 4
+      leg.day === 6
         ? 'Highest route segment; GPS reaches approximately 6,146 ft'
-        : leg.elevation.loss > 2000
+        : leg.elevation.loss >= 1400
           ? 'Major descent day; protect knees and allow slower footing'
-          : leg.elevation.gain > 2000
+          : leg.elevation.gain >= 1800
             ? 'Major climbing day; start early and manage heat'
-            : 'Rolling PCT terrain',
+            : leg.terrainLoad.kneeLoad === 'high'
+              ? 'Shorter mileage, but concentrated descent makes this a knee-load day'
+              : 'Rolling PCT terrain',
     waterSources: ['Use same-day PCT Water Report and map sources'],
     waterCarry: 'Calculate at the last confirmed source; do not rely on a static liter value',
     connectivity: { verizon: 'unknown', att: 'unknown', tmobile: 'unknown', satellite: true },
@@ -1648,7 +1650,8 @@ export const dayItinerary = [
       leg.campStatus === 'verified-trailhead-finish' ? 'Coordinate pickup' : 'Verify legal low-impact campsite'
     ],
     timing: { start: '6:30 AM', end: '3:30 PM', movingTime: '5–7h', breakTime: '1.5–2.5h' },
-    gradient: leg.elevation.gain > 2000 ? 'steep' : 'moderate',
+    gradient: leg.terrainLoad.effortRank <= 3 ? 'steep' : 'moderate',
+    terrainLoad: leg.terrainLoad,
     verification: leg.campStatus,
     sourceIds: ['gps-route', 'pct-water', 'pcta']
   }))

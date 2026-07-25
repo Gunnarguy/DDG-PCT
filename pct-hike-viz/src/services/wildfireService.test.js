@@ -141,10 +141,10 @@ describe("assessHikingSafety", () => {
     expect(result.safe).toBe(true);
     expect(result.warnings).toHaveLength(0);
     expect(result.recommendations).toContain(
-      "Conditions currently favorable for hiking",
+      "No automated fire or AQI warning is present in the latest readings",
     );
     expect(result.recommendations).toContain(
-      "Continue monitoring every 4 hours during trip",
+      "Still complete official closure, restriction, crossing, and campsite checks",
     );
   });
 

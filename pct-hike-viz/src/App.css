@@ -5911,3 +5911,39 @@
   background: var(--dash-border);
   color: var(--dash-text);
 }
+.evidence-list {
+  display: grid;
+  gap: 0.65rem;
+  margin: 1rem 0;
+}
+
+.evidence-list a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.8rem;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+  background: var(--dash-panel);
+}
+
+.evidence-list a:hover {
+  border-color: var(--orange-500);
+}
+
+.evidence-list span,
+.evidence-list small {
+  color: var(--dash-text-muted);
+  line-height: 1.4;
+}
+
+.knee-load--high,
+.knee-load--very-high {
+  border-color: var(--orange-500);
+}
+
+.knee-load--very-high {
+  color: #ef4444;
+}

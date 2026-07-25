@@ -67,6 +67,137 @@
   font-style: italic;
 }
 
+.condition-error,
+.condition-unavailable {
+  padding: 0.75rem;
+  border-radius: 6px;
+  background: rgba(255, 152, 0, 0.12);
+  border: 1px solid rgba(255, 152, 0, 0.5);
+  color: #ffd18a;
+}
+
+.condition-section {
+  margin-bottom: 1.5rem;
+}
+
+.condition-section > h4 {
+  color: #ffb74d;
+  margin: 0 0 0.75rem;
+}
+
+.condition-meta,
+.truth-note {
+  color: #aaa;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.source-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.6rem;
+}
+
+.source-status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.7rem;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.source-status--live {
+  border-color: rgba(76, 175, 80, 0.7);
+}
+
+.source-status--manual_required {
+  border-color: rgba(255, 183, 77, 0.8);
+}
+
+.source-status--error {
+  border-color: rgba(244, 67, 54, 0.8);
+}
+
+.source-status span,
+.source-status small {
+  color: #bbb;
+  line-height: 1.35;
+}
+
+.water-condition-list,
+.agency-alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  max-height: 34rem;
+  overflow: auto;
+  padding-right: 0.25rem;
+}
+
+.water-condition,
+.agency-alert-list a,
+.bridge-check {
+  padding: 0.7rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  text-decoration: none;
+}
+
+.water-condition > div,
+.bridge-check {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.water-condition p,
+.bridge-check p {
+  flex-basis: 100%;
+  margin: 0.45rem 0;
+  line-height: 1.4;
+}
+
+.water-condition small {
+  color: #999;
+}
+
+.water-condition--flowing {
+  border-left: 4px solid #4caf50;
+}
+
+.water-condition--limited {
+  border-left: 4px solid #ffb74d;
+}
+
+.water-condition--dry {
+  border-left: 4px solid #f44336;
+}
+
+.condition-badge {
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: #bbb;
+}
+
+.agency-alert-list a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.agency-alert-list span {
+  color: #bbb;
+  line-height: 1.4;
+}
+
 /* Safety Assessment */
 .safety-assessment {
   padding: 1rem;

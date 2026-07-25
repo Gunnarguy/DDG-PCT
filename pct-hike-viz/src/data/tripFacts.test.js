@@ -46,4 +46,15 @@ describe("canonical trip facts", () => {
     });
     expect(tripFacts.extractionOptions.primary.plannedDate).toBe("2026-09-06");
   });
+
+  it("exposes granular ascent, descent, and knee-load planning metrics", () => {
+    const day2 = primaryItinerary.find((day) => day.day === 2);
+    const day8 = primaryItinerary.find((day) => day.day === 8);
+
+    expect(day2.elevation.gain).toBe(2027);
+    expect(day2.terrainLoad.effortRank).toBe(1);
+    expect(day8.elevation.loss).toBe(1780);
+    expect(day8.terrainLoad.descentPerMile).toBe(324);
+    expect(day8.terrainLoad.kneeLoad).toBe("very-high");
+  });
 });

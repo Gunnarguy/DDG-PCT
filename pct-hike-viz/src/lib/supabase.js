@@ -99,6 +99,9 @@ export const supabase = supabaseReady
  */
 export const EDGE_FUNCTIONS = {
   aqiProxy: supabaseReady ? `${SUPABASE_URL}/functions/v1/aqi-proxy` : null,
+  trailConditions: supabaseReady
+    ? `${SUPABASE_URL}/functions/v1/trail-conditions`
+    : null,
 };
 
 /**
