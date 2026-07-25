@@ -43,46 +43,6 @@ const buildDataUrl = () => {
   return `${basePath}data/hike_data.json`;
 };
 
-const sliceTrailByDistance = (trail, maxDistanceMiles) => {
-  if (!trail || !trail.length) return [];
-  const R = 6371e3; // meters
-  let totalDistMeters = 0;
-  const sliced = [trail[0]];
-
-  for (let i = 1; i < trail.length; i++) {
-    const prev = trail[i - 1];
-    const curr = trail[i];
-    
-    const lon1 = prev[0];
-    const lat1 = prev[1];
-    const lon2 = curr[0];
-    const lat2 = curr[1];
-    
-    const φ1 = (lat1 * Math.PI) / 180;
-    const φ2 = (lat2 * Math.PI) / 180;
-    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-    const Δλ = ((lon2 - lon1) * Math.PI) / 180;
-
-    const a =
-      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-      Math.cos(φ1) *
-        Math.cos(φ2) *
-        Math.sin(Δλ / 2) *
-        Math.sin(Δλ / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c;
-
-    totalDistMeters += d;
-    const totalDistMiles = totalDistMeters / 1609.344;
-    
-    sliced.push(curr);
-    if (totalDistMiles > maxDistanceMiles) {
-      break;
-    }
-  }
-  return sliced;
-};
-
 // Basic helpers for derived stats so the UI always reflects the loaded dataset, not stale copy text.
 const hasAnyCell = (zone = {}) => {
   const carriers = ["verizon", "att", "tmobile"];
@@ -153,11 +113,11 @@ const deriveWaterMeta = (waterSources = []) => {
 
   return {
     count: waterSources.length,
-    sourceLabel: "PCT Water Report (pctwater.com)",
+    sourceLabel: "Halfmile waypoint locations",
     mileRange: miles.length
       ? `Mile ${minMile} – ${maxMile}`
       : "Mile range pending",
-    lastSynced: latest ?? "see report dates",
+    lastSynced: latest ?? "live flow not verified",
   };
 };
 
@@ -177,15 +137,24 @@ const deriveRouteStats = (
   let highPoint = { elevation: null };
   let lowPoint = { elevation: null };
 
-  for (let i = 1; i < hikingTrail.length; i += 1) {
-    const prev = hikingTrail[i - 1];
+  const smoothedElevations = hikingTrail.map((point, index) => {
+    const start = Math.max(0, index - 2);
+    const end = Math.min(hikingTrail.length, index + 3);
+    const elevations = hikingTrail
+      .slice(start, end)
+      .map((candidate) => candidate?.[2])
+      .filter(Number.isFinite);
+    return elevations.length
+      ? elevations.reduce((sum, elevation) => sum + elevation, 0) /
+          elevations.length
+      : null;
+  });
+  let lastCountedElevation = smoothedElevations.find(Number.isFinite) ?? null;
+
+  for (let i = 0; i < hikingTrail.length; i += 1) {
     const curr = hikingTrail[i];
-    const prevElev = prev?.[2];
     const currElev = curr?.[2];
-    if (!Number.isFinite(prevElev) || !Number.isFinite(currElev)) continue;
-    const delta = currElev - prevElev;
-    if (delta > 0) totalGain += delta;
-    if (delta < 0) totalLoss += Math.abs(delta);
+    if (!Number.isFinite(currElev)) continue;
     if (highPoint.elevation === null || currElev > highPoint.elevation) {
       highPoint = {
         elevation: Math.round(currElev),
@@ -197,6 +166,19 @@ const deriveRouteStats = (
         elevation: Math.round(currElev),
         coordinates: [curr[0], curr[1]],
       };
+    }
+
+    const smoothedElevation = smoothedElevations[i];
+    if (
+      Number.isFinite(smoothedElevation) &&
+      Number.isFinite(lastCountedElevation)
+    ) {
+      const delta = smoothedElevation - lastCountedElevation;
+      if (Math.abs(delta) >= 10) {
+        if (delta > 0) totalGain += delta;
+        if (delta < 0) totalLoss += Math.abs(delta);
+        lastCountedElevation = smoothedElevation;
+      }
     }
   }
 
@@ -214,7 +196,7 @@ const deriveRouteStats = (
     basePlanMiles: Number.isFinite(totalMiles)
       ? Number(totalMiles.toFixed(1))
       : 0,
-    fullSectionMiles: 82.9, // Optional extension to Dunsmuir / full Section O
+    fullSectionMiles: null,
   };
 };
 
@@ -574,8 +556,8 @@ function App() {
             name:
               dayItem.day === 0
                 ? "Burney Falls State Park (Start)"
-                : dayItem.day === 6
-                ? "Castle Crags (Soda Creek Exit)"
+                : dayItem.day === 9
+                ? "Ash Camp Pickup"
                 : dayItem.to,
             day: dayItem.day,
             itinerary: "express",
@@ -585,7 +567,7 @@ function App() {
             type:
               dayItem.day === 0
                 ? "Trailhead"
-                : dayItem.day === 6
+                : dayItem.day === 9
                 ? "Finish"
                 : "Camp",
           },
@@ -619,11 +601,8 @@ function App() {
         pt[1] != null &&
         pt[2] != null,
     );
-    if (selectedItinerary === "express") {
-      return sliceTrailByDistance(filtered, 52.0);
-    }
     return filtered;
-  }, [hikeData, selectedItinerary]);
+  }, [hikeData]);
 
   const routeSegments = useMemo(() => {
     if (!hikeData) return [];
@@ -685,11 +664,8 @@ function App() {
   const transportPoints = hikeData?.transport ?? [];
   const waterSources = useMemo(() => {
     const rawWater = hikeData?.waterSources ?? [];
-    if (selectedItinerary === "express") {
-      return rawWater.filter((source) => source.mile <= 1420.7 + 52.0);
-    }
     return rawWater;
-  }, [hikeData, selectedItinerary]);
+  }, [hikeData]);
   const waterSourceMeta = useMemo(
     () => deriveWaterMeta(waterSources),
     [waterSources],
@@ -859,8 +835,7 @@ function AuthGatedApp() {
   }
 
   // Authenticated but NOT a team member - show access pending screen
-  const forceAccess = user?.email?.trim().toLowerCase() === "gunnarguy@me.com";
-  if (!isTeamMember && !forceAccess) {
+  if (!isTeamMember) {
     return (
       <div className="app-shell">
         <div className="access-denied-screen">

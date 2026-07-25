@@ -32,12 +32,12 @@ let transitRoutes: [TransitRoute] = [
     ),
     TransitRoute(
         id: "dan-sjc-ua", type: "flight",
-        name: "Dan's SJC Flights",
-        agency: "United Airlines", route: "UA481 · UA1317",
-        stops: ["SJC", "ORD"],
+        name: "Dan & Drew SJC Flights",
+        agency: "Confirm from booking", route: "SJC arrival / departure",
+        stops: ["SJC"],
         frequency: "Aug 28 Inbound / Sep 7 Outbound",
         relevantFor: "Dan's Arrival & Departure",
-        notes: "Arrives Aug 28 6:03 PM PST. Departs Sep 7.",
+        notes: "Arrive Aug 28 at 6:05 PM. Sep 7 departure is unconfirmed: 6:40 AM or 10:40 AM.",
         url: "",
         distance: nil, cost: nil, emoji: "✈️"
     ),
@@ -84,17 +84,6 @@ let transitRoutes: [TransitRoute] = [
         notes: "Limited schedule! Verify times before relying on this.",
         url: "https://www.rabaride.com",
         distance: nil, cost: "$3.00", emoji: "🚌"
-    ),
-    TransitRoute(
-        id: "stage-dunsmuir", type: "bus",
-        name: "Dunsmuir → Redding",
-        agency: "Stage Lines", route: "I-5 Corridor",
-        stops: ["Dunsmuir", "Mt. Shasta", "Weed", "Yreka", "Redding"],
-        frequency: "Mon-Fri, 2x daily",
-        relevantFor: "Post-hike return from Castle Crags area",
-        notes: "Dunsmuir stop is near the Amtrak station.",
-        url: "https://www.co.siskiyou.ca.us/general-services/page/stage",
-        distance: nil, cost: "$15.00", emoji: "🚌"
     ),
     TransitRoute(
         id: "greyhound-i5", type: "bus",
@@ -163,13 +152,13 @@ let parkingLocations: [ParkingLocation] = [
         notes: "Trailhead parking. Day-use fee required."
     ),
     ParkingLocation(
-        id: "castle-crags",
-        location: "Castle Crags State Park",
-        address: "20022 Castle Creek Rd, Castella, CA 96017",
-        cost: "$10/day",
-        phone: "(530) 235-2684",
-        security: "Ranger-staffed during day",
-        notes: "Finish-point parking. Can also access from I-5 exit."
+        id: "ash-camp",
+        location: "Ash Camp Pickup",
+        address: "FS Road 38N11 · 41.1171, -122.0606",
+        cost: "No service assumed",
+        phone: "(530) 964-2184",
+        security: "Remote forest-road rendezvous",
+        notes: "Day 9 finish only. McCloud Ranger Station must confirm road conditions and Kia Sportage suitability before Mikaela drives in."
     ),
 ]
 
@@ -185,7 +174,5 @@ struct ResupplyTown: Identifiable, Sendable {
 }
 
 let resupplyTowns: [ResupplyTown] = [
-    ResupplyTown(id: "burney", town: "Burney", services: ["Grocery", "Gas", "Restaurants", "Hardware store", "Post office"], transitAccess: "RABA Route 5 from Redding", trailDistance: "At trailhead", notes: "Last major resupply before entering wilderness"),
-    ResupplyTown(id: "castella", town: "Castella / Castle Crags", services: ["Small store", "Gas", "Camping supplies"], transitAccess: "I-5, Stage bus", trailDistance: "~2 mi from PCT", notes: "Limited selection. Stock up in Burney or Dunsmuir."),
-    ResupplyTown(id: "dunsmuir", town: "Dunsmuir", services: ["Grocery", "Restaurants", "Brewery", "Outfitter", "Post office"], transitAccess: "Amtrak, Stage bus, I-5", trailDistance: "~12 mi north of finish", notes: "Great post-hike celebration town. Dunsmuir Brewery!"),
+    ResupplyTown(id: "burney", town: "Burney", services: ["Grocery", "Gas", "Restaurants", "Hardware store", "Post office"], transitAccess: "RABA Route 5 from Redding", trailDistance: "Pre-hike only", notes: "Buy and pack all nine days of food before starting. There is no on-route resupply in the active 54.2-mile itinerary."),
 ]

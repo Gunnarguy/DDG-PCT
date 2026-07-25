@@ -39,8 +39,8 @@ total_miles = total_meters / 1609.34
 
 print(f'\n--- DISTANCE ---')
 print(f'Calculated: {total_miles:.2f} miles')
-print(f'Source doc: 78-90 miles (estimate)')
-print(f'Match: {"✓" if 78 <= total_miles <= 90 else "✗"}')
+print(f'Active plan: 54.2 GPS miles to Ash Camp')
+print(f'Match: {"✓" if abs(total_miles - 54.2) <= 0.2 else "✗"}')
 
 # Elevation analysis
 start_elev = coords[0][2]
@@ -52,10 +52,10 @@ print(f'Start: {start_elev:.1f} ft')
 print(f'End: {end_elev:.1f} ft')
 print(f'Net change: {net_change:+.1f} ft')
 
-print(f'\nSource doc Day 1 start: ~2,300 ft')
-print(f'Source doc Day 6 end: ~3,600 ft')
-print(f'Start match: {"✓" if 2200 <= start_elev <= 2400 else "✗"}')
-print(f'End match: {"✓" if 2300 <= end_elev <= 2700 else "⚠ (data shows {end_elev:.0f}ft)"}')
+print(f'\nActive GPS start reference: ~3,020 ft')
+print(f'GPS route finish elevation: {end_elev:.0f} ft')
+print(f'Start match: {"✓" if 2950 <= start_elev <= 3100 else "✗"}')
+print(f'Finish is plausible for Ash Camp: {"✓" if 2300 <= end_elev <= 3300 else "⚠"}')
 
 # Calculate gain/loss with smoothing (Strava method)
 window_size = 5
@@ -85,13 +85,13 @@ print(f'\n--- CUMULATIVE GAIN/LOSS (smoothed, 10ft threshold) ---')
 print(f'Total gain: {gain:.0f} ft')
 print(f'Total loss: {loss:.0f} ft')
 
-# Estimated from source doc (Day 1-6)
+# Historical estimate from the incomplete six-row narrative.
 doc_gain = (3200-2300) + (3650-3200) + (4000-3650) + (4800-4000) + (5850-4800)
 doc_loss = (3600-5850)
-print(f'\nSource doc estimated gain: ~{doc_gain} ft (from daily summaries)')
-print(f'Source doc estimated loss: ~{abs(doc_loss)} ft (Day 6 descent)')
+print(f'\nLegacy six-row estimated gain: ~{doc_gain} ft')
+print(f'Legacy six-row estimated loss: ~{abs(doc_loss)} ft')
 
-print(f'\nNote: Source doc is simplified 6-day estimate.')
-print(f'GPS data shows actual terrain with all ups/downs.')
+print(f'\nNote: the six-row narrative stops at 52 miles and is not the active itinerary.')
+print(f'The truncated GPS route to Ash Camp is the active source for distance and terrain.')
 
 print('\n' + '=' * 60)

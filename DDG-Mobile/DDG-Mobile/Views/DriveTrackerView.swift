@@ -80,40 +80,40 @@ struct DriveTrackerView: View {
     
     let flights = [
         FlightInfo(
-            flightNumber: "UA 481",
-            carrier: "United Airlines",
-            origin: "Chicago O'Hare (ORD)",
-            originCode: "ORD",
+            flightNumber: "INBOUND",
+            carrier: "Confirm from booking",
+            origin: "Origin airport",
+            originCode: "TBD",
             destination: "San Jose Mineta (SJC)",
             destinationCode: "SJC",
-            departureTime: "3:45 PM CT",
-            arrivalTime: "6:03 PM PST",
-            duration: "4h 18m",
-            status: "Scheduled",
-            terminalInfo: "Terminal 1 (Gate B12) ➜ Terminal A (Gate 14)",
-            aircraft: "Airbus A319 (Twin-Jet) • Seat Config: 3-3 (12 First / 114 Econ)",
-            gate: "Depart ORD T1 Gate B12 • Arrive SJC TA Gate 14",
-            baggageClaim: "Carousel 3 (Terminal A)",
-            onboardServices: ["United Wi-Fi (Live Streaming)", "USB-A & Power Outlets", "Personal Device Entertainment"],
-            delayStats: "Typically On Time (Avg. delay < 12 mins)"
+            departureTime: "Check booking",
+            arrivalTime: "Aug 28 • 6:05 PM",
+            duration: "Check booking",
+            status: "Arrival time confirmed by team",
+            terminalInfo: "Check airline reservation",
+            aircraft: "Not yet verified",
+            gate: "Check day-of-flight",
+            baggageClaim: "Check SJC monitors",
+            onboardServices: [],
+            delayStats: "Build 45–60 minutes for bags and loading"
         ),
         FlightInfo(
-            flightNumber: "UA 1317",
-            carrier: "United Airlines",
-            origin: "San Jose Mineta (SJC)",
+            flightNumber: "OUTBOUND",
+            carrier: "Confirm from booking",
+            origin: "San José Mineta (SJC)",
             originCode: "SJC",
-            destination: "Chicago O'Hare (ORD)",
-            destinationCode: "ORD",
-            departureTime: "6:15 AM PST",
-            arrivalTime: "12:45 PM CT",
-            duration: "4h 30m",
-            status: "Scheduled",
-            terminalInfo: "Terminal A (Gate 16) ➜ Terminal 1 (Gate C20)",
-            aircraft: "Boeing 737-800 • Seat Config: 3-3 (16 First / 150 Econ)",
-            gate: "Depart SJC TA Gate 16 • Arrive ORD T1 Gate C20",
-            baggageClaim: "Carousel 5 (Terminal 1)",
-            onboardServices: ["United Wi-Fi", "DirecTV Live TV", "USB & Power Outlets", "Premium Meals"],
-            delayStats: "Typically On Time (Avg. delay < 15 mins)"
+            destination: "Destination airport",
+            destinationCode: "TBD",
+            departureTime: "Sep 7 • 6:40 AM or 10:40 AM",
+            arrivalTime: "Check booking",
+            duration: "Check booking",
+            status: "TIME UNCONFIRMED",
+            terminalInfo: "Protect the earlier airport report time",
+            aircraft: "Not yet verified",
+            gate: "Check day-of-flight",
+            baggageClaim: "Check destination monitors",
+            onboardServices: [],
+            delayStats: "Resolve before locking September 6 sleep and airport transport"
         )
     ]
 
@@ -164,7 +164,7 @@ struct DriveTrackerView: View {
                     if mapMode == 1 {
                         Marker("Chicago (ORD)", systemImage: "airplane.departure", coordinate: CLLocationCoordinate2D(latitude: 41.9742, longitude: -87.9073))
                             .tint(.teal)
-                        
+
                         MapPolyline(coordinates: flightCoordinates)
                             .stroke(.teal, style: StrokeStyle(lineWidth: 3, dash: [6, 6]))
                     }
@@ -281,7 +281,7 @@ struct DriveTrackerView: View {
                         Image(systemName: "airplane.circle.fill")
                             .font(.title3)
                             .foregroundStyle(.blue)
-                        Text("Dad & Drew Flight Tracker (UA481 / UA1317)")
+                        Text("Dad & Drew Flight Tracker")
                             .font(.headline)
                         Spacer()
                     }
@@ -412,43 +412,41 @@ struct DriveTrackerView: View {
                         Image(systemName: "arrow.left.circle.fill")
                             .font(.title3)
                             .foregroundStyle(.orange)
-                        Text("Extraction Plan (Castle Crags ➜ Home)")
+                        Text("Extraction Plan (Ash Camp ➜ Home)")
                             .font(.headline)
                         Spacer()
                     }
                     
-                    Text("The backpacking trip ends at Castle Crags State Park trailhead. Here are the three planned travel options for returning to Campbell/SJC:")
+                    Text("The active 54.2-mile trip ends at Ash Camp on Sunday, September 6. Mikaela pickup is the primary plan; every fallback must be confirmed before departure.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     
                     VStack(alignment: .leading, spacing: 10) {
-                        // Option A
                         VStack(alignment: .leading, spacing: 6) {
                             HStack {
-                                Text("Option A: Southbound Rail (Amtrak 11)")
+                                Text("Primary: Mikaela at Ash Camp")
                                     .font(.caption.bold())
                                     .foregroundStyle(.orange)
                                 Spacer()
-                                Text("DUN ➜ DIRIDON")
+                                Text("GPS MI 54.2")
                                     .font(.caption2.bold())
                                     .foregroundStyle(.secondary)
                             }
-                            Text("Take Amtrak Coast Starlight 11 from Dunsmuir Station (DUN) directly to San Jose Diridon. Departs daily at 4:48 PM, arrives at 2:30 AM (next morning). Perfect timing to connect with the 6:15 AM SJC departure flight (UA1317).")
+                            Text("Continue past route mile 52 to the official Ash Camp pin (PCT mile 1472; 41.1171, -122.0606). Target pickup is 10:00 AM–12:00 PM on Day 9, Sunday Sep 6. FS Road 38N11 is rough and high clearance is recommended. Mikaela must confirm road access with the McCloud Ranger Station (530-964-2184) before committing the Kia Sportage.")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
                         .padding(8)
                         .background(Color(uiColor: .tertiarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 6))
-                        
-                        // Option B
+
                         VStack(alignment: .leading, spacing: 6) {
                             let avgPrice = gasPricePerGallon ?? 5.38
-                            let extractionMiles = 285.0
+                            let extractionMiles = 333.3
                             let gallons = extractionMiles / assumedMPG
                             let cost = gallons * avgPrice
-                            
+
                             HStack {
-                                Text("Option B: Mikaela Retrieval Shuttle")
+                                Text("Return drive: Ash Camp ➜ Campbell")
                                     .font(.caption.bold())
                                     .foregroundStyle(.orange)
                                 Spacer()
@@ -456,25 +454,41 @@ struct DriveTrackerView: View {
                                     .font(.caption2.bold())
                                     .foregroundStyle(.green)
                             }
-                            Text(String(format: "Mikaela drives up I-5 in the Kia Sportage to retrieve the hikers at Castle Crags. Total extraction: %.0f miles (~4h 30m). Estimated fuel: %.1f gallons of regular unleaded.", extractionMiles, gallons))
+                            Text(String(format: "The current road-routing snapshot is %.1f miles and about 6.8 driving hours after reaching paved roads. Forest-road conditions, stops, and live traffic can make the day longer. The team should sleep in Campbell that night to protect the Sep 7 SJC departure.", extractionMiles))
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(8)
+                        .background(Color(uiColor: .tertiarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 6))
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack {
+                                Text("Backup: pre-confirmed local extraction")
+                                    .font(.caption.bold())
+                                    .foregroundStyle(.orange)
+                                Spacer()
+                                Text("CALL AHEAD")
+                                    .font(.caption2.bold())
+                                    .foregroundStyle(.secondary)
+                            }
+                            Text("Mt. Shasta Taxi: 530-859-3266. It is only a backup after the operator explicitly confirms Ash Camp, FS Road 38N11, pickup time, vehicle suitability, fare, and what happens if the hikers are late. A named trail angel can be tertiary backup under the same confirmation standard.")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
                         .padding(8)
                         .background(Color(uiColor: .tertiarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 6))
                         
-                        // Option C
                         VStack(alignment: .leading, spacing: 6) {
                             HStack {
-                                Text("Option C: One-Way Car Rental (RDD ➜ SJC)")
+                                Text("Rendezvous and overdue protocol")
                                     .font(.caption.bold())
                                     .foregroundStyle(.orange)
                                 Spacer()
-                                Text("REDDING ➜ SJC")
+                                Text("INREACH")
                                     .font(.caption2.bold())
                                     .foregroundStyle(.secondary)
                             }
-                            Text("Take Siskiyou Stage Lines bus from Dunsmuir to Redding Airport (RDD). Rent a one-way car at RDD (Avis/Enterprise) and drive 280 miles back to SJC airport/Campbell.")
+                            Text("Send an inReach check-in at the Day 9 start, at route mile 52, and on arrival. Mikaela waits at the exact shared pin and does not drive or hike up-trail searching. If the team misses the agreed overdue threshold, follow the written emergency contact plan; use SOS only for an actual emergency.")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
@@ -544,9 +558,9 @@ struct DriveTrackerView: View {
         let t1 = route1?.expectedTravelTime ?? 900 // default 15m
         let t2 = route2?.expectedTravelTime ?? 16200 // default 4.5h
         
-        let leaveCampbell = timeByAdding(seconds: -t1, to: "6:40 PM")
-        let sjcArrival = "6:40 PM"
-        let sjcDeparture = "6:45 PM"
+        let leaveCampbell = timeByAdding(seconds: -t1, to: "6:05 PM")
+        let sjcArrival = "6:05 PM"
+        let sjcDeparture = "7:05 PM"
         
         // Vacaville is ~29% of SJC->Burney Falls drive
         let tVacaville = t2 * 0.29
@@ -562,12 +576,12 @@ struct DriveTrackerView: View {
         let burneyArrival = timeByAdding(seconds: t2 + 1800, to: sjcDeparture)
         
         return [
-            (leaveCampbell, "Campbell Depart", "Mikaela leaves to pick up flight UA481. Drive: \(formatTime(t1))"),
-            (sjcArrival, "SJC Airport Pickup", "UA481 lands at 6:03 PM. Retrieve Dad & Drew (Terminal A Baggage)."),
+            (leaveCampbell, "Campbell Depart", "Mikaela leaves for SJC. Drive: \(formatTime(t1))"),
+            (sjcArrival, "Flight Lands", "Dan & Drew's confirmed SJC landing time. Check the booking and live airport status for terminal and baggage."),
             (sjcDeparture, "SJC Depart", "Head north on highway. Drive time: \(formatTime(t2))"),
             (vacavilleArrival, "Vacaville Refuel", "Arrive Costco Gas (~78 mi). Quick snacks. Depart at \(vacavilleDeparture) (20m stop)."),
             (reddingArrival, "Redding Refuel", "Arrive Safeway Fuel (~227 mi). Final top-up. Depart at \(reddingDeparture) (10m stop)."),
-            (burneyArrival, "Burney Falls Arrive", "Arrive at starting point camp. Pitch tents & get sleep!")
+            (burneyArrival, "Burney Area Arrive", "Use the pre-confirmed legal late-arrival sleep plan. Do not assume after-hours park entry.")
         ]
     }
     

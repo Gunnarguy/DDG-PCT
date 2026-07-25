@@ -37,7 +37,7 @@ export const resourcesIndex = [
     type: 'internal',
     category: 'logistics',
     source: '../Original-DDG-PCT-PDF.txt',
-    excerpt: '"Town: Dunsmuir, CA… STAGE bus offers shuttle service… Mt. Shasta Taxi (+1 530-605-7950)… hitchhiking is possible on the nearby roads."',
+    excerpt: 'Historical DDG transport notes for Dunsmuir. The phone number in the source narrative is superseded; use the separately verified current taxi contact.',
     tags: ['resupply', 'transport', 'town'],
     icon: '🚐'
   },
@@ -364,6 +364,26 @@ export const resourcesIndex = [
     icon: '🚐'
   },
   {
+    id: 'pcta-ash-camp',
+    title: 'PCTA: Ash Camp Trailhead',
+    type: 'external',
+    category: 'official',
+    url: 'https://explore.pcta.org/trailheads/ash-camp',
+    excerpt: 'Official access point at PCT mile 1472. FS Road 38N11 is unpaved, can be rough, and high clearance is recommended.',
+    tags: ['transport', 'trailhead', 'ash-camp', 'pickup'],
+    icon: '📍'
+  },
+  {
+    id: 'usfs-mccloud-offices',
+    title: 'USFS: McCloud Ranger Station',
+    type: 'external',
+    category: 'official',
+    url: 'https://www.fs.usda.gov/r05/shasta-trinity/offices',
+    excerpt: 'Current McCloud Ranger Station contact and office hours for road and access checks.',
+    tags: ['transport', 'road-conditions', 'usfs', 'mccloud'],
+    icon: '🌲'
+  },
+  {
     id: 'pcta-stage-bus',
     title: 'PCTA: STAGE Bus to Mt. Shasta',
     type: 'external',
@@ -476,6 +496,16 @@ export const resourcesIndex = [
     excerpt: 'Siskiyou Regional Transportation Agency ride options brochure.',
     tags: ['transport', 'shuttle', 'siskiyou'],
     icon: '🚐'
+  },
+  {
+    id: 'mt-shasta-taxi',
+    title: 'Mt. Shasta Taxi',
+    type: 'external',
+    category: 'transport',
+    url: 'https://mtshastataxi.com/contact-us/',
+    excerpt: 'Current reservation contact: 530-859-3266. Forest-road pickup capability must be confirmed directly.',
+    tags: ['transport', 'taxi', 'reservation', 'shasta'],
+    icon: '🚕'
   },
   {
     id: 'rome2rio-burney-shasta',

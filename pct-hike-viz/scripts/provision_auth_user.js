@@ -5,7 +5,7 @@
  * even when client-side signups are disabled.
  *
  * Usage:
- *   SUPABASE_SERVICE_ROLE_KEY=... node scripts/provision_auth_user.js smileyguy@aol.com
+ *   SUPABASE_SERVICE_ROLE_KEY=... node scripts/provision_auth_user.js member@example.com
  *
  * Env:
  *   SUPABASE_URL or VITE_SUPABASE_URL

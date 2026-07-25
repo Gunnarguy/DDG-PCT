@@ -16,8 +16,8 @@ struct PrepView: View {
                         // Action Required Section
                         VStack(alignment: .leading, spacing: 12) {
                             SectionHeader(title: "Critical Path", icon: "exclamationmark.triangle.fill", color: .orange)
-                            PrepTaskCard(title: "PCT Long-Distance Permit", subtitle: "PCTA — Apply early", icon: "doc.plaintext.fill")
-                            PrepTaskCard(title: "Burney Falls Day Use", subtitle: "$10/vehicle", icon: "car.fill")
+                            PrepTaskCard(title: "Confirm Local Overnight Rules", subtitle: "This 54.2 mi trip is not eligible for the 500 mi PCTA permit", icon: "doc.plaintext.fill")
+                            PrepTaskCard(title: "Burney Falls Arrival", subtitle: "Reserve legal Aug 28 sleep access; weekend day use is advance-only", icon: "car.fill")
                             PrepTaskCard(title: "Campfire Permit", subtitle: "CAL FIRE — Free", icon: "flame.fill")
                         }
                         
@@ -25,7 +25,7 @@ struct PrepView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             SectionHeader(title: "Pre-Flight Checklist", icon: "checklist", color: .blue)
                             PrepTaskCard(title: "Water filter serviced", subtitle: "Sawyer Squeeze backflush", icon: "drop.fill")
-                            PrepTaskCard(title: "Bear canister packed", subtitle: "Required in wilderness areas", icon: "lock.shield.fill")
+                            PrepTaskCard(title: "Food storage plan packed", subtitle: "Canister strongly recommended; confirm current local order", icon: "lock.shield.fill")
                             PrepTaskCard(title: "Emergency contacts shared", subtitle: "InReach share link to family", icon: "antenna.radiowaves.left.and.right")
                             PrepTaskCard(title: "Weather forecast checked", subtitle: "48hr before departure", icon: "cloud.sun.fill")
                             PrepTaskCard(title: "Offline maps downloaded", subtitle: "Apple Maps or Gaia GPS", icon: "map.fill")

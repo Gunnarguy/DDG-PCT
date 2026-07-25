@@ -48,7 +48,12 @@ const fetchAqiViaEdge = async (session, latitude, longitude, distance = 25) => {
     }
 
     const result = await response.json();
-    return { data: result.data, via: 'edge-function' };
+    return {
+      data: result.data,
+      source: result.source || 'AQI provider',
+      observedAt: result.observedAt,
+      via: 'edge-function'
+    };
   } catch (error) {
     console.warn('Edge function AQI fetch failed, falling back:', error);
     return { error: error.message, useDirectApi: true };
@@ -129,11 +134,12 @@ export const fetchAirQuality = async () => {
   }
 
   try {
-    // Check AQI at key points: Burney Falls, Hat Creek, Castle Crags
+    // Check AQI at representative points along the active Burney Falls to Ash Camp route.
     const monitoringPoints = [
-      { name: 'Burney Falls', lat: 41.013, lon: -121.653 },
-      { name: 'Hat Creek', lat: 41.027, lon: -121.732 },
-      { name: 'Castle Crags', lat: 41.173, lon: -121.897 }
+      { name: 'Burney Falls', lat: 41.0135, lon: -121.6207 },
+      { name: 'Section O high country', lat: 41.1723, lon: -121.9085 },
+      { name: 'McCloud River', lat: 41.1119, lon: -122.0478 },
+      { name: 'Ash Camp finish', lat: 41.1171, lon: -122.0606 }
     ];
 
     // Check if we can use the Edge Function (authenticated)
@@ -162,11 +168,12 @@ export const fetchAirQuality = async () => {
                 location: point.name,
                 aqi: primary?.AQI ?? null,
                 category: primary?.Category?.Name ?? 'Unknown',
-                pm25: pm25Entry?.AQI ?? null,
-                ozone: ozoneEntry?.AQI ?? null,
-                timestamp: primary?.DateObserved
-                  ? `${primary.DateObserved} ${primary.HourObserved}:00 ${primary.LocalTimeZone}`
-                  : new Date().toISOString(),
+                pm25: pm25Entry?.Value ?? pm25Entry?.AQI ?? null,
+                pm25Unit: pm25Entry?.Unit ?? 'AQI',
+                ozone: ozoneEntry?.Value ?? ozoneEntry?.AQI ?? null,
+                ozoneUnit: ozoneEntry?.Unit ?? 'AQI',
+                timestamp: edgeResult.observedAt || primary?.DateObserved || new Date().toISOString(),
+                source: edgeResult.source,
                 via: 'edge-function'
               };
             }
@@ -187,13 +194,15 @@ export const fetchAirQuality = async () => {
     );
 
     // Determine source for note
-    const hasEdgeData = readings.some(r => r.via === 'edge-function');
+    const liveSources = [
+      ...new Set(readings.map(r => r.source).filter(Boolean))
+    ];
 
     airQualityCache = {
       readings,
       timestamp: new Date().toISOString(),
-      note: hasEdgeData
-        ? 'Live AQI via Supabase Edge Function (authenticated)'
+      note: liveSources.length
+        ? `Live AQI via ${liveSources.join(', ')} (authenticated)`
         : 'Sign in for live AQI data'
     };
     lastAirQualityFetch = now;

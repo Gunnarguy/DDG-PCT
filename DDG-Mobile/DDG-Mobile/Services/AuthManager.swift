@@ -3,15 +3,24 @@ import AuthenticationServices
 import SwiftUI
 import Supabase
 
-/// Manages Sign in with Apple authentication and maps to DDGTeam roster.
+private nonisolated struct TeamProfileRow: Decodable, Sendable {
+    let hikerId: String
+
+    enum CodingKeys: String, CodingKey {
+        case hikerId = "hiker_id"
+    }
+}
+
+/// Manages Sign in with Apple authentication and maps an authorized Supabase
+/// team profile to local display metadata.
 ///
 /// Flow:
 /// 1. User taps "Sign in with Apple"
 /// 2. ASAuthorizationController presents Apple sign-in sheet
-/// 3. On success, we get email + user ID
-/// 4. Check email against DDGTeam.allowedEmails
-/// 5. If allowed → set currentUser, persist credential
-/// 6. If not allowed → show "Access Denied" (team-only app)
+/// 3. Exchange the Apple identity token for a Supabase session
+/// 4. Fetch the user's RLS-protected ddg_team_profiles row
+/// 5. Map its hiker_id to the local roster for presentation
+/// 6. Deny access when Supabase has no team profile
 @Observable
 @MainActor
 final class AuthManager {
@@ -101,12 +110,11 @@ final class AuthManager {
                 case .authorized:
                     manager.appleUserID = appleID
                     manager.userEmail = email
-                    if let member = DDGTeam.member(forEmail: email) {
-                        manager.currentUser = member
-                        manager.authState = .signedIn
-                    } else {
+                    guard SupabaseManager.shared.isConfigured else {
                         manager.authState = .denied
+                        return
                     }
+                    await manager.authorizeSupabaseSession()
                 default:
                     manager.authState = .signedOut
                     manager.clearKeychain()
@@ -142,35 +150,63 @@ final class AuthManager {
             saveKeychain(key: appleIDKey, value: userID)
             saveKeychain(key: emailKey, value: resolvedEmail)
 
-            // Check team membership
-            if let member = DDGTeam.member(forEmail: resolvedEmail) {
-                currentUser = member
-                authState = .signedIn
-
-                // Asynchronously sign in to Supabase if configured
-                if SupabaseManager.shared.isConfigured {
-                    if let identityToken = credential.identityToken,
-                       let idTokenString = String(data: identityToken, encoding: .utf8) {
-                        Task {
-                            do {
-                                _ = try await SupabaseManager.shared.client.auth.signInWithIdToken(
-                                    credentials: .init(
-                                        provider: .apple,
-                                        idToken: idTokenString
-                                    )
-                                )
-                            } catch {
-                                print("Supabase Sign In error: \(error)")
-                            }
-                        }
-                    }
-                }
-            } else {
+            guard SupabaseManager.shared.isConfigured,
+                  let identityToken = credential.identityToken,
+                  let idTokenString = String(data: identityToken, encoding: .utf8) else {
                 authState = .denied
+                return
+            }
+
+            authState = .unknown
+            Task {
+                do {
+                    _ = try await SupabaseManager.shared.client.auth.signInWithIdToken(
+                        credentials: .init(
+                            provider: .apple,
+                            idToken: idTokenString
+                        )
+                    )
+                    await authorizeSupabaseSession()
+                } catch {
+                    print("Supabase Sign In error: \(error)")
+                    currentUser = nil
+                    authState = .denied
+                }
             }
 
         case .failure:
             authState = .signedOut
+        }
+    }
+
+    // MARK: - Supabase Authorization
+
+    /// Membership comes from the authenticated user's own profile row. RLS
+    /// permits that row only for active DDG team members.
+    private func authorizeSupabaseSession() async {
+        do {
+            let session = try await SupabaseManager.shared.client.auth.session
+            let profile: TeamProfileRow = try await SupabaseManager.shared.client
+                .from(SupabaseManager.Table.teamProfiles)
+                .select("hiker_id")
+                .eq("id", value: session.user.id)
+                .single()
+                .execute()
+                .value
+
+            guard let member = DDGTeam.roster.first(where: { $0.id == profile.hikerId }) else {
+                currentUser = nil
+                authState = .denied
+                return
+            }
+
+            userEmail = session.user.email ?? userEmail
+            currentUser = member
+            authState = .signedIn
+        } catch {
+            print("Supabase team authorization error: \(error)")
+            currentUser = nil
+            authState = .denied
         }
     }
 

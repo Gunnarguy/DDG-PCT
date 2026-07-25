@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - Connectivity Data (Section O: Burney Falls → Castle Crags)
+// MARK: - Connectivity Data (Section O: Burney Falls → Ash Camp)
 
 struct CellCoverage: Sendable {
     let verizon: String     // "excellent", "good", "fair", "spotty", "none"
@@ -19,7 +19,8 @@ struct ConnectivityZone: Identifiable, Sendable {
     let notes: String
 }
 
-/// 8 connectivity zones along Section O
+/// Conservative checkpoints along the active route. Carrier values are planning
+/// assumptions, not field measurements; satellite messaging remains primary.
 let connectivityZones: [ConnectivityZone] = [
     ConnectivityZone(
         id: "burney-falls",
@@ -28,70 +29,52 @@ let connectivityZones: [ConnectivityZone] = [
         longitude: -121.620709, latitude: 41.01348,
         cellCoverage: CellCoverage(verizon: "good", att: "fair", tmobile: "fair"),
         satelliteCompatible: true,
-        notes: "Last reliable cell coverage before entering wilderness. Download offline maps here."
+        notes: "Expected trailhead coverage; download offline maps here and field-test every carrier."
     ),
     ConnectivityZone(
-        id: "round-valley",
-        name: "Round Valley Campground",
-        mile: 1436.6,
-        longitude: -121.732282, latitude: 41.027728,
+        id: "peavine",
+        name: "Peavine Creek Camp",
+        mile: 1433.7,
+        longitude: -121.7853913, latitude: 41.060513,
         cellCoverage: CellCoverage(verizon: "none", att: "none", tmobile: "none"),
         satelliteCompatible: true,
-        notes: "Deep wilderness — satellite only. Good open sky for satellite devices."
+        notes: "Conservative no-cell planning assumption; this is not a verified campsite."
     ),
     ConnectivityZone(
-        id: "black-rock",
-        name: "Black Rock Camp",
-        mile: 1451.0,
-        longitude: -121.800767, latitude: 41.091989,
+        id: "moosehead",
+        name: "Moosehead Creek Camp",
+        mile: 1448.2,
+        longitude: -121.8318419, latitude: 41.1771229,
         cellCoverage: CellCoverage(verizon: "none", att: "none", tmobile: "none"),
         satelliteCompatible: true,
-        notes: "No cell coverage. Satellite devices work well with clear sky views."
+        notes: "Conservative no-cell planning assumption; field verification is still required."
     ),
     ConnectivityZone(
-        id: "horse-camp",
-        name: "Horse Camp",
-        mile: 1463.7,
-        longitude: -121.783984, latitude: 41.16896,
+        id: "star-city",
+        name: "Alder / Star City Camp",
+        mile: 1456.1,
+        longitude: -121.9202143, latitude: 41.157895,
         cellCoverage: CellCoverage(verizon: "none", att: "none", tmobile: "none"),
         satelliteCompatible: true,
-        notes: "No cell coverage. Trees may intermittently block satellite signal."
+        notes: "Conservative no-cell assumption; trees may also slow satellite acquisition."
     ),
     ConnectivityZone(
-        id: "indian-springs",
-        name: "Indian Springs Camp",
-        mile: 1478.1,
-        longitude: -121.897491, latitude: 41.173417,
-        cellCoverage: CellCoverage(verizon: "none", att: "none", tmobile: "none"),
-        satelliteCompatible: true,
-        notes: "No cell coverage. Open ridgeline provides good satellite visibility."
-    ),
-    ConnectivityZone(
-        id: "castle-crags-vista",
-        name: "Castle Crags Vista Camp",
-        mile: 1490.8,
-        longitude: -121.982003, latitude: 41.139897,
+        id: "deer-creek",
+        name: "Deer Creek Spring Camp",
+        mile: 1462.6,
+        longitude: -121.9860782, latitude: 41.1356197,
         cellCoverage: CellCoverage(verizon: "spotty", att: "none", tmobile: "none"),
         satelliteCompatible: true,
-        notes: "Occasional Verizon signal from Castle Crags towers. Don't count on it."
+        notes: "Possible intermittent ridge exposure; do not count on it."
     ),
     ConnectivityZone(
-        id: "castle-crags-sp",
-        name: "Castle Crags State Park",
-        mile: 1498.8,
-        longitude: -122.039017, latitude: 41.114517,
-        cellCoverage: CellCoverage(verizon: "good", att: "good", tmobile: "fair"),
+        id: "ash-camp",
+        name: "Ash Camp Pickup",
+        mile: 1472.0,
+        longitude: -122.0606252, latitude: 41.1170914,
+        cellCoverage: CellCoverage(verizon: "unknown", att: "unknown", tmobile: "unknown"),
         satelliteCompatible: true,
-        notes: "Re-entering civilization. Good coverage near the parking lot and visitor center."
-    ),
-    ConnectivityZone(
-        id: "dunsmuir",
-        name: "Dunsmuir Town",
-        mile: 1510,
-        longitude: -122.2719, latitude: 41.2084,
-        cellCoverage: CellCoverage(verizon: "excellent", att: "excellent", tmobile: "good"),
-        satelliteCompatible: true,
-        notes: "Full town services. All carriers work well. Resupply and celebrate!"
+        notes: "Remote forest-road trailhead. Use inReach for pickup coordination and assume no cellular service."
     ),
 ]
 
@@ -157,6 +140,6 @@ let satelliteDevices: [SatelliteDevice] = [
         cost: "$599 + $14.95+/mo subscription",
         notes: "Full-featured GPS with inReach built in. Heavy but self-contained.",
         compatibility: "Standalone + Bluetooth",
-        trailNotes: "Overkill for a 6-day hike, but bulletproof navigation."
+        trailNotes: "Heavier than phone-only navigation, but dependable for a nine-day route with long cell gaps."
     ),
 ]

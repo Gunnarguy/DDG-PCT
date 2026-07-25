@@ -3,7 +3,8 @@ import SwiftUI
 
 // MARK: - DDG Team Configuration
 
-/// The DDG hiking team — matches web app DDG_TEAM and DDG_ALLOWED_EMAILS
+/// Display metadata for the DDG hiking team. Supabase ddg_team_profiles is the
+/// authorization source of truth; this roster supplies names, icons, and colors.
 enum DDGTeam {
     struct Member: Identifiable, Sendable {
         let id: String          // hiker_id
@@ -11,26 +12,14 @@ enum DDGTeam {
         let emoji: String
         let role: String
         let color: String       // hex
-        let emails: [String]
     }
 
     static let roster: [Member] = [
-        Member(id: "dan",    name: "Dan",    emoji: "🧔", role: "Trail Boss",  color: "#2E7D32", emails: ["smileyguy@aol.com", "smileyguy@gmail.com"]),
-        Member(id: "drew",   name: "Drew",   emoji: "🏔️", role: "Navigator",  color: "#1565C0", emails: ["andrew.d.hostetler@gmail.com", "hisroyaldrewness@aol.com"]),
-        Member(id: "gunnar", name: "Gunnar", emoji: "⚡", role: "Pace Setter", color: "#F57C00", emails: ["gunnarguy@me.com", "gunnarguy@aol.com"]),
+        Member(id: "dan",    name: "Dan",    emoji: "🧔", role: "Trail Boss",  color: "#2E7D32"),
+        Member(id: "drew",   name: "Drew",   emoji: "🏔️", role: "Navigator",  color: "#1565C0"),
+        Member(id: "gunnar", name: "Gunnar", emoji: "⚡", role: "Pace Setter", color: "#F57C00"),
     ]
 
-    static let allowedEmails: Set<String> = Set(roster.flatMap(\.emails))
-
-    static let adminEmails: Set<String> = ["gunnarguy@me.com", "gunnarguy@aol.com"]
-
-    static func member(forEmail email: String) -> Member? {
-        roster.first { $0.emails.contains(email.lowercased()) }
-    }
-
-    static func hikerId(forEmail email: String) -> String? {
-        member(forEmail: email)?.id
-    }
 }
 
 // MARK: - Day Colors (elevation profile + UI theming)
@@ -47,6 +36,9 @@ let dayColors: [DayColor] = [
     DayColor(fill: "rgba(156, 39, 176, 0.15)",   stroke: "#9C27B0"),   // Day 4 — Alpine purple
     DayColor(fill: "rgba(0, 150, 136, 0.15)",    stroke: "#009688"),   // Day 5 — Vista teal
     DayColor(fill: "rgba(211, 47, 47, 0.15)",    stroke: "#D32F2F"),   // Day 6 — Summit red
+    DayColor(fill: "rgba(94, 53, 177, 0.15)",    stroke: "#5E35B1"),   // Day 7 — River violet
+    DayColor(fill: "rgba(0, 121, 107, 0.15)",    stroke: "#00796B"),   // Day 8 — Climb green
+    DayColor(fill: "rgba(198, 40, 40, 0.15)",    stroke: "#C62828"),   // Day 9 — Finish red
 ]
 
 // MARK: - Color from Hex

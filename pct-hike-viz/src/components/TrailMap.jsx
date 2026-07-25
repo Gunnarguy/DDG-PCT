@@ -198,14 +198,14 @@ function TrailMap({
 
         <div className="hud-content">
           <p className="eyebrow">
-            PCT Section O · Burney Falls → Castle Crags (base plan)
+            PCT Section O · Burney Falls → Ash Camp
           </p>
-          <h2>Burney Falls → Castle Crags</h2>
+          <h2>Burney Falls → Ash Camp</h2>
           <p className="route-stats">
             <strong>{plannedMiles} mi</strong> base plan (GPS-derived) ·{" "}
             {optionalExtension
               ? `Optional to Dunsmuir: ~${optionalExtension} mi total`
-              : "Castle Crags exit"}{" "}
+              : "Ash Camp pickup"}{" "}
             · Shasta-Trinity NF
           </p>
           <p className="map-note">

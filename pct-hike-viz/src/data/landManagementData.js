@@ -72,7 +72,7 @@ export const landManagementZones = [
     },
     regulations: {
       campfirePermit: 'Required year-round',
-      wildernessPermit: 'Required for Castle Crags Wilderness (self-issue at trailhead)',
+      wildernessPermit: 'Confirm current Castle Crags Wilderness rules with the ranger district',
       bearCanisters: 'Recommended but not required',
       groupSizeLimit: 12,
       stockUse: 'Permitted; grazing restrictions in wilderness'
@@ -88,7 +88,7 @@ export const landManagementZones = [
       typical: 'Stage 2 common July-October (no campfires except in developed sites)',
       checkUrl: 'https://www.fs.usda.gov/alerts/stnf/alerts-notices'
     },
-    notes: 'Longest section (54 miles). Includes Castle Crags Wilderness—self-issue permit required at boundary. Spectacular granite formations and Mt. Shasta views. Higher elevation = cooler temps and more reliable water.',
+    notes: 'Includes the Castle Crags Wilderness area. Permit and camping rules must be confirmed against the final GPX and overnight sites before departure.',
     wikiArticles: [
       {
         title: 'Castle Crags',
@@ -267,26 +267,26 @@ export const getFireRestrictions = () => {
  * Section O summary statistics
  */
 export const sectionOLandManagement = {
-  totalMiles: 82.9,
+  totalMiles: 54.2,
   zones: landManagementZones.length,
   breakdown: {
-    federal: 77.0, // Lassen NF + Shasta-Trinity NF
-    state: 5.9,    // Castle Crags SP
-    wilderness: 12.0 // Castle Crags Wilderness portion
+    federal: 53.5,
+    state: 0.7,
+    wilderness: 0
   },
   primaryJurisdiction: 'U.S. Forest Service',
   permitsSummary: {
     required: [
       'California Campfire Permit (free, online)',
-      'Castle Crags Wilderness self-issue permit'
+      'Shasta-Trinity local overnight-rule confirmation'
     ],
     recommended: [
       'Leave detailed itinerary with emergency contact',
-      'Register at Castle Crags SP visitor center (thru-hiker courtesy)'
+      'Confirm Ash Camp and FS Road 38N11 access with the McCloud Ranger Station'
     ],
     notRequired: [
       'Bear canisters (but recommended)',
-      'Advance wilderness reservations (self-issue only)'
+      'Assume no permit mechanism until the ranger district confirms the current local rule'
     ]
   }
 };

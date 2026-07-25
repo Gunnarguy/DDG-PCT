@@ -128,7 +128,7 @@ struct SignInView: View {
             VStack(spacing: 8) {
                 Text("DDG Mission Control")
                     .font(.largeTitle.bold())
-                Text("PCT Section O · Burney Falls → Castle Crags")
+                Text("PCT · Burney Falls → Ash Camp")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

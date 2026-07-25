@@ -56,35 +56,10 @@ export function AuthProvider({ children }) {
     }
 
     try {
-      let teamProfile = await getTeamProfile();
-      
-      // Fallback if Gunnar's profile is missing from the database
-      const userEmail = authUser.email?.trim().toLowerCase();
-      if (!teamProfile && (userEmail === 'gunnarguy@me.com' || userEmail === 'gunnarguy@aol.com')) {
-        teamProfile = {
-          id: authUser.id,
-          name: 'Gunnar',
-          email: authUser.email,
-          role: 'admin',
-          hiker_id: 'gunnar'
-        };
-      }
-      
-      setProfile(teamProfile);
+      setProfile(await getTeamProfile(authUser.id));
     } catch (err) {
       console.error("Failed to fetch team profile:", err);
-      const userEmail = authUser.email?.trim().toLowerCase();
-      if (userEmail === 'gunnarguy@me.com' || userEmail === 'gunnarguy@aol.com') {
-        setProfile({
-          id: authUser.id,
-          name: 'Gunnar',
-          email: authUser.email,
-          role: 'admin',
-          hiker_id: 'gunnar'
-        });
-      } else {
-        setProfile(null);
-      }
+      setProfile(null);
     }
   }, []);
 
@@ -92,6 +67,13 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     let mounted = true;
     let timeoutId;
+    let initSettled = false;
+
+    const finishInitialization = () => {
+      initSettled = true;
+      if (timeoutId) clearTimeout(timeoutId);
+      if (mounted) setLoading(false);
+    };
 
     const initAuth = async () => {
       try {
@@ -103,7 +85,7 @@ export function AuthProvider({ children }) {
               if (mounted) {
                 setUser(mockUser);
                 setProfile(mockProfile);
-                setLoading(false);
+                finishInitialization();
               }
               return;
             } catch {
@@ -116,14 +98,15 @@ export function AuthProvider({ children }) {
           if (mounted) {
             setError(supabaseConfigError);
             setAuthUnavailable(true);
-            setLoading(false);
+            finishInitialization();
           }
           return;
         }
 
         // Set a timeout to prevent infinite spinning
         timeoutId = setTimeout(() => {
-          if (mounted && loading) {
+          if (mounted && !initSettled) {
+            initSettled = true;
             console.warn("Auth init timed out, setting loading to false");
             setAuthUnavailable(true);
             setLoading(false);
@@ -164,7 +147,7 @@ export function AuthProvider({ children }) {
                 setError(null);
                 setAuthUnavailable(false);
                 await fetchProfile(data.session.user);
-                setLoading(false);
+                finishInitialization();
               }
               return;
             }
@@ -181,17 +164,37 @@ export function AuthProvider({ children }) {
           window.history.replaceState(null, "", cleanUrl);
         }
 
+        const sessionResult = await Promise.race([
+          supabase.auth.getSession(),
+          new Promise((resolve) => {
+            setTimeout(() => resolve(null), 2000);
+          }),
+        ]);
+
+        // Public route data should not be held hostage by a browser auth-lock
+        // stall. The auth subscription can still restore the session later.
+        if (!sessionResult) {
+          if (mounted) {
+            setUser(null);
+            setProfile(null);
+            setError(null);
+            setAuthUnavailable(false);
+            finishInitialization();
+          }
+          return;
+        }
+
         const {
           data: { session },
           error: sessionError,
-        } = await supabase.auth.getSession();
+        } = sessionResult;
 
         if (sessionError) {
           console.error("Session error:", sessionError);
           if (mounted) {
             setError(sessionError.message);
             setAuthUnavailable(true);
-            setLoading(false);
+            finishInitialization();
           }
           return;
         }
@@ -203,14 +206,14 @@ export function AuthProvider({ children }) {
           if (session?.user) {
             await fetchProfile(session.user);
           }
-          setLoading(false);
+          finishInitialization();
         }
       } catch (err) {
         console.error("Auth init error:", err);
         if (mounted) {
           setError(err.message);
           setAuthUnavailable(true);
-          setLoading(false);
+          finishInitialization();
         }
       }
     };
@@ -256,27 +259,42 @@ export function AuthProvider({ children }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (
+        import.meta.env.DEV &&
+        !session &&
+        localStorage.getItem("pct-hike-viz::mock-user")
+      ) {
+        return;
+      }
+
       if (mounted) {
         setUser(session?.user ?? null);
         setError(null);
         setAuthUnavailable(false);
         if (session?.user) {
-          await fetchProfile(session.user);
+          // Supabase invokes this callback while its auth lock is held. Defer
+          // database work until the callback has returned.
+          setTimeout(() => {
+            if (mounted) void fetchProfile(session.user);
+          }, 0);
         } else {
           setProfile(null);
         }
 
         // Update last_seen timestamp
         if (event === "SIGNED_IN" && session?.user) {
-          supabase
-            .from("ddg_team_profiles")
-            .update({ last_seen: new Date().toISOString() })
-            .eq("id", session.user.id)
-            .then(() => {});
+          setTimeout(() => {
+            if (!mounted) return;
+            supabase
+              .from("ddg_team_profiles")
+              .update({ last_seen: new Date().toISOString() })
+              .eq("id", session.user.id)
+              .then(() => {});
 
-          // Refresh roster after a successful sign-in so presence shows quickly
-          fetchTeamRoster();
+            // Refresh roster after a successful sign-in so presence shows quickly
+            void fetchTeamRoster();
+          }, 0);
         }
       }
     });
@@ -308,31 +326,6 @@ export function AuthProvider({ children }) {
       return { success: false, error: "Please enter an email address." };
     }
 
-    // Check database to ensure email is allowlisted before attempting sign in
-    const adminEmails = ["gunnarguy@me.com", "gunnarguy@aol.com"];
-    const isAdminEmail = adminEmails.includes(normalizedEmail);
-
-    if (!isAdminEmail) {
-      try {
-        const { data, error: allowlistError } = await supabase
-          .from('allowed_emails')
-          .select('email')
-          .ilike('email', normalizedEmail)
-          .maybeSingle();
-
-        if (allowlistError || !data) {
-          const msg =
-            "This email is not on the DDG allowlist. Ask Gunnar to add it before signing in.";
-          setError(msg);
-          return { success: false, error: msg };
-        }
-      } catch (err) {
-        console.warn("Allowlist check failed, proceeding to attempt sign in:", err);
-        // If we can't check the allowlist (e.g., network error or permissions),
-        // we'll still let Supabase try, but this prevents most accidental signups.
-      }
-    }
-
     // IMPORTANT: On GitHub Pages the app lives under /DDG-PCT/ (Vite base).
     // Using only window.location.origin would drop the base path and break auth redirects.
     const redirectUrl = new URL(
@@ -354,8 +347,8 @@ export function AuthProvider({ children }) {
           email: normalizedEmail,
           options: {
             emailRedirectTo: redirectUrl,
-            // Allow auto-creation for allowlisted emails.
-            // We still block non-allowlisted emails above, so this won't create random accounts.
+            // New accounts are safe: the database trigger only creates a team
+            // profile for an allowlisted email and records all others as pending.
             shouldCreateUser: true,
           },
         }),
@@ -466,7 +459,7 @@ export function AuthProvider({ children }) {
   const devBypassLogin = (hikerId) => {
     if (!import.meta.env.DEV) return;
     const nameMap = {
-      gunnar: { name: 'Gunnar', email: 'gunnarguy@me.com', role: 'admin' },
+      gunnar: { name: 'Gunnar', email: 'gunnar@example.com', role: 'admin' },
       dan: { name: 'Dan', email: 'dan@example.com', role: 'architect' },
       drew: { name: 'Drew', email: 'drew@example.com', role: 'navigator' }
     };
@@ -546,8 +539,8 @@ export function AuthProvider({ children }) {
     error,
     authUnavailable,
     isAuthenticated: !!user,
-    isTeamMember: !!profile || ["gunnarguy@me.com", "gunnarguy@aol.com"].includes(user?.email?.trim().toLowerCase() ?? ""),
-    isAdmin: profile?.role === "admin" || ["gunnarguy@me.com", "gunnarguy@aol.com"].includes(user?.email?.trim().toLowerCase() ?? ""),
+    isTeamMember: !!profile,
+    isAdmin: profile?.role === "admin",
     syncStatus,
     teamRoster,
 

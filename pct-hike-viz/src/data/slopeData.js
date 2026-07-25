@@ -89,58 +89,76 @@ export const slopeCategories = [
  */
 export const sectionOTerrainProfile = {
   day1: {
-    distance: 10.0,
-    elevationGain: 776,
-    elevationLoss: 31,
-    maxGrade: 22, // degrees
-    avgGrade: 4.5,
+    distance: 8.2,
+    elevationGain: 713,
+    elevationLoss: 690,
+    maxGrade: 8.5,
     difficulty: 'Moderate',
-    notes: 'Gentle start. Mostly <15° terrain with occasional 15-25° sections.'
+    notes: 'Opening rollers to the documented Rock Creek camps.'
   },
   day2: {
-    distance: 9.0,
-    elevationGain: 1701,
-    elevationLoss: 41,
-    maxGrade: 28,
-    avgGrade: 9.5,
+    distance: 8.0,
+    elevationGain: 2027,
+    elevationLoss: 302,
+    maxGrade: 7.1,
     difficulty: 'Strenuous',
-    notes: 'Big climb day. Sustained 25-35° sections. Take breaks at viewpoints.'
+    notes: 'Largest early climb; start before the heat and pace conservatively.'
   },
   day3: {
-    distance: 8.0,
-    elevationGain: 230,
-    elevationLoss: 358,
-    maxGrade: 18,
-    avgGrade: 2.0,
-    difficulty: 'Easy-Moderate',
-    notes: 'Rolling terrain. Mostly 0-15° with gentle descents. Recovery day.'
+    distance: 7.7,
+    elevationGain: 1058,
+    elevationLoss: 702,
+    maxGrade: 7.3,
+    difficulty: 'Moderate',
+    notes: 'Rolling high-country terrain with more descent than climb.'
   },
   day4: {
-    distance: 9.5,
-    elevationGain: 1181,
-    elevationLoss: 836,
-    maxGrade: 26,
-    avgGrade: 6.5,
-    difficulty: 'Moderate-Strenuous',
-    notes: 'Mixed terrain. Some 25-35° climbs followed by steep descents. Pole-worthy.'
+    distance: 6.8,
+    elevationGain: 852,
+    elevationLoss: 692,
+    maxGrade: 8.9,
+    difficulty: 'Strenuous',
+    notes: 'Moderate leg to Moosehead Creek; verify campsite capacity and water.'
   },
   day5: {
-    distance: 9.5,
-    elevationGain: 2531,
-    elevationLoss: 2542,
-    maxGrade: 32,
-    avgGrade: 14.5,
-    difficulty: 'Very Strenuous',
-    notes: 'Hardest day. Multiple 25-35° climbs. Castle Crags approach has 35-40° sections.'
+    distance: 4.0,
+    elevationGain: 990,
+    elevationLoss: 166,
+    maxGrade: 9.6,
+    difficulty: 'Strenuous',
+    notes: 'Intentional short climb to the high saddle; this is a dry-camp plan.'
   },
   day6: {
-    distance: 6.0,
-    elevationGain: 0,
-    elevationLoss: 2552,
-    maxGrade: 30,
-    avgGrade: 12.0,
+    distance: 3.8,
+    elevationGain: 129,
+    elevationLoss: 844,
+    maxGrade: 6.2,
     difficulty: 'Strenuous (downhill)',
-    notes: 'All downhill but steep. 25-30° descents. Hard on knees. Poles essential.'
+    notes: 'Crosses the 6,146-ft route high point before descending to Alder / Star City.'
+  },
+  day7: {
+    distance: 6.5,
+    elevationGain: 937,
+    elevationLoss: 1191,
+    maxGrade: 8.3,
+    difficulty: 'Strenuous',
+    notes: 'Rolling ridge and descent to Deer Creek Spring.'
+  },
+  day8: {
+    distance: 5.5,
+    elevationGain: 1,
+    elevationLoss: 1780,
+    maxGrade: 10.2,
+    difficulty: 'Very Strenuous',
+    notes: 'Knee-intensive descent to Butcherknife Creek.'
+  },
+  day9: {
+    distance: 3.8,
+    elevationGain: 3,
+    elevationLoss: 920,
+    maxGrade: 9.3,
+    difficulty: 'Strenuous (downhill)',
+    notes: 'Short final descent to the Ash Camp pickup.'
   }
 };
 
@@ -149,22 +167,16 @@ export const sectionOTerrainProfile = {
  */
 export const terrainHazards = [
   {
-    location: 'Day 2: Hat Creek Rim climb',
-    concern: 'Sustained 25-28° grade for 3+ miles',
-    mitigation: 'Start early to avoid midday heat. Carry extra water. Take breaks.',
-    coordinates: [41.091989, -121.800767]
+    location: 'Day 2: major climb',
+    concern: 'Approximately 2,027 ft of gain in 8.0 miles',
+    mitigation: 'Start early, use a sustainable pace, and leave the last confirmed source with enough water.',
+    coordinates: [-121.798667, 41.085022]
   },
   {
-    location: 'Day 5: Castle Crags approach',
-    concern: 'Technical 32-35° granite sections',
-    mitigation: 'Poles recommended. Watch for loose rock. May need handholds on switchbacks.',
-    coordinates: [41.173417, -121.897491]
-  },
-  {
-    location: 'Day 6: Final descent',
-    concern: '2,552ft loss over 6 miles (avg 28° grade)',
-    mitigation: 'Knee braces advised. Take slow. Consider camp at mile 46 to break descent into 2 days.',
-    coordinates: [41.19, -121.93]
+    location: 'Day 8: Butcherknife Creek descent',
+    concern: 'Approximately 1,780 ft of loss in 5.5 miles',
+    mitigation: 'Use poles, shorten stride, manage hotspots early, and allow more time than flat mileage suggests.',
+    coordinates: [-122.026677, 41.129422]
   }
 ];
 
@@ -189,7 +201,10 @@ export const getDayTerrainSummary = (day) => {
     ...profile,
     categoryEmoji: category.emoji,
     categoryLabel: category.label,
-    estimatedTime: (profile.distance / parseFloat(category.hikingSpeed || 2.0)).toFixed(1) + ' hours',
+    estimatedTime: (
+      profile.distance / 2.2 +
+      profile.elevationGain / 1500
+    ).toFixed(1) + ' hours',
     terrainBreakdown: estimateTerrainBreakdown(profile)
   };
 };

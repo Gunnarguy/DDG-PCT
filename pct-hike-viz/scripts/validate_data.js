@@ -54,6 +54,27 @@ function main() {
   const waterSources = canonical?.waterSources || [];
   assert(Array.isArray(waterSources), "waterSources must be an array");
   assert(waterSources.length > 0, "waterSources array is empty");
+  assert(
+    canonical?.route?.metadata?.active_endpoint === "Ash Camp",
+    "Active endpoint must be Ash Camp"
+  );
+  assert(
+    Math.abs(Number(canonical?.route?.metadata?.active_distance_miles) - 54.2) < 0.2,
+    "Active route must measure approximately 54.2 miles"
+  );
+  assert(
+    Array.isArray(canonical?.route?.extendedPath) &&
+      canonical.route.extendedPath.length > 1,
+    "Future-route geometry must be retained separately"
+  );
+  assert(
+    waterSources.every(
+      (source) =>
+        source.reportStatus === "current-condition-check-required" &&
+        source.reliability === "unverified"
+    ),
+    "Water points must not be presented as current verified flow"
+  );
 
   const segmentMiles = sumRouteSegments(canonical.route);
   if (segmentMiles !== null) {

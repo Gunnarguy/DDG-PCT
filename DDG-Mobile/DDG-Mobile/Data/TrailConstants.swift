@@ -83,4 +83,20 @@ enum TrailConstants {
         let gainTime = gainFeet / gainPerHourFt
         return baseTime + gainTime  // hours
     }
+
+    /// Smoothed GPS elevation gain for the primary nine-day itinerary.
+    static func elevationGain(for day: Int) -> Double {
+        switch day {
+        case 1: return 713
+        case 2: return 2_027
+        case 3: return 1_058
+        case 4: return 852
+        case 5: return 990
+        case 6: return 129
+        case 7: return 937
+        case 8: return 1
+        case 9: return 3
+        default: return 0
+        }
+    }
 }

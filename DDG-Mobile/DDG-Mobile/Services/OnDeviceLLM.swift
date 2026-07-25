@@ -89,7 +89,7 @@ final class OnDeviceLLM {
 
             let session = LanguageModelSession(model: .default)
 
-            var context = "Current conditions for PCT Section O (Burney Falls → Castle Crags, ~78 mi, 6 days):\n\n"
+            var context = "Current conditions for the active PCT trip (Burney Falls → Ash Camp, 54.2 GPS mi, 9 days):\n\n"
 
             // Fires
             if fires.isEmpty {
@@ -141,7 +141,7 @@ final class OnDeviceLLM {
             }
 
             let prompt = """
-            You are a trail safety advisor for the DDG PCT hiking team (3 hikers, 6-day thru-hike).
+            You are a trail safety advisor for the DDG PCT hiking team (3 hikers, 9-day section hike).
             Based on ALL these conditions, provide a comprehensive but concise safety briefing (3-4 sentences).
             Prioritize: immediate threats (fires, AQI), altitude concerns, water reliability, and communication gaps.
             Include specific actionable advice.
@@ -167,7 +167,7 @@ final class OnDeviceLLM {
         team: [DDGTeam.Member]
     ) async throws -> String {
         let totalMiles = camps.last?.routeMile ?? 0
-        let totalDays = (camps.map(\.day).max() ?? 0) + 1
+        let totalDays = Set(camps.map(\.day).filter { $0 > 0 }).count
 
         #if canImport(FoundationModels)
         if #available(iOS 26.0, macOS 26.0, *) {
@@ -178,7 +178,7 @@ final class OnDeviceLLM {
             let session = LanguageModelSession(model: .default)
 
             var context = "PCT Section O Thru-Hike Overview:\n"
-            context += "- Route: Burney Falls → Castle Crags, \(String(format: "%.1f", totalMiles)) miles, \(totalDays) days\n"
+            context += "- Route: Burney Falls → Ash Camp, \(String(format: "%.1f", totalMiles)) miles, \(totalDays) days\n"
             context += "- Team: \(team.map { "\($0.name) (\($0.role))" }.joined(separator: ", "))\n"
             context += "- GPS data: \(trailPointCount) trail points mapped\n"
             context += "- Water sources: \(waterSources.count) identified\n\n"
@@ -203,7 +203,7 @@ final class OnDeviceLLM {
 
             let prompt = """
             You are a PCT thru-hiking mission planner. Generate a concise mission briefing (3-4 sentences) \
-            that captures the key details of this 6-day section hike. Include: total distance, daily averages, \
+            that captures the key details of this 9-day section hike. Include: total distance, daily averages, \
             terrain character, team composition, and any notable logistical considerations. \
             Make it sound like a professional trail operations brief.
 
@@ -231,16 +231,7 @@ final class OnDeviceLLM {
 
         let dayDist = camps.reduce(0.0) { $0 + $1.distance }
 
-        // Calculate elevation gain from trail points if available
-        var elevGainFt: Double = 0
-        if trailPoints.count > 1 {
-            for i in 1..<trailPoints.count {
-                let diff = trailPoints[i].elevationFeet - trailPoints[i-1].elevationFeet
-                if diff > TrailConstants.elevationThreshold {
-                    elevGainFt += diff
-                }
-            }
-        }
+        let elevGainFt = TrailConstants.elevationGain(for: day + 1)
         let estHours = TrailConstants.estimatedTime(miles: dayDist, gainFeet: elevGainFt)
 
         #if canImport(FoundationModels)
@@ -330,7 +321,7 @@ final class OnDeviceLLM {
 
             let session = LanguageModelSession(model: .default)
 
-            var context = "Gear Analysis for DDG PCT Section O (3 hikers, 6 days):\n\n"
+            var context = "Gear Analysis for DDG PCT Section O (3 hikers, 9 days):\n\n"
             context += "Total pack weight: \(String(format: "%.1f", totalOz)) oz (\(String(format: "%.1f", totalOz / 16.0)) lb)\n"
             context += "Team: \(team.map { "\($0.name) (\($0.role))" }.joined(separator: ", "))\n\n"
 
@@ -345,14 +336,14 @@ final class OnDeviceLLM {
                 context += "  - \(item.name): \(String(format: "%.1f", item.weightInOz)) oz [\(item.category)]\n"
             }
 
-            context += "\nTrail context: 6-day thru-hike, ~78 miles, moderate altitude (4000-8000 ft).\n"
+            context += "\nTrail context: 9-day section hike, 54.2 GPS miles, route high point about 6,146 ft.\n"
             context += "Key considerations: water carry between sources, satellite communicator weight, camp cooking gear.\n"
 
             let prompt = """
             You are a gear optimization advisor for a 3-person PCT thru-hiking team.
             Analyze this gear list and provide a brief assessment (3-4 sentences).
             Cover: total weight judgment (ultralight <10lb, light 10-15lb, moderate 15-20lb, heavy 20+lb), \
-            heaviest categories, and any specific suggestions for a 6-day section hike with \
+            heaviest categories, and any specific suggestions for a 9-day section hike with \
             water carries and moderate altitude. Be practical and specific.
 
             \(context)

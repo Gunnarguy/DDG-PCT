@@ -1,20 +1,20 @@
 # DDG-PCT Mission Control
 
-Interactive web app for a **Burney Falls → Castle Crags** PCT section hike. Built from Dad's original planning doc with GPS-accurate data and mission-critical logistics.
+Interactive web app for the active **Burney Falls → Ash Camp** PCT section hike. Built from Dad's original planning doc with GPS-accurate data and mission-critical logistics.
 
 ## 🎯 The Plan
 
-**52 miles • 6 hiking days • August 29 - September 6**
+**54.2 GPS miles • 9 hiking days • August 29–September 6, 2026**
 
-Dad's exact route from `Original-DDG-PCT-PDF.txt`:
-- Day 1: Burney Falls → Round Valley (10 mi)
-- Day 2: Round Valley → Black Rock (9 mi)  
-- Day 3: Black Rock → Horse Camp (8 mi)
-- Day 4: Horse Camp → Indian Springs (9 mi)
-- Day 5: Indian Springs → Castle Crags Vista (8 mi)
-- Day 6: Castle Crags Vista → Castle Crags SP (8 mi)
+The approximately 52 PCT guide miles in the original concept terminate near Ash
+Camp. The checked-in Garmin course measures 54.2 miles from the Burney Falls
+start to the official Ash Camp pickup pin. Route mile 52 itself is not a vehicle
+exit.
 
-Designed for **"someone not in great shape"** with 8-10 mile days.
+The active plan uses nine documented camp-to-camp legs averaging 6.0 miles, with
+an 8.2-mile longest day and a 3.8-mile final day. The full 82.9-mile Garmin
+track to Castle Crags remains stored as a future-trip alternative and is not
+part of the 2026 itinerary.
 
 ## 🚀 Quick Start
 
@@ -58,16 +58,18 @@ DDG-PCT/
 npm run dev:viz                       # Dev server (remote preview)
 npm run build:viz                     # Production build
 npm run fetch:pct                     # Update USFS PCT route data
+node scripts/configure_active_route.js # Crop active geometry at Ash Camp
 python scripts/snap_camps_to_route.py # Snap camp coords to trail
 node scripts/validate_water_sources.mjs # Compare itinerary vs PCT Water Report
 ```
 
 ## 📊 Data Pipeline
 
-1. **Source truth**: `Original-DDG-PCT-PDF.txt` + `PCT-prep-guide.md`
-2. **GPS tracks**: Garmin GPX files → `hike_data.json` (via snapper script)
-3. **UI content**: `planContent.js` + `resourcesIndex.js` (hand-curated)
-4. **Map render**: `App.jsx` → `TrailMap` + `Sidebar` + `ElevationProfile`
+1. **Trip facts and unresolved decisions**: `src/data/tripFacts.js`
+2. **GPS geometry**: Garmin GPX → `hike_data.json`
+3. **Current field conditions**: official closures, PCT Water Report, NIFC, and AQI feeds
+4. **Narrative context**: `Original-DDG-PCT-PDF.txt` (preserved, not treated as measured geometry)
+5. **UI content**: `planContent.js` + `resourcesIndex.js`
 
 **⚠️ Note on Public Repo:**
 To keep this repository lightweight, the raw high-resolution GPX files and the generated `hike_data.json` (48k+ lines) are **excluded** from git.
@@ -89,7 +91,7 @@ All environment variables live in `pct-hike-viz/.env`:
 | Variable | Purpose |
 |----------|---------|
 | `VITE_HIKE_DATA_VERSION` | Cache-busts `hike_data.json` so browsers pull the latest mission geometry. |
-| `VITE_EPA_AIRNOW_API_KEY` | Required for live AQI polling via the EPA AirNow API inside `WildfireMonitor`. Without it, the UI falls back to placeholder values. |
+| `AIRNOW_API_KEY` | Optional Supabase Edge Function secret for EPA AirNow observations. Without it, the function clearly labels its Open-Meteo CAMS fallback. |
 
 The repository ships with placeholder values—replace them with your own keys before production. Free AirNow API keys are available at [AirNow.gov](https://docs.airnowapi.org/). 
 
@@ -139,9 +141,9 @@ The repository ships with placeholder values—replace them with your own keys b
 
 ## 🎯 Status
 
-✅ **Core mission complete**: Map, itinerary, gear, logistics all wired  
-✅ **Data verified**: GPS-accurate elevations, 52-mile route confirmed  
-✅ **Ready to hike**: All placeholder content removed, factual data only
+✅ **Route scope decided**: 54.2 GPS miles to Ash Camp over nine hiking days
+✅ **Backend secured**: team profiles are the authorization source of truth
+⚠️ **Still to verify**: eight documented camps, current water, FS Road 38N11 condition, late-arrival sleep access, closures, and the September 7 flight time
 
 ---
 

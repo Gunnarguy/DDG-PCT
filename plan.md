@@ -1,6 +1,6 @@
-# Plan: PCT Hike Visualization (Burney Falls to Castle Crags)
+# Plan: PCT Hike Visualization (Burney Falls to Ash Camp)
 
-This plan outlines the steps to build a web application that visualizes the 6-day PCT hike described in the user's text file, utilizing the `nst-guide` ecosystem.
+This plan outlines the original implementation of a PCT planning application. The current canonical itinerary covers 54.2 Garmin miles from Burney Falls to Ash Camp over nine hiking days. The remaining geometry to Castle Crags is preserved for a future trip with a longer vacation window.
 
 ## 1. Investigation Findings
 
@@ -49,9 +49,9 @@ We will build a lightweight **React** application using **Vite**. We will use **
 4.  **Data Integration**: Convert the text itinerary to GeoJSON and load it onto the map.
 5.  **Deployment**: Deploy to GitHub Pages.
 
-## 3. Itinerary Data (Draft)
+## 3. Superseded Source-Narrative Draft
 
-Based on your text file, here are the segments. *Note: Coordinates need to be verified.*
+These six names are retained only to document the original text conversion. They are not the active or verified camp plan. The live application now uses nine GPS-backed legs ending at the documented Ash Camp road access.
 
 *   **Day 1**: Burney Falls -> Round Valley Campground
 *   **Day 2**: Round Valley -> Black Rock Camp

@@ -157,7 +157,11 @@ function WildfireMonitor() {
                       {aqiInfo.emoji} {reading.aqi}
                     </div>
                     <div className="aqi-category">{aqiInfo.category}</div>
-                    {reading.pm25 && <div className="aqi-detail">PM2.5: {reading.pm25}</div>}
+                    {reading.pm25 !== null && reading.pm25 !== undefined && (
+                      <div className="aqi-detail">
+                        PM2.5: {reading.pm25} {reading.pm25Unit || ""}
+                      </div>
+                    )}
                   </>
                 ) : (
                   <div className="aqi-unavailable">Data unavailable</div>

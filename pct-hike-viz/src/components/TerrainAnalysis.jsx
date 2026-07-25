@@ -90,7 +90,7 @@ function TerrainAnalysis({ selectedDay = null }) {
       <div className="analysis-header">
         <h3>⛰️ Terrain Difficulty Analysis</h3>
         <p className="analysis-subtitle">
-          Slope-angle breakdown based on GPS elevation profile
+          GPS elevation effort · maximum grade sampled over rolling 0.1-mile windows
         </p>
       </div>
 
@@ -153,19 +153,19 @@ function TerrainAnalysis({ selectedDay = null }) {
         <div className="summary-grid">
           <div className="summary-item">
             <span className="summary-label">Easiest Day</span>
-            <span className="summary-value">🟢 Day 3 (Rolling terrain)</span>
+            <span className="summary-value">🟢 Day 3 (860ft gain)</span>
           </div>
           <div className="summary-item">
             <span className="summary-label">Hardest Day</span>
-            <span className="summary-value">🔴 Day 5 (2,531ft gain)</span>
+            <span className="summary-value">🔴 Day 2 (2,256ft gain)</span>
           </div>
           <div className="summary-item">
             <span className="summary-label">Most Technical</span>
-            <span className="summary-value">🟣 Castle Crags (32-35° granite)</span>
+            <span className="summary-value">🟣 Day 8 (10.2° rolling max)</span>
           </div>
           <div className="summary-item">
             <span className="summary-label">Total Elevation</span>
-            <span className="summary-value">+6,419ft / −6,360ft</span>
+            <span className="summary-value">+10,659ft / −11,214ft</span>
           </div>
         </div>
       </div>
@@ -174,18 +174,18 @@ function TerrainAnalysis({ selectedDay = null }) {
       <div className="terrain-gear-tips">
         <h4>🎒 Terrain-Specific Gear Recommendations</h4>
         <ul>
-          <li><strong>Trekking poles (essential):</strong> Days 5-6 have sustained 25-30° grades. Poles reduce knee stress by 25%.</li>
-          <li><strong>Knee braces/compression:</strong> Day 6 is 2,552ft descent. Protect your knees early.</li>
-          <li><strong>Extra traction:</strong> Granite sections can be slippery when wet. Consider Microspikes if late season.</li>
-          <li><strong>Hand protection:</strong> Scrambling on Castle Crags may require handholds. Light gloves useful.</li>
+          <li><strong>Trekking poles:</strong> Prioritize them for Days 5, 6, and 9, which each lose roughly 1,800–2,300ft.</li>
+          <li><strong>Foot care:</strong> Nine consecutive days leave no zero-day recovery; treat hotspots immediately.</li>
+          <li><strong>Traction:</strong> Use shoes with dependable wet-rock grip; do not imply microspikes are needed without a current snow/ice report.</li>
+          <li><strong>Pacing:</strong> Days 2 and 8 each climb more than 2,200ft. Start early and protect calories and water.</li>
         </ul>
       </div>
 
       {/* Data attribution */}
       <div className="analysis-footer">
         <p className="data-note">
-          Analysis based on USGS-validated GPS elevation data. 
-          Slope methodology adapted from <strong>nst.guide</strong> + CalTopo.
+          Elevation totals use five-point smoothing and a 10ft change threshold.
+          Grade maxima use rolling 0.1-mile GPS windows to avoid point-to-point noise.
         </p>
       </div>
     </div>

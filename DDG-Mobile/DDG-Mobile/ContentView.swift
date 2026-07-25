@@ -9,7 +9,16 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @State private var selectedTab = 0
+    private enum AppTab: Hashable {
+        case mission
+        case plan
+        case map
+        case field
+        case gear
+        case info
+    }
+
+    @State private var selectedTab: AppTab = .mission
     @State private var network = NetworkMonitor.shared
     @Environment(AuthManager.self) private var auth
     @Query private var allOpsEntries: [OpsLogEntry]
@@ -20,28 +29,22 @@ struct ContentView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            Tab("Mission", systemImage: "flag.fill", value: 0) {
+            Tab("Mission", systemImage: "flag.fill", value: AppTab.mission) {
                 MissionView()
             }
-            Tab("Prep", systemImage: "checklist", value: 1) {
-                PrepView()
+            Tab("Plan", systemImage: "calendar.badge.clock", value: AppTab.plan) {
+                PlanWorkspaceView()
             }
-            Tab("Map", systemImage: "map.fill", value: 2) {
+            Tab("Map", systemImage: "map.fill", value: AppTab.map) {
                 MapContainerView()
             }
-            Tab("Itinerary", systemImage: "calendar", value: 3) {
-                ItineraryView()
+            Tab("Field", systemImage: "exclamationmark.shield.fill", value: AppTab.field) {
+                FieldWorkspaceView()
             }
-            Tab("Safety", systemImage: "exclamationmark.shield.fill", value: 4) {
-                SafetyView()
-            }
-            Tab("Gear", systemImage: "backpack.fill", value: 5) {
+            Tab("Gear", systemImage: "backpack.fill", value: AppTab.gear) {
                 GearPlannerView()
             }
-            Tab("Ops Log", systemImage: "list.bullet.clipboard.fill", value: 6) {
-                OpsLogView()
-            }
-            Tab("Info", systemImage: "info.circle.fill", value: 7) {
+            Tab("Info", systemImage: "info.circle.fill", value: AppTab.info) {
                 InfoView()
             }
         }
@@ -56,6 +59,68 @@ struct ContentView: View {
             }
             .padding(.trailing, 16)
             .allowsHitTesting(false)
+        }
+    }
+}
+
+private struct PlanWorkspaceView: View {
+    private enum Mode: String, CaseIterable, Identifiable {
+        case itinerary = "Itinerary"
+        case preparation = "Preparation"
+
+        var id: Self { self }
+    }
+
+    @State private var mode: Mode = .itinerary
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Picker("Planning view", selection: $mode) {
+                ForEach(Mode.allCases) { mode in
+                    Text(mode.rawValue).tag(mode)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            .padding(.top, 8)
+
+            switch mode {
+            case .itinerary:
+                ItineraryView()
+            case .preparation:
+                PrepView()
+            }
+        }
+    }
+}
+
+private struct FieldWorkspaceView: View {
+    private enum Mode: String, CaseIterable, Identifiable {
+        case safety = "Safety"
+        case opsLog = "Ops Log"
+
+        var id: Self { self }
+    }
+
+    @State private var mode: Mode = .safety
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Picker("Field view", selection: $mode) {
+                ForEach(Mode.allCases) { mode in
+                    Text(mode.rawValue).tag(mode)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            .padding(.top, 8)
+
+            switch mode {
+            case .safety:
+                SafetyView()
+            case .opsLog:
+                OpsLogView()
+            }
         }
     }
 }

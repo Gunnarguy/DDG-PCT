@@ -54,12 +54,16 @@ def calc_gain_loss(start_idx, end_idx, smoothed_elevations):
 def main():
     # Load data
     script_dir = Path(__file__).parent
-    data_path = script_dir.parent / 'src' / 'hike_data.json'
+    data_path = script_dir.parent / 'public' / 'data' / 'hike_data.json'
     with open(data_path) as f:
         data = json.load(f)
 
     route_coords = data.get('route', {}).get('path', data.get('route', {}).get('geometry', {}).get('coordinates', []))
-    camps = [f for f in data['features'] if f['properties'].get('day', -1) >= 0]
+    camps = [
+        feature for feature in data['features']
+        if feature['properties'].get('itinerary') == 'express'
+        and 0 <= feature['properties'].get('day', -1) <= 9
+    ]
     camps.sort(key=lambda x: x['properties']['day'])
 
     smoothed_elevations = smooth_elevations(route_coords)

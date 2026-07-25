@@ -251,7 +251,7 @@ export function LoginScreen() {
       <div className="login-container">
         <div className="login-header">
           <h1>🏔️ DDG Mission Control</h1>
-          <p className="subtitle">Burney Falls → Castle Crags PCT Section Hike</p>
+          <p className="subtitle">Burney Falls → Ash Camp PCT Section Hike</p>
         </div>
 
         <div className="login-card">

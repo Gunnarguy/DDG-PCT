@@ -24,7 +24,7 @@ actor WildfireService {
     static let aqMonitoringPoints: [MonitoringPoint] = [
         MonitoringPoint(name: "Burney Falls", latitude: 41.013, longitude: -121.653),
         MonitoringPoint(name: "Hat Creek",    latitude: 41.027, longitude: -121.732),
-        MonitoringPoint(name: "Castle Crags", latitude: 41.173, longitude: -121.897),
+        MonitoringPoint(name: "Ash Camp", latitude: 41.1171, longitude: -122.0606),
     ]
 
     // MARK: - API Endpoints

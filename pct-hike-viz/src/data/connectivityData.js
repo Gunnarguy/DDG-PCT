@@ -1,5 +1,5 @@
 // Cell coverage and satellite connectivity data for Section O
-// Aligned with DDG-PCT 6-day itinerary: Burney Falls -> Castle Crags
+// Conservative planning assumptions for the active 54.2-mile Burney Falls → Ash Camp route.
 export const connectivityZones = [
   {
     name: 'Burney Falls Trailhead',
@@ -14,88 +14,64 @@ export const connectivityZones = [
     notes: 'State park has reliable cell service. Last strong signal before trail.'
   },
   {
-    name: 'Round Valley Campground',
-    mile: 1436.6, // Approx based on +15.9mi
-    coordinates: [-121.732282, 41.027728],
+    name: 'Peavine Creek camp',
+    mile: 1433.7,
+    coordinates: [-121.7853913, 41.060513],
     cellCoverage: {
       verizon: 'none',
       att: 'none',
       tmobile: 'none'
     },
     satelliteCompatible: true,
-    notes: 'Deep valley location. No cell service. Satellite SOS and messaging only.'
+    notes: 'Conservative planning assumption from terrain and legacy notes; carrier coverage has not been field-verified.'
   },
   {
-    name: 'Black Rock Camp',
-    mile: 1451.0, // Approx based on +30.3mi
-    coordinates: [-121.800767, 41.091989],
+    name: 'Moosehead Creek camp',
+    mile: 1448.2,
+    coordinates: [-121.8318419, 41.1771229],
     cellCoverage: {
       verizon: 'none',
       att: 'none',
       tmobile: 'none'
     },
     satelliteCompatible: true,
-    notes: 'Remote wilderness camp. Zero cell coverage. Good sky view for satellite.'
+    notes: 'Conservative no-cell assumption. This is a coverage sample point, not a verified campsite.'
   },
   {
-    name: 'Horse Camp',
-    mile: 1463.7, // Approx based on +43.0mi
-    coordinates: [-121.783984, 41.16896],
+    name: 'Alder / Star City camp',
+    mile: 1456.1,
+    coordinates: [-121.9202143, 41.157895],
     cellCoverage: {
       verizon: 'none',
       att: 'none',
       tmobile: 'none'
     },
     satelliteCompatible: true,
-    notes: 'Forested area. No cell service. Satellite signals may be obstructed by trees.'
+    notes: 'Conservative no-cell assumption; tree cover may also slow satellite acquisition.'
   },
   {
-    name: 'Indian Springs Camp',
-    mile: 1478.1, // Approx based on +57.4mi
-    coordinates: [-121.897491, 41.173417],
-    cellCoverage: {
-      verizon: 'none',
-      att: 'none',
-      tmobile: 'none'
-    },
-    satelliteCompatible: true,
-    notes: 'Remote spring. No cell service. Satellite required.'
-  },
-  {
-    name: 'Castle Crags Vista Camp',
-    mile: 1490.8, // Approx based on +70.1mi
-    coordinates: [-121.982003, 41.139897],
+    name: 'Deer Creek Spring camp',
+    mile: 1462.6,
+    coordinates: [-121.9860782, 41.1356197],
     cellCoverage: {
       verizon: 'spotty',
       att: 'none',
       tmobile: 'none'
     },
     satelliteCompatible: true,
-    notes: 'High elevation vista. Possible spotty Verizon signal from I-5 corridor. Excellent satellite visibility.'
+    notes: 'Conservative no-cell assumption; do not plan around intermittent ridge exposure.'
   },
   {
-    name: 'Castle Crags State Park',
-    mile: 1498.8, // Approx based on +78.1mi
-    coordinates: [-122.039017, 41.114517],
+    name: 'Ash Camp pickup',
+    mile: 1472.0,
+    coordinates: [-122.0606252, 41.1170914],
     cellCoverage: {
-      verizon: 'good',
-      att: 'good',
-      tmobile: 'fair'
+      verizon: 'unknown',
+      att: 'unknown',
+      tmobile: 'unknown'
     },
     satelliteCompatible: true,
-    notes: 'Full cell service restored. Reliable connectivity for coordination.'
-  },
-  {
-    name: 'Dunsmuir Town',
-    mile: 1510,
-    coordinates: [-122.2719, 41.2084],
-    cellCoverage: {
-      verizon: 'excellent',
-      att: 'excellent',
-      tmobile: 'good'
-    },
-    satelliteCompatible: true,
-    notes: 'Full service town. All carriers strong. WiFi available at businesses.'
+    notes: 'Remote forest-road trailhead. Use inReach for the pickup rendezvous and treat cellular service as unavailable until field-tested.'
   }
 ];
 

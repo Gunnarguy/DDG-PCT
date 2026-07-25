@@ -1,31 +1,35 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// PCT SECTION O: BURNEY FALLS → CASTLE CRAGS
+// PCT SECTION O: BURNEY FALLS → ASH CAMP
 // ═══════════════════════════════════════════════════════════════════════════════
-// Official PCT mile markers: 1420.7 (Burney Falls) → 1472.7 (Castle Crags 6-day plan) | Full Section O to 1502.0 (Dunsmuir)
-// GPS-measured distance (Burney → Castle Crags plan): 52.0 miles | Full Section O track (Burney → Dunsmuir): 82.9 miles
+import { primaryItinerary, tripFacts } from './tripFacts';
+
+// PCT mile labels vary between guide-data vintages. Route-relative GPS mileage
+// is the canonical distance throughout the app.
+// GPS-measured active distance: 54.2 miles from Burney Falls to Ash Camp.
+// The remaining Garmin geometry to Castle Crags is retained as a future-trip alternative.
 // Region: Shasta-Trinity National Forest, NorCal
-// Wilderness: Castle Crags Wilderness (no quota permits needed)
 // Best season: Late Aug - Early Sept (after snowmelt, before fall rains)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export const sectionOMeta = {
   name: 'Section O',
   fullName: 'California Section O',
-  route: 'Burney Falls → Castle Crags (6-day plan)',
+  route: 'Burney Falls → Ash Camp (9-day plan)',
   pctMileStart: 1420.7,
-  pctMileEnd: 1472.7, // 6-day plan ends at ~52 miles
-  gpsDistance: 52.0,  // 6-day itinerary (Burney to Castle Crags SP)
-  sourceEstimate: '52', // From Original-DDG-PCT-PDF.txt 6-day plan
+  pctMileEnd: 1472.0,
+  gpsDistance: tripFacts.route.gpsMiles,
+  sourceEstimate: 'approximately 52 PCT miles / 54.2 Garmin miles',
   region: 'Shasta-Trinity National Forest',
-  wilderness: 'Castle Crags Wilderness',
-  permitType: 'Self-issued (free, no quota)',
+  wilderness: 'No Castle Crags segment in the active trip',
+  permitType: 'Local rules must be confirmed',
   bestSeason: 'Late August - Early September',
   highlights: [
-    '⚠️ ELEVATION WARNING: PDF underestimates altitude by 500-1,775ft throughout. Days 2-5 are at 5,000-5,600ft, NOT 3,500-4,800ft.',
+    'ACTIVE ROUTE: 54.2 Garmin miles to the road-accessible Ash Camp finish.',
+    'CAMP STATUS: each overnight is documented in Halfmile data but still needs a current capacity, restriction, and water check.',
     'Burney Falls - "The 8th Wonder of the World"',
-    'Castle Crags granite spires',
+    'McCloud River and Ash Camp finish',
     'Mt. Shasta views',
-    'Manageable 8-10 mile days (but higher altitude)'
+    'Nine hiking days averaging 6.0 miles; longest day 8.2 miles'
   ],
   sources: ['ddg-pdf', 'halfmile', 'pcta', 'farout']
 };
@@ -85,10 +89,11 @@ export const dataSources = {
   gps: {
     id: 'gps-route',
     name: 'Garmin Course 334289912',
-    description: 'GPS-measured route geometry from Garmin Connect',
+    description: 'Garmin geometry cropped at the official Ash Camp pickup pin',
     type: 'gps',
-    distance: 82.9,
-    pointCount: 48884
+    distance: 54.2,
+    fullTrackDistance: 82.9,
+    pointCount: 6183
   },
   routes: [
     { id: 'wilderness-vagabond', url: 'http://wildernessvagabond.com/PCT-2017/PCT-2017.htm', name: 'Wilderness Vagabond 2017 PCT log' },
@@ -101,6 +106,8 @@ export const dataSources = {
   ],
   transport: [
     { id: 'pcta-transport', url: 'https://www.pcta.org/discover-the-trail/backcountry-basics/pct-transportation/', name: 'PCTA Transportation' },
+    { id: 'pcta-ash-camp', url: 'https://explore.pcta.org/trailheads/ash-camp', name: 'PCTA Ash Camp Trailhead' },
+    { id: 'mt-shasta-taxi', url: 'https://mtshastataxi.com/contact-us/', name: 'Mt. Shasta Taxi' },
     { id: 'stage-bus', url: 'https://www.mtshastanews.com/story/news/politics/county/2018/07/18/stage-bus-now-option-for/11494049007/', name: 'STAGE Bus Mt. Shasta' },
     { id: 'srta', url: 'https://srta.ca.gov/DocumentCenter/View/9622/Need-A-Ride_Brochure', name: 'SRTA Need-A-Ride' }
   ],
@@ -120,32 +127,31 @@ export const dataSources = {
 
 export const scheduleOptions = [
   {
-    title: '9-Day Express',
-    dates: 'Sat, Aug 29 – Sun, Sep 6',
-    vibe: 'Labor Day homecoming; minimal PTO required.',
+    title: '9-Day Primary',
+    dates: 'Sat, Aug 29 – Sun, Sep 6, 2026',
+    vibe: 'Confirmed 54.2-mile Burney Falls to Ash Camp trip.',
     highlights: [
-      'Matches the narrative itinerary perfectly (Burney Falls → Castle Crags).',
-      'Allows Labor Day to be spent at home recovering.',
-      'Tighter buffer for weather or zero-days.'
+      'Nine documented camp-to-camp legs averaging 6.0 miles.',
+      'Longest day is 8.2 miles; Days 5, 6, and 9 are intentionally short.',
+      'Eight overnight areas still require current campsite and water verification.'
     ],
     sourceIds: ['doc-day-plan', 'doc-schedule-options']
   },
   {
-    title: '16-Day Detox',
-    dates: 'Sat, Aug 22 – Sun, Sep 6',
-    vibe: 'Slower pace, more restorative, mirrors the April detox trip.',
+    title: 'Future Extended Route',
+    dates: 'Not scheduled',
+    vibe: 'The retained 82.9-mile Garmin track to Castle Crags requires a longer trip window.',
     highlights: [
-      'Adds side trips and recovery nights.',
-      'Requires more PTO and financing.',
-      'Beneficial for true unplugging from external news and social media.',
-      'Requires Dan to start Aug 22 due to Logotherapy conference.'
+      'Not part of the August 29–September 6 trip.',
+      'Preserved for a future 14–16 day itinerary.',
+      'Requires new camps, water validation, pickup logistics, and PTO.'
     ],
-    sourceIds: ['doc-detox-trip', 'doc-schedule-options']
+    sourceIds: ['gps-route', 'doc-detox-trip']
   }
 ];
 
 export const travelPlan = {
-  driver: "Gunnar (Mikaela if available for pickup)",
+  driver: "Mikaela",
   team: ["Dan", "Drew", "Gunnar"],
   sourceIds: [
     "doc-transport-dunsmuir",
@@ -154,86 +160,109 @@ export const travelPlan = {
   ],
   inbound: [
     {
-      step: "Home base: 2800 Joseph Avenue → pick up arrivals at SJC (preferred) or SFO based on flights.",
+      step: "Friday, August 28: Mikaela picks up Dan and Drew at SJC after their confirmed 6:05 PM landing.",
       sourceIds: ["doc-day-plan"],
     },
     {
-      step: "If rental at SJC/SFO: drive I-880/I-680 → I-80 → I-505 → I-5 → CA-299E → CA-89N (~4.75-5.25 hours).",
+      step: "Allow roughly 45–60 minutes for bags and loading, then drive toward Burney via I-680/I-80/I-505/I-5/CA-299/CA-89.",
       sourceIds: ["pcta-transport"],
     },
     {
-      step: "If rail from SJC: VTA Rapid 60 or rideshare to San Jose Diridon → Coast Starlight to Redding → short Uber/taxi to RDD rental → drive CA-299E.",
-      sourceIds: ["reddit-amtrak-coast"],
-    },
-    {
-      step: "If rail from SFO: AirTrain → BART Yellow line to Richmond → Coast Starlight to Redding → rental for CA-299E/CA-89N.",
-      sourceIds: ["pcta-transport", "reddit-amtrak-coast"],
-    },
-    {
-      step: "Stage vehicle at Burney Falls (confirm overnight parking and pay $10/day).",
+      step: "Treat arrival near Burney as late-night. Confirm campground after-hours entry in advance and keep a reserved motel/camp fallback.",
       sourceIds: ["parks-burney"],
     },
     {
-      step: "If RABA weekday bus is used, budget taxi/ride for final 1-2 miles to trailhead; rideshare east of Redding is unreliable.",
-      sourceIds: ["srta-need-a-ride"],
+      step: "Saturday, August 29: begin hiking only after sleep, breakfast, water, and a daylight route/closure check.",
+      sourceIds: ["doc-day-plan"],
     },
   ],
+  shortExit: {
+    title: "Primary Ash Camp extraction",
+    summary:
+      "Do not leave the PCT at arbitrary route mile 52. Continue 2.2 GPS miles to the verified Ash Camp access at route mile 54.2 / PCT mile 1472.",
+    mapUrl:
+      "https://www.google.com/maps/search/?api=1&query=41.1171%2C-122.0606",
+    coordinates: "41.1171, -122.0606",
+    schedule:
+      "The active itinerary reaches Ash Camp on Day 9, Sunday, September 6 after 54.2 GPS miles. Day 9 is 3.8 miles from Butcherknife Creek with roughly 920 ft of descent.",
+    pickupWindow:
+      "Provisional September 6 rendezvous: 10:00 AM–noon after a 6:30–7:00 AM start. Mikaela waits at the shared Ash Camp pin; the hikers send satellite updates rather than relying on cell service.",
+    road:
+      "FS Road 38N11 is unpaved and can be rough; PCTA recommends high clearance. Mikaela should call the McCloud Ranger Station at 530-964-2184 during the week before pickup and again 24–48 hours before driving it. Do not commit the Kia Sportage if the ranger reports washouts, deep ruts, or high-clearance/4WD-only conditions.",
+    backup:
+      "Reserve Mt. Shasta Taxi at 530-859-3266 only after the dispatcher explicitly confirms an Ash Camp / FS 38N11 pickup in a suitable vehicle. A trail angel is a tertiary contingency, not the primary extraction contract.",
+    comms: [
+      "T-24 hours: hikers send expected departure camp, start time, and two-hour pickup window by inReach.",
+      "Morning of exit: send STARTING FOR ASH CAMP with battery status and route mile.",
+      "At route mile 52: send 2.2 MILES TO ASH CAMP; do not leave the PCT there.",
+      "At the trailhead: send ARRIVED ASH CAMP. Mikaela does not enter the trail or keep driving beyond the agreed pin.",
+      "If more than two hours late with no message, Mikaela stays at the agreed safe location and follows the overdue protocol; she does not search forest roads alone.",
+    ],
+    sourceIds: ["gps-route", "pcta-ash-camp", "usfs-mccloud-offices", "mt-shasta-taxi"],
+  },
   exit: [
     {
-      step: "Finish at Castle Crags State Park.",
-      sourceIds: ["parks-castle-crags"],
+      step: "Sunday, September 6: finish at Ash Camp, route mile 54.2 / PCT mile 1472, and meet Mikaela at 41.1171, -122.0606.",
+      sourceIds: ["pcta-ash-camp", "gps-route"],
     },
     {
-      step: "Primary: pre-arranged shuttle/trail angel or Mt. Shasta Taxi (+1 530-605-7950) to Redding or Burney.",
-      sourceIds: ["pcta-transport", "srta-need-a-ride"],
+      step: "Primary: Mikaela drives FS Road 38N11 only after the McCloud Ranger Station confirms it is suitable for the Kia Sportage.",
+      sourceIds: ["pcta-ash-camp", "usfs-mccloud-offices"],
     },
     {
-      step: "Weekday transit fallback: STAGE/Siskiyou Stage Lines to Redding, or Amtrak Coast Starlight at Dunsmuir.",
-      sourceIds: ["stage-bus-news", "pcta-stage-bus"],
+      step: "Backup: pre-book Mt. Shasta Taxi (530-859-3266) only after it confirms an Ash Camp / FS 38N11 pickup in a suitable vehicle.",
+      sourceIds: ["mt-shasta-taxi"],
     },
     {
-      step: "Retrieve staged car at Burney Falls and return to Bay Area via I-5/CA-299.",
+      step: "Trail angels are a tertiary named-and-confirmed backup; there is no dependable public transit at Ash Camp.",
+      sourceIds: ["pcta-transport"],
+    },
+    {
+      step: "Return to the Bay Area Sunday evening. Protect the September 7 airport report time based on the earlier possible 6:40 AM departure.",
+      sourceIds: ["doc-day-plan"],
+    },
+    {
+      step: "UNRESOLVED: Dan and Drew's September 7 SJC flight is either 6:40 AM or 10:40 AM. Verify the booking before locking pickup and sleep timing.",
       sourceIds: ["doc-day-plan"],
     },
   ],
   trailAngelNotes:
-    "Rideshare east of Redding is thin—lock rentals or shuttles. STAGE and informal drivers book fast; confirm two weeks out.",
+    "Use a known family driver or licensed, pre-booked service as the primary plan. Trail angels are volunteer community help with no guaranteed availability, vehicle, insurance, timing, or forest-road capability; use them only as a named and confirmed backup.",
 };
 
 export const resupplyPlan = {
-  town: 'Dunsmuir, California',
-  timing: 'Best mid-hike zero (10-15 miles south of Castle Crags).',
-  sourceIds: ['doc-transport-dunsmuir', 'pcta-resupply', 'longdistancehiker-resupply'],
+  town: 'No on-route resupply',
+  timing: 'Carry all nine days of food from Burney Falls; Ash Camp has no store.',
+  sourceIds: ['pcta-resupply', 'pcta-ash-camp'],
   access: [
-    { item: 'Exit via Soda Creek Road or Castle Crags State Park lot.', sourceIds: ['parks-castle-crags', 'active-norcal'] },
-    { item: 'STAGE Bus (seasonal, pre-book) links Dunsmuir ↔ Mt. Shasta.', sourceIds: ['stage-bus-news', 'pcta-stage-bus'] },
-    { item: 'Mt. Shasta Taxi (+1 530-605-7950) is a reliable backup.', sourceIds: ['doc-transport-dunsmuir'] }
+    { item: 'Primary extraction is Ash Camp via FS Road 38N11.', sourceIds: ['pcta-ash-camp'] },
+    { item: 'McCloud is the nearest practical post-pickup service town.', sourceIds: ['usfs-mccloud-offices'] },
+    { item: 'Mt. Shasta Taxi (530-859-3266) is a reservation-only backup after confirming forest-road capability.', sourceIds: ['mt-shasta-taxi'] }
   ],
   services: [
-    'Full grocery stores, diners, and coffee shops.',
-    'Outdoor gear shops.',
-    'Lodging and laundry.',
-    'Amtrak Coast Starlight station for emergency egress.'
+    'No food, lodging, charging, or dependable cellular service at Ash Camp.',
+    'Outhouse and river access are listed at the trailhead.',
+    'Post-hike food, fuel, and lodging require driving back toward McCloud or Mount Shasta.'
   ],
-  callouts: 'Burney Falls is remote; Dunsmuir is the primary resupply hub. Plan transport in advance.'
+  callouts: 'This is a full-carry trip. Do not build the food plan around a Dunsmuir resupply that the active route never reaches.'
 };
 
 export const permitChecklist = [
   {
-    name: 'Self-issued overnight permit',
-    coverage: 'PCT between Burney Falls and Castle Crags',
-    source: 'Local USFS ranger stations (Weaverville, Fort Jones)',
-    cost: 'Free',
-    notes: 'Non-quota; grab extra copies for all 3 DDG hikers. Call ahead for conditions.',
-    sourceIds: ['doc-permits-overview', 'usfs-permits', 'usfs-castle-crags', 'hungry-hiker-permits']
+    name: 'Local overnight permit determination',
+    coverage: '54.2-mile Burney Falls to Ash Camp trip; not eligible for the 500-mile PCT Long-distance Permit',
+    source: 'Shasta-Trinity National Forest / PCTA local-permit guidance',
+    cost: 'Verify',
+    notes: 'Call the managing ranger district with the exact GPX and camps. Do not treat the original narrative’s self-issue claim as confirmed.',
+    sourceIds: ['doc-permits-overview', 'usfs-permits', 'hungry-hiker-permits']
   },
   {
-    name: 'Castle Crags State Park camping',
-    coverage: 'Developed campgrounds inside park boundaries',
-    source: 'ReserveCalifornia / park kiosk',
-    cost: 'State fee',
-    notes: 'Backcountry camping allowed only in adjacent wilderness, not inside the park.',
-    sourceIds: ['parks-castle-crags', 'doc-permits-overview']
+    name: 'Burney Falls arrival reservation',
+    coverage: 'August 28 overnight staging / August 29 trail start',
+    source: 'California State Parks / ReserveCalifornia',
+    cost: '$10 day use + processing, or campground fee',
+    notes: 'A campground reservation includes day use. Weekend day users need an advance reservation in the 2026 pilot; the late-night arrival still needs a legal sleep plan.',
+    sourceIds: ['parks-burney', 'doc-day-plan']
   },
   {
     name: 'California Campfire Permit',
@@ -269,7 +298,7 @@ export const referenceLibrary = {
 export const prepGuideMeta = {
   filename: 'PCT-prep-guide.md',
   repoLocation: '../PCT-prep-guide.md',
-  summary: 'Single-source briefing that captures executive snapshot, itinerary, logistics, gear, risks, and next steps for Burney Falls ➜ Castle Crags.',
+  summary: 'Single-source briefing for the active 54.2-mile Burney Falls ➜ Ash Camp trip.',
   reminder: 'Review + update that markdown before tweaking data here so the dashboard stays faithful to the written plan.'
 };
 
@@ -1355,7 +1384,7 @@ export const riskPlaybook = [
   },
   {
     title: 'Altitude sickness (AMS) awareness',
-    detail: 'Section O peaks at 5,850ft (moderate altitude)—LOW risk for most hikers. However, symptoms can occur above 4,000ft in sensitive individuals. Monitor for headache, nausea, fatigue, or dizziness. If symptoms persist or worsen, DESCEND immediately. Hydrate aggressively (3-4L/day).',
+    detail: 'The GPS route peaks at approximately 6,146ft (moderate altitude)—low AMS risk for most hikers. However, symptoms can occur in sensitive individuals. Monitor for headache, nausea, fatigue, or dizziness. If symptoms persist or worsen, descend and seek medical guidance.',
     protocol: {
       thresholds: [
         { elevation: '0–4,000ft', risk: 'None', action: 'No precautions needed' },
@@ -1376,9 +1405,9 @@ export const riskPlaybook = [
       name: 'Acetazolamide (Diamox)',
       dose: '125mg twice daily, starting 24hrs before ascent',
       notes: 'Prescription required. Consult physician. Side effects: tingling, frequent urination, carbonated drinks taste flat.',
-      forSectionO: 'NOT required for Section O (max 5,642ft). Consider for future High Sierra trips.'
+      forSectionO: 'Not routinely indicated for this approximately 6,146ft route. Any medication decision belongs with a clinician who knows the hiker.'
     },
-    sectionOContext: 'Castle Crags Vista (5,642ft) is our high point—well below the 8,000ft threshold where AMS becomes common. Daily elevation gains are moderate (largest is 1,960ft on Day 2); pace yourself and hydrate.',
+    sectionOContext: 'The GPS high point is approximately 6,146ft on Day 6—below the 8,000ft threshold where AMS becomes more common. The largest daily GPS climb is approximately 2,027ft on Day 2; pace conservatively and hydrate.',
     sourceIds: ['adventurehacks-guide', 'wv-2017-log']
   }
 ];
@@ -1387,14 +1416,12 @@ export const riskPlaybook = [
 // ═══════════════════════════════════════════════════════════════════════════════
 // DAY-BY-DAY ITINERARY
 // ═══════════════════════════════════════════════════════════════════════════════
-// Distance values: GPS-measured (actual trail miles including switchbacks)
-// PDF estimates were lower due to "as the crow flies" approximations
-// GPS total: ~83 miles over 6 hiking days = ~13.8 mi/day average
-//
-// NOTE: Distances here are adjusted proportionally from PDF estimates to match
-// GPS reality. Camp locations remain as specified in source document.
+// Historical narrative values only. The active itinerary is generated from
+// tripFacts.js using the active Ash Camp route and nine hiking days.
 // ═══════════════════════════════════════════════════════════════════════════════
-export const dayItinerary = [
+// Retained as historical context from Dan's narrative. Its place names and
+// camp claims are not used by the active GPS-backed Ash Camp itinerary.
+const legacySixDayNarrative = [
   {
     day: 0,
     label: 'Staging Day',
@@ -1527,7 +1554,7 @@ export const dayItinerary = [
     day: 6,
     label: 'Day 6',
     from: 'Castle Crags Vista',
-    to: 'Castle Crags (Soda Creek Exit)',
+    to: 'Castle Crags (Soda Creek Road Exit)',
     distance: 8.0, // GPS-measured; PDF estimate was ~8mi
     pdfEstimate: 8,
     type: 'hike',
@@ -1539,72 +1566,154 @@ export const dayItinerary = [
     campFeatures: ['Developed campground', 'Showers!', 'Cell service', 'Victory beer'],
     landManagement: { zone: 'Castle Crags State Park', agency: 'CA State Parks', jurisdiction: 'state' },
     wikiNearby: [{ title: 'Castle Crags State Park', distance: 0.1, topic: 'State park amenities' }, { title: 'Dunsmuir, California', distance: 3.2, topic: 'Railroad town resupply' }],
-    notes: 'Cruise down to civilization. Celebrate with a proper meal. Castle Crags SP has developed campground, showers, water. Day-use parking $10, camping $35. Dunsmuir 3mi for resupply/lodging.',
+    notes: 'Cruise down to civilization. Exit at Soda Creek Road (I-5 Exit 722) where the PCT crosses the road. Option A: Mikaela picks you up directly in the Sportage. Option B: Pre-arrange a Local Trail Angel or call Mt. Shasta Taxi to shuttle you 4 miles south to Dunsmuir for food and lodging.',
     objectives: ['Finish strong', 'Clean up', 'Coordinate pickup'],
     timing: { start: '7:00 AM', end: '1:00 PM', movingTime: '4.5h', breakTime: '1.5h' },
     gradient: 'moderate',
     sourceIds: ['doc-day-plan', 'parks-castle-crags', 'unexpected-occurrence']
   }
 ];
-// TOTAL: 10 + 9 + 8 + 9 + 8 + 8 = 52.0 miles ✓ (matches Burney → Castle Crags route)
+// Historical narrative total: 52 miles. This is not the active route.
+
+const dateLabel = (isoDate) =>
+  new Intl.DateTimeFormat('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'America/Los_Angeles'
+  }).format(new Date(`${isoDate}T12:00:00-07:00`));
+
+export const dayItinerary = [
+  {
+    day: 0,
+    label: 'Arrival & staging',
+    date: '2026-08-28',
+    from: 'SJC',
+    to: 'Burney area',
+    distance: 0,
+    type: 'drive',
+    elevation: { start: 0, end: 3020, gain: 0, loss: 0 },
+    terrain: 'Evening airport pickup followed by a long NorCal drive',
+    waterSources: [],
+    waterCarry: 'Travel day',
+    connectivity: { verizon: 'variable', att: 'variable', tmobile: 'variable', satellite: true },
+    campFeatures: ['Late-arrival access must be confirmed'],
+    notes: 'Dan and Drew land at SJC at 6:05 PM. Mikaela drives the group north. Do not assume the park can accept an unplanned near-midnight arrival.',
+    objectives: ['Collect luggage', 'Eat before remote highways', 'Confirm legal sleep location', 'Sleep before hiking'],
+    timing: { start: '6:05 PM', end: 'Late night', movingTime: '4.5–5.5h', breakTime: '45–60m airport buffer' },
+    sourceIds: ['doc-day-plan', 'parks-burney']
+  },
+  ...primaryItinerary.map((leg) => ({
+    day: leg.day,
+    label: `Day ${leg.day} · ${dateLabel(leg.date)}`,
+    date: leg.date,
+    from: leg.from,
+    to: leg.to,
+    distance: leg.distance,
+    pdfEstimate: legacySixDayNarrative[leg.day]?.distance ?? null,
+    type: 'hike',
+    elevation: {
+      start: leg.elevation.start,
+      end: leg.elevation.end,
+      gain: leg.elevation.gain,
+      loss: leg.elevation.loss
+    },
+    terrain:
+      leg.day === 4
+        ? 'Highest route segment; GPS reaches approximately 6,146 ft'
+        : leg.elevation.loss > 2000
+          ? 'Major descent day; protect knees and allow slower footing'
+          : leg.elevation.gain > 2000
+            ? 'Major climbing day; start early and manage heat'
+            : 'Rolling PCT terrain',
+    waterSources: ['Use same-day PCT Water Report and map sources'],
+    waterCarry: 'Calculate at the last confirmed source; do not rely on a static liter value',
+    connectivity: { verizon: 'unknown', att: 'unknown', tmobile: 'unknown', satellite: true },
+    campFeatures:
+      leg.campStatus === 'verified-trailhead-finish'
+        ? ['Finish/pickup location']
+        : ['Halfmile-documented camp area', 'Current capacity and water still require verification'],
+    landManagement: {
+      zone: 'Verify against current land-management map',
+      agency: 'USFS / California State Parks',
+      jurisdiction: 'mixed'
+    },
+    notes:
+      leg.campStatus === 'verified-trailhead-finish'
+        ? 'Finish at Ash Camp and meet Mikaela at the pre-shared 41.1171, -122.0606 pickup pin.'
+        : `${leg.to} at route mile ${leg.routeMileEnd}; ${leg.water}. Verify current conditions before committing.`,
+    objectives: [
+      'Confirm water before leaving the previous source',
+      'Send satellite check-in',
+      leg.campStatus === 'verified-trailhead-finish' ? 'Coordinate pickup' : 'Verify legal low-impact campsite'
+    ],
+    timing: { start: '6:30 AM', end: '3:30 PM', movingTime: '5–7h', breakTime: '1.5–2.5h' },
+    gradient: leg.elevation.gain > 2000 ? 'steep' : 'moderate',
+    verification: leg.campStatus,
+    sourceIds: ['gps-route', 'pct-water', 'pcta']
+  }))
+];
 
 // Aggregate stats for the full trip
 // ═══════════════════════════════════════════════════════════════════════════════
 // MILEAGE RECONCILIATION:
-// • GPS route data (hike_data.json):     52.0 miles (Burney to Castle Crags SP)
-// • Source PDF header (ddg-pdf):         "78-90 miles" (Refers to full Section O)
-// • Source PDF daily estimates:          52 miles (Matches GPS subset!)
-//
-// The 52 mile plan is accurate for distance. The "78-90" figure in the PDF header
-// likely referred to the full section to Dunsmuir/I-5.
-// However, ELEVATION is significantly higher than the PDF estimates.
+// • Active Garmin route to Ash Camp:      54.2 miles
+// • PCT guide mileage to Ash Camp:       approximately 52 miles
+// • Full Garmin track to Castle Crags:   82.9 miles (future trip only)
 // ═══════════════════════════════════════════════════════════════════════════════
 export const tripStats = {
-  totalDays: 7,  // Day 0 (staging) + 6 hiking days
-  hikingDays: 6,
-  // NOTE: totalMiles here is a fallback; App.jsx calculates actual from GPS route
-  totalMiles: 52, // ~52.0 from GPS route segments
+  totalDays: 10,
+  hikingDays: tripFacts.route.hikingDays,
+  totalMiles: tripFacts.route.gpsMiles,
   gpsCalculated: true, // Flag: actual value comes from routeSegments in App.jsx
-  segmentRange: '52 (Burney → Castle Crags)',
-  pdfEstimates: 52, // Matches
-  totalGain: 6419,
-  totalLoss: 6360,
-  avgMilesPerDay: 8.67, // 52 miles / 6 hiking days
-  targetPace: '8-10', // "8-10 mile hiking days suitable for someone not in great shape"
-  paceNote: 'Mileage stays at 8-10mi/day, but expect sustained 5,300-5,600 ft elevations rather than the 3,500 ft noted in the PDF.',
-  highPoint: { elevation: 5642, location: 'Castle Crags Vista Camp', day: 5 },
-  lowPoint: { elevation: 3020, location: 'Burney Falls', day: 0 },
-  waterSourceCount: 17,
+  segmentRange: '54.2 (Burney Falls → Ash Camp)',
+  pdfEstimates: 52,
+  totalGain: tripFacts.route.totalGainFeet,
+  totalLoss: tripFacts.route.totalLossFeet,
+  avgMilesPerDay: tripFacts.route.averageMilesPerDay,
+  targetPace: '6.0',
+  paceNote: 'Nine hiking days average 6.0 miles; the longest day is 8.2 miles and the final day is 3.8 miles.',
+  highPoint: { elevation: tripFacts.route.highPointFeet, location: 'High saddle / active route high point', day: 6 },
+  lowPoint: { elevation: 2443, location: 'Ash Camp / McCloud River corridor', day: 9 },
+  waterSourceCount: 20,
   connectivityBlackoutMiles: 35, // Approximate based on daily connectivity data
-  estimatedMovingTime: '21 hours', // ~52mi at 2.5mph average with packs
+  estimatedMovingTime: '32–39 hours',
   recommendedWaterCarry: { min: 2, max: 4, unit: 'L' },
   sources: ['ddg-pdf', 'pct-water', 'halfmile', 'gps-route'],
   sourceQuotes: {
-    distance: 'GPS route (Burney → Castle Crags plan): 52.0mi | Full Section O track: 82.9mi (Burney → Dunsmuir)',
-    pace: '8-10 mile hiking days suitable for someone not in great shape',
-    dates: 'August 29th through September 6th'
+    distance: tripFacts.route.distanceEvidence,
+    pace: 'Nine camp-to-camp legs averaging 6.0 miles; longest day 8.2 miles',
+    dates: 'August 29 through September 6, 2026'
   }
 };
 
 export const nextStepsChecklist = [
   {
-    task: 'Finalize preferred schedule at Thanksgiving meeting.',
+    task: 'Lock August 29–September 6 as the primary hiking window.',
     status: 'completed'
   },
   {
-    task: 'Contact Burney Falls + Castle Crags for parking & campground confirmations.',
-    status: 'completed'
+    task: 'Contact Burney Falls and the McCloud Ranger Station for staging, camping, and Ash Camp road-access confirmation.',
+    status: 'up next'
   },
   {
-    task: 'Submit/print self-issued permits & campfire permits early summer.',
-    status: 'completed'
+    task: 'Reserve a legal August 28 late-arrival sleep plan near Burney Falls.',
+    status: 'up next'
+  },
+  {
+    task: 'Confirm the September 7 SJC flight time and finish-to-airport transport.',
+    status: 'up next'
+  },
+  {
+    task: 'Confirm local overnight rules; then print any required local and campfire permits.',
+    status: 'up next'
   },
   {
     task: 'Book STAGE bus/Taxi slots ~2 weeks pre-trip; confirm Trail Angels.',
-    status: 'completed'
+    status: 'pending'
   },
   {
     task: 'Upload latest itinerary + contact tree into shared drive & InReach.',
-    status: 'completed'
+    status: 'pending'
   }
 ];

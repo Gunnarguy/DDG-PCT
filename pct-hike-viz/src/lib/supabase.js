@@ -125,14 +125,18 @@ export const getSession = async () => {
 /**
  * Helper to get current user profile from ddg_team_profiles
  */
-export const getTeamProfile = async () => {
-  const session = await getSession();
-  if (!session) return null;
+export const getTeamProfile = async (userId = null) => {
+  let resolvedUserId = userId;
+  if (!resolvedUserId) {
+    const session = await getSession();
+    if (!session) return null;
+    resolvedUserId = session.user.id;
+  }
 
   const { data, error } = await supabase
     .from("ddg_team_profiles")
     .select("*")
-    .eq("id", session.user.id)
+    .eq("id", resolvedUserId)
     .maybeSingle();
 
   if (error) {

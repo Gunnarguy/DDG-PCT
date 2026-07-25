@@ -105,7 +105,7 @@ struct MissionView: View {
                     .foregroundStyle(.purple)
                     .tracking(2)
                 
-                Text("Burney Falls → Castle Crags")
+                Text("Burney Falls → Ash Camp")
                     .font(.title2.bold())
                     .multilineTextAlignment(.center)
             }

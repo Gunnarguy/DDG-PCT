@@ -73,29 +73,25 @@ struct ItineraryView: View {
             title: "Arrival & Assembly",
             camps: [],
             isTravelDay: true,
-            travelDetails: "✈️ Dan & Drew fly from Chicago (ORD) to SJC via UA481 (arriving 6:03 PM PST).\n🎒 Mikaela departs 2800 Joseph Ave in the Kia Sportage for SJC collection.\n⏳ Expected luggage and collection delay at SJC (~45 mins).\n🚙 Immediate departure from SJC for a 270-mile drive to Burney Falls (~4.5 hrs).\n⛺ Estimated arrival at Burney Falls drop-off: ~11:30 PM PST.",
+            travelDetails: "✈️ Dan & Drew land at SJC at 6:05 PM.\n🚙 Mikaela collects the group in the Kia Sportage and drives north.\n⚠️ A late-night Burney arrival is likely. Confirm legal after-hours campground access or reserve a sleep fallback; hiking starts only after adequate rest.",
             hikeDayIndex: nil
         ))
         
-        // Aug 29 - Sept 4: Hike Days (Mapped from JSON day 0-6)
+        // Aug 29 - Sept 6: nine GPS-balanced hiking days.
         let hikeGroups = Dictionary(grouping: camps, by: \.day)
-        for i in 0...6 {
-            let dayCamps = hikeGroups[i]?.sorted(by: { $0.routeMile < $1.routeMile }) ?? []
-            days.append(TimelineDay(dayOffset: i + 1, title: "Expedition Day \(i + 1)", camps: dayCamps, isTravelDay: false, travelDetails: nil, hikeDayIndex: i))
+        for day in 1...9 {
+            let dayCamps = hikeGroups[day]?.sorted(by: { $0.routeMile < $1.routeMile }) ?? []
+            days.append(TimelineDay(
+                dayOffset: day,
+                title: day == 9 ? "Day 9 & Extraction" : "Expedition Day \(day)",
+                camps: dayCamps,
+                isTravelDay: false,
+                travelDetails: day == 9
+                    ? "Complete the 54.2-mile route to Ash Camp, meet Mikaela at the pre-shared pin between 10:00 AM and noon, and return to the Bay Area."
+                    : nil,
+                hikeDayIndex: day
+            ))
         }
-        
-        // Sept 5: Buffer Day
-        days.append(TimelineDay(dayOffset: 8, title: "Buffer Day / Zero", camps: [], isTravelDay: false, travelDetails: "Extra day for delays or resting.", hikeDayIndex: nil))
-        
-        // Sept 6: Transit
-        days.append(TimelineDay(
-            dayOffset: 9,
-            title: "Return Transit / Extraction",
-            camps: [],
-            isTravelDay: true,
-            travelDetails: "🎒 Backpacking ends at Castle Crags trailhead.\n🚙 Option A: Mikaela picks up in Sportage & drives 285 miles to Campbell (~11.0 gal, ~$59 fuel cost).\n🚆 Option B: Amtrak 11 Coast Starlight southbound from Dunsmuir daily at 4:48 PM, arrives San Jose Diridon at 2:30 AM (next morning).\n🚌 Option C: Siskiyou Stage Lines to Redding (RDD) for a one-way rental car drive to SJC.",
-            hikeDayIndex: nil
-        ))
         
         // Sept 7: Departure
         days.append(TimelineDay(
@@ -103,7 +99,7 @@ struct ItineraryView: View {
             title: "Departure",
             camps: [],
             isTravelDay: true,
-            travelDetails: "✈️ Dan & Drew depart SJC on flight UA1317 at 6:15 AM PST (arrives Chicago ORD at 12:45 PM CT). United Boeing 737-800 from Terminal A (Gate 16) ➜ Terminal 1 (Gate C20). Onboard Wi-Fi and TV.",
+            travelDetails: "✈️ Dan & Drew depart SJC. Booking time is not yet confirmed: 6:40 AM or 10:40 AM. Until the reservation is checked, protect the earlier airport report time.",
             hikeDayIndex: nil
         ))
         
@@ -113,7 +109,7 @@ struct ItineraryView: View {
     // MARK: - Timeline UI
 
     private func dayTimelineBlock(_ tDay: TimelineDay) -> some View {
-        let colorIdx = tDay.hikeDayIndex ?? 0
+        let colorIdx = max(0, (tDay.hikeDayIndex ?? 1) - 1)
         let dayColor = colorIdx < dayColors.count ? Color(hex: dayColors[colorIdx].stroke) : .blue
         
         return HStack(alignment: .top, spacing: 16) {
@@ -337,13 +333,8 @@ private struct DayStatsRow: View {
     private var totalDistance: Double { camps.reduce(0) { $0 + $1.distance } }
 
     private var elevationGain: Double {
-        guard trailPoints.count > 1 else { return 0 }
-        var gain: Double = 0
-        for i in 1..<trailPoints.count {
-            let diff = trailPoints[i].elevationFeet - trailPoints[i-1].elevationFeet
-            if diff > TrailConstants.elevationThreshold { gain += diff }
-        }
-        return gain
+        guard let camp = camps.first else { return 0 }
+        return TrailConstants.elevationGain(for: camp.day)
     }
 
     var body: some View {

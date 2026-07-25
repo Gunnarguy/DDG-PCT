@@ -15,19 +15,9 @@ const CHECKLIST_WEIGHTS = {
   pending: 0.25
 };
 
-// Per-hiker readiness tracking (can be updated dynamically)
-const HIKER_READINESS = {
-  dan: { gear: 0.85, permits: 1.0, fitness: 0.9 },
-  drew: { gear: 0.9, permits: 1.0, fitness: 0.95 },
-  gunnar: { gear: 0.75, permits: 1.0, fitness: 0.8 }
-};
-
 const clampPercent = (value) => Math.round(Math.max(0, Math.min(1, value)) * 100);
 
 function HikerReadinessCard({ member }) {
-  const readiness = HIKER_READINESS[member.id] || { gear: 0.5, permits: 0.5, fitness: 0.5 };
-  const overall = (readiness.gear + readiness.permits + readiness.fitness) / 3;
-  
   return (
     <div className="hiker-readiness-card" style={{ '--hiker-color': member.color }}>
       <div className="hiker-readiness-avatar">
@@ -37,37 +27,8 @@ function HikerReadinessCard({ member }) {
         <span className="hiker-readiness-name">{member.name}</span>
         <span className="hiker-readiness-role">{member.role}</span>
       </div>
-      <div className="hiker-readiness-bars">
-        <div className="readiness-bar-row">
-          <span className="bar-label">🎒</span>
-          <div className="readiness-bar-track">
-            <div 
-              className="readiness-bar-fill" 
-              style={{ width: `${clampPercent(readiness.gear)}%`, backgroundColor: readiness.gear >= 0.8 ? '#4CAF50' : '#FFC107' }}
-            />
-          </div>
-        </div>
-        <div className="readiness-bar-row">
-          <span className="bar-label">📋</span>
-          <div className="readiness-bar-track">
-            <div 
-              className="readiness-bar-fill" 
-              style={{ width: `${clampPercent(readiness.permits)}%`, backgroundColor: readiness.permits >= 0.8 ? '#4CAF50' : '#FFC107' }}
-            />
-          </div>
-        </div>
-        <div className="readiness-bar-row">
-          <span className="bar-label">💪</span>
-          <div className="readiness-bar-track">
-            <div 
-              className="readiness-bar-fill" 
-              style={{ width: `${clampPercent(readiness.fitness)}%`, backgroundColor: readiness.fitness >= 0.8 ? '#4CAF50' : '#FFC107' }}
-            />
-          </div>
-        </div>
-      </div>
       <div className="hiker-readiness-overall">
-        <span className="overall-value">{clampPercent(overall)}%</span>
+        <span className="overall-value">Not reported</span>
       </div>
     </div>
   );
@@ -161,7 +122,7 @@ function TripReadinessPanel({ packPlanner, nextStepsChecklist, permitChecklist }
       value: `${totalPermits}`,
       detail: {
         percent: `${clampPercent(totalPermits / Math.max(totalPermits, 4))}%`,
-        text: 'Keep digital + paper copies of self-issue + campfire permits.'
+        text: 'Track local-rule confirmation and keep paper copies of every required permit.'
       }
     }
   ];

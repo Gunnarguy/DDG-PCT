@@ -84,7 +84,10 @@ const DAY_COLORS = [
   { fill: 'rgba(245, 124, 0, 0.15)', stroke: '#F57C00' },   // Day 3 - Sunset orange
   { fill: 'rgba(156, 39, 176, 0.15)', stroke: '#9C27B0' },  // Day 4 - Alpine purple
   { fill: 'rgba(0, 150, 136, 0.15)', stroke: '#009688' },   // Day 5 - Vista teal
-  { fill: 'rgba(211, 47, 47, 0.15)', stroke: '#D32F2F' }    // Day 6 - Summit red
+  { fill: 'rgba(211, 47, 47, 0.15)', stroke: '#D32F2F' },   // Day 6
+  { fill: 'rgba(94, 53, 177, 0.15)', stroke: '#5E35B1' },   // Day 7
+  { fill: 'rgba(0, 121, 107, 0.15)', stroke: '#00796B' },   // Day 8
+  { fill: 'rgba(198, 40, 40, 0.15)', stroke: '#C62828' }    // Day 9
 ];
 
 const OVERLAY_SECTION_ORDER = ['section-e', 'section-g', 'section-i', 'section-j'];
@@ -361,8 +364,8 @@ const ElevationProfile = ({
   ) ?? 'Burney Falls State Park', [campPoints]);
 
   const finishLabel = useMemo(() => {
-    if (!campPoints.length) return 'Castle Crags State Park';
-    return (campPoints[campPoints.length - 1]?.properties?.name) ?? 'Castle Crags State Park';
+    if (!campPoints.length) return 'Ash Camp';
+    return (campPoints[campPoints.length - 1]?.properties?.name) ?? 'Ash Camp';
   }, [campPoints]);
 
   // Build day segments for colored zones
@@ -1317,7 +1320,7 @@ const ElevationProfile = ({
           ))}
         </div>
         <div className="altitude-section-context">
-          <span className="context-badge context-badge--safe">✓ Section O Peak: 5,850' (Moderate Altitude)</span>
+          <span className="context-badge context-badge--safe">✓ GPS Route Peak: 6,146' (Moderate Altitude)</span>
           <span className="context-detail">Low AMS risk for most hikers. Stay hydrated, watch for headache/nausea. High Sierra (13,000'+) requires acclimatization.</span>
         </div>
       </div>

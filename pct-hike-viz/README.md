@@ -1,6 +1,6 @@
-# DDG · Burney Falls ➜ Castle Crags Mission Control
+# DDG · Burney Falls ➜ Ash Camp Mission Control
 
-This Vite + React application digests everything in `Original-DDG-PCT-PDF.txt` and visualizes it on top of the full **NST Guide** mapping stack. It is built specifically for planning a late-August Pacific Crest Trail push from Burney Falls State Park to Castle Crags, complete with day-by-day intel, transportation strategy, resupply plans, and permit checklists.
+This Vite + React application is the planning surface for the active **54.2-mile, nine-day** trip from Burney Falls to Ash Camp, August 29–September 6, 2026. The complete 82.9-mile Garmin track remains in the data as a clearly separated future-trip alternative; it is not an active schedule, pickup plan, or mileage target.
 
 ## How the NST Guide repos show up here
 
@@ -16,10 +16,10 @@ This Vite + React application digests everything in `Original-DDG-PCT-PDF.txt` a
 
 ## Guided tour
 
-* **Deck.gl route layer** – multicolor segments show daily mileage, totally derived from the itinerary in the PDF.
-* **Interactive markers** – tap a campsite to view day-specific notes, elevation gains, and “need-to-remember” comments from the narrative.
-* **Schedule comparison** – 9-day vs. 16-day options so the team can debate PTO and budget trade-offs.
-* **Travel, resupply, and permits** – every logistical bullet from the document is captured with actionable lists and outbound links to the source research.
+* **Deck.gl route layer** – multicolor segments show the active GPS-derived daily mileage.
+* **Interactive markers** – tap a campsite to view day-specific notes, elevation, water-verification requirements, and pickup details.
+* **Schedule context** – the nine-day plan is active; the longer route is retained only as a future reference.
+* **Travel, food carry, permits, and extraction** – the active plan ends at the official Ash Camp pin on rough FS Road 38N11.
 
 ## Getting started
 
@@ -54,7 +54,8 @@ https://mcp.supabase.com/mcp?project_ref=wpeyvbhhfqcyhuszumtx
 
 ## Data sources
 
-* `public/data/hike_data.json` – Canonical runtime GeoJSON-style data derived from `Original-DDG-PCT-PDF.txt` + GPX (points, route segments, Dunsmuir waypoint). `src/hike_data.json` is a mirrored copy for tooling.
-* `src/data/planContent.js` – Structured logistics (schedules, travel plan, resupply notes, permit checklist, research links) extracted verbatim from the narrative and associated research URLs.
+* `public/data/hike_data.json` – Canonical runtime data: the active route to Ash Camp, a separately stored future-route tail, documented camps, exact Halfmile water-access coordinates, and driving snapshots. `src/hike_data.json` is a tooling mirror.
+* `src/data/tripFacts.js` – Canonical dates, mileage, itinerary legs, and extraction facts.
+* `src/data/planContent.js` – Structured logistics, food carry, permits, historical source notes, and research links.
 
-Swap these files with live feeds (e.g., from `nst-guide/data` pipelines or the PCT water report) when you are ready for real-time planning.
+Water points are locations, not guarantees of flow. The app deliberately marks current flow as unverified until the team checks a live report immediately before the trip.

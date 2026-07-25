@@ -7,6 +7,7 @@ import {
   satelliteDevices,
 } from "../data/connectivityData";
 import { ddgTeam, sectionOMeta, tripStats } from "../data/planContent";
+import { formatTripDate, tripFacts } from "../data/tripFacts";
 import GearPlanner from "./GearPlanner";
 import OpsLog from "./OpsLog";
 import SourceChips from "./SourceChips";
@@ -162,14 +163,12 @@ function Sidebar({
 }) {
   const tabsRef = useRef(null);
   const tabs = [
-    { id: "mission", label: "Mission" },
-    { id: "prep", label: "Prep" },
-    { id: "itinerary", label: "Itinerary" },
-    { id: "safety", label: "Safety" },
+    { id: "mission", label: "Overview" },
+    { id: "itinerary", label: "Route" },
+    { id: "safety", label: "Field" },
     { id: "gear", label: "Gear" },
-    { id: "connectivity", label: "Connectivity" },
     { id: "logistics", label: "Logistics" },
-    { id: "resources", label: "Resources" },
+    { id: "resources", label: "Library" },
   ];
 
   useEffect(() => {
@@ -202,8 +201,13 @@ function Sidebar({
   const blackoutMiles =
     stats?.connectivityBlackoutMiles ?? tripStats.connectivityBlackoutMiles;
   const basePlanMiles = stats?.totalMiles ?? tripStats.totalMiles;
-  const fullSectionMiles = stats?.fullSectionMiles;
   const timelineRangeMiles = stats?.connectivityRangeMiles || 90;
+  const selectedSchedule =
+    scheduleOptions?.find((option) =>
+      option.title
+        .toLowerCase()
+        .includes(selectedItinerary === "relaxed" ? "detox" : "primary"),
+    ) ?? null;
 
   const presenceRow = useMemo(() => {
     const hasRoster = Array.isArray(teamRoster) && teamRoster.length > 0;
@@ -436,8 +440,9 @@ function Sidebar({
         <h1>DDG Trail Mission Control</h1>
         <p className="lede">
           {basePlanMiles} miles through {sectionOMeta.region}.{" "}
-          {tripStats.hikingDays} days of hiking with
-          {blackoutMiles}+ miles of satellite-only coverage.
+          {tripStats.hikingDays} days of hiking. Plan conservatively for
+          approximately {blackoutMiles}+ miles where satellite may be the only
+          dependable communication path.
         </p>
 
         {/* Section O Quick Facts - Condensed */}
@@ -464,16 +469,35 @@ function Sidebar({
             </div>
             <div className="fact-item">
               <span className="fact-label">Permits</span>
-              <span className="fact-value">Self-issue</span>
+              <span className="fact-value">Verify local</span>
             </div>
           </div>
         </div>
-        {fullSectionMiles && (
-          <p className="note">
-            Optional extension: Dunsmuir brings total to ~{fullSectionMiles}{" "}
-            miles. Base plan stays Burney → Castle Crags.
-          </p>
-        )}
+        <p className="note">
+          Distance confidence: active Garmin geometry is 54.2 mi to the
+          official Ash Camp pin. The complete 82.9-mi track is retained only
+          as a future-trip reference.
+        </p>
+      </section>
+
+      <section className="sidebar-card sidebar-card--full alerts-card">
+        <div className="section-header">
+          <h2>Decisions still open</h2>
+          <span className="section-subtitle">
+            These are intentionally not presented as settled facts
+          </span>
+        </div>
+        <div className="alerts-list">
+          {tripFacts.unresolved.map((item) => (
+            <div className="alert-item alert-warning" key={item.id}>
+              <span className="alert-icon">?</span>
+              <div className="alert-content">
+                <span className="alert-title">{item.label}</span>
+                <span className="alert-desc">{item.detail}</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Quick Reference - Emergency contacts and key info */}
@@ -489,8 +513,8 @@ function Sidebar({
             <span className="ref-icon">📞</span>
             <div className="ref-content">
               <span className="ref-label">Mt. Shasta Taxi</span>
-              <a href="tel:+15306057950" className="ref-value ref-phone">
-                +1 530-605-7950
+              <a href="tel:+15308593266" className="ref-value ref-phone">
+                +1 530-859-3266
               </a>
             </div>
           </div>
@@ -506,9 +530,9 @@ function Sidebar({
           <div className="quick-ref-item">
             <span className="ref-icon">🌲</span>
             <div className="ref-content">
-              <span className="ref-label">Castle Crags SP</span>
-              <a href="tel:+15302354630" className="ref-value ref-phone">
-                +1 530-235-4630
+              <span className="ref-label">McCloud Ranger</span>
+              <a href="tel:+15309642184" className="ref-value ref-phone">
+                +1 530-964-2184
               </a>
             </div>
           </div>
@@ -523,14 +547,17 @@ function Sidebar({
         <div className="quick-ref-dates">
           <span className="date-badge">
             📅{" "}
-            {scheduleOptions 
-              ? scheduleOptions.find(opt => opt.title.toLowerCase().includes(selectedItinerary === "relaxed" ? "detox" : "express"))?.dates 
-              : (selectedItinerary === "express" ? "Aug 29 – Sept 6" : "Aug 22 – Sept 6")}
+            {selectedSchedule?.dates ??
+              (selectedItinerary === "express"
+                ? "Aug 29 – Sep 6, 2026"
+                : "Aug 22 – Sep 6")}
           </span>
           <span className="date-note">
-            {scheduleOptions 
-              ? scheduleOptions.find(opt => opt.title.toLowerCase().includes(selectedItinerary === "relaxed" ? "detox" : "express"))?.title + " schedule"
-              : (selectedItinerary === "express" ? "9-day express schedule" : "16-day relaxed schedule")}
+            {selectedSchedule
+              ? `${selectedSchedule.title} schedule`
+              : selectedItinerary === "express"
+                ? "9-day primary schedule"
+                : "16-day relaxed schedule"}
           </span>
         </div>
       </section>
@@ -584,27 +611,27 @@ function Sidebar({
           <div className="highlight-item">
             <span className="highlight-icon">🌌</span>
             <div className="highlight-content">
-              <span className="highlight-title">Black Rock Camp</span>
+              <span className="highlight-title">GPS Route High Point</span>
               <span className="highlight-desc">
-                Famous stargazing clearings - Day 2
+                Approximately 6,146' on Day 4
               </span>
             </div>
           </div>
           <div className="highlight-item">
             <span className="highlight-icon">🏔️</span>
             <div className="highlight-content">
-              <span className="highlight-title">Castle Crags Vista</span>
+              <span className="highlight-title">McCloud River Corridor</span>
               <span className="highlight-desc">
-                Sunrise at 5,642' with Shasta views - Day 5
+                Trip low point and major descent/climb transition - Days 6–7
               </span>
             </div>
           </div>
           <div className="highlight-item">
             <span className="highlight-icon">🪨</span>
             <div className="highlight-content">
-              <span className="highlight-title">Granite Spires</span>
+              <span className="highlight-title">Ash Camp Finish</span>
               <span className="highlight-desc">
-                Castle Crags' iconic formations - Days 5-6
+                Route mile 54.2 · McCloud River pickup - Day 9
               </span>
             </div>
           </div>
@@ -623,8 +650,8 @@ function Sidebar({
             <div className="alert-content">
               <span className="alert-title">Cell Blackout Zone</span>
               <span className="alert-desc">
-                {blackoutMiles}+ miles with zero cell service. Satellite
-                required.
+                Treat {blackoutMiles}+ miles as a conservative no-cell planning
+                zone until carrier coverage is field-tested. Satellite required.
               </span>
             </div>
           </div>
@@ -633,7 +660,8 @@ function Sidebar({
             <div className="alert-content">
               <span className="alert-title">Elevation Notice</span>
               <span className="alert-desc">
-                Days 2-5 are at 5,000-5,600ft—pace accordingly and hydrate.
+                GPS high point is approximately 6,146ft; Day 4 reaches it.
+                Pace accordingly and hydrate.
               </span>
             </div>
           </div>
@@ -688,7 +716,7 @@ function Sidebar({
             <div>
               <h2>DDG Section O Mission</h2>
               <span className="section-subtitle">
-                Burney Falls → Castle Crags · {basePlanMiles} miles
+                Burney Falls → Ash Camp · {basePlanMiles} miles
               </span>
             </div>
           </div>
@@ -744,8 +772,8 @@ function Sidebar({
         <div className="trip-connectivity-warning">
           <span className="warning-icon">📵</span>
           <span>
-            {blackoutMiles}+ miles with zero cell service — satellite comms
-            required
+            Plan for {blackoutMiles}+ miles without dependable cell service —
+            satellite comms required
           </span>
         </div>
       </section>
@@ -766,7 +794,12 @@ function Sidebar({
               </div>
             </div>
             <h3 className="day-card__route">Arrival & Assembly</h3>
-            <p className="day-card__terrain">✈️ Dan & Drew fly Chicago (ORD) to SJC via UA481 (arriving 6:03 PM PST).<br/>🚙 Mikaela drives Kia Sportage from 2800 Joseph Ave to SJC pickup, then straight to Burney Falls drop-off (270 mi, ~4.5 hrs).</p>
+            <p className="day-card__terrain">
+              ✈️ Dan &amp; Drew land at SJC at 6:05 PM.<br />
+              🚙 Mikaela drives the Kia Sportage north. Confirm legal
+              after-hours sleep access before relying on a late-night park
+              arrival.
+            </p>
           </button>
           
           {campPoints.slice(1).map((camp, idx) => {
@@ -790,7 +823,9 @@ function Sidebar({
                         ),
                       }}
                     >
-                      Day {day}
+                      {formatTripDate(
+                        `2026-${day <= 3 ? `08-${28 + day}` : `09-0${day - 3}`}`,
+                      )} · Day {day}
                     </span>
                   </div>
                   <div className="day-card__distance">
@@ -802,7 +837,7 @@ function Sidebar({
                   {prevCamp.properties.name} → {camp.properties.name}
                 </h3>
                 <p className="day-card__terrain">
-                  PCT segment through Section O
+                  GPS-balanced PCT leg · overnight waypoint is provisional
                 </p>
                 <div className="day-card__indicators">
                   <span
@@ -817,26 +852,6 @@ function Sidebar({
             );
           })}
           
-          <button type="button" className="day-card day-card--detailed" style={{ borderLeftColor: 'var(--stone-400)' }}>
-            <div className="day-card__header">
-              <div className="day-card__day-info">
-                <span className="day-pill" style={{ backgroundColor: 'var(--stone-400)' }}>Sept 5</span>
-              </div>
-            </div>
-            <h3 className="day-card__route">Buffer Day / Zero</h3>
-            <p className="day-card__terrain">Extra day for delays or resting.</p>
-          </button>
-          
-          <button type="button" className="day-card day-card--detailed" style={{ borderLeftColor: 'var(--orange-500)' }}>
-            <div className="day-card__header">
-              <div className="day-card__day-info">
-                <span className="day-pill" style={{ backgroundColor: 'var(--orange-500)' }}>Sept 6</span>
-              </div>
-            </div>
-            <h3 className="day-card__route">Return Transit</h3>
-            <p className="day-card__terrain">Travel from Trailhead back to Bay Area.</p>
-          </button>
-          
           <button type="button" className="day-card day-card--detailed" style={{ borderLeftColor: 'var(--orange-500)' }}>
             <div className="day-card__header">
               <div className="day-card__day-info">
@@ -844,7 +859,11 @@ function Sidebar({
               </div>
             </div>
             <h3 className="day-card__route">Departure</h3>
-            <p className="day-card__terrain">✈️ Dan & Drew depart SJC to Chicago (ORD) on UA1317 (12:45 PM CT).</p>
+            <p className="day-card__terrain">
+              ✈️ Dan &amp; Drew depart SJC. Booking time still unresolved:
+              <strong> 6:40 AM or 10:40 AM</strong>. Plan airport transport
+              against the earlier time until confirmed.
+            </p>
           </button>
         </div>
       </section>
@@ -854,7 +873,7 @@ function Sidebar({
         <div className="section-header">
           <h2>💧 Water Sources</h2>
           <span className="section-subtitle">
-            {waterSourceMeta.count} reliable sources ·{" "}
+            {waterSourceMeta.count} mapped water points ·{" "}
             {waterSourceMeta.mileRange}
           </span>
         </div>
@@ -876,9 +895,10 @@ function Sidebar({
           ))}
         </div>
         <p className="note water-source-note">
-          Synced from {waterSourceMeta.sourceLabel}; last checked{" "}
-          {waterSourceMeta.lastSynced}. Tap a source to drop the 💧 marker on
-          the map.
+          Locations from {waterSourceMeta.sourceLabel};{" "}
+          {waterSourceMeta.lastSynced}. These are not promises of flow. Verify
+          every planned source in FarOut/PCT Water Report immediately before
+          departure. Tap a source to drop the 💧 marker on the map.
         </p>
       </section>
     </>
@@ -1112,6 +1132,38 @@ function Sidebar({
               );
             })}
           </ul>
+          {travelPlan.shortExit && (
+            <>
+              <h3 className="subhead">{travelPlan.shortExit.title}</h3>
+              <p>{travelPlan.shortExit.summary}</p>
+              <p>
+                <a
+                  href={travelPlan.shortExit.mapUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Ash Camp pickup pin: {travelPlan.shortExit.coordinates}
+                </a>
+              </p>
+              <ul className="bullet-list bullet-list--sourced">
+                <li>{travelPlan.shortExit.schedule}</li>
+                <li>{travelPlan.shortExit.pickupWindow}</li>
+                <li>{travelPlan.shortExit.road}</li>
+                <li>{travelPlan.shortExit.backup}</li>
+              </ul>
+              <h3 className="subhead">Satellite rendezvous protocol</h3>
+              <ol className="bullet-list">
+                {travelPlan.shortExit.comms.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+              <SourceChips
+                sourceIds={travelPlan.shortExit.sourceIds}
+                size="small"
+                maxShow={4}
+              />
+            </>
+          )}
           <h3 className="subhead">Exit strategy</h3>
           <ul className="bullet-list bullet-list--sourced">
             {travelPlan.exit.map((item, i) => {
@@ -1343,9 +1395,9 @@ function Sidebar({
         <section className="sidebar-card sidebar-card--full">
           <h2>Satellite Communication Devices</h2>
           <p className="lede">
-            Section O has ~{blackoutMiles} miles with zero cell service.
-            Satellite devices provide emergency SOS and two-way messaging in
-            deep wilderness.
+            Treat approximately {blackoutMiles} miles as a conservative
+            no-dependable-cell planning zone until field-tested. Satellite
+            devices provide emergency SOS and two-way messaging.
           </p>
           <div className="device-grid">
             {satelliteDevices.map((device) => (
@@ -1466,16 +1518,9 @@ function Sidebar({
         <button
           type="button"
           onClick={() => onItineraryChange("express")}
-          className={`itinerary-toggle-btn ${selectedItinerary === "express" ? "is-active" : ""}`}
+          className="itinerary-toggle-btn is-active"
         >
-          ⚡ 9-Day Express
-        </button>
-        <button
-          type="button"
-          onClick={() => onItineraryChange("relaxed")}
-          className={`itinerary-toggle-btn ${selectedItinerary === "relaxed" ? "is-active" : ""}`}
-        >
-          🏕️ 16-Day Relaxed
+          🏕️ Active · 54.2 mi / 9 days
         </button>
       </div>
 
@@ -1496,12 +1541,20 @@ function Sidebar({
         ))}
       </nav>
       <div className="sidebar__sections">
-        {activeTab === "mission" && renderMission()}
-        {activeTab === "prep" && renderPrep()}
+        {activeTab === "mission" && (
+          <>
+            {renderMission()}
+            {renderPrep()}
+          </>
+        )}
         {activeTab === "itinerary" && renderItinerary()}
-        {activeTab === "safety" && renderSafety()}
+        {activeTab === "safety" && (
+          <>
+            {renderSafety()}
+            {renderConnectivity()}
+          </>
+        )}
         {activeTab === "gear" && renderGear()}
-        {activeTab === "connectivity" && renderConnectivity()}
         {activeTab === "logistics" && renderLogistics()}
         {activeTab === "resources" && renderResources()}
       </div>
@@ -1552,6 +1605,18 @@ Sidebar.propTypes = {
         }),
       ]),
     ).isRequired,
+    shortExit: PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      summary: PropTypes.string.isRequired,
+      mapUrl: PropTypes.string.isRequired,
+      coordinates: PropTypes.string.isRequired,
+      schedule: PropTypes.string.isRequired,
+      pickupWindow: PropTypes.string.isRequired,
+      road: PropTypes.string.isRequired,
+      backup: PropTypes.string.isRequired,
+      comms: PropTypes.arrayOf(PropTypes.string).isRequired,
+      sourceIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    }),
     exit: PropTypes.arrayOf(
       PropTypes.oneOfType([
         PropTypes.string,

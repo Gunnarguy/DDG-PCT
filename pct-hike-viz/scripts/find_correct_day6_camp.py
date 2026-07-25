@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Find the correct Day 6 camp location ~8 miles from Vista Camp."""
+"""Inspect why the historical six-day narrative cannot reach the route end.
+
+This is a diagnostic for retained source material, not the active itinerary.
+The active schedule uses nine approximately even GPS segments.
+"""
 
 import json
 from pathlib import Path
@@ -66,10 +70,10 @@ for i in range(day6_idx, len(route_coords) - 1):
 
 print(f"Remaining to trail end: {remaining_miles:.1f} miles")
 print()
-print("SUMMARY:")
-print(f"Days 1-5: 44.0 miles (matches PDF plan)")
-print(f"Day 6 (corrected): {cumulative_miles:.1f} miles")
-print(f"Total for 6-day plan: {44.0 + cumulative_miles:.1f} miles")
+print("HISTORICAL NARRATIVE DIAGNOSTIC:")
+print(f"Legacy days 1-5: 44.0 miles")
+print(f"Legacy day 6: {cumulative_miles:.1f} miles")
+print(f"Legacy six-row total: {44.0 + cumulative_miles:.1f} miles")
 print()
 print(f"This leaves {remaining_miles:.1f} miles if continuing to Dunsmuir/end of Section O")
-print("(Could be a 7th day or exit point for resupply)")
+print("The active plan resolves this gap with nine hiking days through the route endpoint.")

@@ -1,6 +1,6 @@
 # DDG-Mobile
 
-Native iOS mission control for the DDG team's PCT Section O hike (Burney Falls → Castle Crags).
+Native iOS mission control for the DDG team's active 54.2-mile, nine-day PCT hike from Burney Falls to Ash Camp.
 
 ## Quick Start
 
@@ -24,7 +24,7 @@ Then in Xcode:
 - **Swift Charts elevation profile** with altitude physiology zones
 - **RPG gear planner** with weight tracking per hiker
 - **Ops log** with auto-classification (NOTE/TASK/ALERT) and sync status badges
-- **All static data** ported: 8 connectivity zones, transit routes, airports, parking, satellite devices
+- **Canonical active data** ported: nine trail legs, mapped water access, connectivity planning assumptions, Ash Camp pickup, travel, and satellite devices
 
 ## What's Next
 

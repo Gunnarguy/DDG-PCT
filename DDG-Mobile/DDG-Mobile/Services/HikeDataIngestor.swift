@@ -12,7 +12,7 @@ struct HikeDataIngestor {
     static func needsIngest(modelContext: ModelContext) -> Bool {
         print("DEBUG [HikeDataIngestor]: Checking database state...")
         
-        let currentVersion = 5 // Bump this to force re-ingestion when json structure/content changes.
+        let currentVersion = 9 // Active 54.2-mile Burney Falls → Ash Camp route.
         let ingestedVersion = UserDefaults.standard.integer(forKey: "hikeDataIngestVersion")
         if ingestedVersion < currentVersion {
             print("DEBUG [HikeDataIngestor]: Forced re-ingestion triggered (version \(ingestedVersion) < \(currentVersion))")
@@ -58,7 +58,7 @@ struct HikeDataIngestor {
         
         if let route = json["route"] as? [String: Any],
            let path = route["path"] as? [[Double]] {
-            print("DEBUG [HikeDataIngestor]: Slicing and parsing \(path.count) trail points...")
+            print("DEBUG [HikeDataIngestor]: Parsing all \(path.count) trail points...")
             
             var cumulativeDistance: Double = 0
             var lastLat: Double? = nil
@@ -102,18 +102,14 @@ struct HikeDataIngestor {
                 return (lat: bestPt.lat, lon: bestPt.lon)
             }
             
-            // Capture coords for key 52-mile plan markers
-            let keyMiles = [0.0, 10.0, 19.0, 27.0, 36.0, 44.0, 52.0]
+            // Capture the documented nine-day camp-to-camp route markers.
+            let keyMiles = [0.0, 8.2, 16.2, 23.9, 30.6, 34.6, 38.5, 44.9, 50.4, 54.2]
             for km in keyMiles {
                 coordsAtMiles[km] = getCoordsForMile(km)
             }
             
-            // Insert trail points up to 52.0 miles
+            // Insert the active Burney Falls → Ash Camp route.
             for (index, item) in trailMiles.enumerated() {
-                if item.mile > 52.0 {
-                    print("DEBUG [HikeDataIngestor]: Sliced trail points at 52.0 miles (index \(index))")
-                    break
-                }
                 let trailPoint = TrailPoint(
                     latitude: item.lat,
                     longitude: item.lon,
@@ -126,7 +122,7 @@ struct HikeDataIngestor {
             print("DEBUG [HikeDataIngestor]: Successfully inserted \(pathCount) trail points.")
         }
 
-        // 2. Parse camp/waypoint features and map them to the 52-mile plan in miles
+        // 2. Parse the primary nine-day camp/waypoint features.
         var campCount = 0
         if let features = json["features"] as? [[String: Any]] {
             print("DEBUG [HikeDataIngestor]: Parsing \(features.count) waypoint features...")
@@ -139,7 +135,7 @@ struct HikeDataIngestor {
             print("DEBUG [HikeDataIngestor]: Successfully inserted \(campCount) campsites.")
         }
         
-        // 3. Parse water sources and filter to those within 0.5 miles of the sliced trail
+        // 3. Parse water sources and filter to those within 0.5 miles of the active trail.
         var waterCount = 0
         if let sources = json["waterSources"] as? [[String: Any]] {
             print("DEBUG [HikeDataIngestor]: Filtering and parsing \(sources.count) water sources...")
@@ -147,7 +143,6 @@ struct HikeDataIngestor {
                 if let water = parseWaterSource(from: sourceDict) {
                     var isNearTrail = false
                     for tp in trailMiles {
-                        if tp.mile > 52.0 { break }
                         let d = haversine(lon1: tp.lon, lat1: tp.lat, lon2: water.longitude, lat2: water.latitude)
                         if d <= 0.5 {
                             isNearTrail = true
@@ -160,14 +155,14 @@ struct HikeDataIngestor {
                     }
                 }
             }
-            print("DEBUG [HikeDataIngestor]: Successfully inserted \(waterCount) water sources near the 52-mile route.")
+            print("DEBUG [HikeDataIngestor]: Successfully inserted \(waterCount) water sources near the active route.")
         }
 
         print("DEBUG [HikeDataIngestor]: Saving ModelContext...")
         try modelContext.save()
         
         // Save current version to UserDefaults to track ingestion state
-        UserDefaults.standard.set(5, forKey: "hikeDataIngestVersion")
+        UserDefaults.standard.set(9, forKey: "hikeDataIngestVersion")
         print("DEBUG [HikeDataIngestor]: Data ingestion complete.")
     }
 
@@ -189,12 +184,17 @@ struct HikeDataIngestor {
         guard let geometry = feature["geometry"] as? [String: Any],
               let coords = geometry["coordinates"] as? [Double], coords.count >= 2,
               let props = feature["properties"] as? [String: Any],
-              var name = props["name"] as? String else {
+              let name = props["name"] as? String else {
             return nil
         }
 
         let type = props["type"] as? String ?? "Camp"
         let day = (props["day"] as? NSNumber)?.intValue ?? (props["day"] as? Int) ?? 0
+        let itinerary = props["itinerary"] as? String
+
+        if day >= 0 && itinerary != "express" {
+            return nil
+        }
 
         // Handle travel/assembly items
         if day == -1 {
@@ -213,55 +213,16 @@ struct HikeDataIngestor {
             )
         }
 
-        // Map campsites for the 52-mile plan (Day 0 to 6)
-        var mappedDistance: Double = 0
-        var mappedRouteMile: Double = 0
-        var targetMile: Double = 0
-        var mappedType = type
-
-        switch day {
-        case 0:
-            name = "Burney Falls State Park"
-            mappedDistance = 0
-            mappedRouteMile = 0
-            targetMile = 0.0
-            mappedType = "Trailhead"
-        case 1:
-            name = "Round Valley Campground"
-            mappedDistance = 10.0
-            mappedRouteMile = 10.0
-            targetMile = 10.0
-        case 2:
-            name = "Black Rock Camp"
-            mappedDistance = 9.0
-            mappedRouteMile = 19.0
-            targetMile = 19.0
-        case 3:
-            name = "Horse Camp"
-            mappedDistance = 8.0
-            mappedRouteMile = 27.0
-            targetMile = 27.0
-        case 4:
-            name = "Indian Springs Camp"
-            mappedDistance = 9.0
-            mappedRouteMile = 36.0
-            targetMile = 36.0
-        case 5:
-            name = "Castle Crags Vista Camp"
-            mappedDistance = 8.0
-            mappedRouteMile = 44.0
-            targetMile = 44.0
-        case 6:
-            name = "Castle Crags (Soda Creek Exit)"
-            mappedDistance = 8.0
-            mappedRouteMile = 52.0
-            targetMile = 52.0
-            mappedType = "Finish"
-        default:
-            return nil // Exclude relaxed itinerary/out-of-range camps from the 52-mile active express plan
-        }
-
-        let mappedCoords = coordsAtMiles[targetMile] ?? (lat: coords[1], lon: coords[0])
+        let routeMile = (props["routeMile"] as? NSNumber)?.doubleValue ?? 0
+        let plannedMiles = [0.0, 8.2, 16.2, 23.9, 30.6, 34.6, 38.5, 44.9, 50.4, 54.2]
+        let priorMile = day > 0 && day < plannedMiles.count ? plannedMiles[day - 1] : 0
+        let distance = day > 0 ? max(0, routeMile - priorMile) : 0
+        let mappedType = day == 0 ? "Trailhead" : (day == 9 ? "Finish" : type)
+        let mappedCoords = coordsAtMiles[routeMile] ?? (lat: coords[1], lon: coords[0])
+        let sourceNotes = props["notes"] as? String ?? ""
+        let verificationNotes = (1...8).contains(day)
+            ? "Provisional GPS split. Verify a legal campsite and current water before committing."
+            : sourceNotes
 
         return CampSite(
             name: name,
@@ -269,12 +230,12 @@ struct HikeDataIngestor {
             longitude: mappedCoords.lon,
             day: day,
             type: mappedType,
-            distance: mappedDistance,
-            routeMile: mappedRouteMile,
+            distance: distance,
+            routeMile: routeMile,
             startElevation: props["startElevation"] as? String ?? "",
             endElevation: props["endElevation"] as? String ?? "",
             segment: props["segment"] as? String ?? "",
-            notes: props["notes"] as? String ?? ""
+            notes: verificationNotes
         )
     }
 
@@ -285,15 +246,16 @@ struct HikeDataIngestor {
         }
 
         let report = dict["report"] as? String ?? ""
-        var reliability = "unknown"
-        if report.lowercased().contains("flowing") || report.lowercased().contains("great") || report.lowercased().contains("tap on") {
-            reliability = "excellent"
-        } else if report.lowercased().contains("trickle") || report.lowercased().contains("seasonal") {
-            reliability = "seasonal"
-        } else if report.lowercased().contains("dry") {
-            reliability = "sketchy"
-        } else {
-            reliability = "good"
+        let explicitReliability = dict["reliability"] as? String
+        var reliability = explicitReliability ?? "unknown"
+        if explicitReliability == nil {
+            if report.lowercased().contains("flowing") || report.lowercased().contains("great") || report.lowercased().contains("tap on") {
+                reliability = "excellent"
+            } else if report.lowercased().contains("trickle") || report.lowercased().contains("seasonal") {
+                reliability = "seasonal"
+            } else if report.lowercased().contains("dry") {
+                reliability = "sketchy"
+            }
         }
 
         return WaterSource(

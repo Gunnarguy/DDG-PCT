@@ -13,13 +13,13 @@ export const transitRoutes = [
   {
     id: "dan-sjc-ua",
     type: "flight",
-    name: "Dan's SJC Flights (UA481 · UA1317)",
-    agency: "United Airlines",
-    route: "SJC ↔ ORD",
+    name: "Dan & Drew SJC flights",
+    agency: "Confirm from booking",
+    route: "SJC arrival / departure",
     stops: ["SJC", "ORD"],
     frequency: "Aug 28 Inbound / Sep 7 Outbound",
     relevantFor: "Dan's Arrival & Departure",
-    notes: "Arrives Aug 28 6:03 PM PST. Departs Sep 7 12:45 PM CT.",
+    notes: "Arrive Aug 28 at 6:05 PM. Sep 7 departure is not yet confirmed: 6:40 AM or 10:40 AM.",
     url: "",
     distance: "N/A",
     emoji: "✈️",
@@ -90,19 +90,19 @@ export const transitRoutes = [
     emoji: "🚌",
   },
   {
-    id: "stage-dunsmuir",
-    type: "bus",
-    name: "Dunsmuir → Redding (Stage Lines)",
-    agency: "Siskiyou Stage Lines",
-    route: "Dunsmuir-Redding",
-    stops: ["Dunsmuir", "Mt. Shasta City", "Redding"],
-    frequency: "Mon-Fri: 2x daily",
-    relevantFor: "Exit strategy from Castle Crags/Dunsmuir",
-    notes: "Connect to Amtrak in Dunsmuir or continue to Redding airport",
-    url: "https://sisqstage.com/",
-    distance: "5 miles from Castle Crags SP",
-    cost: "$15.00",
-    emoji: "🚌",
+    id: "ash-camp-pickup",
+    type: "car",
+    name: "Ash Camp → Campbell (Mikaela)",
+    agency: "Personal vehicle after ranger road check",
+    route: "FS Road 38N11 to paved roads, then Bay Area",
+    stops: ["Ash Camp", "Campbell"],
+    frequency: "Sep 6 planned pickup, 10:00 AM–12:00 PM",
+    relevantFor: "Primary post-hike extraction",
+    notes: "Call McCloud Ranger Station at 530-964-2184 before committing the Kia Sportage to FS Road 38N11.",
+    url: "https://explore.pcta.org/trailheads/ash-camp",
+    distance: "333.3-mile routing snapshot after pickup",
+    cost: "Fuel + food stops",
+    emoji: "🚙",
   },
   {
     id: "greyhound-5",
@@ -211,12 +211,12 @@ export const rentalCarInfo = {
       notes: "Official trailhead parking. Call ahead: (530) 335-2777",
     },
     {
-      location: "Castle Crags State Park",
-      address: "20022 Castle Creek Rd, Castella, CA 96017",
-      cost: "$10/day",
-      longTermPermit: "Contact for extended parking",
-      security: "State park lot",
-      notes: "Exit point parking. Call: (530) 235-2684",
+      location: "Ash Camp pickup",
+      address: "FS Road 38N11 · 41.1171, -122.0606",
+      cost: "No parking service assumed",
+      longTermPermit: "Rendezvous only; do not stage an unattended vehicle without ranger approval",
+      security: "Remote forest-road access",
+      notes: "Call McCloud Ranger Station: (530) 964-2184. High clearance is recommended.",
     },
   ],
 };
@@ -232,20 +232,6 @@ export const resupplyAccess = [
     trailDistance: '5 miles from PCT via road walk',
     notes: 'Main resupply for Section O. Limited hours on weekends.'
   },
-  {
-    town: 'Old Station',
-    services: ['General Store', 'Post Office', 'Campground'],
-    transitAccess: 'None - hitch or walk',
-    trailDistance: 'On trail',
-    notes: 'Hat Creek Resort general store. Very limited selection.'
-  },
-  {
-    town: 'Dunsmuir',
-    services: ['Full services', 'Brewery', 'Lodging', 'Grocery'],
-    transitAccess: 'Stage Lines to Redding, Amtrak station',
-    trailDistance: '1 mile from trail',
-    notes: 'Excellent resupply town. Hiker-friendly. Ditch/flip supply point.'
-  }
 ];
 
 /**
