@@ -38,6 +38,7 @@ final class AuthManager {
         case signedOut
         case signedIn
         case denied         // Valid Apple ID but not in DDGTeam
+        case error(String)   // Session/profile verification could not complete
     }
 
     // MARK: - Keychain Keys
@@ -111,10 +112,10 @@ final class AuthManager {
                     manager.appleUserID = appleID
                     manager.userEmail = email
                     guard SupabaseManager.shared.isConfigured else {
-                        manager.authState = .denied
+                        manager.authState = .error("Supabase is not configured on this build.")
                         return
                     }
-                    await manager.authorizeSupabaseSession()
+                    await manager.authorizeStoredSupabaseSession()
                 default:
                     manager.authState = .signedOut
                     manager.clearKeychain()
@@ -138,8 +139,11 @@ final class AuthManager {
             let email = credential.email ?? readKeychain(key: emailKey)
 
             guard let resolvedEmail = email else {
-                // No email available — can't validate team membership
-                authState = .denied
+                // Apple only supplies email on the first authorization. If the
+                // app has no persisted copy, the user must reauthorize Apple.
+                authState = .error(
+                    "Apple did not provide an email address and this installation has no saved copy."
+                )
                 return
             }
 
@@ -153,24 +157,26 @@ final class AuthManager {
             guard SupabaseManager.shared.isConfigured,
                   let identityToken = credential.identityToken,
                   let idTokenString = String(data: identityToken, encoding: .utf8) else {
-                authState = .denied
+                authState = .error("Apple did not provide a usable identity token.")
                 return
             }
 
             authState = .unknown
             Task {
                 do {
-                    _ = try await SupabaseManager.shared.client.auth.signInWithIdToken(
+                    let session = try await SupabaseManager.shared.client.auth.signInWithIdToken(
                         credentials: .init(
                             provider: .apple,
                             idToken: idTokenString
                         )
                     )
-                    await authorizeSupabaseSession()
+                    await authorizeSupabaseSession(session)
                 } catch {
                     print("Supabase Sign In error: \(error)")
                     currentUser = nil
-                    authState = .denied
+                    authState = .error(
+                        "Sign in succeeded with Apple, but the Supabase session could not be created."
+                    )
                 }
             }
 
@@ -181,18 +187,50 @@ final class AuthManager {
 
     // MARK: - Supabase Authorization
 
-    /// Membership comes from the authenticated user's own profile row. RLS
-    /// permits that row only for active DDG team members.
-    private func authorizeSupabaseSession() async {
+    /// Restores a valid Supabase session. A missing/expired session is a
+    /// signed-out state—not evidence that the user failed team authorization.
+    private func authorizeStoredSupabaseSession() async {
         do {
             let session = try await SupabaseManager.shared.client.auth.session
-            let profile: TeamProfileRow = try await SupabaseManager.shared.client
+            await authorizeSupabaseSession(session)
+        } catch AuthError.sessionMissing {
+            print("Supabase session is missing; returning to sign in.")
+            currentUser = nil
+            authState = .signedOut
+        } catch {
+            print("Supabase session restore error: \(error)")
+            currentUser = nil
+            authState = .error(
+                "Your saved session could not be verified. Check connectivity and try again."
+            )
+        }
+    }
+
+    /// Membership comes from the authenticated user's own profile row. RLS
+    /// permits that row only for active DDG team members.
+    private func authorizeSupabaseSession(_ session: Session) async {
+        guard !session.isExpired else {
+            currentUser = nil
+            authState = .signedOut
+            return
+        }
+
+        do {
+            let profiles: [TeamProfileRow] = try await SupabaseManager.shared.client
                 .from(SupabaseManager.Table.teamProfiles)
                 .select("hiker_id")
                 .eq("id", value: session.user.id)
-                .single()
+                .limit(1)
                 .execute()
                 .value
+
+            guard let profile = profiles.first else {
+                // A valid authenticated session with no RLS-visible team profile
+                // is the only condition that means access is actually denied.
+                currentUser = nil
+                authState = .denied
+                return
+            }
 
             guard let member = DDGTeam.roster.first(where: { $0.id == profile.hikerId }) else {
                 currentUser = nil
@@ -206,7 +244,21 @@ final class AuthManager {
         } catch {
             print("Supabase team authorization error: \(error)")
             currentUser = nil
-            authState = .denied
+            authState = .error(
+                "Signed in, but the DDG team profile could not be verified. Check connectivity and retry."
+            )
+        }
+    }
+
+    func retryAuthorization() {
+        guard SupabaseManager.shared.isConfigured else {
+            authState = .error("Supabase is not configured on this build.")
+            return
+        }
+
+        authState = .unknown
+        Task {
+            await authorizeStoredSupabaseSession()
         }
     }
 

@@ -34,7 +34,12 @@ final class SupabaseManager {
         }
         return SupabaseClient(
             supabaseURL: URL(string: config.url)!,
-            supabaseKey: config.anonKey
+            supabaseKey: config.anonKey,
+            options: SupabaseClientOptions(
+                auth: SupabaseClientOptions.AuthOptions(
+                    emitLocalSessionAsInitialSession: true
+                )
+            )
         )
     }()
 

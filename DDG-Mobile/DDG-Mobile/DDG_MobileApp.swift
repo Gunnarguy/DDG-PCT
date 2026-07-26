@@ -108,6 +108,9 @@ struct RootView: View {
 
         case .denied:
             AccessDeniedView()
+
+        case .error(let message):
+            AuthenticationErrorView(message: message)
         }
     }
 }
@@ -176,6 +179,41 @@ struct AccessDeniedView: View {
                 auth.signOut()
             }
             .buttonStyle(.bordered)
+        }
+        .padding()
+    }
+}
+
+// MARK: - Recoverable Authentication Error
+
+struct AuthenticationErrorView: View {
+    @Environment(AuthManager.self) private var auth
+    let message: String
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "wifi.exclamationmark")
+                .font(.system(size: 48))
+                .foregroundStyle(.orange)
+
+            Text("Couldn’t Verify Access")
+                .font(.title.bold())
+
+            Text(message)
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.secondary)
+
+            VStack(spacing: 12) {
+                Button("Try Again") {
+                    auth.retryAuthorization()
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button("Sign In Again") {
+                    auth.signOut()
+                }
+                .buttonStyle(.bordered)
+            }
         }
         .padding()
     }
