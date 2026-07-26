@@ -96,11 +96,11 @@ final class AuthManager {
 
     /// Check if we have a persisted session and validate it
     private func restoreSession() {
-        guard let email = readKeychain(key: emailKey),
-              let appleID = readKeychain(key: appleIDKey) else {
+        guard let appleID = readKeychain(key: appleIDKey) else {
             authState = .signedOut
             return
         }
+        let savedEmail = readKeychain(key: emailKey)
 
         // Verify the Apple credential is still valid
         let provider = ASAuthorizationAppleIDProvider()
@@ -110,7 +110,7 @@ final class AuthManager {
                 switch state {
                 case .authorized:
                     manager.appleUserID = appleID
-                    manager.userEmail = email
+                    manager.userEmail = savedEmail
                     guard SupabaseManager.shared.isConfigured else {
                         manager.authState = .error("Supabase is not configured on this build.")
                         return
@@ -135,24 +135,20 @@ final class AuthManager {
             }
 
             let userID = credential.user
-            // Apple only provides email on first sign-in; use persisted email as fallback
-            let email = credential.email ?? readKeychain(key: emailKey)
-
-            guard let resolvedEmail = email else {
-                // Apple only supplies email on the first authorization. If the
-                // app has no persisted copy, the user must reauthorize Apple.
-                authState = .error(
-                    "Apple did not provide an email address and this installation has no saved copy."
-                )
-                return
-            }
+            // Apple commonly provides email only on the first authorization.
+            // It is display metadata—not an authorization requirement. The
+            // signed identity token and RLS-protected Supabase profile determine
+            // access.
+            let availableEmail = credential.email ?? readKeychain(key: emailKey)
 
             appleUserID = userID
-            userEmail = resolvedEmail
+            userEmail = availableEmail
 
             // Persist to keychain
             saveKeychain(key: appleIDKey, value: userID)
-            saveKeychain(key: emailKey, value: resolvedEmail)
+            if let availableEmail {
+                saveKeychain(key: emailKey, value: availableEmail)
+            }
 
             guard SupabaseManager.shared.isConfigured,
                   let identityToken = credential.identityToken,
