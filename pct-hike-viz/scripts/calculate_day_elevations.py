@@ -4,6 +4,7 @@
 import json
 from pathlib import Path
 from math import radians, cos, sin, asin, sqrt
+from scipy.spatial import KDTree
 
 def haversine(lon1, lat1, lon2, lat2):
     lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
@@ -12,6 +13,12 @@ def haversine(lon1, lat1, lon2, lat2):
     a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
     c = 2 * asin(sqrt(a))
     return 6371000 * c  # meters
+
+def latlon_to_3d(lon, lat):
+    """Convert lat/lon to 3D Cartesian coordinates for KDTree."""
+    lon, lat = map(radians, [lon, lat])
+    # Assume Earth radius is 1 for relative distance queries
+    return [cos(lat) * cos(lon), cos(lat) * sin(lon), sin(lat)]
 
 def find_nearest_route_point(camp_coords, route_coords):
     """Find nearest point on route to a camp."""
@@ -72,15 +79,24 @@ def main():
     print("=" * 80)
     print("Based on GPS route data with 5-point smoothing + 10ft threshold\n")
     
+    # Pre-build KDTree for fast spatial queries
+    route_coords_3d = [latlon_to_3d(pt[0], pt[1]) for pt in route_coords]
+    route_kdtree = KDTree(route_coords_3d)
+
     # Map camps to route indices
     camp_route_indices = []
     for camp in camps:
         camp_coords = camp['geometry']['coordinates']
-        nearest_pt = find_nearest_route_point(camp_coords, route_coords)
+
+        # Fast nearest point query
+        camp_3d = latlon_to_3d(camp_coords[0], camp_coords[1])
+        _, idx = route_kdtree.query(camp_3d)
+        nearest_pt = route_coords[idx]
+
         if nearest_pt is None:
             print(f"Warning: Could not find route point for {camp['properties']['name']}")
             continue
-        idx = route_coords.index(nearest_pt)
+
         camp_route_indices.append((camp['properties']['day'], camp['properties']['name'], idx, nearest_pt[2]))
     
     for i, (day, name, idx, elev) in enumerate(camp_route_indices):
