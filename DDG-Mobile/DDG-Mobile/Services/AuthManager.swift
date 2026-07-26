@@ -1,5 +1,6 @@
 import Foundation
 import AuthenticationServices
+import CryptoKit
 import SwiftUI
 import Supabase
 
@@ -46,6 +47,7 @@ final class AuthManager {
     private let keychainService = "com.ddg.mobile.auth"
     private let emailKey = "ddg_user_email"
     private let appleIDKey = "ddg_apple_user_id"
+    private var pendingAppleNonce: String?
 
     // MARK: - Init
 
@@ -58,7 +60,7 @@ final class AuthManager {
     /// Initiate Sign in with Apple flow (programmatic fallback)
     func signIn() {
         let request = ASAuthorizationAppleIDProvider().createRequest()
-        request.requestedScopes = [.email]
+        prepareAppleSignInRequest(request)
 
         let controller = ASAuthorizationController(authorizationRequests: [request])
         let delegate = SignInDelegate { [weak self] result in
@@ -75,6 +77,15 @@ final class AuthManager {
     /// Handle completion from SwiftUI's SignInWithAppleButton
     func handleAppleSignIn(_ result: Result<ASAuthorization, Error>) {
         handleSignInResult(result)
+    }
+
+    /// Configures every Apple authorization request with the hashed nonce that
+    /// Supabase requires to verify the returned identity token.
+    func prepareAppleSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
+        let rawNonce = Self.makeNonce()
+        pendingAppleNonce = rawNonce
+        request.requestedScopes = [.email]
+        request.nonce = Self.sha256(rawNonce)
     }
 
     /// Sign out and clear persisted credentials
@@ -130,9 +141,20 @@ final class AuthManager {
         switch result {
         case .success(let authorization):
             guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+                pendingAppleNonce = nil
                 authState = .signedOut
                 return
             }
+
+            guard SupabaseManager.shared.isConfigured,
+                  let rawNonce = pendingAppleNonce,
+                  let identityToken = credential.identityToken,
+                  let idTokenString = String(data: identityToken, encoding: .utf8) else {
+                pendingAppleNonce = nil
+                authState = .error("Apple did not provide a usable identity token.")
+                return
+            }
+            pendingAppleNonce = nil
 
             let userID = credential.user
             // Apple commonly provides email only on the first authorization.
@@ -150,20 +172,14 @@ final class AuthManager {
                 saveKeychain(key: emailKey, value: availableEmail)
             }
 
-            guard SupabaseManager.shared.isConfigured,
-                  let identityToken = credential.identityToken,
-                  let idTokenString = String(data: identityToken, encoding: .utf8) else {
-                authState = .error("Apple did not provide a usable identity token.")
-                return
-            }
-
             authState = .unknown
             Task {
                 do {
                     let session = try await SupabaseManager.shared.client.auth.signInWithIdToken(
                         credentials: .init(
                             provider: .apple,
-                            idToken: idTokenString
+                            idToken: idTokenString,
+                            nonce: rawNonce
                         )
                     )
                     await authorizeSupabaseSession(session)
@@ -177,8 +193,23 @@ final class AuthManager {
             }
 
         case .failure:
+            pendingAppleNonce = nil
             authState = .signedOut
         }
+    }
+
+    private static func makeNonce(length: Int = 32) -> String {
+        let characters = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        var generator = SystemRandomNumberGenerator()
+        return String((0..<length).compactMap { _ in
+            characters.randomElement(using: &generator)
+        })
+    }
+
+    private static func sha256(_ value: String) -> String {
+        SHA256.hash(data: Data(value.utf8))
+            .map { String(format: "%02x", $0) }
+            .joined()
     }
 
     // MARK: - Supabase Authorization

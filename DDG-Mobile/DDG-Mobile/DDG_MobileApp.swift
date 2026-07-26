@@ -142,7 +142,7 @@ struct SignInView: View {
                     .foregroundStyle(.secondary)
 
                 SignInWithAppleButton(.signIn) { request in
-                    request.requestedScopes = [.email]
+                    auth.prepareAppleSignInRequest(request)
                 } onCompletion: { result in
                     auth.handleAppleSignIn(result)
                 }
