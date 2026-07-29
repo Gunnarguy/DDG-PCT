@@ -112,6 +112,8 @@ struct TrailMapView: View {
                                 campMarker(for: camp)
                             }
                             .buttonStyle(.plain)
+                            .frame(width: 36, height: 36)
+                            .contentShape(Circle())
                             .accessibilityLabel("\(camp.name) itinerary stop details")
                         }
                         .tag(camp)
@@ -127,6 +129,8 @@ struct TrailMapView: View {
                                     waterMarker(for: source)
                                 }
                                 .buttonStyle(.plain)
+                                .frame(width: 36, height: 36)
+                                .contentShape(Circle())
                             }
                         }
                     }
@@ -141,6 +145,8 @@ struct TrailMapView: View {
                                     connectivityMarker(for: zone)
                                 }
                                 .buttonStyle(.plain)
+                                .frame(width: 36, height: 36)
+                                .contentShape(Circle())
                                 .accessibilityLabel("\(zone.name) connectivity details")
                             }
                             
@@ -468,11 +474,11 @@ struct TrailMapView: View {
         }
 
         Image(systemName: icon)
-            .font(.caption)
-            .padding(6)
+            .font(.system(size: 8, weight: .bold))
+            .frame(width: 20, height: 20)
             .background(color, in: Circle())
-            .overlay(Circle().stroke(.white, lineWidth: 2))
-            .shadow(color: .black.opacity(0.3), radius: 3)
+            .overlay(Circle().stroke(.white, lineWidth: 1.5))
+            .shadow(color: .black.opacity(0.25), radius: 2)
             .foregroundStyle(.white)
             .scaleEffect(selectedDay == camp.day ? 1.3 : 1.0)
             .animation(.spring(), value: selectedDay)
@@ -484,19 +490,17 @@ struct TrailMapView: View {
     private func waterMarker(for source: WaterSource) -> some View {
         let live = liveCondition(for: source)
         Image(systemName: "drop.fill")
-            .font(.system(size: 13, weight: .bold))
-            .frame(width: 32, height: 32)
+            .font(.system(size: 8, weight: .bold))
+            .frame(width: 20, height: 20)
             .background(waterColor(live?.condition, fallback: source.reliability), in: Circle())
             .overlay(
                 Circle().stroke(
                     live?.freshness?.lowercased() == "stale" ? .orange : .white,
-                    lineWidth: live?.freshness?.lowercased() == "stale" ? 3 : 2
+                    lineWidth: live?.freshness?.lowercased() == "stale" ? 2 : 1.5
                 )
             )
-            .shadow(color: .black.opacity(0.25), radius: 3)
+            .shadow(color: .black.opacity(0.22), radius: 2)
             .foregroundStyle(.white)
-            .padding(6)
-            .contentShape(Circle())
             .accessibilityLabel(waterAccessibilityLabel(source: source, live: live))
     }
 
@@ -615,11 +619,11 @@ struct TrailMapView: View {
     private func connectivityMarker(for zone: ConnectivityZone) -> some View {
         let hasSignal = zone.cellCoverage.verizon != "none" || zone.cellCoverage.att != "none" || zone.cellCoverage.tmobile != "none"
         Image(systemName: hasSignal ? "antenna.radiowaves.left.and.right" : "antenna.radiowaves.left.and.right.slash")
-            .font(.system(size: 8))
-            .padding(4)
+            .font(.system(size: 6.5, weight: .bold))
+            .frame(width: 18, height: 18)
             .background(hasSignal ? .purple : .red.opacity(0.8), in: Circle())
-            .overlay(Circle().stroke(.white, lineWidth: 1.5))
-            .shadow(color: .black.opacity(0.2), radius: 2)
+            .overlay(Circle().stroke(.white, lineWidth: 1))
+            .shadow(color: .black.opacity(0.2), radius: 1.5)
             .foregroundStyle(.white)
     }
 

@@ -359,14 +359,14 @@ struct ElevationProfileView: View {
                         }
                     } label: {
                         Image(systemName: "drop.fill")
-                            .font(.system(size: 9, weight: .bold))
-                            .frame(width: 28, height: 28)
+                            .font(.system(size: 6.5, weight: .bold))
+                            .frame(width: 18, height: 18)
                             .background(waterColor(live), in: Circle())
                             .foregroundStyle(.white)
                             .overlay(
                                 Circle().stroke(
                                     live?.freshness?.lowercased() == "stale" ? .orange : .white,
-                                    lineWidth: live?.freshness?.lowercased() == "stale" ? 3 : 2
+                                    lineWidth: live?.freshness?.lowercased() == "stale" ? 2 : 1
                                 )
                             )
                             .shadow(radius: 2)
@@ -387,11 +387,11 @@ struct ElevationProfileView: View {
                         selectedGraphZone = connectivityZones.first { $0.name == zone.name }
                     } label: {
                         Image(systemName: "antenna.radiowaves.left.and.right")
-                            .font(.system(size: 9, weight: .bold))
-                            .frame(width: 28, height: 28)
+                            .font(.system(size: 6, weight: .bold))
+                            .frame(width: 18, height: 18)
                             .background(zone.hasSignal ? .purple : .gray, in: Circle())
                             .foregroundStyle(.white)
-                            .overlay(Circle().stroke(.white, lineWidth: 2))
+                            .overlay(Circle().stroke(.white, lineWidth: 1))
                             .shadow(radius: 2)
                     }
                     .buttonStyle(.plain)
@@ -716,8 +716,8 @@ struct ElevationProfileView: View {
         }
 
         Image(systemName: symbol)
-            .font(.system(size: 9, weight: .bold))
-            .frame(width: 28, height: 28)
+            .font(.system(size: 6.5, weight: .bold))
+            .frame(width: 18, height: 18)
             .background(.thinMaterial, in: Circle())
             .foregroundStyle(color)
             .overlay(Circle().stroke(.white, lineWidth: 1))
