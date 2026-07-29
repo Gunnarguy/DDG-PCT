@@ -43,7 +43,7 @@
     },
     {
       "day": 3,
-      "name": "Bartle Gap supported extraction",
+      "name": "Bartle Gap planned pickup / re-entry",
       "index": 1715,
       "routeMile": 26.878,
       "sourceMile": 26.641,
@@ -130,7 +130,7 @@
         "lossFeet": 1388,
         "officialMiles": 12.591,
         "start": "Pre-private USFS dry camp",
-        "end": "Bartle Gap supported extraction"
+        "end": "Bartle Gap planned pickup / re-entry"
       },
       {
         "day": 4,
@@ -141,7 +141,7 @@
         "gainFeet": 1056,
         "lossFeet": 86,
         "officialMiles": 5.369,
-        "start": "Bartle Gap supported extraction",
+        "start": "Bartle Gap planned pickup / re-entry",
         "end": "High saddle camp near Road 38N10"
       },
       {

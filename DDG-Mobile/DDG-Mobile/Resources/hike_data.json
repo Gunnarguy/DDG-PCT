@@ -151,7 +151,7 @@
         ]
       },
       "properties": {
-        "name": "Bartle Gap supported extraction",
+        "name": "Bartle Gap planned pickup / re-entry",
         "day": 3,
         "itinerary": "express",
         "segment": "12.6 mi supported day-pack traverse; extract immediately and return to this exact crossing on Day 4",
@@ -161,7 +161,7 @@
         "stopType": "support-transfer",
         "campStatus": "support-transfer-needs-booking-road-check",
         "packMode": "day-pack-supported",
-        "notes": "This is not a campsite. The driver, vehicle route, gate status, pickup window, exact re-entry pin, and no-contact fallback must be confirmed before the trip."
+        "notes": "This is a required itinerary handoff, not a campsite or a casual bailout: immediate Day 3 pickup, legal off-corridor overnight, then Day 4 return to this exact pin. The driver, vehicle route, gate status, pickup window, and no-contact fallback must be confirmed before the trip."
       }
     },
     {
@@ -29939,7 +29939,7 @@
           "day": 3,
           "distance": 12.591,
           "start": "Pre-private USFS dry camp",
-          "end": "Bartle Gap supported extraction",
+          "end": "Bartle Gap planned pickup / re-entry",
           "gain": 1510,
           "loss": 1388,
           "startElevation": 5017,
@@ -29951,7 +29951,7 @@
         {
           "day": 4,
           "distance": 5.369,
-          "start": "Bartle Gap supported extraction",
+          "start": "Bartle Gap planned pickup / re-entry",
           "end": "High saddle camp near Road 38N10",
           "gain": 1056,
           "loss": 86,

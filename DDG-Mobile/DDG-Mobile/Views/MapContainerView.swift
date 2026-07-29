@@ -6,16 +6,31 @@ import SwiftData
 struct MapContainerView: View {
     @State private var hoverPoint: HoverPoint? = nil
     @State private var selectedDay: Int? = nil
+    @State private var conditionsStore = TrailConditionsStore()
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                TrailMapView(hoverPoint: $hoverPoint, selectedDay: $selectedDay)
+                TrailMapView(
+                    hoverPoint: $hoverPoint,
+                    selectedDay: $selectedDay,
+                    waterConditions: conditionsStore.snapshot?.water?.sources ?? [],
+                    waterReportUpdatedText: conditionsStore.snapshot?.water?.updatedText,
+                    waterSnapshotFetchedAt: conditionsStore.snapshot?.fetchedDate,
+                    waterSourceURL: conditionsStore.snapshot?.water?.sourceUrl
+                )
                     .frame(maxHeight: .infinity)
                 
                 Divider()
                 
-                ElevationProfileView(hoverPoint: $hoverPoint, selectedDay: $selectedDay)
+                ElevationProfileView(
+                    hoverPoint: $hoverPoint,
+                    selectedDay: $selectedDay,
+                    waterConditions: conditionsStore.snapshot?.water?.sources ?? [],
+                    waterReportUpdatedText: conditionsStore.snapshot?.water?.updatedText,
+                    waterSnapshotFetchedAt: conditionsStore.snapshot?.fetchedDate,
+                    waterSourceURL: conditionsStore.snapshot?.water?.sourceUrl
+                )
                     .frame(height: 300)
                     .padding(.bottom, 50)
                     .background(Color(uiColor: .systemBackground))
@@ -24,6 +39,11 @@ struct MapContainerView: View {
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 print("DEBUG [MapContainerView]: Mounted on screen.")
+            }
+            .task {
+                if conditionsStore.snapshot == nil {
+                    await conditionsStore.refresh()
+                }
             }
             .onChange(of: hoverPoint) { oldValue, newValue in
                 if let newValue {

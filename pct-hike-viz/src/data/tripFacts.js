@@ -166,7 +166,7 @@ const overnightPlan = [
       "Shasta County parcel screen: USFS APN 022-170-001. Candidate is about 250 ft from the PCT, 626 ft from the mapped MVUM road, 0.363 mi from mapped private property, and 5.0% mean sampled slope. Confirm vegetation, hazards, durable surface, and three-person capacity on foot.",
   },
   {
-    name: "Bartle Gap supported extraction",
+    name: "Bartle Gap planned pickup / re-entry",
     routeMile: 26.878,
     pctMile: 1447.531,
     coordinates: {

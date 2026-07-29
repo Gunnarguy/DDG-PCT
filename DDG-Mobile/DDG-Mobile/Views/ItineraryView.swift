@@ -566,7 +566,7 @@ private struct CampRow: View {
     private func iconFor(_ type: String) -> String {
         switch type {
         case "Trailhead": return "flag.fill"
-        case "Support Transfer": return "car.fill"
+        case "Support Transfer": return "arrow.left.arrow.right.circle.fill"
         case "Finish":    return "flag.checkered"
         default:          return "tent.fill"
         }

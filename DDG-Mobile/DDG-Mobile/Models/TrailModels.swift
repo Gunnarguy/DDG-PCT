@@ -101,13 +101,28 @@ final class WaterSource {
     var longitude: Double
     var reliability: String
     var notes: String?
+    var pctMile: Double = 0
+    var routeMile: Double = 0
+    var waypoint: String = ""
 
-    init(name: String, latitude: Double, longitude: Double, reliability: String, notes: String? = nil) {
+    init(
+        name: String,
+        latitude: Double,
+        longitude: Double,
+        reliability: String,
+        notes: String? = nil,
+        pctMile: Double = 0,
+        routeMile: Double = 0,
+        waypoint: String = ""
+    ) {
         self.name = name
         self.latitude = latitude
         self.longitude = longitude
         self.reliability = reliability
         self.notes = notes
+        self.pctMile = pctMile
+        self.routeMile = routeMile
+        self.waypoint = waypoint
     }
 
     var coordinate: CLLocationCoordinate2D {

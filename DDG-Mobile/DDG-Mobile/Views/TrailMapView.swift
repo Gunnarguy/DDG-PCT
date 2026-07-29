@@ -12,6 +12,10 @@ struct TrailMapView: View {
 
     @Binding var hoverPoint: HoverPoint?
     @Binding var selectedDay: Int?
+    let waterConditions: [TrailWaterCondition]
+    let waterReportUpdatedText: String?
+    let waterSnapshotFetchedAt: Date?
+    let waterSourceURL: String?
     
     @Query(sort: \CampSite.day) private var camps: [CampSite]
     @Query(sort: \TrailPoint.index) private var trailPoints: [TrailPoint]
@@ -102,7 +106,13 @@ struct TrailMapView: View {
                     // Camp markers
                     ForEach(camps) { camp in
                         Annotation(camp.name, coordinate: camp.coordinate) {
-                            campMarker(for: camp)
+                            Button {
+                                selectedCamp = camp
+                            } label: {
+                                campMarker(for: camp)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel("\(camp.name) itinerary stop details")
                         }
                         .tag(camp)
                     }
@@ -111,10 +121,12 @@ struct TrailMapView: View {
                     if showWater {
                         ForEach(waterSources) { source in
                             Annotation(source.name, coordinate: source.coordinate) {
-                                waterMarker(for: source)
-                                    .onTapGesture {
-                                        selectedWater = source
-                                    }
+                                Button {
+                                    selectedWater = source
+                                } label: {
+                                    waterMarker(for: source)
+                                }
+                                .buttonStyle(.plain)
                             }
                         }
                     }
@@ -123,10 +135,13 @@ struct TrailMapView: View {
                     if showConnectivity {
                         ForEach(connectivityZones) { zone in
                             Annotation(zone.name, coordinate: CLLocationCoordinate2D(latitude: zone.latitude, longitude: zone.longitude)) {
-                                connectivityMarker(for: zone)
-                                    .onTapGesture {
-                                        selectedZone = zone
-                                    }
+                                Button {
+                                    selectedZone = zone
+                                } label: {
+                                    connectivityMarker(for: zone)
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("\(zone.name) connectivity details")
                             }
                             
                             let radius = coverageRadius(for: zone)
@@ -168,6 +183,7 @@ struct TrailMapView: View {
                     Spacer()
 
                     routeLegend
+                        .padding(.bottom, 26)
                 }
                 .padding(8)
             }
@@ -181,8 +197,15 @@ struct TrailMapView: View {
                 }
             }
             .sheet(item: $selectedWater) { source in
-                WaterDetailSheet(source: source, mile: calculateMile(for: source))
-                    .presentationDetents([.medium])
+                WaterDetailSheet(
+                    source: source,
+                    mile: source.routeMile > 0 ? source.routeMile : calculateMile(for: source),
+                    liveCondition: liveCondition(for: source),
+                    reportUpdatedText: waterReportUpdatedText,
+                    snapshotFetchedAt: waterSnapshotFetchedAt,
+                    sourceURL: waterSourceURL
+                )
+                    .presentationDetents([.medium, .large])
             }
             .sheet(item: $selectedZone) { zone in
                 ConnectivityDetailSheet(zone: zone)
@@ -459,23 +482,58 @@ struct TrailMapView: View {
 
     @ViewBuilder
     private func waterMarker(for source: WaterSource) -> some View {
+        let live = liveCondition(for: source)
         Image(systemName: "drop.fill")
-            .font(.caption2)
-            .padding(4)
-            .background(waterColor(source.reliability), in: Circle())
-            .overlay(Circle().stroke(.white, lineWidth: 1.5))
-            .shadow(color: .black.opacity(0.2), radius: 2)
+            .font(.system(size: 13, weight: .bold))
+            .frame(width: 32, height: 32)
+            .background(waterColor(live?.condition, fallback: source.reliability), in: Circle())
+            .overlay(
+                Circle().stroke(
+                    live?.freshness?.lowercased() == "stale" ? .orange : .white,
+                    lineWidth: live?.freshness?.lowercased() == "stale" ? 3 : 2
+                )
+            )
+            .shadow(color: .black.opacity(0.25), radius: 3)
             .foregroundStyle(.white)
+            .padding(6)
+            .contentShape(Circle())
+            .accessibilityLabel(waterAccessibilityLabel(source: source, live: live))
     }
 
-    private func waterColor(_ reliability: String) -> Color {
-        switch reliability.lowercased() {
-        case "excellent": .blue
-        case "good":      .cyan
-        case "seasonal":  .orange
-        case "sketchy":   .red
-        default:          .gray
+    private func liveCondition(for source: WaterSource) -> TrailWaterCondition? {
+        waterConditions.condition(
+            waypoint: source.waypoint,
+            pctMile: source.pctMile,
+            name: source.name
+        )
+    }
+
+    private func waterColor(_ condition: String?, fallback reliability: String) -> Color {
+        switch condition?.lowercased() {
+        case "flowing": return .blue
+        case "limited": return .orange
+        case "dry": return .red
+        case "unknown": return .gray
+        default: break
         }
+
+        switch reliability.lowercased() {
+        case "excellent": return .blue
+        case "good":      return .cyan
+        case "seasonal":  return .orange
+        case "sketchy":   return .red
+        default:          return .gray
+        }
+    }
+
+    private func waterAccessibilityLabel(
+        source: WaterSource,
+        live: TrailWaterCondition?
+    ) -> String {
+        if let live {
+            return "\(source.name), \(live.condition), \(live.freshness ?? "freshness unknown"). Tap for latest hiker report."
+        }
+        return "\(source.name), no matching live report. Tap for location details."
     }
 
     // MARK: - Style Picker
@@ -753,17 +811,28 @@ struct CampDetailSheet: View {
                             .foregroundStyle(.secondary)
                     }
                 } else {
-                    Section(camp.stopType == "support-transfer" ? "Support Transfer Details" : "Itinerary Stop Details") {
+                    Section(camp.stopType == "support-transfer" ? "Day 3 Pickup & Day 4 Re-entry" : "Itinerary Stop Details") {
                         LabeledContent("Day", value: "\(camp.day)")
                         LabeledContent("Mile", value: String(format: "%.1f", camp.routeMile))
                         LabeledContent("Distance", value: String(format: "%.1f mi", camp.distance))
-                        LabeledContent("Stop Type", value: camp.type)
+                        LabeledContent(
+                            "Stop Type",
+                            value: camp.stopType == "support-transfer"
+                                ? "Planned pickup / re-entry"
+                                : camp.type
+                        )
                         LabeledContent(
                             "Pack Mode",
                             value: camp.packMode == "day-pack-supported" ? "Supported day pack" : "Overnight pack"
                         )
                         LabeledContent("Start Elevation", value: camp.startElevation)
                         LabeledContent("End Elevation", value: camp.endElevation)
+
+                        if camp.stopType == "support-transfer" {
+                            Text("This is not a campsite and it is not an optional emergency shortcut. Private timberland rules prohibit camping through this corridor, so the working itinerary is: Mikaela picks you up at this exact Bartle Gap pin after Day 3, you sleep legally off-corridor, and she returns you to the same pin for Day 4. Vehicle access and any gate constraints still must be confirmed before departure.")
+                                .font(.callout)
+                                .foregroundStyle(.secondary)
+                        }
                     }
 
                     if !camp.segment.isEmpty {
@@ -840,13 +909,16 @@ struct CampDetailSheet: View {
 struct WaterDetailSheet: View {
     let source: WaterSource
     let mile: Double
+    let liveCondition: TrailWaterCondition?
+    let reportUpdatedText: String?
+    let snapshotFetchedAt: Date?
+    let sourceURL: String?
 
-    private var reliabilityColor: Color {
-        switch source.reliability.lowercased() {
-        case "excellent": return .blue
-        case "good": return .cyan
-        case "seasonal": return .orange
-        case "sketchy": return .red
+    private var statusColor: Color {
+        switch liveCondition?.condition.lowercased() {
+        case "flowing": return .blue
+        case "limited": return .orange
+        case "dry": return .red
         default: return .secondary
         }
     }
@@ -854,31 +926,71 @@ struct WaterDetailSheet: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("Water Source Details") {
+                Section("Current Reported Condition") {
                     LabeledContent("Location", value: source.name)
                     LabeledContent("Mile Marker", value: String(format: "Mile %.1f", mile))
+                    if source.pctMile > 0 {
+                        LabeledContent("PCT Mile", value: String(format: "%.2f", source.pctMile))
+                    }
                     
                     HStack {
-                        Text("Flow Reliability")
+                        Text("Latest Status")
                         Spacer()
-                        Text(source.reliability.uppercased())
+                        Text((liveCondition?.condition ?? "NO LIVE MATCH").uppercased())
                             .font(.caption.bold())
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
-                            .background(reliabilityColor.opacity(0.15), in: RoundedRectangle(cornerRadius: 6))
-                            .foregroundStyle(reliabilityColor)
+                            .background(statusColor.opacity(0.15), in: RoundedRectangle(cornerRadius: 6))
+                            .foregroundStyle(statusColor)
+                    }
+
+                    if let liveCondition {
+                        LabeledContent("Observed", value: liveCondition.reportDate ?? "Date not parsed")
+                        if let ageDays = liveCondition.ageDays {
+                            LabeledContent("Report Age", value: ageDays == 0 ? "Today" : "\(ageDays) day\(ageDays == 1 ? "" : "s") old")
+                        }
+                        LabeledContent("Freshness", value: (liveCondition.freshness ?? "unknown").capitalized)
+                        if let reportedBy = liveCondition.reportedBy, !reportedBy.isEmpty {
+                            LabeledContent("Reported By", value: reportedBy)
+                        }
                     }
                 }
-                
-                Section("Latest Hiker Report") {
-                    Text(source.notes ?? "No report notes available.")
-                        .font(.body)
-                        .padding(.vertical, 2)
-                    
-                    LabeledContent("Data Source", value: "PCT Water Report (pctwater.com)")
+
+                Section("Latest Hiker Observation") {
+                    Text(
+                        liveCondition?.latestReport
+                            ?? source.notes
+                            ?? "No dated hiker observation matched this bundled location."
+                    )
+                    .font(.body)
+                    .textSelection(.enabled)
+
+                    if let reportUpdatedText, !reportUpdatedText.isEmpty {
+                        LabeledContent("PCT Sheet", value: reportUpdatedText)
+                    }
+                    if let snapshotFetchedAt {
+                        LabeledContent(
+                            "App Checked",
+                            value: snapshotFetchedAt.formatted(date: .abbreviated, time: .shortened)
+                        )
+                    }
+                    LabeledContent("Data Source", value: "PCT Water Report")
                 }
-                
+
+                Section("How to Read This") {
+                    Text("The app checks daily for new location-specific hiker observations. These are not instrumented stream gauges: “flowing,” “limited,” and “dry” summarize the latest dated field report, not a measured water depth. Treat old or unknown reports as unverified and carry a safety reserve.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+
                 Section {
+                    if let sourceURL, let url = URL(string: sourceURL) {
+                        Link(destination: url) {
+                            Label("Open Full PCT Water Report", systemImage: "doc.text.magnifyingglass")
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+
                     Button {
                         let location = CLLocation(latitude: source.latitude, longitude: source.longitude)
                         let mapItem = MKMapItem(location: location, address: nil)
@@ -964,6 +1076,13 @@ struct ConnectivityDetailSheet: View {
 }
 
 #Preview {
-    TrailMapView(hoverPoint: .constant(nil), selectedDay: .constant(1))
+    TrailMapView(
+        hoverPoint: .constant(nil),
+        selectedDay: .constant(1),
+        waterConditions: [],
+        waterReportUpdatedText: nil,
+        waterSnapshotFetchedAt: nil,
+        waterSourceURL: nil
+    )
         .modelContainer(for: [CampSite.self, TrailPoint.self, WaterSource.self], inMemory: true)
 }

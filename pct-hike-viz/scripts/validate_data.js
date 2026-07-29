@@ -110,7 +110,7 @@ function main() {
     "Day 2 must end at the screened pre-private USFS dry camp"
   );
   assert(
-    day3?.properties?.name === "Bartle Gap supported extraction" &&
+    day3?.properties?.name === "Bartle Gap planned pickup / re-entry" &&
       day3?.properties?.type === "Support Transfer" &&
       day3?.properties?.stopType === "support-transfer" &&
       day3?.properties?.packMode === "day-pack-supported" &&

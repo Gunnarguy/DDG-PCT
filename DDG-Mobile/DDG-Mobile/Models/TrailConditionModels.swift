@@ -72,6 +72,45 @@ nonisolated struct TrailWaterCondition: Codable, Sendable, Identifiable {
     let condition: String
 }
 
+nonisolated extension Array where Element == TrailWaterCondition {
+    func condition(
+        waypoint: String,
+        pctMile: Double,
+        name: String
+    ) -> TrailWaterCondition? {
+        if !waypoint.isEmpty,
+           let exactWaypoint = first(where: {
+               $0.waypoint?.caseInsensitiveCompare(waypoint) == .orderedSame
+           }) {
+            return exactWaypoint
+        }
+
+        if pctMile > 0,
+           let nearest = self.min(by: {
+               abs($0.mile - pctMile) < abs($1.mile - pctMile)
+           }),
+           abs(nearest.mile - pctMile) <= 0.15 {
+            return nearest
+        }
+
+        let target = name.waterMatchKey
+        return first { candidate in
+            let candidateKey = candidate.name.waterMatchKey
+            return !target.isEmpty &&
+                (candidateKey.contains(target) || target.contains(candidateKey))
+        }
+    }
+}
+
+private nonisolated extension String {
+    var waterMatchKey: String {
+        lowercased()
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .filter { !$0.isEmpty }
+            .joined()
+    }
+}
+
 nonisolated struct TrailWildfireReport: Codable, Sendable {
     let count: Int
     let source: String?

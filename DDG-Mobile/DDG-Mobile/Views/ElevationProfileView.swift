@@ -5,12 +5,19 @@ import Charts
 struct ElevationProfileView: View {
     @Binding var hoverPoint: HoverPoint?
     @Binding var selectedDay: Int?
+    let waterConditions: [TrailWaterCondition]
+    let waterReportUpdatedText: String?
+    let waterSnapshotFetchedAt: Date?
+    let waterSourceURL: String?
     
     @Query(sort: \TrailPoint.index) private var trailPoints: [TrailPoint]
     @Query(sort: \CampSite.day) private var camps: [CampSite]
     @Query private var waterSources: [WaterSource]
 
     @State private var selectedMile: Double?
+    @State private var selectedGraphWater: WaterSource?
+    @State private var selectedGraphCamp: CampSite?
+    @State private var selectedGraphZone: ConnectivityZone?
 
     // Cached state to prevent main thread blocking
     @State private var profileData: [ProfilePoint] = []
@@ -59,6 +66,25 @@ struct ElevationProfileView: View {
                 computeData()
             }
         }
+        .sheet(item: $selectedGraphWater) { source in
+            WaterDetailSheet(
+                source: source,
+                mile: source.routeMile,
+                liveCondition: liveCondition(for: source),
+                reportUpdatedText: waterReportUpdatedText,
+                snapshotFetchedAt: waterSnapshotFetchedAt,
+                sourceURL: waterSourceURL
+            )
+            .presentationDetents([.medium, .large])
+        }
+        .sheet(item: $selectedGraphCamp) { camp in
+            CampDetailSheet(camp: camp)
+                .presentationDetents([.medium, .large])
+        }
+        .sheet(item: $selectedGraphZone) { zone in
+            ConnectivityDetailSheet(zone: zone)
+                .presentationDetents([.medium])
+        }
     }
 
     private func findClosestPoint(to mile: Double) -> HoverPoint? {
@@ -95,6 +121,7 @@ struct ElevationProfileView: View {
         let name: String
         let latitude: Double
         let longitude: Double
+        let routeMile: Double
     }
 
     private func computeData() {
@@ -102,7 +129,14 @@ struct ElevationProfileView: View {
 
         // 1. Extract data safely on MainActor
         let simpleTPs = trailPoints.map { SimpleTrailPoint(latitude: $0.latitude, longitude: $0.longitude, elevationFeet: $0.elevationFeet) }
-        let simpleWaters = waterSources.map { SimpleWater(name: $0.name, latitude: $0.latitude, longitude: $0.longitude) }
+        let simpleWaters = waterSources.map {
+            SimpleWater(
+                name: $0.name,
+                latitude: $0.latitude,
+                longitude: $0.longitude,
+                routeMile: $0.routeMile
+            )
+        }
         let simpleConn = connectivityZones
         let colors = dayColors.map { $0.stroke }
         let profiles = TrailConstants.dayProfiles
@@ -177,7 +211,13 @@ struct ElevationProfileView: View {
                     let db = (b.latitude - ws.latitude) * (b.latitude - ws.latitude) + (b.longitude - ws.longitude) * (b.longitude - ws.longitude)
                     return da < db
                 }) else { continue }
-                wsMiles.append(WaterMileData(name: ws.name, mile: nearest.mile, elevation: nearest.elevationFeet))
+                wsMiles.append(
+                    WaterMileData(
+                        name: ws.name,
+                        mile: ws.routeMile > 0 ? ws.routeMile : nearest.mile,
+                        elevation: nearest.elevationFeet
+                    )
+                )
             }
             
             // Connectivity zone miles.
@@ -256,17 +296,6 @@ struct ElevationProfileView: View {
 
     private var chartView: some View {
         Chart {
-            // Altitude zone backgrounds
-            ForEach(altitudeZones) { zone in
-                RectangleMark(
-                    xStart: .value("Start", 0),
-                    xEnd: .value("End", profileData.last?.mile ?? 80),
-                    yStart: .value("Min", zone.minFt),
-                    yEnd: .value("Max", min(zone.maxFt, 15000))
-                )
-                .foregroundStyle(zoneColor(zone).opacity(0.05))
-            }
-
             // Day boundaries
             ForEach(displayedDayRanges, id: \.day) { range in
                 RuleMark(
@@ -322,13 +351,28 @@ struct ElevationProfileView: View {
                     y: .value("Elevation", ws.elevation)
                 )
                 .symbol {
-                    Image(systemName: "drop.fill")
-                        .font(.system(size: 7))
-                        .padding(4)
-                        .background(.cyan, in: Circle())
-                        .foregroundStyle(.white)
-                        .overlay(Circle().stroke(.white, lineWidth: 1.5))
-                        .shadow(radius: 2)
+                    let source = waterSources.first { $0.name == ws.name }
+                    let live = source.flatMap { liveCondition(for: $0) }
+                    Button {
+                        if let source {
+                            selectedGraphWater = source
+                        }
+                    } label: {
+                        Image(systemName: "drop.fill")
+                            .font(.system(size: 9, weight: .bold))
+                            .frame(width: 28, height: 28)
+                            .background(waterColor(live), in: Circle())
+                            .foregroundStyle(.white)
+                            .overlay(
+                                Circle().stroke(
+                                    live?.freshness?.lowercased() == "stale" ? .orange : .white,
+                                    lineWidth: live?.freshness?.lowercased() == "stale" ? 3 : 2
+                                )
+                            )
+                            .shadow(radius: 2)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(ws.name) water report")
                 }
             }
 
@@ -339,13 +383,19 @@ struct ElevationProfileView: View {
                     y: .value("Elevation", zone.elevation)
                 )
                 .symbol {
-                    Image(systemName: "antenna.radiowaves.left.and.right")
-                        .font(.system(size: 7))
-                        .padding(4)
-                        .background(zone.hasSignal ? .purple : .gray, in: Circle())
-                        .foregroundStyle(.white)
-                        .overlay(Circle().stroke(.white, lineWidth: 1.5))
-                        .shadow(radius: 2)
+                    Button {
+                        selectedGraphZone = connectivityZones.first { $0.name == zone.name }
+                    } label: {
+                        Image(systemName: "antenna.radiowaves.left.and.right")
+                            .font(.system(size: 9, weight: .bold))
+                            .frame(width: 28, height: 28)
+                            .background(zone.hasSignal ? .purple : .gray, in: Circle())
+                            .foregroundStyle(.white)
+                            .overlay(Circle().stroke(.white, lineWidth: 2))
+                            .shadow(radius: 2)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(zone.name) connectivity details")
                 }
             }
 
@@ -361,7 +411,13 @@ struct ElevationProfileView: View {
                     y: .value("Elevation", elevation(at: camp.routeMile))
                 )
                 .symbol {
-                    trailStopSymbol(for: camp)
+                    Button {
+                            selectedGraphCamp = camp
+                    } label: {
+                        trailStopSymbol(for: camp)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(camp.name) itinerary stop details")
                 }
             }
 
@@ -403,6 +459,28 @@ struct ElevationProfileView: View {
             }
         }
         .chartXSelection(value: $selectedMile)
+        .chartOverlay { proxy in
+            GeometryReader { geometry in
+                Rectangle()
+                    .fill(.clear)
+                    .contentShape(Rectangle())
+                    .simultaneousGesture(
+                        SpatialTapGesture()
+                            .onEnded { value in
+                                guard let plotFrame = proxy.plotFrame else { return }
+                                let frame = geometry[plotFrame]
+                                let plotX = value.location.x - frame.minX
+                                guard plotX >= 0,
+                                      plotX <= frame.width,
+                                      let mile: Double = proxy.value(atX: plotX)
+                                else {
+                                    return
+                                }
+                                selectGraphMarker(near: mile)
+                            }
+                    )
+            }
+        }
         .chartXScale(domain: chartXDomain)
         .chartYScale(domain: chartYDomain)
         .chartYAxisLabel("Elevation (ft)")
@@ -573,19 +651,48 @@ struct ElevationProfileView: View {
         .frame(maxWidth: .infinity)
     }
 
-    private func zoneColor(_ zone: AltitudeZone) -> Color {
-        switch zone.risk {
-        case "none":     .green
-        case "low":      .yellow
-        case "moderate": .orange
-        default:         .red
-        }
-    }
-
     private func elevation(at mile: Double) -> Double {
         profileData.min { first, second in
             abs(first.mile - mile) < abs(second.mile - mile)
         }?.elevationFeet ?? chartYDomain.lowerBound
+    }
+
+    private func selectGraphMarker(near mile: Double) {
+        let threshold = max(0.15, (chartXDomain.upperBound - chartXDomain.lowerBound) * 0.012)
+        enum Marker {
+            case water(WaterSource)
+            case camp(CampSite)
+            case connectivity(ConnectivityZone)
+
+            var mile: Double {
+                switch self {
+                case .water(let source): source.routeMile
+                case .camp(let camp): camp.routeMile
+                case .connectivity(let zone):
+                    max(0, zone.mile - 1420.653)
+                }
+            }
+        }
+
+        let markers =
+            waterSources.map(Marker.water) +
+            camps.filter { $0.day >= 0 }.map(Marker.camp) +
+            connectivityZones.map(Marker.connectivity)
+
+        guard let nearest = markers.min(by: {
+            abs($0.mile - mile) < abs($1.mile - mile)
+        }), abs(nearest.mile - mile) <= threshold else {
+            return
+        }
+
+        switch nearest {
+        case .water(let source):
+            selectedGraphWater = source
+        case .camp(let camp):
+            selectedGraphCamp = camp
+        case .connectivity(let zone):
+            selectedGraphZone = zone
+        }
     }
 
     @ViewBuilder
@@ -609,12 +716,29 @@ struct ElevationProfileView: View {
         }
 
         Image(systemName: symbol)
-            .font(.system(size: 8, weight: .bold))
-            .padding(4)
+            .font(.system(size: 9, weight: .bold))
+            .frame(width: 28, height: 28)
             .background(.thinMaterial, in: Circle())
             .foregroundStyle(color)
             .overlay(Circle().stroke(.white, lineWidth: 1))
             .shadow(color: .black.opacity(0.18), radius: 2)
+    }
+
+    private func liveCondition(for source: WaterSource) -> TrailWaterCondition? {
+        waterConditions.condition(
+            waypoint: source.waypoint,
+            pctMile: source.pctMile,
+            name: source.name
+        )
+    }
+
+    private func waterColor(_ condition: TrailWaterCondition?) -> Color {
+        switch condition?.condition.lowercased() {
+        case "flowing": .blue
+        case "limited": .orange
+        case "dry": .red
+        default: .gray
+        }
     }
 }
 
@@ -630,6 +754,13 @@ struct ProfilePoint: Sendable, Identifiable {
 }
 
 #Preview {
-    ElevationProfileView(hoverPoint: .constant(nil), selectedDay: .constant(1))
+    ElevationProfileView(
+        hoverPoint: .constant(nil),
+        selectedDay: .constant(1),
+        waterConditions: [],
+        waterReportUpdatedText: nil,
+        waterSnapshotFetchedAt: nil,
+        waterSourceURL: nil
+    )
         .modelContainer(for: [TrailPoint.self, CampSite.self, WaterSource.self], inMemory: true)
 }

@@ -22,7 +22,7 @@ describe("canonical trip facts", () => {
     expect(primaryItinerary.at(-1).routeMileEnd).toBe(51.844);
     expect(Math.max(...primaryItinerary.map((day) => day.distance))).toBe(12.591);
     expect(primaryItinerary.find((day) => day.day === 3)).toMatchObject({
-      to: "Bartle Gap supported extraction",
+      to: "Bartle Gap planned pickup / re-entry",
       packMode: "day-pack-supported",
       stopType: "support-transfer",
       campStatus: "support-transfer-needs-booking-road-check",

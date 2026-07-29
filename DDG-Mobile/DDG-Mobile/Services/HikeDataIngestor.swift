@@ -7,13 +7,13 @@ import SwiftData
 /// - `features[]` → CampSite models (GeoJSON Feature with properties)
 /// - `route.path[]` → TrailPoint models ([longitude, latitude, elevation_feet])
 struct HikeDataIngestor {
-    private static let dataVersion = 13
+    private static let dataVersion = 15
 
     /// Check if data has already been ingested (avoid re-parsing 48k points)
     static func needsIngest(modelContext: ModelContext) -> Bool {
         print("DEBUG [HikeDataIngestor]: Checking database state...")
         
-        let currentVersion = dataVersion // Supported Bartle itinerary and typed transfer/camp stops.
+        let currentVersion = dataVersion // Live water identity and explicit Bartle pickup/re-entry wording.
         let ingestedVersion = UserDefaults.standard.integer(forKey: "hikeDataIngestVersion")
         if ingestedVersion < currentVersion {
             print("DEBUG [HikeDataIngestor]: Forced re-ingestion triggered (version \(ingestedVersion) < \(currentVersion))")
@@ -283,7 +283,12 @@ struct HikeDataIngestor {
             latitude: coords[1],
             longitude: coords[0],
             reliability: reliability,
-            notes: report
+            notes: report,
+            pctMile: (dict["pctMile"] as? NSNumber)?.doubleValue
+                ?? (dict["mile"] as? NSNumber)?.doubleValue
+                ?? 0,
+            routeMile: (dict["routeMile"] as? NSNumber)?.doubleValue ?? 0,
+            waypoint: dict["waypoint"] as? String ?? ""
         )
     }
 }

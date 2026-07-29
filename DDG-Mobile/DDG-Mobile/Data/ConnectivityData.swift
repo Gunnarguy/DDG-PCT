@@ -42,12 +42,12 @@ let connectivityZones: [ConnectivityZone] = [
     ),
     ConnectivityZone(
         id: "bartle-gap-transfer",
-        name: "Bartle Gap Support Transfer",
+        name: "Bartle Gap Pickup / Re-entry",
         mile: 1447.531,
         longitude: -121.81993729434907, latitude: 41.17064891383052,
         cellCoverage: CellCoverage(verizon: "none", att: "none", tmobile: "none"),
         satelliteCompatible: true,
-        notes: "Exact pickup/re-entry pin. Assume no cell and coordinate by inReach. This is a timed transfer point, not a campsite."
+        notes: "Exact planned Day 3 pickup and Day 4 re-entry pin. Assume no cell and coordinate by inReach. Private-corridor camping is prohibited, so this is part of the working itinerary—not a campsite or a casual bailout."
     ),
     ConnectivityZone(
         id: "star-city",
