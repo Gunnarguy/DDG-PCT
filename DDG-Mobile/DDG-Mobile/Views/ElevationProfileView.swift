@@ -11,7 +11,6 @@ struct ElevationProfileView: View {
     @Query private var waterSources: [WaterSource]
 
     @State private var selectedMile: Double?
-    @State private var scrollPosition: Double = 0
 
     // Cached state to prevent main thread blocking
     @State private var profileData: [ProfilePoint] = []
@@ -47,11 +46,10 @@ struct ElevationProfileView: View {
             }
         }
         .onChange(of: selectedDay) { _, newDay in
-            if let newDay, let range = dayMileRanges.first(where: { $0.day == newDay }) {
-                withAnimation(.easeInOut) {
-                    scrollPosition = range.startMile
-                }
-            }
+            // A selected day owns the chart's exact X/Y domains. Clear any cursor
+            // left behind by the previous day so its annotation cannot imply that
+            // the old segment is still active.
+            selectedMile = nil
         }
         .onAppear {
             print("DEBUG [ElevationProfileView]: Mounted on screen. TrailPoints database count: \(trailPoints.count) | Camps database count: \(camps.count) | Generated ProfilePoints count: \(profileData.count)")
@@ -227,11 +225,33 @@ struct ElevationProfileView: View {
 
     // MARK: - Chart
 
-    private var visibleDomainMiles: Double {
-        guard let selectedDay, let profile = TrailConstants.profile(for: selectedDay) else {
-            return profileData.last?.mile ?? TrailConstants.totalMiles
+    private var displayedDayRanges: [DayMileRange] {
+        guard let selectedDay else { return dayMileRanges }
+        return dayMileRanges.filter { $0.day == selectedDay }
+    }
+
+    private var chartXDomain: ClosedRange<Double> {
+        guard let profile = selectedProfileForStats else {
+            return 0...TrailConstants.totalMiles
         }
-        return max(4, profile.miles + 0.75)
+        let padding = min(0.20, profile.miles * 0.025)
+        let lowerBound = max(0, profile.routeMileStart - padding)
+        let upperBound = min(TrailConstants.totalMiles, profile.routeMileEnd + padding)
+        return lowerBound...upperBound
+    }
+
+    private var chartYDomain: ClosedRange<Double> {
+        let visiblePoints = profileData.filter { chartXDomain.contains($0.mile) }
+        guard
+            let minimum = visiblePoints.map(\.elevationFeet).min(),
+            let maximum = visiblePoints.map(\.elevationFeet).max()
+        else {
+            return 0...7_000
+        }
+
+        let lower = max(0, floor((minimum - 250) / 500) * 500)
+        let upper = max(lower + 1_000, ceil((maximum + 250) / 500) * 500)
+        return lower...upper
     }
 
     private var chartView: some View {
@@ -248,7 +268,7 @@ struct ElevationProfileView: View {
             }
 
             // Day boundaries
-            ForEach(dayMileRanges.filter { $0.day >= 0 }, id: \.day) { range in
+            ForEach(displayedDayRanges, id: \.day) { range in
                 RuleMark(
                     x: .value("Mile", range.startMile)
                 )
@@ -267,7 +287,7 @@ struct ElevationProfileView: View {
             }
 
             // Dynamic Elevation Area & Line per Day
-            ForEach(dayMileRanges.filter { $0.day >= 0 }, id: \.day) { range in
+            ForEach(displayedDayRanges, id: \.day) { range in
                 let dayPoints = profileData.filter { $0.day == range.day }
                 
                 ForEach(dayPoints) { point in
@@ -296,7 +316,7 @@ struct ElevationProfileView: View {
             }
 
             // Camp markers
-            ForEach(camps) { camp in
+            ForEach(camps.filter { chartXDomain.contains($0.routeMile) }) { camp in
                 PointMark(
                     x: .value("Mile", camp.routeMile),
                     y: .value("Elevation", 0)
@@ -310,7 +330,7 @@ struct ElevationProfileView: View {
             }
 
             // Water source markers
-            ForEach(waterSourceMiles, id: \.name) { ws in
+            ForEach(waterSourceMiles.filter { chartXDomain.contains($0.mile) }, id: \.name) { ws in
                 PointMark(
                     x: .value("Mile", ws.mile),
                     y: .value("Elevation", ws.elevation)
@@ -327,7 +347,7 @@ struct ElevationProfileView: View {
             }
 
             // Connectivity source markers (cell towers)
-            ForEach(connectivitySourceMiles, id: \.name) { zone in
+            ForEach(connectivitySourceMiles.filter { chartXDomain.contains($0.mile) }, id: \.name) { zone in
                 PointMark(
                     x: .value("Mile", zone.mile),
                     y: .value("Elevation", zone.elevation)
@@ -381,11 +401,10 @@ struct ElevationProfileView: View {
             }
         }
         .chartXSelection(value: $selectedMile)
+        .chartXScale(domain: chartXDomain)
+        .chartYScale(domain: chartYDomain)
         .chartYAxisLabel("Elevation (ft)")
         .chartXAxisLabel("Trail Miles")
-        .chartScrollableAxes(.horizontal)
-        .chartXVisibleDomain(length: visibleDomainMiles)
-        .chartScrollPosition(x: $scrollPosition)
         .frame(height: 220)
         .padding(.horizontal)
     }
@@ -472,22 +491,67 @@ struct ElevationProfileView: View {
     }
 
     private var statsBar: some View {
-        HStack(spacing: 0) {
+        VStack(spacing: 10) {
             let displayGain = selectedProfileForStats?.gainFeet ?? totalGain
             let displayLoss = selectedProfileForStats?.lossFeet ?? totalLoss
 
-            statItem(icon: "arrow.up.right", value: String(format: "%.0f", displayGain), unit: "ft", color: .green)
-            Divider().frame(height: 30)
-            statItem(icon: "arrow.down.right", value: String(format: "%.0f", displayLoss), unit: "ft", color: .red)
-            Divider().frame(height: 30)
-            statItem(icon: "clock", value: displayedTimeEstimate.rangeLabel, unit: "", color: .blue)
+            HStack(spacing: 12) {
+                Label {
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(distanceLabel)
+                            .font(.subheadline.bold())
+                        Text(packModeLabel)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                } icon: {
+                    Image(systemName: "figure.hiking")
+                        .foregroundStyle(.orange)
+                }
+
+                Spacer(minLength: 4)
+
+                Label(displayedTimeEstimate.rangeLabel, systemImage: "clock")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(.blue)
+            }
+
+            Divider()
+
+            HStack(spacing: 0) {
+                statItem(
+                    icon: "arrow.up.right",
+                    value: String(format: "%.0f", displayGain),
+                    unit: "ft",
+                    color: .green
+                )
+                Divider().frame(height: 26)
+                statItem(
+                    icon: "arrow.down.right",
+                    value: String(format: "%.0f", displayLoss),
+                    unit: "ft",
+                    color: .red
+                )
+            }
         }
-        .padding(.vertical, 14)
+        .padding(.vertical, 12)
         .padding(.horizontal, 20)
         .background(.ultraThinMaterial)
-        .clipShape(Capsule())
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
         .padding(.horizontal)
+    }
+
+    private var distanceLabel: String {
+        let miles = selectedProfileForStats?.miles ?? TrailConstants.totalMiles
+        return String(format: "%.2f mi", miles)
+    }
+
+    private var packModeLabel: String {
+        guard let selectedProfileForStats else { return "Entire hiking route" }
+        return selectedProfileForStats.packMode == "day-pack-supported"
+            ? "Supported day pack"
+            : "Overnight pack"
     }
 
     private func statItem(icon: String, value: String, unit: String, color: Color) -> some View {

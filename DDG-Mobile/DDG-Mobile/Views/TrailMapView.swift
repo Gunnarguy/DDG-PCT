@@ -200,43 +200,52 @@ struct TrailMapView: View {
     // Local Sendable structs to cross actor boundary
     private struct SimpleTrailPoint: Sendable {
         let coordinate: CLLocationCoordinate2D
-        let mile: Double
+    }
+
+    private struct SimpleStop: Sendable {
+        let day: Int
+        let coordinate: CLLocationCoordinate2D
     }
 
     private func computeSegments() {
         guard !camps.isEmpty, trailPoints.count > 1 else { return }
 
-        // Extract trail points and pre-calculate cumulative mileage along index order.
-        var tempPoints: [SimpleTrailPoint] = []
-        var cumulativeDist: Double = 0
-        for i in 0..<trailPoints.count {
-            let tp = trailPoints[i]
-            if i > 0 {
-                let prev = trailPoints[i-1]
-                let dx = tp.longitude - prev.longitude
-                let dy = tp.latitude - prev.latitude
-                let distDeg = (dx * dx + dy * dy).squareRoot()
-                cumulativeDist += distDeg * 69.0
-            }
-            tempPoints.append(SimpleTrailPoint(coordinate: tp.coordinate, mile: cumulativeDist))
-        }
-        let simpleTPs = tempPoints
+        let simpleTPs = trailPoints.map { SimpleTrailPoint(coordinate: $0.coordinate) }
+        let stops = camps
+            .filter { (0...8).contains($0.day) }
+            .map { SimpleStop(day: $0.day, coordinate: $0.coordinate) }
+            .sorted { $0.day < $1.day }
         let colors = dayColors.map { $0.stroke }
         let profiles = TrailConstants.dayProfiles
 
-        // Build map segments from the same normalized day ranges used by stats.
+        // Build each map segment between the exact itinerary stop coordinates.
+        // This avoids drifting day colors when the Garmin track mileage differs
+        // slightly from the official PCTA endpoint mileage.
         Task.detached {
             var segments: [DaySegment] = []
 
             for profile in profiles {
+                guard
+                    let startStop = stops.first(where: { $0.day == profile.day - 1 }),
+                    let endStop = stops.first(where: { $0.day == profile.day }),
+                    let startIndex = Self.nearestPointIndex(
+                        to: startStop.coordinate,
+                        in: simpleTPs
+                    ),
+                    let endIndex = Self.nearestPointIndex(
+                        to: endStop.coordinate,
+                        in: simpleTPs
+                    ),
+                    startIndex <= endIndex
+                else {
+                    continue
+                }
+
                 let colorIndex = max(0, profile.day - 1)
                 let hexString = colorIndex < colors.count ? colors[colorIndex] : ""
-                let coords = simpleTPs
-                    .filter {
-                        $0.mile >= profile.routeMileStart &&
-                            $0.mile <= profile.routeMileEnd
-                    }
-                    .map(\.coordinate)
+                var coords = [startStop.coordinate]
+                coords.append(contentsOf: simpleTPs[startIndex...endIndex].map(\.coordinate))
+                coords.append(endStop.coordinate)
                 
                 if coords.count > 1 {
                     segments.append(
@@ -252,7 +261,26 @@ struct TrailMapView: View {
             let finalSegments = segments
             await MainActor.run {
                 self.computedSegments = finalSegments
+                if let selectedDay {
+                    self.focusOnDay(selectedDay)
+                } else {
+                    self.focusOnMapScope()
+                }
             }
+        }
+    }
+
+    nonisolated private static func nearestPointIndex(
+        to coordinate: CLLocationCoordinate2D,
+        in points: [SimpleTrailPoint]
+    ) -> Int? {
+        points.indices.min { first, second in
+            let firstLatitude = points[first].coordinate.latitude - coordinate.latitude
+            let firstLongitude = points[first].coordinate.longitude - coordinate.longitude
+            let secondLatitude = points[second].coordinate.latitude - coordinate.latitude
+            let secondLongitude = points[second].coordinate.longitude - coordinate.longitude
+            return firstLatitude * firstLatitude + firstLongitude * firstLongitude
+                < secondLatitude * secondLatitude + secondLongitude * secondLongitude
         }
     }
     

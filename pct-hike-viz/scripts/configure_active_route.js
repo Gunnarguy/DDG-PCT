@@ -235,6 +235,7 @@ data.route = {
     source_of_truth_version: "2026-07-29-normalized-garmin-v3",
     geometry_source: tripFacts.route.geometrySource,
     elevation_source: tripFacts.route.elevationSource,
+    elevation_unit: "feet",
     start_name: tripFacts.route.start,
     start_coordinate: BURNEY_FALLS_PCT_ACCESS,
     start_pct_mile: tripFacts.route.startPctMile,

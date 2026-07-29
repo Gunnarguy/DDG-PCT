@@ -29879,6 +29879,7 @@
       "source_of_truth_version": "2026-07-29-normalized-garmin-v3",
       "geometry_source": "Existing Garmin Course 334289912 centerline cropped at the PCTA 2026 Burney Falls and Ash Camp control points",
       "elevation_source": "User-supplied Garmin Section O GPX, resampled every 25m, smoothed over 200m, continuous 20ft hysteresis",
+      "elevation_unit": "feet",
       "start_name": "Burney Falls PCT access",
       "start_coordinate": [
         -121.65376551,

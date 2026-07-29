@@ -5,9 +5,9 @@ import SwiftData
 ///
 /// hike_data.json structure:
 /// - `features[]` → CampSite models (GeoJSON Feature with properties)
-/// - `route.path[]` → TrailPoint models ([longitude, latitude, elevation_meters])
+/// - `route.path[]` → TrailPoint models ([longitude, latitude, elevation_feet])
 struct HikeDataIngestor {
-    private static let dataVersion = 12
+    private static let dataVersion = 13
 
     /// Check if data has already been ingested (avoid re-parsing 48k points)
     static func needsIngest(modelContext: ModelContext) -> Bool {
@@ -59,6 +59,8 @@ struct HikeDataIngestor {
         if let route = json["route"] as? [String: Any],
            let path = route["path"] as? [[Double]] {
             print("DEBUG [HikeDataIngestor]: Parsing all \(path.count) trail points...")
+            let metadata = route["metadata"] as? [String: Any]
+            let elevationUnit = metadata?["elevation_unit"] as? String ?? "meters"
             
             var cumulativeDistance: Double = 0
             var lastLat: Double? = nil
@@ -67,7 +69,10 @@ struct HikeDataIngestor {
             for point in path where point.count >= 3 {
                 let lon = point[0]
                 let lat = point[1]
-                let elev = point[2]
+                let sourceElevation = point[2]
+                let elevationMeters = elevationUnit == "feet"
+                    ? sourceElevation / TrailConstants.metersToFeet
+                    : sourceElevation
                 
                 if let lLat = lastLat, let lLon = lastLon {
                     let lat1 = lLat * .pi / 180
@@ -82,7 +87,12 @@ struct HikeDataIngestor {
                     cumulativeDistance += distanceMiles
                 }
                 
-                trailMiles.append((lat: lat, lon: lon, mile: cumulativeDistance, elev: elev))
+                trailMiles.append((
+                    lat: lat,
+                    lon: lon,
+                    mile: cumulativeDistance,
+                    elev: elevationMeters
+                ))
                 lastLat = lat
                 lastLon = lon
             }
