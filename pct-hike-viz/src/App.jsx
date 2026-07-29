@@ -812,6 +812,8 @@ function AuthGatedApp() {
     loading,
     user,
     signOut,
+    authorizationError,
+    refreshProfile,
   } = useAuth();
 
   if (authUnavailable && !isAuthenticated) {
@@ -832,6 +834,34 @@ function AuthGatedApp() {
 
   if (!isAuthenticated) {
     return <LoginScreen />;
+  }
+
+  if (authorizationError) {
+    return (
+      <div className="app-shell">
+        <div className="access-denied-screen">
+          <h1>🏔️ DDG Mission Control</h1>
+          <div className="access-denied-card">
+            <span className="access-icon">⚠️</span>
+            <h2>Couldn&apos;t Verify Team Access</h2>
+            <p>
+              Signed in as <strong>{user?.email}</strong>
+            </p>
+            <p className="access-message">
+              Your sign-in succeeded, but the team profile check failed.
+              <br />
+              This is not an access denial.
+            </p>
+            <button onClick={refreshProfile} className="sign-out-btn">
+              Try Profile Check Again
+            </button>
+            <button onClick={signOut} className="sign-out-btn">
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Authenticated but NOT a team member - show access pending screen

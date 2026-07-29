@@ -47,21 +47,53 @@ export function AuthProvider({ children }) {
   const [error, setError] = useState(null);
   const [authUnavailable, setAuthUnavailable] = useState(false);
   const [teamRoster, setTeamRoster] = useState([]);
+  const [profileCheckedUserId, setProfileCheckedUserId] = useState(null);
+  const [profileError, setProfileError] = useState(null);
 
-  // Fetch team profile when user changes
+  // Resolve authorization independently from session restoration. Supabase can
+  // emit SIGNED_IN before the initial getSession() call releases its auth lock,
+  // so the user and profile must not be treated as one atomic event.
   const fetchProfile = useCallback(async (authUser) => {
     if (!authUser) {
       setProfile(null);
-      return;
+      setProfileCheckedUserId(null);
+      setProfileError(null);
+      return null;
     }
 
+    setProfileCheckedUserId(null);
+    setProfileError(null);
+
     try {
-      setProfile(await getTeamProfile(authUser.id));
+      const teamProfile = await getTeamProfile(authUser.id);
+      setProfile(teamProfile);
+      setProfileCheckedUserId(authUser.id);
+      return teamProfile;
     } catch (err) {
       console.error("Failed to fetch team profile:", err);
       setProfile(null);
+      setProfileError(
+        err?.message || "Mission Control could not verify team access.",
+      );
+      setProfileCheckedUserId(authUser.id);
+      return null;
     }
   }, []);
+
+  // Recovery path for magic-link/OAuth races: whenever a session user exists
+  // without a completed profile check for that exact user ID, issue the check.
+  useEffect(() => {
+    if (!user?.id) {
+      setProfile(null);
+      setProfileCheckedUserId(null);
+      setProfileError(null);
+      return;
+    }
+
+    if (profileCheckedUserId !== user.id) {
+      void fetchProfile(user);
+    }
+  }, [fetchProfile, profileCheckedUserId, user]);
 
   // Initialize auth state on mount
   useEffect(() => {
@@ -490,13 +522,18 @@ export function AuthProvider({ children }) {
   /**
    * Get display info for current user
    */
+  const authorizationLoading = Boolean(
+    user?.id && profileCheckedUserId !== user.id,
+  );
+  const combinedLoading = loading || authorizationLoading;
+
   const syncStatus = useMemo(() => {
     if (!supabaseReady) return "offline";
-    if (loading) return "syncing";
+    if (combinedLoading) return "syncing";
     if (user) return "synced";
     if (error) return "error";
     return "unauthenticated";
-  }, [loading, error, user]);
+  }, [combinedLoading, error, user]);
 
   const getDisplayInfo = useCallback(() => {
     if (!user) return null;
@@ -535,8 +572,9 @@ export function AuthProvider({ children }) {
     // State
     user,
     profile,
-    loading,
+    loading: combinedLoading,
     error,
+    authorizationError: profileError,
     authUnavailable,
     isAuthenticated: !!user,
     isTeamMember: !!profile,
@@ -548,6 +586,7 @@ export function AuthProvider({ children }) {
     signInWithEmail,
     signInWithGoogle,
     signOut,
+    refreshProfile: () => fetchProfile(user),
     getDisplayInfo,
     devBypassLogin,
 

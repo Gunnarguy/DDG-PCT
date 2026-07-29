@@ -143,8 +143,7 @@ export const getTeamProfile = async (userId = null) => {
     .maybeSingle();
 
   if (error) {
-    console.warn("Profile fetch error:", error);
-    return null;
+    throw error;
   }
   return data; // Returns null if no profile exists, which is fine
 };
