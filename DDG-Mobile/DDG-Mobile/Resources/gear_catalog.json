@@ -1,0 +1,1622 @@
+{
+  "version": 3,
+  "generatedFrom": "pct-hike-viz/src/data/planContent.js#packPlanner",
+  "packName": "DDG Mission Loadout",
+  "capacityLiters": 60,
+  "baseWeightGoalPounds": 20,
+  "consumablesStartPounds": 10,
+  "summary": "Comfort-first hauler for Section O—capable of carrying big water loads per Wilderness Vagabond beta.",
+  "sources": [
+    {
+      "id": "doc-day-plan",
+      "title": "DDG Narrative: Section O Day Plan",
+      "url": null,
+      "category": "planning"
+    },
+    {
+      "id": "doc-detox-trip",
+      "title": "DDG Narrative: April Detox Trip",
+      "url": null,
+      "category": "experience"
+    },
+    {
+      "id": "doc-transport-dunsmuir",
+      "title": "DDG Narrative: Dunsmuir Resupply + Shuttles",
+      "url": null,
+      "category": "logistics"
+    },
+    {
+      "id": "doc-permits-overview",
+      "title": "DDG Narrative: Permit + Campfire Requirements",
+      "url": null,
+      "category": "permits"
+    },
+    {
+      "id": "doc-water-hat-creek",
+      "title": "DDG Narrative: Hat Creek Rim Water",
+      "url": null,
+      "category": "water"
+    },
+    {
+      "id": "wv-2017-log",
+      "title": "Wilderness Vagabond 2017 PCT Log",
+      "url": "http://wildernessvagabond.com/PCT-2017/PCT-2017.htm",
+      "category": "trip-report"
+    },
+    {
+      "id": "adventurehacks-guide",
+      "title": "Adventure Hacks: Burney Falls → Castle Crags",
+      "url": "https://adventurehacks.com/burney-falls-castle-crags/",
+      "category": "guide"
+    },
+    {
+      "id": "halfway-anywhere",
+      "title": "Halfway Anywhere: Best NorCal Section Hikes",
+      "url": "https://www.halfwayanywhere.com/trails/pacific-crest-trail/best-section-hikes-pct-norcal/",
+      "category": "guide"
+    },
+    {
+      "id": "norcal-hiking-castle-crags",
+      "title": "NorCal Hiking Trails: PCT Castle Crags",
+      "url": "https://northerncaliforniahikingtrails.com/blog/2019/03/10/pacific-crest-trail-castle-crags/",
+      "category": "guide"
+    },
+    {
+      "id": "trailhiker-section-o",
+      "title": "Trail Hiker: Section O Peavine to Bartle Gap",
+      "url": "https://trailhiker.wordpress.com/2017/11/11/pct-section-o-peavine-creek-to-bartle-gap/",
+      "category": "trip-report"
+    },
+    {
+      "id": "entranced-wilderness",
+      "title": "Entranced by Wilderness: Best NorCal PCT",
+      "url": "https://www.entrancedbywilderness.com/best-section-of-the-pct-norcal/",
+      "category": "guide"
+    },
+    {
+      "id": "unexpected-occurrence",
+      "title": "Two Days in Castle Crags Itinerary",
+      "url": "https://unexpectedoccurrence.com/two-days-in-castle-crags-itinerary/",
+      "category": "itinerary"
+    },
+    {
+      "id": "reddit-norcal-tips",
+      "title": "Reddit: Tips for NorCal PCT",
+      "url": "https://www.reddit.com/r/PacificCrestTrail/comments/ce6tzg/tips_for_norcal/",
+      "category": "reddit"
+    },
+    {
+      "id": "reddit-permits-ca",
+      "title": "Reddit: Other Permits on PCT California",
+      "url": "https://www.reddit.com/r/PacificCrestTrail/comments/1hwwyzn/other_permits_you_may_need_on_the_pct_california/",
+      "category": "reddit"
+    },
+    {
+      "id": "reddit-gear-recs",
+      "title": "Reddit: Gear Recommendations for PCT",
+      "url": "https://www.reddit.com/r/PacificCrestTrail/comments/1dgkyz3/gear_recommendations_for_the_pct/",
+      "category": "reddit"
+    },
+    {
+      "id": "reddit-shakedown-2025",
+      "title": "Reddit: Shakedown Packing List PCT 2025",
+      "url": "https://www.reddit.com/r/PacificCrestTrail/comments/1hch850/shakedown_packing_list_pct_2025/",
+      "category": "reddit"
+    },
+    {
+      "id": "pcta-permits",
+      "title": "PCTA: Permit Portal",
+      "url": "https://www.pcta.org/discover-the-trail/permits/",
+      "category": "official"
+    },
+    {
+      "id": "pcta-resupply",
+      "title": "PCTA: Resupply Towns & Locations",
+      "url": "https://www.pcta.org/discover-the-trail/thru-hiking-long-distance-hiking/resupply/pct-resupply-towns-locations/",
+      "category": "official"
+    },
+    {
+      "id": "permit-pcta-campfire",
+      "title": "PCTA: California Campfire Permit",
+      "url": "https://permit.pcta.org",
+      "category": "official"
+    },
+    {
+      "id": "usfs-castle-crags",
+      "title": "USFS: Castle Crags Wilderness",
+      "url": "http://www.fs.usda.gov/r05/shasta-trinity/recreation/castle-crags-wilderness",
+      "category": "official"
+    },
+    {
+      "id": "parks-castle-crags",
+      "title": "CA Parks: Castle Crags State Park",
+      "url": "https://www.parks.ca.gov/?page_id=454",
+      "category": "official"
+    },
+    {
+      "id": "erin-exploring-resupply",
+      "title": "Erin Exploring: PCT Resupply Guide",
+      "url": "https://www.erinexploring.com/blog/pacific-crest-trail-resupply-guide",
+      "category": "resupply"
+    },
+    {
+      "id": "bikehikesafari-resupply",
+      "title": "BikeHikeSafari: Resupply Strategy 2015",
+      "url": "https://bikehikesafari.com/my-resupply-strategy-for-hiking-the-pct-in-2015/",
+      "category": "resupply"
+    },
+    {
+      "id": "longdistancehiker-resupply",
+      "title": "Long Distance Hiker: Resupply Thoughts Mile 1020-1653",
+      "url": "https://www.longdistancehiker.com/pct-resupply-town-thoughts-part-4-mile-1020-1653/",
+      "category": "resupply"
+    },
+    {
+      "id": "farout-pct",
+      "title": "FarOut (Guthook): PCT Map",
+      "url": "https://faroutguides.com/pacific-crest-trail-map/",
+      "category": "navigation"
+    },
+    {
+      "id": "onxmaps-section-n",
+      "title": "onX Maps: CA Section N",
+      "url": "https://www.onxmaps.com/hiking/n7062p2omq8e/pacific-crest-trail-california-section-n",
+      "category": "navigation"
+    },
+    {
+      "id": "hiiker-norcal",
+      "title": "Hiiker App: PCT Northern California",
+      "url": "http://hiiker.app/trails/california/el-dorado-county/pacific-crest-trail-northern-california",
+      "category": "navigation"
+    },
+    {
+      "id": "youtube-section-o",
+      "title": "YouTube: Section O Video",
+      "url": "https://www.youtube.com/watch?v=3f68WhMgzNs",
+      "category": "video"
+    },
+    {
+      "id": "backpackers-section",
+      "title": "Backpackers.com: Section Hiking the PCT",
+      "url": "https://backpackers.com/hiking-trails/section-hiking-the-pct/",
+      "category": "guide"
+    }
+  ],
+  "modules": [
+    {
+      "id": "shelter-sleep",
+      "label": "Shelter + Sleep",
+      "readiness": "locked",
+      "focus": "Storm-ready kit for late-summer NorCal weather volatility.",
+      "targetWeightPounds": 6,
+      "targetVolumeLiters": 18,
+      "sourceIds": [
+        "doc-day-plan",
+        "wv-2017-log",
+        "adventurehacks-guide"
+      ],
+      "items": [
+        {
+          "id": "tent",
+          "name": "1-person backpacking tent",
+          "detail": "Ultralight tent that sets up with trekking poles or on its own. Keeps you dry in rain and blocks wind.",
+          "weightOunces": 24,
+          "weightDisplay": "1.5 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "1P",
+            "3-season",
+            "Wind + rain capable"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "quilt",
+          "name": "Sleeping bag/quilt (rated to 20°F)",
+          "detail": "Lightweight down blanket that wraps around you like a sleeping bag. Keeps you warm on cold mountain nights.",
+          "weightOunces": 22.4,
+          "weightDisplay": "1.4 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "20°F rating",
+            "Compressible",
+            "Sleep comfort priority"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-gear-recs",
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "pad",
+          "name": "Inflatable sleeping pad",
+          "detail": "Air mattress for sleeping outdoors—cushions you from rocks and insulates from cold ground. Packs small.",
+          "weightOunces": 14.4,
+          "weightDisplay": "0.9 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "Insulated",
+            "Packs small"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "pillow",
+          "name": "Inflatable camp pillow",
+          "detail": "Small inflatable pillow for better sleep. Optional comfort item—some hikers just use a stuffed jacket instead.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "groundsheet",
+          "name": "Thin plastic groundsheet",
+          "detail": "Sheet of plastic that goes under your tent to protect it from sharp rocks and moisture.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "norcal-hiking-castle-crags"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kitchen-hydration",
+      "label": "Kitchen + Hydration",
+      "readiness": "dialing in",
+      "focus": "Water carry capacity for Hat Creek Rim stretches per Wilderness Vagabond.",
+      "targetWeightPounds": 4,
+      "targetVolumeLiters": 10,
+      "sourceIds": [
+        "doc-water-hat-creek",
+        "wv-2017-log",
+        "halfway-anywhere"
+      ],
+      "items": [
+        {
+          "id": "stove",
+          "name": "Lightweight canister stove (threaded, wind-tolerant)",
+          "detail": "Threaded canister stove for fast boils in breezy conditions. Target ~2–4 oz stove weight. CA Campfire Permit required (even for stoves).",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "Threaded canister",
+            "Wind-tolerant",
+            "~2–4 oz target"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "permit-pcta-campfire",
+            "doc-permits-overview"
+          ]
+        },
+        {
+          "id": "pot",
+          "name": "Small cooking pot (750ml)",
+          "detail": "Lightweight metal pot for boiling water and cooking meals. Holds about 3 cups—enough for one person.",
+          "weightOunces": 4.8,
+          "weightDisplay": "0.3 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "fuel",
+          "name": "Small fuel canister (isobutane 100g)",
+          "detail": "Fuel for the canister stove; roughly 4 days of hot meals.",
+          "weightOunces": 6.4,
+          "weightDisplay": "0.4 lb",
+          "weightBucket": "consumable",
+          "quantity": 1,
+          "specs": [
+            "100g class",
+            "Consumable"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "bikehikesafari-resupply",
+            "longdistancehiker-resupply"
+          ]
+        },
+        {
+          "id": "filter",
+          "name": "Water filter (squeeze-style, 0.1µm)",
+          "detail": "Squeeze-style hollow-fiber filter for streams. Prioritize a field-backflushable design to keep flow rate up.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "0.1µm",
+            "Field-backflushable"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "wv-2017-log",
+            "reddit-shakedown-2025",
+            "halfway-anywhere"
+          ]
+        },
+        {
+          "id": "grayl",
+          "name": "Grayl water purifier bottle",
+          "detail": "Press-to-purify water bottle with built-in filter. Removes viruses, bacteria, and protozoa. Great backup/camp option.",
+          "weightOunces": 11.2,
+          "weightDisplay": "0.7 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "Viral protection",
+            "Press-to-filter",
+            "16oz capacity"
+          ],
+          "defaultPacked": false,
+          "sourceIds": [
+            "reddit-shakedown-2025",
+            "wv-2017-log",
+            "trailhiker-section-o"
+          ]
+        },
+        {
+          "id": "water-tabs",
+          "name": "Water treatment tablets (backup)",
+          "detail": "Chemical purification tablets for emergency backup when filters fail. Lightweight insurance policy.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "Chlorine dioxide or iodine",
+            "20+ treatments"
+          ],
+          "defaultPacked": false,
+          "sourceIds": [
+            "pcta-resupply",
+            "doc-water-hat-creek",
+            "trailhiker-section-o"
+          ]
+        },
+        {
+          "id": "dirty-bag",
+          "name": "Dirty water bag (2L, wide-mouth)",
+          "detail": "Collapsible dirty-water collection bag for filtering. Wide-mouth + tough seams matter more than brand.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "2L",
+            "Wide-mouth"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "smartwater",
+          "name": "Water bottle (1L)",
+          "detail": "Lightweight plastic drink bottle used as your main water carry. Pack three 1-liter bottles for 3L baseline capacity.",
+          "weightOunces": 4.8,
+          "weightDisplay": "0.3 lb",
+          "weightBucket": "carried",
+          "quantity": 3,
+          "specs": [
+            "3L total capacity",
+            "Distributed carry"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-transport-dunsmuir",
+            "pcta-resupply",
+            "erin-exploring-resupply"
+          ]
+        },
+        {
+          "id": "platypus",
+          "name": "Extra collapsible water bag (2L)",
+          "detail": "Soft bag that rolls up when empty. Use for extra water capacity when crossing long dry stretches.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "wv-2017-log",
+            "doc-water-hat-creek"
+          ]
+        },
+        {
+          "id": "bear-hang",
+          "name": "Bear-proof food bag + rope",
+          "detail": "Special bag and rope to hang your food from a tree at night. Keeps bears from eating your supplies.",
+          "weightOunces": 12.8,
+          "weightDisplay": "0.8 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "norcal-hiking-castle-crags",
+            "usfs-castle-crags"
+          ]
+        },
+        {
+          "id": "spork",
+          "name": "Long-handled spoon",
+          "detail": "Long spoon to eat out of deep food bags. Lightweight metal version lasts forever.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": []
+        },
+        {
+          "id": "tuna-packets",
+          "name": "Tuna/chicken packets",
+          "detail": "Shelf-stable protein packets. Dad swears by these—worked for him last time. Pack 2-3 per day for reliable protein.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "consumable",
+          "quantity": 1,
+          "specs": [
+            "High protein",
+            "No refrigeration needed",
+            "Dad-approved"
+          ],
+          "defaultPacked": false,
+          "sourceIds": [
+            "bikehikesafari-resupply",
+            "longdistancehiker-resupply",
+            "doc-detox-trip",
+            "wv-2017-log"
+          ]
+        },
+        {
+          "id": "protein-bars",
+          "name": "High-protein bars",
+          "detail": "Dense protein bars for quick calories. 15-20g protein per bar. Pack multiple per day.",
+          "weightOunces": 4.8,
+          "weightDisplay": "0.3 lb",
+          "weightBucket": "consumable",
+          "quantity": 1,
+          "specs": [
+            "15-20g protein",
+            "Dense calories"
+          ],
+          "defaultPacked": false,
+          "sourceIds": [
+            "reddit-shakedown-2025",
+            "halfway-anywhere",
+            "trailhiker-section-o",
+            "adventurehacks-guide"
+          ]
+        },
+        {
+          "id": "jerky",
+          "name": "Beef/turkey jerky",
+          "detail": "Lightweight dried meat for trail snacking. High protein, low moisture. Lasts forever in a pack.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "consumable",
+          "quantity": 1,
+          "specs": [
+            "Dried meat",
+            "Long shelf life"
+          ],
+          "defaultPacked": false,
+          "sourceIds": [
+            "bikehikesafari-resupply",
+            "wv-2017-log",
+            "doc-day-plan"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nav-tech",
+      "label": "Navigation + Tech",
+      "readiness": "in-progress",
+      "focus": "Comms and navigation redundancy for 70+ mile no-service stretch.",
+      "targetWeightPounds": 3,
+      "targetVolumeLiters": 6,
+      "sourceIds": [
+        "doc-day-plan",
+        "farout-pct",
+        "onxmaps-section-n"
+      ],
+      "items": [
+        {
+          "id": "inreach",
+          "name": "Satellite messenger (2-way + SOS)",
+          "detail": "2-way satellite messaging for check-ins when there's no cell service, plus SOS capability for emergencies. Subscription + battery management are part of the \"weight\" here.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "2-way messaging",
+            "SOS",
+            "Battery plan"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "reddit-norcal-tips"
+          ]
+        },
+        {
+          "id": "phone",
+          "name": "Smartphone with downloaded maps",
+          "detail": "Your phone with trail maps downloaded for offline use. Works even without cell service.",
+          "weightOunces": 8,
+          "weightDisplay": "0.5 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "farout-pct",
+            "onxmaps-section-n",
+            "hiiker-norcal"
+          ]
+        },
+        {
+          "id": "power-bank",
+          "name": "Portable battery charger (10,000mAh)",
+          "detail": "Rechargeable battery pack to charge your phone and devices. Lasts about 6 days if you're careful.",
+          "weightOunces": 4.8,
+          "weightDisplay": "0.3 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "10,000mAh class",
+            "USB-C preferred"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025",
+            "doc-detox-trip"
+          ]
+        },
+        {
+          "id": "cables",
+          "name": "Charging cables",
+          "detail": "Cables to charge your phone and satellite messenger from the battery pack.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "headlamp",
+          "name": "Rechargeable headlamp (red mode)",
+          "detail": "Hands-free light with red mode for camp. Aim for USB-rechargeable, a low-power setting for long nights, and a real lockout so it doesn't turn on in the pack.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "Red mode",
+            "USB-rechargeable",
+            "Lockout"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "backup-nav",
+          "name": "Paper map + compass",
+          "detail": "Old-school backup navigation in case electronics die. Print trail maps before the trip.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "doc-day-plan",
+            "farout-pct",
+            "backpackers-section"
+          ]
+        },
+        {
+          "id": "watch",
+          "name": "GPS watch (optional)",
+          "detail": "Wristwatch with built-in GPS that tracks your route and shows elevation. Nice backup but not essential.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": []
+        }
+      ]
+    },
+    {
+      "id": "layers-fuel",
+      "label": "Layers + Fuel Buffer",
+      "readiness": "dialing in",
+      "focus": "Prepared for rain, bugs, and dramatic temperature swings per Adventure Hacks.",
+      "targetWeightPounds": 5,
+      "targetVolumeLiters": 12,
+      "sourceIds": [
+        "adventurehacks-guide",
+        "reddit-gear-recs",
+        "wv-2017-log"
+      ],
+      "items": [
+        {
+          "id": "rain-jacket",
+          "name": "Lightweight rain jacket",
+          "detail": "Waterproof jacket that packs small. Storms can pop up suddenly in the mountains.",
+          "weightOunces": 8,
+          "weightDisplay": "0.5 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "adventurehacks-guide",
+            "reddit-gear-recs",
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "wind-pants",
+          "name": "Rain pants or rain skirt",
+          "detail": "Waterproof lower-body layer. Rain skirts are lighter; rain pants offer more coverage.",
+          "weightOunces": 4.8,
+          "weightDisplay": "0.3 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025",
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "sun-hoodie",
+          "name": "Long-sleeve sun shirt with hood",
+          "detail": "Thin breathable shirt that protects from sunburn and also helps block ticks and poison oak.",
+          "weightOunces": 6.4,
+          "weightDisplay": "0.4 lb",
+          "weightBucket": "worn",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "adventurehacks-guide",
+            "reddit-gear-recs",
+            "wv-2017-log"
+          ]
+        },
+        {
+          "id": "base-layer",
+          "name": "Warm long-sleeve undershirt (wool or synthetic)",
+          "detail": "Thin warm layer to wear under your jacket. Wool stays warm even when damp and doesn't get stinky.",
+          "weightOunces": 6.4,
+          "weightDisplay": "0.4 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "puffy",
+          "name": "Insulated down jacket",
+          "detail": "Puffy jacket filled with down feathers. Super warm and compresses small. Essential for cold camp evenings.",
+          "weightOunces": 9.6,
+          "weightDisplay": "0.6 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "adventurehacks-guide"
+          ]
+        },
+        {
+          "id": "hiking-pants",
+          "name": "Zip-off hiking pants",
+          "detail": "Long pants that convert to shorts by unzipping the legs. Protects from ticks and brush.",
+          "weightOunces": 8,
+          "weightDisplay": "0.5 lb",
+          "weightBucket": "worn",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "adventurehacks-guide",
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "socks",
+          "name": "Hiking socks",
+          "detail": "Wool hiking socks with cushioning. Rotate daily to prevent blisters. Wool dries fast and fights odor.",
+          "weightOunces": 4.8,
+          "weightDisplay": "1.6 oz × 3",
+          "weightBucket": "worn",
+          "quantity": 3,
+          "specs": [
+            "3 pairs",
+            "Wool/synthetic"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "reddit-gear-recs",
+            "wv-2017-log"
+          ]
+        },
+        {
+          "id": "gaiters",
+          "name": "Ankle gaiters",
+          "detail": "Fabric sleeves that cover the gap between your shoe and pants to keep rocks and dirt out.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "worn",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "norcal-hiking-castle-crags"
+          ]
+        },
+        {
+          "id": "hat",
+          "name": "Wide-brim sun hat",
+          "detail": "Hat with a brim all around to shade your face, ears, and neck from intense mountain sun.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "worn",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "adventurehacks-guide",
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "buff",
+          "name": "Neck tube (bandana alternative)",
+          "detail": "Stretchy fabric tube you wear around your neck. Pull it up to cover your face from sun or dust.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "worn",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": []
+        },
+        {
+          "id": "gloves",
+          "name": "Thin fleece gloves",
+          "detail": "Lightweight gloves for chilly mornings. Optional but nice when breaking camp in the cold.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "camp-shoes",
+          "name": "Lightweight sandals or camp shoes",
+          "detail": "Something easy to slip on at camp so your feet can rest after hiking all day. Optional luxury item.",
+          "weightOunces": 6.4,
+          "weightDisplay": "0.4 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "doc-day-plan",
+            "reddit-shakedown-2025"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "safety-hygiene",
+      "label": "Safety + Hygiene",
+      "readiness": "in-progress",
+      "focus": "First aid, blister management, and backcountry hygiene per multiple trip reports.",
+      "targetWeightPounds": 2,
+      "targetVolumeLiters": 4,
+      "sourceIds": [
+        "doc-day-plan",
+        "wv-2017-log",
+        "adventurehacks-guide"
+      ],
+      "items": [
+        {
+          "id": "first-aid",
+          "name": "First aid kit",
+          "detail": "Basic medical supplies: bandages, blister pads, pain relievers (ibuprofen), allergy pills.",
+          "weightOunces": 8,
+          "weightDisplay": "0.5 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "wv-2017-log"
+          ]
+        },
+        {
+          "id": "leukotape",
+          "name": "High-adhesion medical tape for blisters",
+          "detail": "Super-sticky tape that stays on sweaty feet. Put it on \"hot spots\" BEFORE they become blisters. Test adhesion at home—some tapes fail when wet/sweaty.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "reddit-gear-recs",
+            "wv-2017-log"
+          ]
+        },
+        {
+          "id": "sunscreen",
+          "name": "Sunscreen (SPF 50+)",
+          "detail": "High-protection sunscreen. The sun is stronger at high elevations—you'll burn faster up there.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "adventurehacks-guide"
+          ]
+        },
+        {
+          "id": "bug-spray",
+          "name": "Bug repellent (clothes treatment + skin spray)",
+          "detail": "Spray your clothes with permethrin at home (lasts weeks). Bring picaridin spray for your skin.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "adventurehacks-guide",
+            "reddit-norcal-tips"
+          ]
+        },
+        {
+          "id": "trowel",
+          "name": "Small digging trowel",
+          "detail": "For digging holes when you need to go to the bathroom in the woods. Required wilderness practice.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "usfs-castle-crags",
+            "parks-castle-crags"
+          ]
+        },
+        {
+          "id": "tp-kit",
+          "name": "Toilet paper + hand sanitizer",
+          "detail": "Pack it in, pack it out. Bring a resealable odor-resistant bag for used TP.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "wv-2017-log"
+          ]
+        },
+        {
+          "id": "toothbrush",
+          "name": "Toothbrush + small toothpaste",
+          "detail": "Basic hygiene. A travel-size toothpaste tube is plenty for a week.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": []
+        },
+        {
+          "id": "whistle",
+          "name": "Emergency whistle",
+          "detail": "Loud whistle for signaling if you get lost or hurt. Three short blasts is the universal distress signal.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan"
+          ]
+        },
+        {
+          "id": "knife",
+          "name": "Small pocket knife or multitool",
+          "detail": "Tiny knife for cutting tape, trimming moleskin, opening food packages, or fixing gear.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": []
+        }
+      ]
+    },
+    {
+      "id": "custom",
+      "label": "Custom",
+      "readiness": "flex",
+      "focus": "Personal additions, trip-specific items, or DDG special equipment.",
+      "targetWeightPounds": 0,
+      "targetVolumeLiters": 0,
+      "sourceIds": [
+        "doc-day-plan",
+        "doc-detox-trip"
+      ],
+      "items": [
+        {
+          "id": "camera",
+          "name": "Camera (optional)",
+          "detail": "For better photos than your phone. The sunrise at Vista Camp is spectacular.",
+          "weightOunces": 8,
+          "weightDisplay": "0.5 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "youtube-section-o",
+            "entranced-wilderness"
+          ]
+        },
+        {
+          "id": "book",
+          "name": "Book or e-reader (optional)",
+          "detail": "Something to read at camp. Good for winding down and unplugging.",
+          "weightOunces": 4.8,
+          "weightDisplay": "0.3 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "doc-detox-trip"
+          ]
+        },
+        {
+          "id": "journal",
+          "name": "Small notebook + pen (optional)",
+          "detail": "Write down memories, thoughts, and trail notes. Nice keepsake from the trip.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "doc-detox-trip",
+            "wv-2017-log"
+          ]
+        },
+        {
+          "id": "trekking-poles",
+          "name": "Trekking pole",
+          "detail": "Adjustable hiking poles that save your knees on downhills and help balance on rough terrain. Highly recommended.",
+          "weightOunces": 12.8,
+          "weightDisplay": "0.8 lb",
+          "weightBucket": "carried",
+          "quantity": 2,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "pack-liner",
+          "name": "Waterproof bag liner",
+          "detail": "Heavy-duty plastic bag that lines your backpack to keep everything dry if it rains.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "sit-pad",
+          "name": "Foam sit pad (optional)",
+          "detail": "Small foam square to sit on during breaks. Keeps your butt dry and insulated from cold ground.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": []
+        },
+        {
+          "id": "wallet",
+          "name": "Cash and credit cards",
+          "detail": "Money for buying food and supplies in town. Some small shops are cash-only.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-transport-dunsmuir",
+            "unexpected-occurrence"
+          ]
+        },
+        {
+          "id": "permits",
+          "name": "Printed permits (required!)",
+          "detail": "Your wilderness camping permit and California campfire permit. Each person needs their own copies.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-permits-overview",
+            "pcta-permits",
+            "permit-pcta-campfire",
+            "reddit-permits-ca"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "secret-weapons",
+      "label": "Secret Weapons (The Nuance)",
+      "readiness": "game-changers",
+      "focus": "The tiny things that make or break a trip. Experienced hikers know.",
+      "targetWeightPounds": 1.5,
+      "targetVolumeLiters": 2,
+      "sourceIds": [
+        "reddit-shakedown-2025",
+        "reddit-gear-recs",
+        "wv-2017-log"
+      ],
+      "items": [
+        {
+          "id": "earplugs",
+          "name": "Foam earplugs",
+          "detail": "Sleep through snoring tentmates, wind flapping your tent, and 5am bird concerts. $2 life-saver.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 3,
+          "specs": [
+            "2–3 pairs"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "sleep-mask",
+          "name": "Sleep mask",
+          "detail": "Blocks early sunrise (5:30am in summer) so you can actually sleep in. Game changer for recovery.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "mini-bic",
+          "name": "Mini lighter (backup ignition)",
+          "detail": "Backup for your stove igniter. They WILL fail. Costs $1, weighs nothing, saves dinner.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "duct-tape",
+          "name": "Duct tape (wrapped around trekking pole)",
+          "detail": "Fixes torn gear, blisters (in emergencies), broken poles, ripped shoes. Wrap 3ft around your pole.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "wv-2017-log"
+          ]
+        },
+        {
+          "id": "safety-pins",
+          "name": "Safety pins (3-4)",
+          "detail": "Hang wet socks on your pack while hiking. Fix zipper pulls. Attach stuff. Weighs nothing.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "ziplock-bags",
+          "name": "Resealable bags (assorted sizes)",
+          "detail": "Organize small items, protect phone from rain, store used TP, keep snacks fresh. Bring 5-6.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "bandana",
+          "name": "Cotton bandana",
+          "detail": "Pot holder, sweat rag, pre-filter for silty water, napkin, signal flag, washcloth. One item, 20 uses.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "wv-2017-log"
+          ]
+        },
+        {
+          "id": "aquaphor",
+          "name": "Skin barrier ointment (petrolatum-based)",
+          "detail": "Prevents chafing on thighs/underarms and helps cracked lips/dry hands. Choose something that won't leak and won't freeze into a brick overnight.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "body-glide",
+          "name": "Anti-chafe balm/stick",
+          "detail": "Rub on inner thighs, feet, anywhere that rubs. Choose a solid stick or tiny tin that won't explode in heat.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "nail-clippers",
+          "name": "Tiny nail clippers",
+          "detail": "Long toenails + hiking = black toenails and lost nails. Trim before and during the trip.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "tweezers",
+          "name": "Tweezers (pointed tip)",
+          "detail": "For splinters, thorns, and TICK REMOVAL. Section O has ticks. Check yourself daily.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "adventurehacks-guide"
+          ]
+        },
+        {
+          "id": "spare-laces",
+          "name": "Spare shoelaces or paracord (3ft)",
+          "detail": "Laces break at the worst times. Paracord works as backup laces, clothesline, or gear repair.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "tenacious-tape",
+          "name": "Adhesive gear repair patches",
+          "detail": "Fixes holes in tents, sleeping pads, and jackets. Sticks even when wet. Bring 2-3 patches.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "seam-grip",
+          "name": "Flexible gear/shoe adhesive (tiny tube)",
+          "detail": "Glue for when your shoe sole starts peeling off (it happens). Look for a flexible urethane-style adhesive that bonds to rubber + fabric.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "cord-tensioners",
+          "name": "Guyline tensioners (if your tent needs them)",
+          "detail": "Tiny plastic clips that keep tent lines tight. Lose one and your tent flaps all night.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": []
+        },
+        {
+          "id": "electrolytes",
+          "name": "Electrolyte powder packets (6-10)",
+          "detail": "Add to water on hot days. Prevents muscle cramps and headaches from sweating out salts.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025",
+            "adventurehacks-guide"
+          ]
+        },
+        {
+          "id": "caffeine-pills",
+          "name": "Caffeine pills (optional)",
+          "detail": "Lighter than carrying coffee. One pill = one cup. Good for early morning starts without stove time.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "antihistamine",
+          "name": "Antihistamine tablets (4-6)",
+          "detail": "For allergic reactions to bee stings, plants, or unknown triggers. Pick a type you tolerate (some cause drowsiness).",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "imodium",
+          "name": "Anti-diarrheal tablets (loperamide)",
+          "detail": "Trail food + water changes = stomach issues. This stops them FAST. Do not skip this.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-gear-recs",
+            "wv-2017-log"
+          ]
+        },
+        {
+          "id": "pepto-tabs",
+          "name": "Upset-stomach tablets (bismuth)",
+          "detail": "For nausea and upset stomach. Chewable tabs are easier than liquid. Stomach issues are common.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "mini-dropper",
+          "name": "Backup water treatment (chlorine dioxide)",
+          "detail": "If your filter clogs or breaks, you NEED a backup. Tablets weigh nothing. Bring 10+.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "wv-2017-log",
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "sewing-kit",
+          "name": "Tiny sewing kit (needle + thread)",
+          "detail": "Fix torn clothes, backpack straps, or tent mesh. Dental floss works as strong thread.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "head-net",
+          "name": "Bug head net",
+          "detail": "When mosquitoes are BAD, this is the only thing that works. Weighs ~1 oz, saves your sanity.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "adventurehacks-guide"
+          ]
+        },
+        {
+          "id": "sleep-socks",
+          "name": "Dedicated sleep socks (clean & dry)",
+          "detail": "Never hike in these. Keep them in your sleeping bag. Dry feet at night = warm feet = good sleep.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "pee-rag",
+          "name": "Pee rag (for those who squat)",
+          "detail": "Bandana that clips to outside of pack to dry. Saves TP and is more sustainable. Antimicrobial ones exist.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "pee-bottle",
+          "name": "Wide-mouth bottle for night pee (optional)",
+          "detail": "Avoids leaving your tent at 2am in the cold. Label it clearly. Any wide-mouth sports drink bottle works.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "mini-carabiner",
+          "name": "Small carabiner (non-climbing)",
+          "detail": "Clip water bottles to your pack, hang stuff to dry, organize gear. Bring 2-3 tiny ones.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": []
+        },
+        {
+          "id": "rubber-bands",
+          "name": "A few thick rubber bands",
+          "detail": "Secure rolled items, bundle trekking poles, keep bags closed. Stupid simple, surprisingly useful.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "mirrror",
+          "name": "Tiny signal mirror or compact mirror",
+          "detail": "Check for ticks in hard-to-see places. Signal for help in emergencies. Doubles for personal care.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "adventurehacks-guide"
+          ]
+        },
+        {
+          "id": "pack-cover",
+          "name": "Pack rain cover (if your pack needs one)",
+          "detail": "Some packs are water-resistant, some aren't. Test yours before the trip. Cover or liner—pick one.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "pillow-stuff",
+          "name": "Use your clothes bag as a pillow",
+          "detail": "Stuff your puffy + extra clothes into a stuff sack = free pillow. Skip the inflatable.",
+          "weightOunces": 0,
+          "weightDisplay": "0.0 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        },
+        {
+          "id": "gummy-vitamins",
+          "name": "Multivitamin gummies (optional)",
+          "detail": "Trail diet lacks nutrients. A few gummies a day might help. At minimum, they taste good.",
+          "weightOunces": 1.6,
+          "weightDisplay": "0.1 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "olive-oil",
+          "name": "Tiny bottle of olive oil",
+          "detail": "Add calories to any meal. Helps with calorie-dense eating when you're burning 3000+/day.",
+          "weightOunces": 3.2,
+          "weightDisplay": "0.2 lb",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [],
+          "defaultPacked": false,
+          "sourceIds": [
+            "reddit-shakedown-2025"
+          ]
+        }
+      ]
+    }
+  ]
+}

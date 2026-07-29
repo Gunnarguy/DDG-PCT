@@ -2,6 +2,7 @@ import React, { useMemo, useState, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { scaleLinear } from 'd3-scale';
 import sectionProfiles from '../data/sectionProfiles.json';
+import { tripFacts } from '../data/tripFacts';
 
 const MILES_TO_METERS = 1609.34;
 const METERS_TO_FEET = 3.28084;
@@ -148,7 +149,9 @@ const ElevationProfile = ({
     
     if (hikingTrail[0].length < 3) return [];
 
-    // Step 1: Apply moving average smoothing to filter GPS noise (industry standard)
+    // This lightweight curve is for chart rendering. Canonical gain/loss totals
+    // come from the normalized user-supplied GPX contract in tripFacts.
+    // Step 1: Apply a short moving average so the rendered curve is legible.
     const SMOOTHING_WINDOW = 5; // Average over 5 points
     const smoothedElevations = hikingTrail.map((point, i) => {
       const start = Math.max(0, i - Math.floor(SMOOTHING_WINDOW / 2));
@@ -173,8 +176,8 @@ const ElevationProfile = ({
       cumulativeLoss: 0
     });
 
-    // Step 2: Use threshold method - only count climbs/descents > 10ft between points
-    // This matches Strava/AllTrails approach
+    // Step 2: Build a raw cumulative curve, then scale it to the canonical
+    // 200m-smoothed, continuous 20ft-hysteresis totals below.
     const ELEVATION_THRESHOLD = 10; // feet
     let lastCountedElevation = smoothedElevations[0];
 
@@ -211,7 +214,17 @@ const ElevationProfile = ({
         cumulativeLoss
       });
     }
-    return data;
+    const gainScale = cumulativeGain > 0
+      ? tripFacts.route.totalGainFeet / cumulativeGain
+      : 1;
+    const lossScale = cumulativeLoss > 0
+      ? tripFacts.route.totalLossFeet / cumulativeLoss
+      : 1;
+    return data.map((point) => ({
+      ...point,
+      cumulativeGain: point.cumulativeGain * gainScale,
+      cumulativeLoss: point.cumulativeLoss * lossScale
+    }));
   }, [hikingTrail]);
 
   const overlaySections = useMemo(() => {
@@ -338,26 +351,18 @@ const ElevationProfile = ({
     if (!profileData.length) return {
       totalMiles: 0, totalGain: 0, totalLoss: 0, highPoint: 0, lowPoint: 0, avgGrade: 0
     };
-    const lastPoint = profileData[profileData.length - 1];
     const grades = profileData.map(p => Math.abs(p.grade)).filter(g => !isNaN(g));
     const avgGrade = grades.length ? grades.reduce((a, b) => a + b, 0) / grades.length : 0;
     
     return {
       totalMiles: totalDistance,
-      totalGain: lastPoint.cumulativeGain,
-      totalLoss: lastPoint.cumulativeLoss,
-      highPoint: maxElevation,
+      totalGain: tripFacts.route.totalGainFeet,
+      totalLoss: tripFacts.route.totalLossFeet,
+      highPoint: tripFacts.route.highPointFeet,
       lowPoint: minElevation,
       avgGrade: avgGrade
     };
-  }, [profileData, totalDistance, maxElevation, minElevation]);
-
-  // Estimated hiking time (Naismith's rule: 3 mph + 1 hr per 2000ft gain)
-  const estimatedTime = useMemo(() => {
-    const baseTime = stats.totalMiles / 2.5; // Conservative 2.5 mph with packs
-    const gainTime = stats.totalGain / 1500; // 1 hour per 1500ft for loaded hikers
-    return baseTime + gainTime;
-  }, [stats.totalMiles, stats.totalGain]);
+  }, [profileData, totalDistance, minElevation]);
 
   const startLabel = useMemo(() => (
     campPoints.find((camp) => (camp?.properties?.routeMile ?? 0) === 0)?.properties?.name
@@ -657,11 +662,8 @@ const ElevationProfile = ({
   const formatElevation = (value) => `${Math.round(value).toLocaleString()}'`;
   const formatMile = (value) => `${value.toFixed(1)} mi`;
   const formatGrade = (value) => `${value > 0 ? '+' : ''}${value.toFixed(1)}%`;
-  const formatTime = (hours) => {
-    const h = Math.floor(hours);
-    const m = Math.round((hours - h) * 60);
-    return `${h}h ${m}m`;
-  };
+  const formatTimeRange = () =>
+    `${tripFacts.route.trailTimeLowHours}–${tripFacts.route.trailTimeHighHours} hr`;
   const formatDistanceStat = (value) => (typeof value === 'number' ? `${Math.round(value)} mi` : '—');
   const formatNumberStat = (value) => (typeof value === 'number' ? value.toLocaleString() : '—');
 
@@ -734,8 +736,8 @@ const ElevationProfile = ({
         <div className="elevation-stat elevation-stat--time">
           <span className="stat-icon">⏱️</span>
           <div className="stat-content">
-            <span className="stat-value">{formatTime(estimatedTime)}</span>
-            <span className="stat-label">Est. Moving Time</span>
+            <span className="stat-value">{formatTimeRange()}</span>
+            <span className="stat-label">Trail Time Range</span>
           </div>
         </div>
       </div>
@@ -1320,7 +1322,7 @@ const ElevationProfile = ({
           ))}
         </div>
         <div className="altitude-section-context">
-          <span className="context-badge context-badge--safe">✓ GPS Route Peak: 6,146' (Moderate Altitude)</span>
+          <span className="context-badge context-badge--safe">✓ Normalized Route Peak: 6,129' (Moderate Altitude)</span>
           <span className="context-detail">Low AMS risk for most hikers. Stay hydrated, watch for headache/nausea. High Sierra (13,000'+) requires acclimatization.</span>
         </div>
       </div>

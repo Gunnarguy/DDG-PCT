@@ -7,7 +7,7 @@ import SwiftData
 /// - `features[]` → CampSite models (GeoJSON Feature with properties)
 /// - `route.path[]` → TrailPoint models ([longitude, latitude, elevation_meters])
 struct HikeDataIngestor {
-    private static let dataVersion = 11
+    private static let dataVersion = 12
 
     /// Check if data has already been ingested (avoid re-parsing 48k points)
     static func needsIngest(modelContext: ModelContext) -> Bool {

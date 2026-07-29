@@ -1,4 +1,5 @@
 import Foundation
+import Supabase
 import SwiftData
 
 /// Offline-first sync engine that queues local writes and drains them when network is available.
@@ -8,7 +9,7 @@ import SwiftData
 /// 2. Writes are marked with `syncStatus = .local`
 /// 3. When network is available, the engine pushes pending changes to Supabase
 /// 4. On success, marks items as `.synced`
-/// 5. On 503 (Supabase waking from sleep), retries with exponential backoff
+/// 5. Pulls authenticated team changes back into SwiftData
 ///
 /// Runs on MainActor because all SwiftData access requires it. URLSession async calls
 /// suspend properly and do not block the main thread.
@@ -17,8 +18,6 @@ final class SyncEngine {
     static let shared = SyncEngine()
 
     private var isSyncing = false
-    private var retryDelay: TimeInterval = 1.0
-    private let maxRetryDelay: TimeInterval = 300.0
     private(set) var lastSyncDate: Date?
     private(set) var lastError: String?
 
@@ -33,14 +32,9 @@ final class SyncEngine {
 
         do {
             try await syncOpsLogs(modelContext: modelContext)
-            try await syncGearLoadouts(modelContext: modelContext)
             try await syncCustomItems(modelContext: modelContext)
+            try await syncGearLoadouts(modelContext: modelContext)
             lastSyncDate = .now
-            retryDelay = 1.0
-        } catch let error as SyncError where error == .supabaseSleeping {
-            lastError = "Supabase waking up, retrying..."
-            await backoff()
-            await syncPendingChanges(modelContext: modelContext)
         } catch {
             lastError = error.localizedDescription
         }
@@ -51,6 +45,8 @@ final class SyncEngine {
 
         do {
             try await pullOpsLogs(modelContext: modelContext)
+            try await pullCustomItems(modelContext: modelContext)
+            try await pullGearLoadouts(modelContext: modelContext)
             lastSyncDate = .now
         } catch {
             lastError = error.localizedDescription
@@ -80,15 +76,6 @@ final class SyncEngine {
             + allItems.filter { $0.syncStatus == .local }.count
     }
 
-    // MARK: - Errors
-
-    enum SyncError: Error, Equatable {
-        case notConfigured
-        case supabaseSleeping
-        case httpError(Int)
-        case encodingFailed
-    }
-
     // MARK: - Push (Local → Remote)
 
     private func syncOpsLogs(modelContext: ModelContext) async throws {
@@ -98,10 +85,11 @@ final class SyncEngine {
         let pending = all.filter { $0.syncStatus == .local }
         guard !pending.isEmpty else { return }
 
-        let config = SupabaseManager.shared.config
+        let client = SupabaseManager.shared.client
 
         for entry in pending {
             entry.syncStatus = .syncing
+            entry.lastSyncAttempt = .now
             let row = SupabaseManager.OpsLogRow(
                 context_id: entry.contextId,
                 user_name: entry.userName,
@@ -112,16 +100,30 @@ final class SyncEngine {
             )
 
             do {
-                try await postToSupabase(
-                    baseURL: config.url, anonKey: config.anonKey,
-                    table: SupabaseManager.Table.opsLogs, body: row
-                )
+                if let remoteId = entry.remoteId {
+                    try await client
+                        .from(SupabaseManager.Table.opsLogs)
+                        .update(
+                            SupabaseManager.OpsStatusRow(
+                                status: entry.status?.rawValue
+                            )
+                        )
+                        .eq("id", value: Int(remoteId))
+                        .execute()
+                } else {
+                    let inserted: RemoteIdentifier = try await client
+                        .from(SupabaseManager.Table.opsLogs)
+                        .insert(row)
+                        .select("id")
+                        .single()
+                        .execute()
+                        .value
+                    entry.remoteId = inserted.id
+                }
                 entry.syncStatus = .synced
-            } catch SyncError.supabaseSleeping {
-                entry.syncStatus = .local
-                throw SyncError.supabaseSleeping
             } catch {
                 entry.syncStatus = .local
+                throw error
             }
         }
         try? modelContext.save()
@@ -134,7 +136,7 @@ final class SyncEngine {
         let pending = all.filter { $0.syncStatus == .local }
         guard !pending.isEmpty else { return }
 
-        let config = SupabaseManager.shared.config
+        let client = SupabaseManager.shared.client
 
         for loadout in pending {
             loadout.syncStatus = .syncing
@@ -145,16 +147,14 @@ final class SyncEngine {
             )
 
             do {
-                try await postToSupabase(
-                    baseURL: config.url, anonKey: config.anonKey,
-                    table: SupabaseManager.Table.gearLoadouts, body: row
-                )
+                try await client
+                    .from(SupabaseManager.Table.gearLoadouts)
+                    .upsert(row, onConflict: "hiker_id")
+                    .execute()
                 loadout.syncStatus = .synced
-            } catch SyncError.supabaseSleeping {
-                loadout.syncStatus = .local
-                throw SyncError.supabaseSleeping
             } catch {
                 loadout.syncStatus = .local
+                throw error
             }
         }
         try? modelContext.save()
@@ -167,7 +167,7 @@ final class SyncEngine {
         let pending = all.filter { $0.syncStatus == .local }
         guard !pending.isEmpty else { return }
 
-        let config = SupabaseManager.shared.config
+        let client = SupabaseManager.shared.client
 
         for item in pending {
             item.syncStatus = .syncing
@@ -184,16 +184,33 @@ final class SyncEngine {
             )
 
             do {
-                try await postToSupabase(
-                    baseURL: config.url, anonKey: config.anonKey,
-                    table: SupabaseManager.Table.customItems, body: row
-                )
+                if let remoteId = item.remoteId {
+                    try await client
+                        .from(SupabaseManager.Table.customItems)
+                        .update(row)
+                        .eq("id", value: Int(remoteId))
+                        .execute()
+                } else {
+                    let oldStableId = item.stableId
+                    let inserted: RemoteIdentifier = try await client
+                        .from(SupabaseManager.Table.customItems)
+                        .insert(row)
+                        .select("id")
+                        .single()
+                        .execute()
+                        .value
+                    item.remoteId = inserted.id
+                    item.stableId = "custom-\(inserted.id)"
+                    replaceItemId(
+                        oldStableId,
+                        with: item.stableId,
+                        modelContext: modelContext
+                    )
+                }
                 item.syncStatus = .synced
-            } catch SyncError.supabaseSleeping {
-                item.syncStatus = .local
-                throw SyncError.supabaseSleeping
             } catch {
                 item.syncStatus = .local
+                throw error
             }
         }
         try? modelContext.save()
@@ -201,7 +218,11 @@ final class SyncEngine {
 
     // MARK: - Pull (Remote → Local)
 
-    private struct RemoteOpsLog: Decodable, Sendable {
+    private nonisolated struct RemoteIdentifier: Decodable, Sendable {
+        let id: Int64
+    }
+
+    private nonisolated struct RemoteOpsLog: Decodable, Sendable {
         let id: Int64
         let context_id: String
         let user_name: String
@@ -211,26 +232,49 @@ final class SyncEngine {
         let created_at: String
     }
 
+    private nonisolated struct RemoteGearLoadout: Decodable, Sendable {
+        let hiker_id: String
+        let item_ids: [String]
+        let updated_at: String
+    }
+
+    private nonisolated struct RemoteCustomItem: Decodable, Sendable {
+        let id: Int64
+        let created_at: String
+        let name: String
+        let detail: String?
+        let weight_val: Double?
+        let weight_label: String?
+        let category: String?
+        let module_id: String?
+        let source_ids: [String]?
+        let created_by: String?
+    }
+
     private func pullOpsLogs(modelContext: ModelContext) async throws {
-        let config = SupabaseManager.shared.config
-
-        guard let url = URL(string: "\(config.url)/rest/v1/\(SupabaseManager.Table.opsLogs)?select=*&order=created_at.desc&limit=100") else { return }
-
-        var request = URLRequest(url: url)
-        request.setValue("Bearer \(config.anonKey)", forHTTPHeaderField: "Authorization")
-        request.setValue(config.anonKey, forHTTPHeaderField: "apikey")
-
-        let (data, response) = try await URLSession.shared.data(for: request)
-        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 503 {
-            throw SyncError.supabaseSleeping
-        }
-
-        let remoteLogs = try JSONDecoder().decode([RemoteOpsLog].self, from: data)
+        let remoteLogs: [RemoteOpsLog] = try await SupabaseManager.shared.client
+            .from(SupabaseManager.Table.opsLogs)
+            .select()
+            .limit(100)
+            .execute()
+            .value
+        let localLogs = (try? modelContext.fetch(FetchDescriptor<OpsLogEntry>())) ?? []
+        let localByRemoteId = Dictionary(
+            uniqueKeysWithValues: localLogs.compactMap { entry in
+                entry.remoteId.map { ($0, entry) }
+            }
+        )
 
         for remote in remoteLogs {
-            let remoteId = remote.id
-            let all = (try? modelContext.fetch(FetchDescriptor<OpsLogEntry>())) ?? []
-            if all.contains(where: { $0.remoteId == remoteId }) {
+            if let existing = localByRemoteId[remote.id] {
+                guard existing.syncStatus != .local else { continue }
+                existing.contextId = remote.context_id
+                existing.userName = remote.user_name
+                existing.content = remote.content
+                existing.type = LogType(rawValue: remote.type) ?? .note
+                existing.status = remote.status.flatMap { LogStatus(rawValue: $0) }
+                existing.createdAt = parseDate(remote.created_at)
+                existing.syncStatus = .synced
                 continue
             }
 
@@ -241,7 +285,7 @@ final class SyncEngine {
                 content: remote.content,
                 type: LogType(rawValue: remote.type) ?? .note,
                 status: remote.status.flatMap { LogStatus(rawValue: $0) },
-                createdAt: SupabaseManager.iso8601.date(from: remote.created_at) ?? .now,
+                createdAt: parseDate(remote.created_at),
                 syncStatus: .synced
             )
             modelContext.insert(entry)
@@ -249,38 +293,108 @@ final class SyncEngine {
         try? modelContext.save()
     }
 
-    // MARK: - HTTP Helper
+    private func pullCustomItems(modelContext: ModelContext) async throws {
+        let remoteItems: [RemoteCustomItem] = try await SupabaseManager.shared.client
+            .from(SupabaseManager.Table.customItems)
+            .select()
+            .execute()
+            .value
+        let localItems = (try? modelContext.fetch(FetchDescriptor<CustomItem>())) ?? []
+        let localByRemoteId = Dictionary(
+            uniqueKeysWithValues: localItems.compactMap { item in
+                item.remoteId.map { ($0, item) }
+            }
+        )
 
-    private func postToSupabase<T: Encodable>(
-        baseURL: String, anonKey: String, table: String, body: T
-    ) async throws {
-        guard let url = URL(string: "\(baseURL)/rest/v1/\(table)") else {
-            throw SyncError.notConfigured
+        for remote in remoteItems {
+            if let existing = localByRemoteId[remote.id] {
+                guard existing.syncStatus != .local else { continue }
+                existing.stableId = "custom-\(remote.id)"
+                existing.name = remote.name
+                existing.detail = remote.detail
+                existing.weightVal = remote.weight_val
+                existing.weightLabel = remote.weight_label
+                existing.category = remote.category ?? "Custom"
+                existing.moduleId = remote.module_id ?? "custom"
+                existing.sourceIds = remote.source_ids ?? []
+                existing.createdBy = remote.created_by
+                existing.createdAt = parseDate(remote.created_at)
+                existing.syncStatus = .synced
+                continue
+            }
+
+            modelContext.insert(
+                CustomItem(
+                    remoteId: remote.id,
+                    stableId: "custom-\(remote.id)",
+                    name: remote.name,
+                    detail: remote.detail,
+                    weightVal: remote.weight_val,
+                    weightLabel: remote.weight_label,
+                    category: remote.category ?? "Custom",
+                    moduleId: remote.module_id ?? "custom",
+                    sourceIds: remote.source_ids ?? [],
+                    createdBy: remote.created_by,
+                    createdAt: parseDate(remote.created_at),
+                    syncStatus: .synced
+                )
+            )
         }
+        try? modelContext.save()
+    }
 
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(anonKey)", forHTTPHeaderField: "Authorization")
-        request.setValue(anonKey, forHTTPHeaderField: "apikey")
-        request.setValue("return=minimal", forHTTPHeaderField: "Prefer")
-        request.httpBody = try JSONEncoder().encode(body)
+    private func pullGearLoadouts(modelContext: ModelContext) async throws {
+        let remoteLoadouts: [RemoteGearLoadout] = try await SupabaseManager.shared.client
+            .from(SupabaseManager.Table.gearLoadouts)
+            .select()
+            .execute()
+            .value
+        let localLoadouts = (try? modelContext.fetch(FetchDescriptor<GearLoadout>())) ?? []
+        let localByHikerId = Dictionary(
+            uniqueKeysWithValues: localLoadouts.map { ($0.hikerId, $0) }
+        )
 
-        let (_, response) = try await URLSession.shared.data(for: request)
-        guard let httpResponse = response as? HTTPURLResponse else { return }
+        for remote in remoteLoadouts {
+            let remoteDate = parseDate(remote.updated_at)
+            if let existing = localByHikerId[remote.hiker_id] {
+                guard
+                    existing.syncStatus != .local,
+                    remoteDate >= existing.updatedAt
+                else { continue }
+                existing.itemIds = remote.item_ids
+                existing.updatedAt = remoteDate
+                existing.syncStatus = .synced
+                continue
+            }
 
-        if httpResponse.statusCode == 503 {
-            throw SyncError.supabaseSleeping
+            modelContext.insert(
+                GearLoadout(
+                    hikerId: remote.hiker_id,
+                    itemIds: remote.item_ids,
+                    updatedAt: remoteDate,
+                    syncStatus: .synced
+                )
+            )
         }
-        if httpResponse.statusCode >= 400 {
-            throw SyncError.httpError(httpResponse.statusCode)
+        try? modelContext.save()
+    }
+
+    private func replaceItemId(
+        _ oldId: String,
+        with newId: String,
+        modelContext: ModelContext
+    ) {
+        let loadouts = (try? modelContext.fetch(FetchDescriptor<GearLoadout>())) ?? []
+        for loadout in loadouts where loadout.itemIds.contains(oldId) {
+            loadout.itemIds = loadout.itemIds.map { $0 == oldId ? newId : $0 }
+            loadout.updatedAt = .now
+            loadout.syncStatus = .local
         }
     }
 
-    // MARK: - Retry
-
-    private func backoff() async {
-        try? await Task.sleep(for: .seconds(retryDelay))
-        retryDelay = min(retryDelay * 2, maxRetryDelay)
+    private func parseDate(_ value: String) -> Date {
+        SupabaseManager.iso8601.date(from: value)
+            ?? ISO8601DateFormatter().date(from: value)
+            ?? .now
     }
 }

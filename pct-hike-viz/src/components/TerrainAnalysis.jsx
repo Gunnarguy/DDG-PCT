@@ -165,7 +165,7 @@ function TerrainAnalysis({ selectedDay = null }) {
           </div>
           <div className="summary-item">
             <span className="summary-label">Total Elevation</span>
-            <span className="summary-value">+6,401ft / −6,896ft</span>
+            <span className="summary-value">+6,524ft / −7,050ft</span>
           </div>
         </div>
       </div>
@@ -174,17 +174,18 @@ function TerrainAnalysis({ selectedDay = null }) {
       <div className="terrain-gear-tips">
         <h4>🎒 Terrain-Specific Gear Recommendations</h4>
         <ul>
-          <li><strong>Trekking poles:</strong> Prioritize them for Days 3, 6, 7, and 8; Day 7 alone loses roughly 1,834ft.</li>
+          <li><strong>Trekking poles:</strong> Prioritize them for Days 3, 6, 7, and 8; Day 7 alone loses roughly 1,786ft.</li>
           <li><strong>Foot care:</strong> Eight consecutive hiking days leave little recovery; treat hotspots immediately.</li>
           <li><strong>Traction:</strong> Use shoes with dependable wet-rock grip; do not imply microspikes are needed without a current snow/ice report.</li>
-          <li><strong>Pacing:</strong> Day 2 climbs about 2,199ft; Day 3 is the 12.59-mile supported traverse. Start both early and protect calories and water.</li>
+          <li><strong>Pacing:</strong> Day 2 climbs about 2,175ft; Day 3 is the 12.59-mile supported traverse. Start both early and protect calories and water.</li>
         </ul>
       </div>
 
       {/* Data attribution */}
       <div className="analysis-footer">
         <p className="data-note">
-          Elevation totals use five-point smoothing and a 10ft change threshold.
+          Elevation totals use 200m distance smoothing and a continuous 20ft
+          hysteresis threshold across day boundaries.
           Grade maxima use rolling 0.1-mile GPS windows to avoid point-to-point noise.
         </p>
       </div>

@@ -85,7 +85,7 @@ describes a real-world verification gate.
 | Ash Camp is PCT mile 1472.0 | PCTA 2026 geometry places the route endpoint near **1472.50**; the PCTA public page rounds to 1472 | Secondary PCT miles need a source year and precision policy |
 | Day 1 is 8.2 miles | From the real Burney Falls trailhead to Rock Creek it is approximately **5.61 official miles** | Arrival-day effort was overstated |
 | Day 3 ends at Kosk Spring | Kosk does not map to public land in the current screening and is inside the private-land traversal | The “easy” nine-day itinerary may violate current access terms |
-| Total gain/loss is +6,709/−7,286 feet | The active cropped profile recomputes to **+6,401/−6,896 feet** using one continuous centered five-point smoothing pass and a cumulative 10-foot threshold | Dashboard totals are stale |
+| Total gain/loss is +6,709/−7,286 feet | The user-supplied Garmin GPX normalizes to **+6,524/−7,050 feet** using 25-meter resampling, a centered 200-meter smoothing window, and a continuous 20-foot hysteresis threshold | Raw and point-density-dependent totals are not field-planning numbers |
 | All section profile data describe the active trip | One profile dataset still extends nearly 29 miles beyond Ash Camp | UI can show irrelevant or misleading terrain |
 | Water source miles are canonical | Coordinates are useful, but stored miles mix Halfmile 2023, PCTA 2025, and app route miles | Water ordering and “miles to water” can be wrong |
 | Every displayed camp is verified | Camp coordinates are mapped, but land legality and current site condition are not all verified | False reassurance |
@@ -260,42 +260,42 @@ This plan:
 
 ### Day-by-day plan
 
-Elevation gain/loss below is derived from the cropped Garmin profile using five-point smoothing and a 10-foot accumulation threshold. Distance is from PCTA 2026 geometry. Field time is a conservative planning window for loaded hikers, breaks, water treatment, navigation, heat, and brush; it is not a promise.
+Elevation gain/loss below is derived from the user-supplied Garmin GPX after 25-meter resampling, centered 200-meter smoothing, and a continuous 20-foot hysteresis threshold. Distance is from the PCTA 2026 milebook. Field time assumes approximately 1.85 mph over effort-adjusted distance with a 12–35% stop/group allowance; Day 3 uses 2.1 mph because overnight packs are transferred. It is not a promise.
 
 | Day/date | Leg | Daily mi | Cumulative mi | End PCT mi | Gain/loss | End elev. | Planning read | Field window |
 |---|---|---:|---:|---:|---:|---:|---|---:|
-| 1 · Sat Aug 29 | Burney Falls → Rock Creek | **5.61** | 5.61 | 1426.26 | +613 / −522 ft | ~3,043 ft | Arrival-day shakedown; dam/road crossing; water at end | 4–6 hr |
-| 2 · Sun Aug 30 | Rock Creek → pre-private USFS dry camp | **8.68** | 14.29 | 1434.94 | +2,199 / −276 ft | ~4,961 ft on trail; 4,902 ft at USGS camp cell | Largest climb; carry water into dry camp; ground-check candidate | 6–8 hr |
-| 3 · Mon Aug 31 | USFS dry camp → Bartle Gap exact PCT crossing | **12.59** | 26.88 | 1447.53 | +1,424 / −1,312 ft | ~5,082 ft | **Day packs; continuous private-land travel; timed support extraction; no camping/lingering** | 7–9 hr |
-| 4 · Tue Sep 1 | Bartle Gap exact re-entry → high saddle near 38N10 | **5.37** | 32.25 | 1452.90 | +1,209 / −157 ft | ~6,128 ft | Re-enter at exact pin; climb to route high point; dry camp | 4–6 hr |
-| 5 · Wed Sep 2 | High saddle → Alder/Star City | **3.79** | 36.04 | 1456.69 | +83 / −813 ft | ~5,394 ft | Brush/blowdown and knee-loading descent; water uncertain | 3–5 hr |
-| 6 · Thu Sep 3 | Alder/Star City → Deer Creek Spring | **6.35** | 42.39 | 1463.04 | +873 / −1,065 ft | ~5,197 ft | Mixed climbing/descending; verify first dependable water | 5–7 hr |
-| 7 · Fri Sep 4 | Deer Creek Spring → Butcherknife Creek | **5.60** | 47.99 | 1468.64 | +0 / −1,834 ft | ~3,360 ft | Biggest continuous descent; knees are the limiter | 4.5–6.5 hr |
-| 8 · Sat Sep 5 | Butcherknife → Ash Camp | **3.85** | **51.84** | 1472.50 | +0 / −917 ft | ~2,365–2,443 ft | Short pickup day; poison-oak awareness; rough-road pickup | 2.5–4 hr |
+| 1 · Sat Aug 29 | Burney Falls → Rock Creek | **5.61** | 5.61 | 1426.26 | +700 / −600 ft | ~3,119 ft | Arrival-day shakedown; dam/road crossing; water at end | 3.75–4.5 hr |
+| 2 · Sun Aug 30 | Rock Creek → pre-private USFS dry camp | **8.68** | 14.29 | 1434.94 | +2,175 / −268 ft | ~5,017 ft on trail; 4,902 ft at USGS camp cell | Largest climb; carry water into dry camp; ground-check candidate | 6–7.25 hr |
+| 3 · Mon Aug 31 | USFS dry camp → Bartle Gap exact PCT crossing | **12.59** | 26.88 | 1447.53 | +1,510 / −1,388 ft | ~5,139 ft | **Day packs; continuous private-land travel; timed support extraction; no camping/lingering** | 7.25–8.75 hr |
+| 4 · Tue Sep 1 | Bartle Gap exact re-entry → high saddle near 38N10 | **5.37** | 32.25 | 1452.90 | +1,056 / −86 ft | ~6,110 ft | Re-enter at exact pin; climb to route high point; dry camp | 3.5–4.25 hr |
+| 5 · Wed Sep 2 | High saddle → Alder/Star City | **3.79** | 36.04 | 1456.69 | +159 / −764 ft | ~5,504 ft | Brush/blowdown and knee-loading descent; water uncertain | 2.5–3 hr |
+| 6 · Thu Sep 3 | Alder/Star City → Deer Creek Spring | **6.35** | 42.39 | 1463.04 | +828 / −1,095 ft | ~5,227 ft | Mixed climbing/descending; verify first dependable water | 4.25–5.25 hr |
+| 7 · Fri Sep 4 | Deer Creek Spring → Butcherknife Creek | **5.60** | 47.99 | 1468.64 | +23 / −1,786 ft | ~3,447 ft | Biggest continuous descent; knees are the limiter | 3.75–4.5 hr |
+| 8 · Sat Sep 5 | Butcherknife → Ash Camp | **3.85** | **51.84** | 1472.50 | +73 / −1,063 ft | ~2,457 ft | Short pickup day; poison-oak awareness; rough-road pickup | 2.5–3 hr |
 | Buffer · Sun Sep 6 | No scheduled trail miles | — | — | — | — | — | Weather/fire/road/injury buffer and home recovery | — |
 
 ### Route totals
 
 - PCTA 2026 centerline distance: **51.84 miles**
-- Garmin cropped route distance: **51.66 miles**
-- Garmin-derived gain: **6,401 feet**
-- Garmin-derived loss: approximately **6,896 feet**
-- Highest route elevation: approximately **6,146 feet**
+- Existing app geometry distance: **51.66 miles**
+- User-supplied Garmin export crop: **51.15 miles** at lower point density
+- Normalized Garmin-derived gain: **6,524 feet**
+- Normalized Garmin-derived loss: **7,050 feet**
+- Highest normalized route elevation: approximately **6,129 feet**
 - Lowest finish-area elevation:
-  - Garmin track: approximately **2,443 feet**
+  - normalized Garmin profile: approximately **2,457 feet**
   - USGS 3DEP at Ash Camp pin: approximately **2,365 feet**
 
 The Ash Camp elevation difference is an example of why the app must store source and method, not just a naked number.
 
 ### Difficulty ranking
 
-1. **Day 3:** 12.59 miles and 2,736 feet of combined vertical movement, plus a non-negotiable timed extraction. Day packs make this materially safer than the rejected full-pack version.
-2. **Day 2:** 2,199 feet of climbing over 8.68 miles, ending dry.
-3. **Day 6:** 1,938 feet of combined vertical movement over 6.35 miles.
-4. **Day 7:** 1,834 feet of descent in 5.6 miles; likely the hardest day on knees.
+1. **Day 3:** 12.59 miles and 2,898 feet of combined vertical movement, plus a non-negotiable timed extraction. Day packs make this materially safer than the rejected full-pack version.
+2. **Day 2:** 2,175 feet of climbing over 8.68 miles, ending dry.
+3. **Day 6:** 1,923 feet of combined vertical movement over 6.35 miles.
+4. **Day 7:** 1,786 feet of descent in 5.6 miles; likely the hardest day on knees.
 5. **Day 1:** moderate terrain, but sleep and transportation make it operationally harder than the profile suggests.
-6. **Day 4:** 1,209 feet of ascent in 5.37 miles after exact-point re-entry, ending at the high point.
-6. **Day 5:** low mileage but descending through the current brush/blowdown alert area.
+6. **Day 4:** 1,056 feet of ascent in 5.37 miles after exact-point re-entry, ending near the high point.
 7. **Day 8:** short, downhill, and pickup-focused.
 8. **Day 5:** lowest effort-mile score, but still brushy and descent-heavy.
 
@@ -1183,7 +1183,7 @@ Train for:
 
 - Day 2's 8.68-mile full-pack ascent and dry-camp carry;
 - Day 3's 12.59-mile day-pack distance with a firm arrival window;
-- Day 7's 1,834-foot descent;
+- Day 7's 1,786-foot descent;
 - consecutive days;
 - uneven/brushy tread; and
 - full pack weight.

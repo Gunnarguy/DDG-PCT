@@ -52,16 +52,19 @@ const startEleFt = route[0][2];
 const endEleFt = route[route.length-1][2];
 const minEleFt = Math.min(...route.map(p => p[2]));
 const maxEleFt = Math.max(...route.map(p => p[2]));
+const canonicalHighFt = Number(hikeData.route.properties.max_elevation);
 
 console.log('⛰️  ELEVATION:');
 console.log(`   Start:   ${Math.round(startEleFt).toLocaleString()} ft`);
 console.log(`   End:     ${Math.round(endEleFt).toLocaleString()} ft`);
 console.log(`   Min:     ${Math.round(minEleFt).toLocaleString()} ft`);
-console.log(`   Max:     ${Math.round(maxEleFt).toLocaleString()} ft`);
-console.log(`   Expected high point: about 6,146 ft`);
-const elevationPasses = Math.abs(maxEleFt - 6146) < 100;
+console.log(`   Raw point maximum: ${Math.round(maxEleFt).toLocaleString()} ft`);
+console.log(`   Canonical normalized high point: ${Math.round(canonicalHighFt).toLocaleString()} ft`);
+const elevationPasses =
+  Math.abs(maxEleFt - 6146) < 100 &&
+  canonicalHighFt === 6129;
 console.log(`   ✓ ${elevationPasses ? 'PASS' : 'FAIL'}\n`);
-if (!elevationPasses) failures.push('active route high point is outside tolerance');
+if (!elevationPasses) failures.push('raw or canonical normalized route high point is outside tolerance');
 
 // Check itinerary stops (camps plus transfer/finish points)
 const camps = hikeData.features.filter(f => f.properties.day >= 0);

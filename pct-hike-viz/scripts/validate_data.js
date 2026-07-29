@@ -118,8 +118,8 @@ function main() {
     "Day 3 must be the supported day-pack traverse to Bartle Gap, not a camp"
   );
   assert(
-    Number(canonical?.route?.properties?.total_gain_feet) === 6401 &&
-      Number(canonical?.route?.properties?.total_loss_feet) === 6896,
+    Number(canonical?.route?.properties?.total_gain_feet) === 6524 &&
+      Number(canonical?.route?.properties?.total_loss_feet) === 7050,
     "Continuous thresholded elevation totals are stale"
   );
   assert(

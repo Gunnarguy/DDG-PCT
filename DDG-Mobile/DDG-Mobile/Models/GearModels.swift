@@ -36,6 +36,10 @@ final class CustomItem {
     var category: String
     var moduleId: String
     var sourceIds: [String]
+    var specs: [String] = []
+    var defaultPacked: Bool = false
+    var weightBucket: String = "carried"
+    var quantity: Int = 1
     var createdBy: String?
     var createdAt: Date
     var syncStatus: SyncStatus
@@ -50,6 +54,10 @@ final class CustomItem {
         category: String = "Custom",
         moduleId: String = "custom",
         sourceIds: [String] = [],
+        specs: [String] = [],
+        defaultPacked: Bool = false,
+        weightBucket: String = "carried",
+        quantity: Int = 1,
         createdBy: String? = nil,
         createdAt: Date = .now,
         syncStatus: SyncStatus = .local
@@ -63,6 +71,10 @@ final class CustomItem {
         self.category = category
         self.moduleId = moduleId
         self.sourceIds = sourceIds
+        self.specs = specs
+        self.defaultPacked = defaultPacked
+        self.weightBucket = weightBucket
+        self.quantity = quantity
         self.createdBy = createdBy
         self.createdAt = createdAt
         self.syncStatus = syncStatus
@@ -71,10 +83,9 @@ final class CustomItem {
     /// Normalize weight to ounces for consistent comparison
     var weightInOz: Double {
         guard let val = weightVal else { return 0 }
-        switch weightLabel?.lowercased() {
-        case "lb": return val * 16
-        case "g":  return val * 0.035274
-        default:   return val  // already oz
-        }
+        let unit = weightLabel?.lowercased() ?? "oz"
+        if unit.contains("lb") || unit.contains("pound") { return val * 16 }
+        if unit == "g" || unit.contains("gram") { return val * 0.035274 }
+        return val
     }
 }

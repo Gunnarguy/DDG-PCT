@@ -347,13 +347,16 @@ private struct DayStatsRow: View {
                 statItem(icon: "arrow.up.right", value: String(format: "+%.0f", profile?.gainFeet ?? 0), unit: "feet")
                 statItem(icon: "arrow.down.right", value: String(format: "−%.0f", profile?.lossFeet ?? 0), unit: "feet")
                 statItem(icon: "gauge.with.dots.needle.50percent", value: String(format: "%.1f", profile?.effortMiles ?? totalDistance), unit: "effort mi")
+                if let profile {
+                    statItem(icon: "clock", value: TrailConstants.timeEstimate(for: profile).rangeLabel, unit: "")
+                }
             }
 
             if let profile {
                 Divider()
 
                 HStack {
-                    Label("Difficulty #\(profile.difficultyRank) of 9", systemImage: "chart.bar.fill")
+                    Label("Difficulty #\(profile.difficultyRank) of 8", systemImage: "chart.bar.fill")
                     Spacer()
                     Text("\(profile.kneeLoad.rawValue.capitalized) knee load")
                         .foregroundStyle(kneeColor(profile.kneeLoad))
@@ -419,7 +422,7 @@ private struct TerrainOverviewCard: View {
                 overviewValue("−\(TrailConstants.totalLossFeet.formatted(.number.precision(.fractionLength(0))))", "loss ft")
             }
 
-            Text("Day 3 is the longest day at 12.59 miles, but it is a supported day-pack traverse with timed Bartle Gap extraction. Day 2 has the largest climb; Day 7 is the biggest knee-risk descent. “Effort miles” compare terrain loads—they are not promised hiking times.")
+            Text("Day 3 is the longest day at 12.59 miles, but it is a supported day-pack traverse with timed Bartle Gap extraction. Day 2 has the largest climb; Day 7 is the biggest knee-risk descent. Time ranges assume ordinary group pacing, water and navigation stops—not a 2.5–3.5 mph race pace.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

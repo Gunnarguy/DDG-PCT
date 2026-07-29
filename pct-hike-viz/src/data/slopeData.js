@@ -130,8 +130,8 @@ const terrainMetadataByDay = {
 
 /**
  * Section O terrain profile from the canonical itinerary. Daily elevation
- * changes are attributed from one continuous smoothed track so boundaries do
- * not reset the 10-foot accumulation threshold.
+ * changes are attributed from one continuous, distance-smoothed track so day
+ * boundaries do not reset the 20-foot accumulation threshold.
  */
 export const sectionOTerrainProfile = Object.fromEntries(
   primaryItinerary.map((leg) => [
@@ -151,13 +151,13 @@ export const sectionOTerrainProfile = Object.fromEntries(
 export const terrainHazards = [
   {
     location: 'Day 2: major climb',
-    concern: 'Approximately 2,199 ft of gain in 8.678 miles, ending at a dry camp',
+    concern: 'Approximately 2,175 ft of gain in 8.678 miles, ending at a dry camp',
     mitigation: 'Start early, use a sustainable pace, and leave the last confirmed legal source with enough water for camp and the supported traverse.',
     coordinates: [-121.798667, 41.085022]
   },
   {
     location: 'Day 7: Butcherknife Creek descent',
-    concern: 'Approximately 1,834 ft of loss in 5.604 miles',
+    concern: 'Approximately 1,786 ft of loss in 5.604 miles',
     mitigation: 'Use poles, shorten stride, manage hotspots early, and allow more time than flat mileage suggests.',
     coordinates: [-122.026677, 41.129422]
   }
@@ -184,12 +184,22 @@ export const getDayTerrainSummary = (day) => {
     ...profile,
     categoryEmoji: category.emoji,
     categoryLabel: category.label,
-    estimatedTime: (
-      profile.distance / 2.2 +
-      profile.elevationGain / 1500
-    ).toFixed(1) + ' hours',
+    estimatedTime: formatLoadedGroupTime(profile, day),
     terrainBreakdown: estimateTerrainBreakdown(profile)
   };
+};
+
+const formatLoadedGroupTime = (profile, day) => {
+  const movingSpeed = day === 3 ? 2.1 : 1.85;
+  const effortMiles =
+    profile.distance +
+    profile.elevationGain / 2000 +
+    profile.elevationLoss / 4000;
+  const movingHours = effortMiles / movingSpeed;
+  const roundQuarterHour = (hours) => Math.round(hours * 4) / 4;
+  const low = roundQuarterHour(movingHours * 1.12);
+  const high = roundQuarterHour(movingHours * 1.35);
+  return `${low}–${high} hours`;
 };
 
 /**

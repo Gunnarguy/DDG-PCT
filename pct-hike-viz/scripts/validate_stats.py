@@ -57,33 +57,15 @@ print(f'GPS route finish elevation: {end_elev:.0f} ft')
 print(f'Start match: {"✓" if 2900 <= start_elev <= 3050 else "✗"}')
 print(f'Finish is plausible for Ash Camp: {"✓" if 2300 <= end_elev <= 3300 else "⚠"}')
 
-# Calculate gain/loss with smoothing (Strava method)
-window_size = 5
-smoothed = []
-for i in range(len(coords)):
-    start_idx = max(0, i - window_size // 2)
-    end_idx = min(len(coords), i + window_size // 2 + 1)
-    window_elevations = [coords[j][2] for j in range(start_idx, end_idx)]
-    smoothed.append(sum(window_elevations) / len(window_elevations))
+properties = route.get('properties', {})
+gain = properties.get('total_gain_feet', 0)
+loss = properties.get('total_loss_feet', 0)
+method = properties.get('elevation_accumulation_method', 'method unavailable')
 
-# Apply threshold filtering
-THRESHOLD = 10  # feet
-gain = 0
-loss = 0
-last_counted = smoothed[0]
-
-for ele in smoothed[1:]:
-    change = ele - last_counted
-    if abs(change) >= THRESHOLD:
-        if change > 0:
-            gain += change
-        else:
-            loss += abs(change)
-        last_counted = ele
-
-print(f'\n--- CUMULATIVE GAIN/LOSS (smoothed, 10ft threshold) ---')
+print(f'\n--- NORMALIZED CUMULATIVE GAIN/LOSS ---')
 print(f'Total gain: {gain:.0f} ft')
 print(f'Total loss: {loss:.0f} ft')
+print(f'Method: {method}')
 
 # Historical estimate from the incomplete six-row narrative.
 doc_gain = (3200-2300) + (3650-3200) + (4000-3650) + (4800-4000) + (5850-4800)
@@ -92,6 +74,6 @@ print(f'\nLegacy six-row estimated gain: ~{doc_gain} ft')
 print(f'Legacy six-row estimated loss: ~{abs(doc_loss)} ft')
 
 print(f'\nNote: the historical six-row narrative stops at 52 miles and is not the active itinerary.')
-print(f'The truncated GPS route to Ash Camp is the active source for distance and terrain.')
+print(f'PCTA mileage controls distance; the normalized user-supplied Garmin GPX controls terrain totals.')
 
 print('\n' + '=' * 60)

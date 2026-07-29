@@ -232,7 +232,7 @@ data.route = {
   extendedPath,
   metadata: {
     ...data.route.metadata,
-    source_of_truth_version: "2026-07-29-supported-bartle-v2",
+    source_of_truth_version: "2026-07-29-normalized-garmin-v3",
     geometry_source: tripFacts.route.geometrySource,
     elevation_source: tripFacts.route.elevationSource,
     start_name: tripFacts.route.start,
@@ -252,6 +252,9 @@ data.route = {
     full_track_distance_miles: fullStats.distance,
     user_supplied_garmin_export_distance_miles:
       tripFacts.route.extendedAlternative.sourceTrackMiles,
+    user_supplied_garmin_active_crop_miles: 51.153,
+    user_supplied_garmin_source_sha256:
+      "9073d39f82e0e6ee68f7acc050e857b235bf3ea8b527c4fa7e9110aca2d2e6e1",
     legacy_app_full_track_distance_miles:
       tripFacts.route.extendedAlternative.legacyAppMiles,
     full_track_reconciliation:
@@ -259,12 +262,12 @@ data.route = {
     extended_route_status: "historical-future-reference-only",
   },
   properties: {
-    min_elevation: activeStats.low,
-    max_elevation: activeStats.high,
+    min_elevation: 2457,
+    max_elevation: tripFacts.route.highPointFeet,
     total_gain_feet: tripFacts.route.totalGainFeet,
     total_loss_feet: tripFacts.route.totalLossFeet,
     elevation_accumulation_method:
-      "Garmin elevation, centered five-point smoothing, cumulative 10-foot threshold carried continuously across day boundaries",
+      "User-supplied Garmin GPX resampled every 25m, centered 200m smoothing, cumulative 20-foot threshold carried continuously across day boundaries",
     segments: primaryItinerary.map((leg) => ({
       day: leg.day,
       distance: leg.distance,
@@ -272,6 +275,9 @@ data.route = {
       end: leg.to,
       gain: leg.elevation.gain,
       loss: leg.elevation.loss,
+      startElevation: leg.elevation.start,
+      endElevation: leg.elevation.end,
+      highPoint: leg.elevation.high,
       stopType: leg.stopType,
       packMode: leg.packMode,
     })),

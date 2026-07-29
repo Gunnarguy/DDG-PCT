@@ -15,16 +15,20 @@ struct ContentView: View {
         case map
         case field
         case gear
-        case info
     }
 
     @State private var selectedTab: AppTab = .mission
     @State private var network = NetworkMonitor.shared
     @Environment(AuthManager.self) private var auth
+    @Environment(\.modelContext) private var modelContext
     @Query private var allOpsEntries: [OpsLogEntry]
+    @Query private var allGearLoadouts: [GearLoadout]
+    @Query private var allCustomItems: [CustomItem]
 
     private var pendingSyncCount: Int {
-        allOpsEntries.filter { $0.syncStatus == .local }.count
+        allOpsEntries.filter { $0.syncStatus == .local }.count +
+            allGearLoadouts.filter { $0.syncStatus == .local }.count +
+            allCustomItems.filter { $0.syncStatus == .local }.count
     }
 
     var body: some View {
@@ -44,9 +48,6 @@ struct ContentView: View {
             Tab("Gear", systemImage: "backpack.fill", value: AppTab.gear) {
                 GearPlannerView()
             }
-            Tab("Info", systemImage: "info.circle.fill", value: AppTab.info) {
-                InfoView()
-            }
         }
         .overlay(alignment: .topTrailing) {
             // Global Status Indicator (does not block touches)
@@ -60,12 +61,17 @@ struct ContentView: View {
             .padding(.trailing, 16)
             .allowsHitTesting(false)
         }
+        .task {
+            await SyncEngine.shared.pullRemoteChanges(modelContext: modelContext)
+            await SyncEngine.shared.syncPendingChanges(modelContext: modelContext)
+        }
     }
 }
 
 private struct PlanWorkspaceView: View {
     private enum Mode: String, CaseIterable, Identifiable {
         case itinerary = "Itinerary"
+        case logistics = "Logistics"
         case preparation = "Preparation"
 
         var id: Self { self }
@@ -87,6 +93,8 @@ private struct PlanWorkspaceView: View {
             switch mode {
             case .itinerary:
                 ItineraryView()
+            case .logistics:
+                LogisticsView()
             case .preparation:
                 PrepView()
             }

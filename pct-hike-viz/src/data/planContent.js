@@ -1392,7 +1392,7 @@ export const riskPlaybook = [
   },
   {
     title: 'Altitude sickness (AMS) awareness',
-    detail: 'The GPS route peaks at approximately 6,146ft (moderate altitude)—low AMS risk for most hikers. However, symptoms can occur in sensitive individuals. Monitor for headache, nausea, fatigue, or dizziness. If symptoms persist or worsen, descend and seek medical guidance.',
+    detail: 'The normalized Garmin profile peaks at approximately 6,129ft (moderate altitude)—low AMS risk for most hikers. However, symptoms can occur in sensitive individuals. Monitor for headache, nausea, fatigue, or dizziness. If symptoms persist or worsen, descend and seek medical guidance.',
     protocol: {
       thresholds: [
         { elevation: '0–4,000ft', risk: 'None', action: 'No precautions needed' },
@@ -1413,9 +1413,9 @@ export const riskPlaybook = [
       name: 'Acetazolamide (Diamox)',
       dose: '125mg twice daily, starting 24hrs before ascent',
       notes: 'Prescription required. Consult physician. Side effects: tingling, frequent urination, carbonated drinks taste flat.',
-      forSectionO: 'Not routinely indicated for this approximately 6,146ft route. Any medication decision belongs with a clinician who knows the hiker.'
+      forSectionO: 'Not routinely indicated for this approximately 6,129ft route. Any medication decision belongs with a clinician who knows the hiker.'
     },
-    sectionOContext: 'The GPS high point is approximately 6,146ft on Day 4—below the 8,000ft threshold where AMS becomes more common. The largest daily climb is approximately 2,199ft on Day 2; pace conservatively and hydrate.',
+    sectionOContext: 'The normalized Garmin high point is approximately 6,129ft—below the 8,000ft threshold where AMS becomes more common. The largest daily climb is approximately 2,175ft on Day 2; pace conservatively and hydrate.',
     sourceIds: ['adventurehacks-guide', 'wv-2017-log']
   }
 ];
@@ -1630,7 +1630,7 @@ export const dayItinerary = [
       leg.day === 3
         ? 'Continuous private-timberland traverse with day packs and timed Bartle Gap extraction'
         : leg.day === 4
-        ? 'Highest route segment; GPS reaches approximately 6,146 ft'
+        ? 'Highest route segment; normalized Garmin profile reaches approximately 6,129 ft'
         : leg.elevation.loss >= 1400
           ? 'Major descent day; protect knees and allow slower footing'
           : leg.elevation.gain >= 1800

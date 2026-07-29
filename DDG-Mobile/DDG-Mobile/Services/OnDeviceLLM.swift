@@ -229,25 +229,32 @@ final class OnDeviceLLM {
     ) async throws -> String {
         guard !camps.isEmpty else { return "No camp data for this day." }
 
-        let dayDist = camps.reduce(0.0) { $0 + $1.distance }
-
-        let elevGainFt = TrailConstants.elevationGain(for: day + 1)
-        let estHours = TrailConstants.estimatedTime(miles: dayDist, gainFeet: elevGainFt)
+        let profile = TrailConstants.profile(for: day)
+        let dayDist = profile?.miles ?? camps.reduce(0.0) { $0 + $1.distance }
+        let elevGainFt = profile?.gainFeet ?? 0
+        let elevLossFt = profile?.lossFeet ?? 0
+        let timeEstimate = profile.map(TrailConstants.timeEstimate(for:))
+            ?? TrailConstants.timeEstimate(
+                miles: dayDist,
+                gainFeet: elevGainFt,
+                lossFeet: elevLossFt
+            )
 
         #if canImport(FoundationModels)
         if #available(iOS 26.0, macOS 26.0, *) {
             guard SystemLanguageModel.default.isAvailable else {
-                return fallbackDayBriefing(day: day, camps: camps, dayDist: dayDist, elevGainFt: elevGainFt, estHours: estHours, waterSources: waterSources)
+                return fallbackDayBriefing(day: day, camps: camps, dayDist: dayDist, elevGainFt: elevGainFt, elevLossFt: elevLossFt, timeEstimate: timeEstimate, waterSources: waterSources)
             }
 
             let session = LanguageModelSession(model: .default)
 
-            var context = "Day \(day + 1) Itinerary:\n"
+            var context = "Day \(day) Itinerary:\n"
             context += "- Distance: \(String(format: "%.1f", dayDist)) miles\n"
             if elevGainFt > 0 {
                 context += "- Elevation gain: \(Int(elevGainFt)) ft\n"
             }
-            context += "- Estimated hiking time: \(String(format: "%.1f", estHours)) hours (Naismith's rule, 2.5 mph base)\n\n"
+            context += "- Elevation loss: \(Int(elevLossFt)) ft\n"
+            context += "- Estimated trail time: \(timeEstimate.rangeLabel) (loaded group pace with terrain and stop allowance)\n\n"
 
             context += "Waypoints:\n"
             for camp in camps {
@@ -294,7 +301,7 @@ final class OnDeviceLLM {
         }
         #endif
 
-        return fallbackDayBriefing(day: day, camps: camps, dayDist: dayDist, elevGainFt: elevGainFt, estHours: estHours, waterSources: waterSources)
+        return fallbackDayBriefing(day: day, camps: camps, dayDist: dayDist, elevGainFt: elevGainFt, elevLossFt: elevLossFt, timeEstimate: timeEstimate, waterSources: waterSources)
     }
 
     // MARK: - Gear Analysis
@@ -336,7 +343,7 @@ final class OnDeviceLLM {
                 context += "  - \(item.name): \(String(format: "%.1f", item.weightInOz)) oz [\(item.category)]\n"
             }
 
-            context += "\nTrail context: 8-day section hike, 51.844 official miles / 51.664 Garmin miles, route high point about 6,146 ft.\n"
+            context += "\nTrail context: 8-day section hike, 51.844 official miles, normalized Garmin route high point about 6,129 ft.\n"
             context += "Key considerations: water carry between sources, satellite communicator weight, camp cooking gear.\n"
 
             let prompt = """
@@ -433,25 +440,39 @@ final class OnDeviceLLM {
         }
         if minElev == Double.greatestFiniteMagnitude { minElev = 0 }
 
+        if let profile = TrailConstants.profile(for: camp.day) {
+            elevGain = profile.gainFeet
+            elevLoss = profile.lossFeet
+            maxElev = profile.highPointFeet
+            minElev = min(profile.startFeet, profile.endFeet)
+        }
+
         let grade = camp.distance > 0 ? (elevGain / (camp.distance * 5280)) * 100 : 0
         let difficulty = gradeDifficulty(for: grade)
-        let estHours = TrailConstants.estimatedTime(miles: camp.distance, gainFeet: elevGain)
+        let timeEstimate = TrailConstants.profile(for: camp.day)
+            .map(TrailConstants.timeEstimate(for:))
+            ?? TrailConstants.timeEstimate(
+                miles: camp.distance,
+                gainFeet: elevGain,
+                lossFeet: elevLoss,
+                packMode: camp.packMode
+            )
 
         #if canImport(FoundationModels)
         if #available(iOS 26.0, macOS 26.0, *) {
             guard SystemLanguageModel.default.isAvailable else {
-                return fallbackTerrainBriefing(camp: camp, elevGain: elevGain, elevLoss: elevLoss, maxElev: maxElev, minElev: minElev, difficulty: difficulty, estHours: estHours)
+                return fallbackTerrainBriefing(camp: camp, elevGain: elevGain, elevLoss: elevLoss, maxElev: maxElev, minElev: minElev, difficulty: difficulty, timeEstimate: timeEstimate)
             }
 
             let session = LanguageModelSession(model: .default)
 
-            var context = "Terrain Analysis — \(camp.name) (Day \(camp.day + 1)):\n"
+            var context = "Terrain Analysis — \(camp.name) (Day \(camp.day)):\n"
             context += "- Distance: \(String(format: "%.1f", camp.distance)) mi\n"
             context += "- Elevation: \(camp.startElevation) → \(camp.endElevation)\n"
             context += "- Gain: \(Int(elevGain)) ft, Loss: \(Int(elevLoss)) ft\n"
             context += "- Max elevation: \(Int(maxElev)) ft, Min: \(Int(minElev)) ft\n"
             context += "- Average grade: \(String(format: "%.1f", grade))% (\(difficulty.label))\n"
-            context += "- Estimated time: \(String(format: "%.1f", estHours)) hours\n"
+            context += "- Estimated trail time: \(timeEstimate.rangeLabel)\n"
             if !camp.segment.isEmpty {
                 context += "- Terrain description: \(camp.segment)\n"
             }
@@ -477,7 +498,15 @@ final class OnDeviceLLM {
         }
         #endif
 
-        return fallbackTerrainBriefing(camp: camp, elevGain: elevGain, elevLoss: elevLoss, maxElev: maxElev, minElev: minElev, difficulty: difficulty, estHours: estHours)
+        return fallbackTerrainBriefing(
+            camp: camp,
+            elevGain: elevGain,
+            elevLoss: elevLoss,
+            maxElev: maxElev,
+            minElev: minElev,
+            difficulty: difficulty,
+            timeEstimate: timeEstimate
+        )
     }
 
     // MARK: - Fallbacks (when Foundation Models unavailable)
@@ -554,13 +583,15 @@ final class OnDeviceLLM {
         camps: [CampSite],
         dayDist: Double,
         elevGainFt: Double,
-        estHours: Double,
+        elevLossFt: Double,
+        timeEstimate: TrailTimeEstimate,
         waterSources: [WaterSource]
     ) -> String {
         let names = camps.map(\.name).joined(separator: " → ")
-        var brief = "Day \(day + 1): \(String(format: "%.1f", dayDist)) mi, \(names)"
+        var brief = "Day \(day): \(String(format: "%.1f", dayDist)) mi, \(names)"
         if elevGainFt > 0 { brief += ", +\(Int(elevGainFt)) ft gain" }
-        brief += ", est. \(String(format: "%.1f", estHours)) hrs"
+        if elevLossFt > 0 { brief += ", −\(Int(elevLossFt)) ft loss" }
+        brief += ", est. \(timeEstimate.rangeLabel)"
         if !waterSources.isEmpty { brief += ". \(waterSources.count) water source\(waterSources.count == 1 ? "" : "s") nearby." }
         if let seg = camps.first?.segment, !seg.isEmpty { brief += " Terrain: \(seg)" }
         return brief
@@ -601,13 +632,13 @@ final class OnDeviceLLM {
         maxElev: Double,
         minElev: Double,
         difficulty: GradeDifficulty,
-        estHours: Double
+        timeEstimate: TrailTimeEstimate
     ) -> String {
-        var brief = "\(camp.name) (Day \(camp.day + 1)): \(String(format: "%.1f", camp.distance)) mi, "
+        var brief = "\(camp.name) (Day \(camp.day)): \(String(format: "%.1f", camp.distance)) mi, "
         brief += "\(difficulty.label) grade. "
         brief += "+\(Int(elevGain)) ft / -\(Int(elevLoss)) ft, "
         brief += "peak \(Int(maxElev)) ft. "
-        brief += "Est. \(String(format: "%.1f", estHours)) hrs."
+        brief += "Est. \(timeEstimate.rangeLabel)."
         if !camp.segment.isEmpty { brief += " \(camp.segment)" }
         return brief
     }

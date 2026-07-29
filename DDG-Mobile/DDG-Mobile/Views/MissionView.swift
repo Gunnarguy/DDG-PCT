@@ -195,28 +195,10 @@ struct MissionView: View {
 
     // MARK: - Stats Grid
 
-    private var totalMiles: Double { camps.last?.routeMile ?? 0 }
-    private var totalDays: Int { (camps.map(\.day).max() ?? 0) + 1 }
-
-    private var totalElevationGain: Double {
-        guard trailPoints.count > 1 else { return 0 }
-        var gain: Double = 0
-        for i in 1..<trailPoints.count {
-            let diff = trailPoints[i].elevationFeet - trailPoints[i-1].elevationFeet
-            if diff > TrailConstants.elevationThreshold { gain += diff }
-        }
-        return gain
-    }
-
-    private var totalElevationLoss: Double {
-        guard trailPoints.count > 1 else { return 0 }
-        var loss: Double = 0
-        for i in 1..<trailPoints.count {
-            let diff = trailPoints[i-1].elevationFeet - trailPoints[i].elevationFeet
-            if diff > TrailConstants.elevationThreshold { loss += diff }
-        }
-        return loss
-    }
+    private var totalMiles: Double { TrailConstants.totalMiles }
+    private var totalDays: Int { TrailConstants.dayProfiles.count }
+    private var totalElevationGain: Double { TrailConstants.totalGainFeet }
+    private var totalElevationLoss: Double { TrailConstants.totalLossFeet }
 
     private var statsGrid: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
@@ -224,7 +206,7 @@ struct MissionView: View {
             StatCard(title: "Duration", value: "\(totalDays) Days", icon: "calendar", color: .indigo)
             StatCard(title: "Elevation Gain", value: String(format: "%.0f ft", totalElevationGain), icon: "arrow.up.right", color: .green)
             StatCard(title: "Elevation Loss", value: String(format: "%.0f ft", totalElevationLoss), icon: "arrow.down.right", color: .red)
-            StatCard(title: "Est. Hike Time", value: String(format: "%.0f hrs", TrailConstants.estimatedTime(miles: totalMiles, gainFeet: totalElevationGain)), icon: "clock.fill", color: .orange)
+            StatCard(title: "Trail Time Range", value: TrailConstants.totalTimeEstimate.rangeLabel, icon: "clock.fill", color: .orange)
             StatCard(title: "Water Sources", value: "\(waterSources.count)", icon: "drop.fill", color: .cyan)
         }
     }

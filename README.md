@@ -16,9 +16,10 @@ Interactive web app for the active **Burney Falls → Ash Camp** PCT section hik
 
 The route begins at the actual Burney Falls PCT access at PCTA mile 1420.653 and
 ends at the official Ash Camp pickup at PCTA mile 1472.497. The PCTA January
-2026 centerline measures 51.844 miles; the cropped Garmin geometry measures
-51.664 miles and supplies the elevation profile. An arbitrary “mile 52” is not
-a vehicle exit.
+2026 centerline measures 51.844 miles. The checked-in map geometry measures
+51.664 miles, while the active crop of Gunnar’s supplied Garmin export measures
+51.153 miles and supplies the normalized elevation model. An arbitrary “mile
+52” is not a vehicle exit.
 
 The eight legs are 5.609 / 8.678 / 12.591 / 5.369 / 3.789 / 6.350 /
 5.604 / 3.854 miles. Day 2 ends at a screened USFS dry camp. Day 3 is a
@@ -60,7 +61,7 @@ DDG-PCT/
 │   │       └── connectivityData.js   # Cell/satellite zones
 │   └── scripts/
 │       └── snap_camps_to_route.py    # Coordinate snapper
-└── Garmin-compatible GPX files/      # Section O tracks (multiple densities)
+└── docs/data/source/                 # Canonical user-supplied Garmin GPX
 ```
 
 ## 🛠️ Key Commands
@@ -70,7 +71,7 @@ npm run dev:viz                       # Dev server (remote preview)
 npm run build:viz                     # Production build
 npm run fetch:pct                     # Update USFS PCT route data
 node pct-hike-viz/scripts/configure_active_route.js # Regenerate all route bundles
-python3 pct-hike-viz/scripts/calculate_day_elevations.py # Recalculate daily terrain
+node scripts/normalize_garmin_itinerary.mjs --output docs/data/garmin-itinerary-normalization.json # Recalculate normalized daily terrain
 node scripts/audit_route_parcels.mjs   # Re-run parcel/road/terrain camp screen
 node scripts/validate_water_sources.mjs # Compare itinerary vs PCT Water Report
 ```
@@ -78,10 +79,11 @@ node scripts/validate_water_sources.mjs # Compare itinerary vs PCT Water Report
 ## 📊 Data Pipeline
 
 1. **Trip facts and unresolved decisions**: `src/data/tripFacts.js`
-2. **GPS geometry**: Garmin GPX → `hike_data.json`
-3. **Current field conditions**: official closures, PCT Water Report, NIFC, and AQI feeds
-4. **Narrative context**: `Original-DDG-PCT-PDF.txt` (preserved, not treated as measured geometry)
-5. **UI content**: `planContent.js` + `resourcesIndex.js`
+2. **Map geometry**: checked-in 51.664-mile app crop → `hike_data.json`
+3. **Elevation contract**: canonical user GPX → 25m resampling → 200m smoothing → continuous 20ft hysteresis
+4. **Current field conditions**: official closures, PCT Water Report, NIFC, and AQI feeds
+5. **Narrative context**: `Original-DDG-PCT-PDF.txt` (preserved, not treated as measured geometry)
+6. **UI content**: `planContent.js` + `resourcesIndex.js`
 
 The production web and iOS route bundles are checked in. Regenerate them only
 through `pct-hike-viz/scripts/configure_active_route.js`, then run both integrity
@@ -153,7 +155,7 @@ The repository ships with placeholder values—replace them with your own keys b
 ## 🎯 Status
 
 ✅ **Route synchronized**: 51.844 official / 51.664 Garmin miles to Ash Camp over eight hiking days
-✅ **Terrain synchronized**: +6,401/−6,896 feet, 6,146-foot high point, exact daily loads
+✅ **Terrain synchronized**: +6,524/−7,050 feet, 6,129-foot normalized high point, exact daily loads
 ✅ **Private corridor resolved**: 12.591-mile supported day-pack traverse to Bartle Gap; no private-land campsite assumption
 ✅ **Condition backend live**: daily protected water, wildfire, smoke/AQI, weather, and agency-source snapshot
 ⚠️ **Operational gates**: book/verify the Bartle driver, road, gate, legal overnight, and exact re-entry; ground-check camps; verify Lake Britton, current restrictions, FS Road 38N11, and both United bookings

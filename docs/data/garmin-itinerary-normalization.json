@@ -1,0 +1,235 @@
+{
+  "generatedAt": "2026-07-29T16:56:35.689Z",
+  "source": {
+    "path": "docs/data/source/garmin-section-o-80.826mi.gpx",
+    "sha256": "9073d39f82e0e6ee68f7acc050e857b235bf3ea8b527c4fa7e9110aca2d2e6e1",
+    "originalPointCount": 6916,
+    "cropPointCount": 4311,
+    "resampledPointCount": 3294,
+    "cropDistanceMiles": 51.153,
+    "elevationUnits": "meters in GPX; converted to feet for output"
+  },
+  "method": {
+    "resampling": "Linear interpolation every 25 meters so export point density cannot change totals",
+    "smoothing": "Centered moving mean over a fixed physical distance, not a fixed number of points",
+    "accumulation": "Continuous hysteresis threshold carried across all day boundaries",
+    "selectedModel": "200-meter smoothing with a 20-foot hysteresis threshold",
+    "caution": "Elevation gain/loss remains model-derived. Daily official mileage continues to use the PCTA 2026 milebook rather than this lower-resolution Garmin export."
+  },
+  "boundaries": [
+    {
+      "day": 0,
+      "name": "Burney Falls State Park (Start)",
+      "index": 0,
+      "routeMile": 0,
+      "sourceMile": 0,
+      "offsetFeet": 117
+    },
+    {
+      "day": 1,
+      "name": "Rock Creek camps",
+      "index": 362,
+      "routeMile": 5.609,
+      "sourceMile": 5.623,
+      "offsetFeet": 7
+    },
+    {
+      "day": 2,
+      "name": "Pre-private USFS dry camp",
+      "index": 914,
+      "routeMile": 14.287,
+      "sourceMile": 14.198,
+      "offsetFeet": 260
+    },
+    {
+      "day": 3,
+      "name": "Bartle Gap supported extraction",
+      "index": 1715,
+      "routeMile": 26.878,
+      "sourceMile": 26.641,
+      "offsetFeet": 27
+    },
+    {
+      "day": 4,
+      "name": "High saddle camp near Road 38N10",
+      "index": 2051,
+      "routeMile": 32.247,
+      "sourceMile": 31.861,
+      "offsetFeet": 7
+    },
+    {
+      "day": 5,
+      "name": "Alder / Star City Creek camp",
+      "index": 2291,
+      "routeMile": 36.036,
+      "sourceMile": 35.589,
+      "offsetFeet": 38
+    },
+    {
+      "day": 6,
+      "name": "Deer Creek Spring camp",
+      "index": 2704,
+      "routeMile": 42.386,
+      "sourceMile": 42.005,
+      "offsetFeet": 160
+    },
+    {
+      "day": 7,
+      "name": "Butcherknife Creek camp",
+      "index": 3048,
+      "routeMile": 47.99,
+      "sourceMile": 47.348,
+      "offsetFeet": 28
+    },
+    {
+      "day": 8,
+      "name": "Ash Camp pickup",
+      "index": 3293,
+      "routeMile": 51.844,
+      "sourceMile": 51.153,
+      "offsetFeet": 57
+    }
+  ],
+  "selected": {
+    "smoothingMeters": 200,
+    "thresholdFeet": 20,
+    "totalGainFeet": 6524,
+    "totalLossFeet": 7050,
+    "daily": [
+      {
+        "day": 1,
+        "sourceDistanceMiles": 5.623,
+        "startFeet": 3001,
+        "endFeet": 3119,
+        "highPointFeet": 3240,
+        "gainFeet": 700,
+        "lossFeet": 600,
+        "officialMiles": 5.609,
+        "start": "Burney Falls trailhead",
+        "end": "Rock Creek camps"
+      },
+      {
+        "day": 2,
+        "sourceDistanceMiles": 8.575,
+        "startFeet": 3119,
+        "endFeet": 5017,
+        "highPointFeet": 5101,
+        "gainFeet": 2175,
+        "lossFeet": 268,
+        "officialMiles": 8.678,
+        "start": "Rock Creek camps",
+        "end": "Pre-private USFS dry camp"
+      },
+      {
+        "day": 3,
+        "sourceDistanceMiles": 12.443,
+        "startFeet": 5017,
+        "endFeet": 5139,
+        "highPointFeet": 5524,
+        "gainFeet": 1510,
+        "lossFeet": 1388,
+        "officialMiles": 12.591,
+        "start": "Pre-private USFS dry camp",
+        "end": "Bartle Gap supported extraction"
+      },
+      {
+        "day": 4,
+        "sourceDistanceMiles": 5.22,
+        "startFeet": 5139,
+        "endFeet": 6110,
+        "highPointFeet": 6125,
+        "gainFeet": 1056,
+        "lossFeet": 86,
+        "officialMiles": 5.369,
+        "start": "Bartle Gap supported extraction",
+        "end": "High saddle camp near Road 38N10"
+      },
+      {
+        "day": 5,
+        "sourceDistanceMiles": 3.728,
+        "startFeet": 6110,
+        "endFeet": 5504,
+        "highPointFeet": 6129,
+        "gainFeet": 159,
+        "lossFeet": 764,
+        "officialMiles": 3.789,
+        "start": "High saddle camp near Road 38N10",
+        "end": "Alder / Star City Creek camp"
+      },
+      {
+        "day": 6,
+        "sourceDistanceMiles": 6.416,
+        "startFeet": 5504,
+        "endFeet": 5227,
+        "highPointFeet": 5683,
+        "gainFeet": 828,
+        "lossFeet": 1095,
+        "officialMiles": 6.35,
+        "start": "Alder / Star City Creek camp",
+        "end": "Deer Creek Spring camp"
+      },
+      {
+        "day": 7,
+        "sourceDistanceMiles": 5.344,
+        "startFeet": 5227,
+        "endFeet": 3447,
+        "highPointFeet": 5227,
+        "gainFeet": 23,
+        "lossFeet": 1786,
+        "officialMiles": 5.604,
+        "start": "Deer Creek Spring camp",
+        "end": "Butcherknife Creek camp"
+      },
+      {
+        "day": 8,
+        "sourceDistanceMiles": 3.804,
+        "startFeet": 3447,
+        "endFeet": 2457,
+        "highPointFeet": 3447,
+        "gainFeet": 73,
+        "lossFeet": 1063,
+        "officialMiles": 3.854,
+        "start": "Butcherknife Creek camp",
+        "end": "Ash Camp pickup"
+      }
+    ]
+  },
+  "sensitivity": [
+    {
+      "smoothingMeters": 100,
+      "thresholdFeet": 10,
+      "totalGainFeet": 7777,
+      "totalLossFeet": 8336
+    },
+    {
+      "smoothingMeters": 150,
+      "thresholdFeet": 10,
+      "totalGainFeet": 7237,
+      "totalLossFeet": 7787
+    },
+    {
+      "smoothingMeters": 200,
+      "thresholdFeet": 10,
+      "totalGainFeet": 6882,
+      "totalLossFeet": 7426
+    },
+    {
+      "smoothingMeters": 300,
+      "thresholdFeet": 10,
+      "totalGainFeet": 6469,
+      "totalLossFeet": 7000
+    },
+    {
+      "smoothingMeters": 150,
+      "thresholdFeet": 20,
+      "totalGainFeet": 6811,
+      "totalLossFeet": 7342
+    },
+    {
+      "smoothingMeters": 200,
+      "thresholdFeet": 20,
+      "totalGainFeet": 6524,
+      "totalLossFeet": 7050
+    }
+  ]
+}

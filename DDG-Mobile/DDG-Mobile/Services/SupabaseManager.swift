@@ -84,6 +84,10 @@ final class SupabaseManager {
         let created_at: String
     }
 
+    struct OpsStatusRow: Codable, Sendable {
+        let status: String?
+    }
+
     struct GearLoadoutRow: Codable, Sendable {
         let hiker_id: String
         let item_ids: [String]

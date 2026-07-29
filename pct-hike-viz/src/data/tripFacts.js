@@ -13,15 +13,19 @@ export const tripFacts = {
     hikingDays: 8,
     averageMilesPerDay: 6.48,
     longestDayMiles: 12.591,
-    totalGainFeet: 6401,
-    totalLossFeet: 6896,
-    highPointFeet: 6146,
+    totalGainFeet: 6524,
+    totalLossFeet: 7050,
+    highPointFeet: 6129,
+    trailTimeLowHours: 33.5,
+    trailTimeHighHours: 40.5,
     startPctMile: 1420.653,
     finishPctMile: 1472.497,
-    geometrySource: "PCTA January 2026 centerline",
-    elevationSource: "Cropped Garmin CA Section O PCT 2025 track",
+    geometrySource:
+      "Existing Garmin Course 334289912 centerline cropped at the PCTA 2026 Burney Falls and Ash Camp control points",
+    elevationSource:
+      "User-supplied Garmin Section O GPX, resampled every 25m, smoothed over 200m, continuous 20ft hysteresis",
     distanceEvidence:
-      "The PCTA January 2026 centerline measures 51.844 miles from the actual Burney Falls access to Ash Camp. The cropped Garmin track measures 51.664 miles and supplies the elevation profile.",
+      "The PCTA January 2026 milebook controls the 51.844-mile itinerary. Existing app geometry measures 51.664 miles. The lower-resolution user-supplied Garmin export measures 51.153 miles over the same control endpoints and supplies the normalized elevation profile.",
     extendedAlternative: {
       finish: "Castle Crags / I-5 corridor",
       sourceTrackMiles: 80.826,
@@ -127,14 +131,14 @@ const dayDates = [
 ];
 
 const elevationByDay = [
-  { start: 2949, end: 3043, gain: 613, loss: 522, high: 3223 },
-  { start: 3043, end: 4961, gain: 2199, loss: 276, high: 5053 },
-  { start: 4961, end: 5082, gain: 1424, loss: 1312, high: 5490 },
-  { start: 5082, end: 6128, gain: 1209, loss: 157, high: 6146 },
-  { start: 6128, end: 5394, gain: 83, loss: 813, high: 6146 },
-  { start: 5394, end: 5197, gain: 873, loss: 1065, high: 5688 },
-  { start: 5197, end: 3360, gain: 0, loss: 1834, high: 5197 },
-  { start: 3360, end: 2443, gain: 0, loss: 917, high: 3360 },
+  { start: 3001, end: 3119, gain: 700, loss: 600, high: 3240 },
+  { start: 3119, end: 5017, gain: 2175, loss: 268, high: 5101 },
+  { start: 5017, end: 5139, gain: 1510, loss: 1388, high: 5524 },
+  { start: 5139, end: 6110, gain: 1056, loss: 86, high: 6125 },
+  { start: 6110, end: 5504, gain: 159, loss: 764, high: 6129 },
+  { start: 5504, end: 5227, gain: 828, loss: 1095, high: 5683 },
+  { start: 5227, end: 3447, gain: 23, loss: 1786, high: 5227 },
+  { start: 3447, end: 2457, gain: 73, loss: 1063, high: 3447 },
 ];
 
 const overnightPlan = [

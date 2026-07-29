@@ -27,7 +27,7 @@ struct ElevationProfileView: View {
                 ContentUnavailableView(
                     "Processing Trail Data...",
                     systemImage: "waveform.path.ecg",
-                    description: Text("Calculating elevations for 2,650 miles...")
+                    description: Text("Loading the normalized 51.8-mile profile...")
                 )
             } else {
                 VStack(spacing: 0) {
@@ -88,10 +88,6 @@ struct ElevationProfileView: View {
     // MARK: - Data Computation
 
     // Local Sendable structs to cross actor boundary
-    private struct SimpleCamp: Sendable {
-        let day: Int
-        let routeMile: Double
-    }
     private struct SimpleTrailPoint: Sendable {
         let latitude: Double
         let longitude: Double
@@ -107,49 +103,66 @@ struct ElevationProfileView: View {
         guard trailPoints.count > 1 else { return }
 
         // 1. Extract data safely on MainActor
-        let simpleCamps = camps.map { SimpleCamp(day: $0.day, routeMile: $0.routeMile) }
         let simpleTPs = trailPoints.map { SimpleTrailPoint(latitude: $0.latitude, longitude: $0.longitude, elevationFeet: $0.elevationFeet) }
         let simpleWaters = waterSources.map { SimpleWater(name: $0.name, latitude: $0.latitude, longitude: $0.longitude) }
         let simpleConn = connectivityZones
         let colors = dayColors.map { $0.stroke }
-        let thresh = TrailConstants.elevationThreshold
+        let profiles = TrailConstants.dayProfiles
+        let officialTotalMiles = TrailConstants.totalMiles
+        let normalizedTotalGain = TrailConstants.totalGainFeet
+        let normalizedTotalLoss = TrailConstants.totalLossFeet
 
         Task.detached {
-            // 1. Day Mile Ranges (Compute First to map points)
-            let grouped = Dictionary(grouping: simpleCamps, by: \.day).sorted { $0.key < $1.key }
-            var ranges: [DayMileRange] = []
-            for (day, dayCamps) in grouped {
-                let start = dayCamps.map(\.routeMile).min() ?? 0
-                let end = dayCamps.map(\.routeMile).max() ?? 0
-                let hexString = (day >= 0 && day < colors.count) ? colors[day] : ""
-                ranges.append(DayMileRange(day: day, startMile: start, endMile: end, hexColor: hexString, gain: 0, loss: 0))
+            // Day ranges and stats come directly from the normalized bundled plan.
+            let ranges = profiles.map { profile in
+                let colorIndex = max(0, profile.day - 1)
+                let hexString = colorIndex < colors.count ? colors[colorIndex] : ""
+                return DayMileRange(
+                    day: profile.day,
+                    startMile: profile.routeMileStart,
+                    endMile: profile.routeMileEnd,
+                    hexColor: hexString,
+                    gain: profile.gainFeet,
+                    loss: profile.lossFeet
+                )
             }
 
-            // 2. Profile Data & Point Day Mapping
-            let stride = max(1, simpleTPs.count / 2000)
-            var points: [ProfilePoint] = []
-            var cumulativeDist: Double = 0
-
-            for i in Swift.stride(from: 0, to: simpleTPs.count, by: stride) {
-                let tp = simpleTPs[i]
-                if i > 0 {
-                    let prev = simpleTPs[max(0, i - stride)]
-                    let dx = tp.longitude - prev.longitude
-                    let dy = tp.latitude - prev.latitude
-                    let distDeg = (dx * dx + dy * dy).squareRoot()
-                    cumulativeDist += distDeg * 69.0
+            // Profile data and point/day mapping.
+            var rawMiles = Array(repeating: 0.0, count: simpleTPs.count)
+            if simpleTPs.count > 1 {
+                for index in 1..<simpleTPs.count {
+                    rawMiles[index] = rawMiles[index - 1] + Self.haversineMiles(
+                        from: simpleTPs[index - 1],
+                        to: simpleTPs[index]
+                    )
                 }
+            }
+            let mileageScale = rawMiles.last.map {
+                $0 > 0 ? officialTotalMiles / $0 : 1
+            } ?? 1
+            let stride = max(1, simpleTPs.count / 2000)
+            var sampledIndices = Array(
+                Swift.stride(from: 0, to: simpleTPs.count, by: stride)
+            )
+            if sampledIndices.last != simpleTPs.indices.last {
+                sampledIndices.append(simpleTPs.indices.last!)
+            }
+            var points: [ProfilePoint] = []
+
+            for i in sampledIndices {
+                let tp = simpleTPs[i]
+                let officialMile = rawMiles[i] * mileageScale
                 
-                var ptDay = ranges.last?.day ?? 0
+                var ptDay = ranges.last?.day ?? 8
                 for r in ranges {
-                    if cumulativeDist <= r.endMile {
+                    if officialMile <= r.endMile {
                         ptDay = r.day
                         break
                     }
                 }
 
                 points.append(ProfilePoint(
-                    mile: cumulativeDist,
+                    mile: officialMile,
                     elevationFeet: tp.elevationFeet,
                     latitude: tp.latitude,
                     longitude: tp.longitude,
@@ -157,48 +170,7 @@ struct ElevationProfileView: View {
                 ))
             }
 
-            // 3. Accurate Gain / Loss (Global and Per Day)
-            var globalGain: Double = 0
-            var globalLoss: Double = 0
-            var dailyGains = [Int: Double]()
-            var dailyLosses = [Int: Double]()
-            var lastDist: Double = 0
-            
-            for i in 1..<simpleTPs.count {
-                let tp = simpleTPs[i]
-                let prev = simpleTPs[i-1]
-                
-                let dx = tp.longitude - prev.longitude
-                let dy = tp.latitude - prev.latitude
-                let distDeg = (dx * dx + dy * dy).squareRoot()
-                lastDist += distDeg * 69.0
-                
-                var tpDay = ranges.last?.day ?? 0
-                for r in ranges {
-                    if lastDist <= r.endMile {
-                        tpDay = r.day
-                        break
-                    }
-                }
-
-                let diff = tp.elevationFeet - prev.elevationFeet
-                if diff > thresh { 
-                    globalGain += diff
-                    dailyGains[tpDay, default: 0] += diff
-                } else if diff < -thresh { 
-                    globalLoss -= diff 
-                    dailyLosses[tpDay, default: 0] -= diff
-                }
-            }
-            
-            // Update ranges with accurate daily stats
-            for i in 0..<ranges.count {
-                let d = ranges[i].day
-                ranges[i].gain = dailyGains[d] ?? 0
-                ranges[i].loss = dailyLosses[d] ?? 0
-            }
-
-            // 4. Water Source Miles
+            // Water source miles.
             var wsMiles: [WaterMileData] = []
             for ws in simpleWaters {
                 // Find nearest profile point (faster than 48k trail points)
@@ -210,7 +182,7 @@ struct ElevationProfileView: View {
                 wsMiles.append(WaterMileData(name: ws.name, mile: nearest.mile, elevation: nearest.elevationFeet))
             }
             
-            // 5. Connectivity Zone Miles
+            // Connectivity zone miles.
             var connMiles: [ConnectivityMileData] = []
             for zone in simpleConn {
                 guard let nearest = points.min(by: { a, b in
@@ -223,16 +195,14 @@ struct ElevationProfileView: View {
             }
  
             let finalPoints = points
-            let finalGain = globalGain
-            let finalLoss = globalLoss
             let finalRanges = ranges
             let finalWs = wsMiles
             let finalConn = connMiles
  
             await MainActor.run {
                 self.profileData = finalPoints
-                self.totalGain = finalGain
-                self.totalLoss = finalLoss
+                self.totalGain = normalizedTotalGain
+                self.totalLoss = normalizedTotalLoss
                 self.dayMileRanges = finalRanges
                 self.waterSourceMiles = finalWs
                 self.connectivitySourceMiles = finalConn
@@ -240,7 +210,29 @@ struct ElevationProfileView: View {
         }
     }
 
+    nonisolated private static func haversineMiles(
+        from first: SimpleTrailPoint,
+        to second: SimpleTrailPoint
+    ) -> Double {
+        let radians = { (degrees: Double) in degrees * .pi / 180 }
+        let latitude1 = radians(first.latitude)
+        let latitude2 = radians(second.latitude)
+        let latitudeDelta = latitude2 - latitude1
+        let longitudeDelta = radians(second.longitude - first.longitude)
+        let value =
+            pow(sin(latitudeDelta / 2), 2) +
+            cos(latitude1) * cos(latitude2) * pow(sin(longitudeDelta / 2), 2)
+        return 3_958.7613 * 2 * asin(sqrt(value))
+    }
+
     // MARK: - Chart
+
+    private var visibleDomainMiles: Double {
+        guard let selectedDay, let profile = TrailConstants.profile(for: selectedDay) else {
+            return profileData.last?.mile ?? TrailConstants.totalMiles
+        }
+        return max(4, profile.miles + 0.75)
+    }
 
     private var chartView: some View {
         Chart {
@@ -263,7 +255,7 @@ struct ElevationProfileView: View {
                 .foregroundStyle(range.color.opacity(0.3))
                 .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
                 .annotation(position: .top, alignment: .leading) {
-                    Text("Day \(range.day + 1)")
+                    Text("Day \(range.day)")
                         .font(.system(size: 9, weight: .bold))
                         .foregroundStyle(range.color)
                         .padding(.horizontal, 6)
@@ -392,7 +384,7 @@ struct ElevationProfileView: View {
         .chartYAxisLabel("Elevation (ft)")
         .chartXAxisLabel("Trail Miles")
         .chartScrollableAxes(.horizontal)
-        .chartXVisibleDomain(length: selectedDay == nil ? (profileData.last?.mile ?? 80) : 25)
+        .chartXVisibleDomain(length: visibleDomainMiles)
         .chartScrollPosition(x: $scrollPosition)
         .frame(height: 220)
         .padding(.horizontal)
@@ -419,7 +411,7 @@ struct ElevationProfileView: View {
                     Button(action: {
                         withAnimation { selectedDay = range.day }
                     }) {
-                        Text("Day \(range.day + 1)")
+                        Text("Day \(range.day)")
                             .font(.subheadline.bold())
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
@@ -467,20 +459,28 @@ struct ElevationProfileView: View {
 
     // MARK: - Stats Bar
 
+    private var selectedProfileForStats: TrailDayProfile? {
+        guard let selectedDay else { return nil }
+        return TrailConstants.profile(for: selectedDay)
+    }
+
+    private var displayedTimeEstimate: TrailTimeEstimate {
+        guard let selectedProfileForStats else {
+            return TrailConstants.totalTimeEstimate
+        }
+        return TrailConstants.timeEstimate(for: selectedProfileForStats)
+    }
+
     private var statsBar: some View {
         HStack(spacing: 0) {
-            let displayGain = selectedDay.flatMap { d in dayMileRanges.first(where: { $0.day == d })?.gain } ?? totalGain
-            let displayLoss = selectedDay.flatMap { d in dayMileRanges.first(where: { $0.day == d })?.loss } ?? totalLoss
-            let displayMiles = selectedDay.flatMap { d in 
-                if let r = dayMileRanges.first(where: { $0.day == d }) { return r.endMile - r.startMile }
-                return 0
-            } ?? (profileData.last?.mile ?? 0)
+            let displayGain = selectedProfileForStats?.gainFeet ?? totalGain
+            let displayLoss = selectedProfileForStats?.lossFeet ?? totalLoss
 
             statItem(icon: "arrow.up.right", value: String(format: "%.0f", displayGain), unit: "ft", color: .green)
             Divider().frame(height: 30)
             statItem(icon: "arrow.down.right", value: String(format: "%.0f", displayLoss), unit: "ft", color: .red)
             Divider().frame(height: 30)
-            statItem(icon: "clock", value: String(format: "%.0f", TrailConstants.estimatedTime(miles: displayMiles, gainFeet: displayGain)), unit: "hr", color: .blue)
+            statItem(icon: "clock", value: displayedTimeEstimate.rangeLabel, unit: "", color: .blue)
         }
         .padding(.vertical, 14)
         .padding(.horizontal, 20)
@@ -529,6 +529,6 @@ struct ProfilePoint: Sendable, Identifiable {
 }
 
 #Preview {
-    ElevationProfileView(hoverPoint: .constant(nil), selectedDay: .constant(0))
+    ElevationProfileView(hoverPoint: .constant(nil), selectedDay: .constant(1))
         .modelContainer(for: [TrailPoint.self, CampSite.self, WaterSource.self], inMemory: true)
 }

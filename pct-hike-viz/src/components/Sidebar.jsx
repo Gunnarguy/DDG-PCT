@@ -621,7 +621,7 @@ function Sidebar({
             <div className="highlight-content">
               <span className="highlight-title">GPS Route High Point</span>
               <span className="highlight-desc">
-                Approximately 6,146' on Day 4
+                Approximately 6,129' near the Day 4/5 high saddle
               </span>
             </div>
           </div>
@@ -668,7 +668,7 @@ function Sidebar({
             <div className="alert-content">
               <span className="alert-title">Elevation Notice</span>
               <span className="alert-desc">
-                GPS high point is approximately 6,146ft; Day 4 reaches it.
+                Normalized Garmin high point is approximately 6,129ft near the Day 4/5 high saddle.
                 Pace accordingly and hydrate.
               </span>
             </div>
@@ -879,9 +879,9 @@ function Sidebar({
                   {day === 3 &&
                     "Longest day: 12.59 miles with day packs, continuous private-land travel, and timed Bartle Gap extraction. "}
                   {day === 2 &&
-                    "Largest climb: 2,199 feet with very little descent, ending at the screened dry camp. "}
+                    "Largest climb: 2,175 feet with very little descent, ending at the screened dry camp. "}
                   {day === 7 &&
-                    "Hardest knee day: sustained 1,834-foot descent. "}
+                    "Hardest knee day: sustained 1,786-foot descent. "}
                   {day === 4 &&
                     "Short mileage hides a steep climb and dry-camp carry. "}
                   {day === 8 &&

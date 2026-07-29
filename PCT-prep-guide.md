@@ -15,7 +15,7 @@ _Compiled from Original-DDG-PCT narrative notes + supporting resources_
 
 - **Primary window:** Sat **29 Aug** → Sat **5 Sep 2026**; Sun **6 Sep** is contingency.
 - **Mileage:** **51.844 PCTA 2026 miles** / **51.664 cropped Garmin miles** over eight hiking days, averaging 6.48 official mi/day; longest day **12.591 miles with day packs**.
-- **Terrain:** approximately **+6,401/−6,896 ft**, with a **6,146 ft** high point.
+- **Terrain:** approximately **+6,524/−7,050 ft**, with a **6,129 ft** normalized high point.
 - **Finish:** **Ash Camp**, PCTA 2026 mile **1472.497** / route mile **51.844**, at **41.1170914, -122.0606252**.
 - **Future option:** The supplied Garmin course measures 80.826 miles; the old app crop measures 82.898 miles. Both are reference-only and not part of this itinerary.
 - **Team plan:** Working schedule UA481 lands at **SJC at 10:36 PM PDT Aug 28**. Sleep near SJC, then Mikaela drives the group north around **5:00–5:30 AM Aug 29**.
@@ -40,14 +40,14 @@ the day-level elevation profile.
 
 | Day | Segment | Dist. | Gain / Loss | Camp and water reality |
 | --- | --- | --- | --- | --- |
-| 1 · Aug 29 | Burney Falls → Rock Creek, route mi 5.609 | 5.609 mi | +613' / −522' | Shorter post-drive opening leg; Rock Creek water |
-| 2 · Aug 30 | Rock Creek → pre-private USFS dry camp, mi 14.287 | 8.678 mi | +2,199' / −276' | Largest climb; camp candidate passed parcel/setback/slope screen but needs ground check; carry water |
-| 3 · Aug 31 | USFS dry camp → Bartle Gap exact pin, mi 26.878 | 12.591 mi | +1,424' / −1,312' | Day packs; continuous private-land travel; timed extraction; Bartle is not a camp |
-| 4 · Sep 1 | Exact Bartle re-entry → high saddle near 38N10, mi 32.247 | 5.369 mi | +1,209' / −157' | Return to exact pin; route high point; **dry camp** |
-| 5 · Sep 2 | High saddle → Alder/Star City, mi 36.036 | 3.789 mi | +83' / −813' | Short but descent-heavy; live water metadata is incomplete |
-| 6 · Sep 3 | Alder/Star City → Deer Creek Spring, mi 42.386 | 6.350 mi | +873' / −1,065' | Nearly 2,000 total vertical feet on accumulated fatigue |
-| 7 · Sep 4 | Deer Creek Spring → Butcherknife Creek, mi 47.990 | 5.604 mi | +0' / −1,834' | Highest knee load; poles and controlled pace |
-| 8 · Sep 5 | Butcherknife Creek → Ash Camp, mi 51.844 | 3.854 mi | +0' / −917' | Short descent; planned Mikaela pickup |
+| 1 · Aug 29 | Burney Falls → Rock Creek, route mi 5.609 | 5.609 mi | +700' / −600' | Shorter post-drive opening leg; Rock Creek water |
+| 2 · Aug 30 | Rock Creek → pre-private USFS dry camp, mi 14.287 | 8.678 mi | +2,175' / −268' | Largest climb; camp candidate passed parcel/setback/slope screen but needs ground check; carry water |
+| 3 · Aug 31 | USFS dry camp → Bartle Gap exact pin, mi 26.878 | 12.591 mi | +1,510' / −1,388' | Day packs; continuous private-land travel; timed extraction; Bartle is not a camp |
+| 4 · Sep 1 | Exact Bartle re-entry → high saddle near 38N10, mi 32.247 | 5.369 mi | +1,056' / −86' | Return to exact pin; route high point; **dry camp** |
+| 5 · Sep 2 | High saddle → Alder/Star City, mi 36.036 | 3.789 mi | +159' / −764' | Short but descent-heavy; live water metadata is incomplete |
+| 6 · Sep 3 | Alder/Star City → Deer Creek Spring, mi 42.386 | 6.350 mi | +828' / −1,095' | More than 1,900 total vertical feet on accumulated fatigue |
+| 7 · Sep 4 | Deer Creek Spring → Butcherknife Creek, mi 47.990 | 5.604 mi | +23' / −1,786' | Highest knee load; poles and controlled pace |
+| 8 · Sep 5 | Butcherknife Creek → Ash Camp, mi 51.844 | 3.854 mi | +73' / −1,063' | Short descent; planned Mikaela pickup |
 
 > **Camp warning:** “documented” means the location appears in Halfmile trail data—not that space, legality, hazards, or water are guaranteed in September 2026. Recheck FarOut, PCTA/USFS alerts, fire restrictions, and same-day water before each commitment.
 
@@ -126,7 +126,7 @@ the day-level elevation profile.
 
 - **Wildfire smoke/closures:** Monitor CalFire, NIFC (from NST Guide data repo). Prepare reroutes or shuttle skips.
 - **Weather:** Use NWS forecasts + Weather-Monitor gadgets; aim for early starts to avoid afternoon storms.
-- **Health:** There is no full zero day. Train separately for Day 2's 8.68-mile full-pack climb, Day 3's timed 12.59-mile day-pack traverse, and Day 7's 1,834-foot descent.
+- **Health:** There is no full zero day. Train separately for Day 2's 8.68-mile full-pack climb, Day 3's timed 12.59-mile day-pack traverse, and Day 7's 1,786-foot descent.
 - **Transportation backstops:** Ash Camp road access must be verified; Mt. Shasta Taxi is useful only if it explicitly accepts FS Road 38N11.
 - **Comms plan:** Daily check-in via InReach; share itinerary & permit copies with family.
 

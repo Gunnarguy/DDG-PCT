@@ -56,14 +56,14 @@ describe("canonical trip facts", () => {
     const day2 = primaryItinerary.find((day) => day.day === 2);
     const day8 = primaryItinerary.find((day) => day.day === 8);
 
-    expect(day2.elevation.gain).toBe(2199);
+    expect(day2.elevation.gain).toBe(2175);
     expect(day2.terrainLoad.effortRank).toBe(2);
-    expect(day8.elevation.loss).toBe(917);
-    expect(day8.terrainLoad.descentPerMile).toBe(238);
+    expect(day8.elevation.loss).toBe(1063);
+    expect(day8.terrainLoad.descentPerMile).toBe(276);
     expect(day8.terrainLoad.kneeLoad).toBe("high");
     const day7 = primaryItinerary.find((day) => day.day === 7);
-    expect(day7.elevation.loss).toBe(1834);
-    expect(day7.terrainLoad.descentPerMile).toBe(327);
+    expect(day7.elevation.loss).toBe(1786);
+    expect(day7.terrainLoad.descentPerMile).toBe(319);
     expect(day7.terrainLoad.kneeLoad).toBe("very-high");
   });
 });

@@ -162,12 +162,6 @@ struct TrailMapView: View {
     @State private var computedSegments: [DaySegment] = []
 
     // Local Sendable structs to cross actor boundary
-    private struct SimpleCamp: Sendable {
-        let day: Int
-        let routeMile: Double
-        let coordinate: CLLocationCoordinate2D
-    }
-
     private struct SimpleTrailPoint: Sendable {
         let coordinate: CLLocationCoordinate2D
         let mile: Double
@@ -176,10 +170,7 @@ struct TrailMapView: View {
     private func computeSegments() {
         guard !camps.isEmpty, trailPoints.count > 1 else { return }
 
-        // 1. Extract camps data
-        let simpleCamps = camps.map { SimpleCamp(day: $0.day, routeMile: $0.routeMile, coordinate: $0.coordinate) }
-        
-        // 2. Extract trail points data and pre-calculate cumulative mileage along index order
+        // Extract trail points and pre-calculate cumulative mileage along index order.
         var tempPoints: [SimpleTrailPoint] = []
         var cumulativeDist: Double = 0
         for i in 0..<trailPoints.count {
@@ -195,28 +186,30 @@ struct TrailMapView: View {
         }
         let simpleTPs = tempPoints
         let colors = dayColors.map { $0.stroke }
+        let profiles = TrailConstants.dayProfiles
 
-        // 3. Perform day mapping calculation in background
+        // Build map segments from the same normalized day ranges used by stats.
         Task.detached {
-            let validCamps = simpleCamps.filter { $0.day >= 0 }.sorted { $0.routeMile < $1.routeMile }
             var segments: [DaySegment] = []
-            
-            // Build start/end mile ranges for each day based on campsite order
-            var dayRanges: [(day: Int, startMile: Double, endMile: Double)] = []
-            var lastEnd: Double = 0
-            for i in 0..<validCamps.count {
-                let camp = validCamps[i]
-                let endMile = (i == validCamps.count - 1) ? (simpleTPs.last?.mile ?? camp.routeMile) : camp.routeMile
-                dayRanges.append((day: camp.day, startMile: lastEnd, endMile: endMile))
-                lastEnd = endMile
-            }
-            
-            for range in dayRanges {
-                let hexString = (range.day >= 0 && range.day < colors.count) ? colors[range.day] : ""
-                let coords = simpleTPs.filter { $0.mile >= range.startMile && $0.mile <= range.endMile }.map(\.coordinate)
+
+            for profile in profiles {
+                let colorIndex = max(0, profile.day - 1)
+                let hexString = colorIndex < colors.count ? colors[colorIndex] : ""
+                let coords = simpleTPs
+                    .filter {
+                        $0.mile >= profile.routeMileStart &&
+                            $0.mile <= profile.routeMileEnd
+                    }
+                    .map(\.coordinate)
                 
                 if coords.count > 1 {
-                    segments.append(DaySegment(day: range.day, coordinates: coords, hexColor: hexString))
+                    segments.append(
+                        DaySegment(
+                            day: profile.day,
+                            coordinates: coords,
+                            hexColor: hexString
+                        )
+                    )
                 }
             }
 
@@ -321,10 +314,12 @@ struct TrailMapView: View {
         default:          "tent.fill"
         }
 
+        let dayColorIndex = max(0, camp.day - 1)
         let color: Color = switch camp.type {
         case "Transit": .orange
         case "GasStation": .green
-        default: (camp.day >= 0 && camp.day < dayColors.count) ? Color(hex: dayColors[camp.day].stroke) : .blue
+        case "Trailhead": .green
+        default: dayColorIndex < dayColors.count ? Color(hex: dayColors[dayColorIndex].stroke) : .blue
         }
 
         Image(systemName: icon)
@@ -812,6 +807,6 @@ struct ConnectivityDetailSheet: View {
 }
 
 #Preview {
-    TrailMapView(hoverPoint: .constant(nil), selectedDay: .constant(0))
+    TrailMapView(hoverPoint: .constant(nil), selectedDay: .constant(1))
         .modelContainer(for: [CampSite.self, TrailPoint.self, WaterSource.self], inMemory: true)
 }

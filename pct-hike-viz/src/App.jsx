@@ -31,7 +31,7 @@ const TrailMap = React.lazy(() => import("./components/TrailMap"));
 
 // Bump VITE_HIKE_DATA_VERSION whenever hike_data.json changes to invalidate cached copies.
 const DATASET_VERSION =
-  import.meta.env.VITE_HIKE_DATA_VERSION ?? "2026-07-29-supported-bartle-v2";
+  import.meta.env.VITE_HIKE_DATA_VERSION ?? "2026-07-29-normalized-garmin-v3";
 const HIKEDATA_CACHE_KEY = "pct-hike-viz::hike-data";
 const HIKEDATA_CACHE_META_KEY = `${HIKEDATA_CACHE_KEY}::meta`;
 const USER_STORAGE_KEY = "pct-hike-viz::current-user";

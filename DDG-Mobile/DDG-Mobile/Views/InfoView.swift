@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// Catch-all tab for logistics, resources, transit, and connectivity details
-struct InfoView: View {
+/// Planning-only transport, access, parking, and resupply reference.
+/// Safety and communications intentionally live in the Field workspace.
+struct LogisticsView: View {
     var body: some View {
         NavigationStack {
             ZStack {
@@ -213,60 +214,12 @@ struct InfoView: View {
                             }
                         }
 
-                        // Satellite Devices
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Satellite Devices").font(.title3.bold())
-                            ForEach(satelliteDevices) { device in
-                                VStack(alignment: .leading, spacing: 8) {
-                                    HStack {
-                                        Text(device.device)
-                                            .font(.headline)
-                                        Spacer()
-                                        Text(device.cost)
-                                            .font(.caption.bold())
-                                            .padding(.horizontal, 8)
-                                            .padding(.vertical, 4)
-                                            .background(.purple.opacity(0.1), in: Capsule())
-                                            .foregroundStyle(.purple)
-                                    }
-
-                                    // Features as individual chips
-                                    FlowLayout(spacing: 6) {
-                                        ForEach(device.features, id: \.self) { feature in
-                                            Text(feature)
-                                                .font(.system(size: 10, weight: .bold))
-                                                .padding(.horizontal, 8)
-                                                .padding(.vertical, 4)
-                                                .background(.blue.opacity(0.1), in: Capsule())
-                                                .foregroundStyle(.blue)
-                                        }
-                                    }
-
-                                    Text(device.coverage)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-
-                                    Text(device.compatibility)
-                                        .font(.caption2)
-                                        .foregroundStyle(.secondary)
-
-                                    if !device.trailNotes.isEmpty {
-                                        Text(device.trailNotes)
-                                            .font(.caption2)
-                                            .foregroundStyle(.orange)
-                                    }
-                                }
-                                .padding()
-                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
-                                .overlay(RoundedRectangle(cornerRadius: 16).stroke(.gray.opacity(0.2), lineWidth: 1))
-                            }
-                        }
                     }
                     .padding()
                     .padding(.bottom, 40)
                 }
             }
-            .navigationTitle("Intel & Logistics")
+            .navigationTitle("Travel & Logistics")
         }
     }
 
@@ -323,5 +276,5 @@ struct FlowLayout: Layout {
 }
 
 #Preview {
-    InfoView()
+    LogisticsView()
 }
