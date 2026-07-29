@@ -315,20 +315,6 @@ struct ElevationProfileView: View {
                 .lineStyle(StrokeStyle(lineWidth: 2))
             }
 
-            // Camp markers
-            ForEach(camps.filter { chartXDomain.contains($0.routeMile) }) { camp in
-                PointMark(
-                    x: .value("Mile", camp.routeMile),
-                    y: .value("Elevation", 0)
-                )
-                .symbol {
-                    Image(systemName: "tent.fill")
-                        .font(.caption2)
-                        .foregroundStyle((camp.day >= 0 && camp.day < dayColors.count) ? Color(hex: dayColors[camp.day].stroke) : .orange)
-                        .shadow(radius: 2)
-                }
-            }
-
             // Water source markers
             ForEach(waterSourceMiles.filter { chartXDomain.contains($0.mile) }, id: \.name) { ws in
                 PointMark(
@@ -360,6 +346,22 @@ struct ElevationProfileView: View {
                         .foregroundStyle(.white)
                         .overlay(Circle().stroke(.white, lineWidth: 1.5))
                         .shadow(radius: 2)
+                }
+            }
+
+            // Trail-stop markers render after environmental markers so an exact
+            // camp, transfer, or finish cannot be hidden by co-located water or
+            // connectivity data. Travel-day records also use route mile zero,
+            // so only Day 0–8 stops belong on the elevation profile.
+            ForEach(camps.filter {
+                $0.day >= 0 && chartXDomain.contains($0.routeMile)
+            }) { camp in
+                PointMark(
+                    x: .value("Mile", camp.routeMile),
+                    y: .value("Elevation", elevation(at: camp.routeMile))
+                )
+                .symbol {
+                    trailStopSymbol(for: camp)
                 }
             }
 
@@ -578,6 +580,41 @@ struct ElevationProfileView: View {
         case "moderate": .orange
         default:         .red
         }
+    }
+
+    private func elevation(at mile: Double) -> Double {
+        profileData.min { first, second in
+            abs(first.mile - mile) < abs(second.mile - mile)
+        }?.elevationFeet ?? chartYDomain.lowerBound
+    }
+
+    @ViewBuilder
+    private func trailStopSymbol(for camp: CampSite) -> some View {
+        let symbol: String = switch camp.type {
+        case "Trailhead": "flag.fill"
+        case "Support Transfer": "arrow.left.arrow.right.circle.fill"
+        case "Finish": "flag.checkered"
+        default: "tent.fill"
+        }
+        let color: Color = switch camp.type {
+        case "Trailhead": .green
+        case "Support Transfer": .orange
+        case "Finish": .teal
+        default:
+            if let profile = TrailConstants.profile(for: camp.day) {
+                Color(hex: dayColors[max(0, profile.day - 1)].stroke)
+            } else {
+                .orange
+            }
+        }
+
+        Image(systemName: symbol)
+            .font(.system(size: 8, weight: .bold))
+            .padding(4)
+            .background(.thinMaterial, in: Circle())
+            .foregroundStyle(color)
+            .overlay(Circle().stroke(.white, lineWidth: 1))
+            .shadow(color: .black.opacity(0.18), radius: 2)
     }
 }
 

@@ -64,18 +64,39 @@ struct TrailMapView: View {
                     // Drive-in route: Campbell → SJC → Burney Falls.
                     if let campbellToSJC {
                         MapPolyline(campbellToSJC)
-                            .stroke(.blue.opacity(0.82), style: StrokeStyle(lineWidth: 8, lineCap: .round, dash: [12, 8]))
+                            .stroke(
+                                .blue.opacity(0.68),
+                                style: StrokeStyle(
+                                    lineWidth: 3,
+                                    lineCap: .round,
+                                    dash: [8, 6]
+                                )
+                            )
                     }
 
                     if let arrivalDriveRoute {
                         MapPolyline(coordinates: arrivalDriveRoute.coordinates)
-                            .stroke(.blue.opacity(0.82), style: StrokeStyle(lineWidth: 8, lineCap: .round, dash: [12, 8]))
+                            .stroke(
+                                .blue.opacity(0.68),
+                                style: StrokeStyle(
+                                    lineWidth: 3,
+                                    lineCap: .round,
+                                    dash: [8, 6]
+                                )
+                            )
                     }
 
                     // Drive-home route: Ash Camp → Campbell.
                     if let extractionDriveRoute {
                         MapPolyline(coordinates: extractionDriveRoute.coordinates)
-                            .stroke(.teal, style: StrokeStyle(lineWidth: 4, lineCap: .round, dash: [5, 5]))
+                            .stroke(
+                                .teal.opacity(0.78),
+                                style: StrokeStyle(
+                                    lineWidth: 3,
+                                    lineCap: .round,
+                                    dash: [6, 5]
+                                )
+                            )
                     }
 
                     // Camp markers
@@ -409,7 +430,7 @@ struct TrailMapView: View {
         let icon: String = switch camp.type {
         case "Trailhead": "flag.fill"
         case "Finish":    "flag.checkered"
-        case "Support Transfer": "car.fill"
+        case "Support Transfer": "arrow.left.arrow.right.circle.fill"
         case "Transit":   camp.name.contains("SJC") ? "airplane" : "car.fill"
         case "GasStation": "fuelpump.fill"
         default:          "tent.fill"
