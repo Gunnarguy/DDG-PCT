@@ -104,8 +104,12 @@ export function AuthProvider({ children }) {
     }
 
     if (profileCheckedUserId !== user.id) {
-      void fetchProfile(user);
+      const deferredCheck = window.setTimeout(() => {
+        void fetchProfile(user);
+      }, 0);
+      return () => window.clearTimeout(deferredCheck);
     }
+    return undefined;
   }, [fetchProfile, profileCheckedUserId, user]);
 
   // Initialize auth state on mount
@@ -317,13 +321,7 @@ export function AuthProvider({ children }) {
         setUser(session?.user ?? null);
         setError(null);
         setAuthUnavailable(false);
-        if (session?.user) {
-          // Supabase invokes this callback while its auth lock is held. Defer
-          // database work until the callback has returned.
-          setTimeout(() => {
-            if (mounted) void fetchProfile(session.user);
-          }, 0);
-        } else {
+        if (!session?.user) {
           setProfile(null);
         }
 
@@ -336,9 +334,6 @@ export function AuthProvider({ children }) {
               .update({ last_seen: new Date().toISOString() })
               .eq("id", session.user.id)
               .then(() => {});
-
-            // Refresh roster after a successful sign-in so presence shows quickly
-            void fetchTeamRoster();
           }, 0);
         }
       }
@@ -348,7 +343,7 @@ export function AuthProvider({ children }) {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, [fetchProfile, fetchTeamRoster]);
+  }, []);
 
   // Poll roster periodically while authenticated
   useEffect(() => {
