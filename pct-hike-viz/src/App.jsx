@@ -556,18 +556,18 @@ function App() {
             name:
               dayItem.day === 0
                 ? "Burney Falls State Park (Start)"
-                : dayItem.day === 9
+                : dayItem.day === 8
                 ? "Ash Camp Pickup"
                 : dayItem.to,
             day: dayItem.day,
             itinerary: "express",
             segment: dayItem.notes || dayItem.terrain,
-            mile: 1420.7 + milesAccumulated,
+            mile: 1420.653 + milesAccumulated,
             routeMile: milesAccumulated,
             type:
               dayItem.day === 0
                 ? "Trailhead"
-                : dayItem.day === 9
+                : dayItem.day === 8
                 ? "Finish"
                 : "Camp",
           },

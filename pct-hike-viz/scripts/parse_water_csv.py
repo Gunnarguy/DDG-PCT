@@ -12,10 +12,10 @@ def find_nearest_coord(mile_target):
     """Snap to route geometry using simple linear interpolation by index."""
     if not route_coords or len(route_coords) < 2:
         return None
-    # Section O starts ~mile 1420.7 (Burney Falls), ends ~mile 1502 (Castle Crags)
-    # Our GPX is ~83 miles total
-    section_start_mile = 1420.7
-    section_end_mile = 1502.0
+    # Active PCTA 2026 corridor: actual Burney Falls access to Ash Camp.
+    # The bundled Garmin geometry is cropped to this same trip.
+    section_start_mile = 1420.653
+    section_end_mile = 1472.497
     section_length = section_end_mile - section_start_mile
     if mile_target < section_start_mile or mile_target > section_end_mile:
         return None

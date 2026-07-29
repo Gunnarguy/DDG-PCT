@@ -25,8 +25,8 @@ let connectivityZones: [ConnectivityZone] = [
     ConnectivityZone(
         id: "burney-falls",
         name: "Burney Falls Trailhead",
-        mile: 1420.7,
-        longitude: -121.620709, latitude: 41.01348,
+        mile: 1420.653,
+        longitude: -121.65376551, latitude: 41.01104125,
         cellCoverage: CellCoverage(verizon: "good", att: "fair", tmobile: "fair"),
         satelliteCompatible: true,
         notes: "Expected trailhead coverage; download offline maps here and field-test every carrier."
@@ -34,7 +34,7 @@ let connectivityZones: [ConnectivityZone] = [
     ConnectivityZone(
         id: "peavine",
         name: "Peavine Creek Camp",
-        mile: 1433.7,
+        mile: 1434.289,
         longitude: -121.7853913, latitude: 41.060513,
         cellCoverage: CellCoverage(verizon: "none", att: "none", tmobile: "none"),
         satelliteCompatible: true,
@@ -43,7 +43,7 @@ let connectivityZones: [ConnectivityZone] = [
     ConnectivityZone(
         id: "moosehead",
         name: "Moosehead Creek Camp",
-        mile: 1448.2,
+        mile: 1448.818,
         longitude: -121.8318419, latitude: 41.1771229,
         cellCoverage: CellCoverage(verizon: "none", att: "none", tmobile: "none"),
         satelliteCompatible: true,
@@ -52,7 +52,7 @@ let connectivityZones: [ConnectivityZone] = [
     ConnectivityZone(
         id: "star-city",
         name: "Alder / Star City Camp",
-        mile: 1456.1,
+        mile: 1456.689,
         longitude: -121.9202143, latitude: 41.157895,
         cellCoverage: CellCoverage(verizon: "none", att: "none", tmobile: "none"),
         satelliteCompatible: true,
@@ -61,7 +61,7 @@ let connectivityZones: [ConnectivityZone] = [
     ConnectivityZone(
         id: "deer-creek",
         name: "Deer Creek Spring Camp",
-        mile: 1462.6,
+        mile: 1463.039,
         longitude: -121.9860782, latitude: 41.1356197,
         cellCoverage: CellCoverage(verizon: "spotty", att: "none", tmobile: "none"),
         satelliteCompatible: true,

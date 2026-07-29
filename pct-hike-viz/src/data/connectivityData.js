@@ -3,19 +3,19 @@
 export const connectivityZones = [
   {
     name: 'Burney Falls Trailhead',
-    mile: 1420.7,
-    coordinates: [-121.620709, 41.01348],
+    mile: 1420.653,
+    coordinates: [-121.65376551, 41.01104125],
     cellCoverage: {
       verizon: 'good',
       att: 'fair',
       tmobile: 'fair'
     },
     satelliteCompatible: true,
-    notes: 'State park has reliable cell service. Last strong signal before trail.'
+    notes: 'Expected trailhead coverage; download offline maps here and field-test every carrier.'
   },
   {
     name: 'Peavine Creek camp',
-    mile: 1433.7,
+    mile: 1434.289,
     coordinates: [-121.7853913, 41.060513],
     cellCoverage: {
       verizon: 'none',
@@ -27,7 +27,7 @@ export const connectivityZones = [
   },
   {
     name: 'Moosehead Creek camp',
-    mile: 1448.2,
+    mile: 1448.818,
     coordinates: [-121.8318419, 41.1771229],
     cellCoverage: {
       verizon: 'none',
@@ -39,7 +39,7 @@ export const connectivityZones = [
   },
   {
     name: 'Alder / Star City camp',
-    mile: 1456.1,
+    mile: 1456.689,
     coordinates: [-121.9202143, 41.157895],
     cellCoverage: {
       verizon: 'none',
@@ -51,7 +51,7 @@ export const connectivityZones = [
   },
   {
     name: 'Deer Creek Spring camp',
-    mile: 1462.6,
+    mile: 1463.039,
     coordinates: [-121.9860782, 41.1356197],
     cellCoverage: {
       verizon: 'spotty',
