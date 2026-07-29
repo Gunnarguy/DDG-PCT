@@ -59,41 +59,6 @@ private enum DriveMapMode: Int, CaseIterable, Identifiable {
     }
 }
 
-private struct BundledDriveRoute: Decodable, Sendable {
-    let name: String
-    let type: String
-    let path: [[Double]]
-    let distanceMiles: Double
-    let durationHours: Double
-    let source: String
-
-    var coordinates: [CLLocationCoordinate2D] {
-        path.compactMap { pair in
-            guard pair.count >= 2 else { return nil }
-            return CLLocationCoordinate2D(latitude: pair[1], longitude: pair[0])
-        }
-    }
-
-    static func loadAll() -> [BundledDriveRoute] {
-        struct Root: Decodable {
-            let driveSegments: [BundledDriveRoute]
-        }
-
-        guard let url = Bundle.main.url(forResource: "hike_data", withExtension: "json") else {
-            print("ERROR [DriveTrackerView]: Bundled hike_data.json was not found.")
-            return []
-        }
-
-        do {
-            let data = try Data(contentsOf: url)
-            return try JSONDecoder().decode(Root.self, from: data).driveSegments
-        } catch {
-            print("ERROR [DriveTrackerView]: Could not decode bundled drive routes: \(error)")
-            return []
-        }
-    }
-}
-
 struct DriveTrackerView: View {
     @State private var campbellToSJC: MKRoute?
     @State private var isCalculating = false
@@ -101,7 +66,7 @@ struct DriveTrackerView: View {
     @State private var position: MapCameraPosition = .automatic
     @State private var mapMode: DriveMapMode = .arrival
 
-    private let bundledDriveRoutes = BundledDriveRoute.loadAll()
+    private let bundledDriveRoutes = DriveRouteData.all
     
     // 2024 Kia Sportage X-Pro Prestige (Gas) - 26 Highway MPG
     let assumedMPG: Double = 26.0
@@ -138,11 +103,11 @@ struct DriveTrackerView: View {
         )
     ]
 
-    private var arrivalDriveRoute: BundledDriveRoute? {
+    private var arrivalDriveRoute: DriveRouteSegment? {
         bundledDriveRoutes.first { $0.name == "SJC → Burney Falls" }
     }
 
-    private var endDriveRoute: BundledDriveRoute? {
+    private var endDriveRoute: DriveRouteSegment? {
         bundledDriveRoutes.first { $0.name == "Ash Camp → Campbell" }
     }
     

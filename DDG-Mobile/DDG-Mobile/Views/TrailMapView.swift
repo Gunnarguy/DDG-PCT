@@ -3,6 +3,13 @@ import MapKit
 import SwiftData
 
 struct TrailMapView: View {
+    private enum MapScope: String, CaseIterable, Identifiable {
+        case trail = "Trail Detail"
+        case circuit = "Full Circuit"
+
+        var id: Self { self }
+    }
+
     @Binding var hoverPoint: HoverPoint?
     @Binding var selectedDay: Int?
     
@@ -16,6 +23,7 @@ struct TrailMapView: View {
     @State private var mapStyle: MapStyle = .standard(elevation: .realistic)
     @State private var showWater = true
     @State private var showConnectivity = true
+    @State private var mapScope: MapScope = .circuit
     @State private var position: MapCameraPosition = .region(
         MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 41.09, longitude: -121.77),
@@ -23,11 +31,13 @@ struct TrailMapView: View {
         )
     )
     
-    @State private var driveRoute1: MKRoute?
-    @State private var driveRoute2: MKRoute?
+    @State private var campbellToSJC: MKRoute?
+
+    private let arrivalDriveRoute = DriveRouteData.arrival
+    private let extractionDriveRoute = DriveRouteData.extraction
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
+        ZStack {
             Map(position: $position, selection: $selectedCamp) {
                 // Live hover cursor
                 if let hoverPoint {
@@ -51,14 +61,21 @@ struct TrailMapView: View {
                             .stroke(.blue, lineWidth: 3)
                     }
                     
-                    // Road drive route
-                    if let driveRoute1 {
-                        MapPolyline(driveRoute1)
-                            .stroke(.orange, style: StrokeStyle(lineWidth: 3, lineCap: .round, dash: [6, 6]))
+                    // Drive-in route: Campbell → SJC → Burney Falls.
+                    if let campbellToSJC {
+                        MapPolyline(campbellToSJC)
+                            .stroke(.blue.opacity(0.82), style: StrokeStyle(lineWidth: 8, lineCap: .round, dash: [12, 8]))
                     }
-                    if let driveRoute2 {
-                        MapPolyline(driveRoute2)
-                            .stroke(.orange, style: StrokeStyle(lineWidth: 3, lineCap: .round, dash: [6, 6]))
+
+                    if let arrivalDriveRoute {
+                        MapPolyline(coordinates: arrivalDriveRoute.coordinates)
+                            .stroke(.blue.opacity(0.82), style: StrokeStyle(lineWidth: 8, lineCap: .round, dash: [12, 8]))
+                    }
+
+                    // Drive-home route: Ash Camp → Campbell.
+                    if let extractionDriveRoute {
+                        MapPolyline(coordinates: extractionDriveRoute.coordinates)
+                            .stroke(.teal, style: StrokeStyle(lineWidth: 4, lineCap: .round, dash: [5, 5]))
                     }
 
                     // Camp markers
@@ -106,15 +123,30 @@ struct TrailMapView: View {
                 .mapStyle(mapStyle)
                 .onChange(of: selectedDay) { _, newDay in
                     if let newDay {
+                        mapScope = .trail
                         focusOnDay(newDay)
+                    } else {
+                        focusOnMapScope()
                     }
                 }
 
                 // Controls
-                VStack(spacing: 8) {
-                    mapStylePicker
-                    waterToggle
-                    connectivityToggle
+                VStack {
+                    HStack(alignment: .top) {
+                        mapScopePicker
+
+                        Spacer()
+
+                        VStack(spacing: 8) {
+                            mapStylePicker
+                            waterToggle
+                            connectivityToggle
+                        }
+                    }
+
+                    Spacer()
+
+                    routeLegend
                 }
                 .padding(8)
             }
@@ -137,11 +169,15 @@ struct TrailMapView: View {
             }
             .onAppear {
                 print("DEBUG [TrailMapView]: Mounted on screen. Camps database count: \(camps.count) | TrailPoints database count: \(trailPoints.count) | WaterSources database count: \(waterSources.count)")
-                calculateDriveRoute()
+                calculateCampbellToSJCRoute()
+                focusOnMapScope()
             }
-            .task(id: camps.count) {
+            .task(id: trailPoints.count) {
                 if !camps.isEmpty && trailPoints.count > 1 && computedSegments.isEmpty {
                     computeSegments()
+                }
+                if trailPoints.count > 1 {
+                    focusOnMapScope()
                 }
             }
         }
@@ -220,27 +256,20 @@ struct TrailMapView: View {
         }
     }
     
-    private func calculateDriveRoute() {
+    private func calculateCampbellToSJCRoute() {
         let campbell = CLLocation(latitude: 37.2625, longitude: -121.9331)
         let sjc = CLLocation(latitude: 37.3639, longitude: -121.9289)
-        let burney = CLLocation(latitude: 41.0135, longitude: -121.6207)
         
-        let req1 = MKDirections.Request()
-        req1.source = MKMapItem(location: campbell, address: nil)
-        req1.destination = MKMapItem(location: sjc, address: nil)
-        req1.transportType = .automobile
-        
-        let req2 = MKDirections.Request()
-        req2.source = MKMapItem(location: sjc, address: nil)
-        req2.destination = MKMapItem(location: burney, address: nil)
-        req2.transportType = .automobile
+        let request = MKDirections.Request()
+        request.source = MKMapItem(location: campbell, address: nil)
+        request.destination = MKMapItem(location: sjc, address: nil)
+        request.transportType = .automobile
         
         Task {
-            let res1 = try? await MKDirections(request: req1).calculate()
-            let res2 = try? await MKDirections(request: req2).calculate()
+            let response = try? await MKDirections(request: request).calculate()
             await MainActor.run {
-                self.driveRoute1 = res1?.routes.first
-                self.driveRoute2 = res2?.routes.first
+                self.campbellToSJC = response?.routes.first
+                self.focusOnMapScope()
             }
         }
     }
@@ -274,6 +303,50 @@ struct TrailMapView: View {
     }
 
     // MARK: - Focus Map
+
+    private func focusOnMapScope() {
+        let coordinates: [CLLocationCoordinate2D]
+        let padding: Double
+
+        switch mapScope {
+        case .trail:
+            coordinates = trailPoints.map(\.coordinate)
+            padding = 15_000
+        case .circuit:
+            coordinates =
+                trailPoints.map(\.coordinate) +
+                (arrivalDriveRoute?.coordinates ?? []) +
+                (extractionDriveRoute?.coordinates ?? [])
+            padding = 50_000
+        }
+
+        var rect = mapRect(for: coordinates)
+        if mapScope == .circuit, let campbellToSJC {
+            rect = rect.union(campbellToSJC.polyline.boundingMapRect)
+        }
+
+        guard !rect.isNull, !rect.isEmpty else { return }
+        let paddedRect: MKMapRect
+        if mapScope == .circuit {
+            paddedRect = rect.insetBy(
+                dx: -max(padding, rect.width * 0.10),
+                dy: -max(padding, rect.height * 0.20)
+            )
+        } else {
+            paddedRect = rect.insetBy(dx: -padding, dy: -padding)
+        }
+
+        withAnimation(.easeInOut(duration: 0.8)) {
+            position = .rect(paddedRect)
+        }
+    }
+
+    private func mapRect(for coordinates: [CLLocationCoordinate2D]) -> MKMapRect {
+        coordinates.reduce(MKMapRect.null) { partial, coordinate in
+            let point = MKMapPoint(coordinate)
+            return partial.union(MKMapRect(x: point.x, y: point.y, width: 1, height: 1))
+        }
+    }
     
     private func focusOnDay(_ day: Int) {
         let daySegment = computedSegments.first { $0.day == day }
@@ -357,6 +430,41 @@ struct TrailMapView: View {
     }
 
     // MARK: - Style Picker
+
+    private var mapScopePicker: some View {
+        Picker("Map scope", selection: $mapScope) {
+            ForEach(MapScope.allCases) { scope in
+                Text(scope.rawValue).tag(scope)
+            }
+        }
+        .pickerStyle(.segmented)
+        .frame(width: 205)
+        .padding(4)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+        .onChange(of: mapScope) { _, newScope in
+            if newScope == .circuit {
+                selectedDay = nil
+            }
+            focusOnMapScope()
+        }
+    }
+
+    private var routeLegend: some View {
+        HStack(spacing: 10) {
+            routeLegendItem("Drive In", color: .blue, icon: "car.fill")
+            routeLegendItem("Hike", color: .purple, icon: "figure.hiking")
+            routeLegendItem("Drive Home", color: .teal, icon: "house.fill")
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(.regularMaterial, in: Capsule())
+    }
+
+    private func routeLegendItem(_ title: String, color: Color, icon: String) -> some View {
+        Label(title, systemImage: icon)
+            .font(.system(size: 9, weight: .bold))
+            .foregroundStyle(color)
+    }
 
     private var mapStylePicker: some View {
         Menu {
