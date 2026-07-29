@@ -1,3 +1,5 @@
+import { primaryItinerary } from './tripFacts';
+
 /**
  * Slope Angle Shading Configuration
  * 
@@ -83,71 +85,43 @@ export const slopeCategories = [
   }
 ];
 
-/**
- * Section O terrain profile (from GPS analysis)
- * Based on calculate_day_elevations.py output
- */
-export const sectionOTerrainProfile = {
-  day1: {
-    distance: 5.609,
-    elevationGain: 608,
-    elevationLoss: 514,
+const terrainMetadataByDay = {
+  1: {
     maxGrade: 8.5,
     difficulty: 'Moderate',
-    notes: 'Shorter opening leg after the early drive from SJC; rolling terrain to Rock Creek.'
+    notes: 'Short opening leg after the early drive from SJC; rolling terrain to Rock Creek.'
   },
-  day2: {
-    distance: 8.027,
-    elevationGain: 2006,
-    elevationLoss: 276,
+  2: {
     maxGrade: 7.1,
     difficulty: 'Strenuous',
-    notes: 'Largest early climb; start before the heat and pace conservatively.'
+    notes: 'Largest climb and a dry-camp finish; start early, pace conservatively, and carry verified water.'
   },
-  day3: {
-    distance: 14.529,
-    elevationGain: 1824,
-    elevationLoss: 1313,
+  3: {
     maxGrade: 7.3,
     difficulty: 'Very Strenuous',
-    notes: 'Longest leg and largest total vertical load; this is the full-pack capability gate.'
+    notes: 'Longest day, but completed with day packs and a timed Bartle Gap extraction. Continuous travel through private timberland is mandatory.'
   },
-  day4: {
-    distance: 4.082,
-    elevationGain: 987,
-    elevationLoss: 146,
+  4: {
     maxGrade: 8.9,
     difficulty: 'Strenuous',
-    notes: 'Short steep climb to the route high point and a planned dry camp.'
+    notes: 'Exact-point Bartle Gap re-entry followed by the climb to the route high point and a dry camp.'
   },
-  day5: {
-    distance: 3.789,
-    elevationGain: 85,
-    elevationLoss: 818,
+  5: {
     maxGrade: 9.6,
     difficulty: 'Strenuous',
     notes: 'Short but predominantly downhill from the high saddle.'
   },
-  day6: {
-    distance: 6.350,
-    elevationGain: 884,
-    elevationLoss: 1075,
+  6: {
     maxGrade: 6.2,
     difficulty: 'Strenuous (downhill)',
     notes: 'Nearly 2,000 vertical feet of mixed terrain to Deer Creek Spring.'
   },
-  day7: {
-    distance: 5.604,
-    elevationGain: 0,
-    elevationLoss: 1828,
+  7: {
     maxGrade: 8.3,
     difficulty: 'Strenuous',
     notes: 'The knee-intensive sustained descent to Butcherknife Creek.'
   },
-  day8: {
-    distance: 3.854,
-    elevationGain: 0,
-    elevationLoss: 912,
+  8: {
     maxGrade: 10.2,
     difficulty: 'Very Strenuous',
     notes: 'Short final descent to the Ash Camp pickup.'
@@ -155,18 +129,35 @@ export const sectionOTerrainProfile = {
 };
 
 /**
+ * Section O terrain profile from the canonical itinerary. Daily elevation
+ * changes are attributed from one continuous smoothed track so boundaries do
+ * not reset the 10-foot accumulation threshold.
+ */
+export const sectionOTerrainProfile = Object.fromEntries(
+  primaryItinerary.map((leg) => [
+    `day${leg.day}`,
+    {
+      distance: leg.distance,
+      elevationGain: leg.elevation.gain,
+      elevationLoss: leg.elevation.loss,
+      ...terrainMetadataByDay[leg.day]
+    }
+  ])
+);
+
+/**
  * Key terrain hazards identified from slope analysis
  */
 export const terrainHazards = [
   {
     location: 'Day 2: major climb',
-    concern: 'Approximately 2,006 ft of gain in 8.027 miles',
-    mitigation: 'Start early, use a sustainable pace, and leave the last confirmed source with enough water.',
+    concern: 'Approximately 2,199 ft of gain in 8.678 miles, ending at a dry camp',
+    mitigation: 'Start early, use a sustainable pace, and leave the last confirmed legal source with enough water for camp and the supported traverse.',
     coordinates: [-121.798667, 41.085022]
   },
   {
     location: 'Day 7: Butcherknife Creek descent',
-    concern: 'Approximately 1,828 ft of loss in 5.604 miles',
+    concern: 'Approximately 1,834 ft of loss in 5.604 miles',
     mitigation: 'Use poles, shorten stride, manage hotspots early, and allow more time than flat mileage suggests.',
     coordinates: [-122.026677, 41.129422]
   }

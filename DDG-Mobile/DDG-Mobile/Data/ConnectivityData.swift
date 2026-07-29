@@ -32,22 +32,22 @@ let connectivityZones: [ConnectivityZone] = [
         notes: "Expected trailhead coverage; download offline maps here and field-test every carrier."
     ),
     ConnectivityZone(
-        id: "peavine",
-        name: "Peavine Creek Camp",
-        mile: 1434.289,
-        longitude: -121.7853913, latitude: 41.060513,
+        id: "pre-private-usfs-camp",
+        name: "Pre-private USFS Dry Camp",
+        mile: 1434.94,
+        longitude: -121.789562, latitude: 41.068437,
         cellCoverage: CellCoverage(verizon: "none", att: "none", tmobile: "none"),
         satelliteCompatible: true,
-        notes: "Conservative no-cell planning assumption; this is not a verified campsite."
+        notes: "Conservative no-cell assumption at the GIS-screened dry-camp candidate. Use satellite check-in; ground capacity still needs verification."
     ),
     ConnectivityZone(
-        id: "moosehead",
-        name: "Moosehead Creek Camp",
-        mile: 1448.818,
-        longitude: -121.8318419, latitude: 41.1771229,
+        id: "bartle-gap-transfer",
+        name: "Bartle Gap Support Transfer",
+        mile: 1447.531,
+        longitude: -121.81993729434907, latitude: 41.17064891383052,
         cellCoverage: CellCoverage(verizon: "none", att: "none", tmobile: "none"),
         satelliteCompatible: true,
-        notes: "Conservative no-cell planning assumption; field verification is still required."
+        notes: "Exact pickup/re-entry pin. Assume no cell and coordinate by inReach. This is a timed transfer point, not a campsite."
     ),
     ConnectivityZone(
         id: "star-city",

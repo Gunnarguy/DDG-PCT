@@ -419,7 +419,7 @@ private struct TerrainOverviewCard: View {
                 overviewValue("−\(TrailConstants.totalLossFeet.formatted(.number.precision(.fractionLength(0))))", "loss ft")
             }
 
-            Text("Day 3 is hardest overall at 14.53 miles and 3,137 vertical feet. Day 2 has the largest climb; Day 7 is the biggest knee-risk descent. “Effort miles” compare terrain loads—they are not promised hiking times.")
+            Text("Day 3 is the longest day at 12.59 miles, but it is a supported day-pack traverse with timed Bartle Gap extraction. Day 2 has the largest climb; Day 7 is the biggest knee-risk descent. “Effort miles” compare terrain loads—they are not promised hiking times.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -528,6 +528,15 @@ private struct CampRow: View {
             
             Text(camp.name)
                 .font(.headline)
+
+            if camp.stopType == "support-transfer" {
+                Text("TRANSFER · NO CAMPING")
+                    .font(.system(size: 9, weight: .black))
+                    .foregroundStyle(.orange)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 3)
+                    .background(.orange.opacity(0.12), in: Capsule())
+            }
             
             Spacer()
             
@@ -554,6 +563,7 @@ private struct CampRow: View {
     private func iconFor(_ type: String) -> String {
         switch type {
         case "Trailhead": return "flag.fill"
+        case "Support Transfer": return "car.fill"
         case "Finish":    return "flag.checkered"
         default:          return "tent.fill"
         }

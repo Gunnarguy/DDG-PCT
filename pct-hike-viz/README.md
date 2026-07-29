@@ -9,8 +9,9 @@
 This Vite + React application is the planning surface for the active
 **51.844-official-mile, eight-day** trip from Burney Falls to Ash Camp,
 August 29–September 5, 2026, with September 6 reserved as contingency. The
-complete 82.9-mile Garmin source track is excluded from active metrics and
-retained only as future-trip reference geometry.
+supplied Garmin source course measures 80.826 miles; the existing 82.898-mile
+legacy app crop is a different reference geometry. Both are excluded from
+active metrics.
 
 ## How the NST Guide repos show up here
 
@@ -27,9 +28,9 @@ retained only as future-trip reference geometry.
 ## Guided tour
 
 * **Deck.gl route layer** – multicolor segments show the active GPS-derived daily mileage.
-* **Interactive markers** – tap a campsite to view day-specific notes, elevation, water-verification requirements, and pickup details.
+* **Interactive markers** – tap camps, the Bartle support transfer, or pickups to view day-specific notes, terrain, water, and verification requirements.
 * **Schedule context** – eight hiking days are active; September 6 is contingency and the longer route is future reference only.
-* **Travel, food carry, permits, and extraction** – the active plan ends at the official Ash Camp pin on rough FS Road 38N11.
+* **Travel, food carry, permits, and extraction** – Day 3 uses an exact Bartle Gap pickup/re-entry; the trip ends at the official Ash Camp pin on rough FS Road 38N11.
 
 ## Getting started
 

@@ -20,19 +20,26 @@ describe("canonical trip facts", () => {
     expect(tripFacts.route.gpsMiles).toBe(51.664);
     expect(itineraryMiles).toBeCloseTo(51.844, 3);
     expect(primaryItinerary.at(-1).routeMileEnd).toBe(51.844);
-    expect(Math.max(...primaryItinerary.map((day) => day.distance))).toBe(14.529);
+    expect(Math.max(...primaryItinerary.map((day) => day.distance))).toBe(12.591);
+    expect(primaryItinerary.find((day) => day.day === 3)).toMatchObject({
+      to: "Bartle Gap supported extraction",
+      packMode: "day-pack-supported",
+      stopType: "support-transfer",
+      campStatus: "support-transfer-needs-booking-road-check",
+    });
   });
 
-  it("keeps unresolved travel and campsite facts explicitly unresolved", () => {
+  it("keeps travel, campsite, and support verification states explicit", () => {
     expect(tripFacts.outboundFlight.verification).toBe(
       "provided-by-team-needs-united-booking",
     );
     expect(tripFacts.outboundFlight.scheduledDepartureLocal).toBe("6:40 AM PDT");
     expect(
-      primaryItinerary.slice(0, -1).every(
-        (day) => day.campStatus === "documented-needs-current-verification",
-      ),
-    ).toBe(true);
+      primaryItinerary.find((day) => day.day === 2)?.campStatus,
+    ).toBe("gis-screened-needs-ground-check");
+    expect(primaryItinerary.find((day) => day.day === 3)?.stopType).toBe(
+      "support-transfer",
+    );
   });
 
   it("uses the real Ash Camp exit rather than arbitrary route mile 52", () => {
@@ -49,14 +56,14 @@ describe("canonical trip facts", () => {
     const day2 = primaryItinerary.find((day) => day.day === 2);
     const day8 = primaryItinerary.find((day) => day.day === 8);
 
-    expect(day2.elevation.gain).toBe(2006);
+    expect(day2.elevation.gain).toBe(2199);
     expect(day2.terrainLoad.effortRank).toBe(2);
-    expect(day8.elevation.loss).toBe(912);
-    expect(day8.terrainLoad.descentPerMile).toBe(237);
+    expect(day8.elevation.loss).toBe(917);
+    expect(day8.terrainLoad.descentPerMile).toBe(238);
     expect(day8.terrainLoad.kneeLoad).toBe("high");
     const day7 = primaryItinerary.find((day) => day.day === 7);
-    expect(day7.elevation.loss).toBe(1828);
-    expect(day7.terrainLoad.descentPerMile).toBe(326);
+    expect(day7.elevation.loss).toBe(1834);
+    expect(day7.terrainLoad.descentPerMile).toBe(327);
     expect(day7.terrainLoad.kneeLoad).toBe("very-high");
   });
 });

@@ -14,10 +14,10 @@ _Compiled from Original-DDG-PCT narrative notes + supporting resources_
 ## 1. Executive Snapshot
 
 - **Primary window:** Sat **29 Aug** → Sat **5 Sep 2026**; Sun **6 Sep** is contingency.
-- **Mileage:** **51.844 PCTA 2026 miles** / **51.664 cropped Garmin miles** over eight hiking days, averaging 6.48 official mi/day; longest day 14.529 miles.
-- **Terrain:** approximately **+6,394/−6,881 ft**, with a **6,146 ft** high point.
+- **Mileage:** **51.844 PCTA 2026 miles** / **51.664 cropped Garmin miles** over eight hiking days, averaging 6.48 official mi/day; longest day **12.591 miles with day packs**.
+- **Terrain:** approximately **+6,401/−6,896 ft**, with a **6,146 ft** high point.
 - **Finish:** **Ash Camp**, PCTA 2026 mile **1472.497** / route mile **51.844**, at **41.1170914, -122.0606252**.
-- **Future option:** The complete 82.9-mile Garmin track to Castle Crags is retained for a later trip with more days. It is not part of this itinerary.
+- **Future option:** The supplied Garmin course measures 80.826 miles; the old app crop measures 82.898 miles. Both are reference-only and not part of this itinerary.
 - **Team plan:** Working schedule UA481 lands at **SJC at 10:36 PM PDT Aug 28**. Sleep near SJC, then Mikaela drives the group north around **5:00–5:30 AM Aug 29**.
 - **Return flight:** Working schedule UA1317 leaves SJC at **6:40 AM PDT Sep 7** and arrives ORD at **11:00 AM CDT**. Verify both flights in United Manage Trip.
 - **Support roles:** Mom coordinates parallel women’s adventures; budget sharing limited, so keep plans cash-aware.
@@ -28,10 +28,10 @@ _Compiled from Original-DDG-PCT narrative notes + supporting resources_
 
 | Option | Pros | Trade-offs | Decision Notes |
 | --- | --- | --- | --- |
-| **8-Day Ash Camp Primary** (Aug 29–Sep 5) | 6.48 official mi/day average; multiple recovery-distance legs | Day 3 is 14.529 miles; no full zero day; camps and water require current verification | **Active baseline; Sep 6 contingency** |
-| **Future 82.9-mile Castle Crags route** | Preserves the complete Garmin course | Requires roughly 14–16 days, new camps, water work, pickup planning, and PTO | Not scheduled |
+| **8-Day Ash Camp Primary** (Aug 29–Sep 5) | 6.48 official mi/day average; no skipped PCT miles; Day 3 uses day packs | Requires a booked Bartle driver, verified road/gate, legal overnight, exact re-entry, and field-checked camps | **Active baseline; Sep 6 contingency** |
+| **Future Castle Crags route** | Preserves the longer source course | 80.826-mile export and 82.898-mile legacy crop must be reconciled before planning; requires 14–16 days, new camps, water, pickup, and PTO | Not scheduled |
 
-> **Action:** Treat the 51.844-mile Ash Camp route as the only active plan. Prove Day 3 with full packs and verify camps, water, crossings, closures, fire restrictions, smoke, weather, FS Road 38N11, and both bookings before treating it as executable.
+> **Action:** Treat the 51.844-mile Ash Camp route as the only active plan. Book the Bartle support assignment; verify road/gate, exact pins, legal overnight, and emergency fallback; then verify camps, water, crossings, closures, fire restrictions, smoke, weather, FS Road 38N11, and both bookings.
 
 ## 3. Day-by-Day Trail Plan (Burney Falls → Ash Camp)
 
@@ -40,18 +40,34 @@ the day-level elevation profile.
 
 | Day | Segment | Dist. | Gain / Loss | Camp and water reality |
 | --- | --- | --- | --- | --- |
-| 1 · Aug 29 | Burney Falls → Rock Creek, route mi 5.609 | 5.609 mi | +608' / −514' | Shorter post-drive opening leg; Rock Creek water |
-| 2 · Aug 30 | Rock Creek → Peavine Creek, mi 13.636 | 8.027 mi | +2,006' / −276' | Largest climb; Peavine is seasonal—verify before leaving Rock Creek |
-| 3 · Aug 31 | Peavine Creek → Moosehead Creek, mi 28.165 | 14.529 mi | +1,824' / −1,313' | Hardest overall day and full-pack capability gate; Kosk is not a default camp |
-| 4 · Sep 1 | Moosehead → high saddle near 38N10, mi 32.247 | 4.082 mi | +987' / −146' | Route high point; **dry camp**, carry enough water |
-| 5 · Sep 2 | High saddle → Alder/Star City, mi 36.036 | 3.789 mi | +85' / −818' | Short but descent-heavy; live water metadata is incomplete |
-| 6 · Sep 3 | Alder/Star City → Deer Creek Spring, mi 42.386 | 6.350 mi | +884' / −1,075' | Nearly 2,000 total vertical feet on accumulated fatigue |
-| 7 · Sep 4 | Deer Creek Spring → Butcherknife Creek, mi 47.990 | 5.604 mi | +0' / −1,828' | Highest knee load; poles and controlled pace |
-| 8 · Sep 5 | Butcherknife Creek → Ash Camp, mi 51.844 | 3.854 mi | +0' / −912' | Short descent; planned Mikaela pickup |
+| 1 · Aug 29 | Burney Falls → Rock Creek, route mi 5.609 | 5.609 mi | +613' / −522' | Shorter post-drive opening leg; Rock Creek water |
+| 2 · Aug 30 | Rock Creek → pre-private USFS dry camp, mi 14.287 | 8.678 mi | +2,199' / −276' | Largest climb; camp candidate passed parcel/setback/slope screen but needs ground check; carry water |
+| 3 · Aug 31 | USFS dry camp → Bartle Gap exact pin, mi 26.878 | 12.591 mi | +1,424' / −1,312' | Day packs; continuous private-land travel; timed extraction; Bartle is not a camp |
+| 4 · Sep 1 | Exact Bartle re-entry → high saddle near 38N10, mi 32.247 | 5.369 mi | +1,209' / −157' | Return to exact pin; route high point; **dry camp** |
+| 5 · Sep 2 | High saddle → Alder/Star City, mi 36.036 | 3.789 mi | +83' / −813' | Short but descent-heavy; live water metadata is incomplete |
+| 6 · Sep 3 | Alder/Star City → Deer Creek Spring, mi 42.386 | 6.350 mi | +873' / −1,065' | Nearly 2,000 total vertical feet on accumulated fatigue |
+| 7 · Sep 4 | Deer Creek Spring → Butcherknife Creek, mi 47.990 | 5.604 mi | +0' / −1,834' | Highest knee load; poles and controlled pace |
+| 8 · Sep 5 | Butcherknife Creek → Ash Camp, mi 51.844 | 3.854 mi | +0' / −917' | Short descent; planned Mikaela pickup |
 
 > **Camp warning:** “documented” means the location appears in Halfmile trail data—not that space, legality, hazards, or water are guaranteed in September 2026. Recheck FarOut, PCTA/USFS alerts, fire restrictions, and same-day water before each commitment.
 
 > **Mapping tools:** Guthook/FarOut, OnX Maps, NST Guide map viewer (this repo’s `pct-hike-viz`).
+
+### Day 3 support assignment
+
+- Pickup/re-entry pin: `41.17064891, -121.81993729` (PCTA 1447.531).
+- Driver is at Bartle before the hikers' approximately 1:30–3:30 p.m. window.
+- Driver carries overnight packs and stages treated water; every hiker retains
+  navigation, inReach, food, water, insulation, rain layer, first aid,
+  headlamp, and emergency bivy.
+- Leave private land promptly, sleep at prebooked legal lodging/camp, and return
+  to the exact pin on September 1.
+- If the driver is absent, continue off private land to the screened emergency
+  USFS point at `41.177527, -121.827003`, send inReach escalation, and use
+  emergency bivy gear if required.
+- Call Burney Taxi `(530) 605-7950`; confirm licensing, high-clearance vehicle,
+  gate/road access, two-day assignment, cost, and a named backup. A trail-angel
+  post is not a booking.
 
 ## 4. Travel & Shuttle Logistics
 
@@ -110,7 +126,7 @@ the day-level elevation profile.
 
 - **Wildfire smoke/closures:** Monitor CalFire, NIFC (from NST Guide data repo). Prepare reroutes or shuttle skips.
 - **Weather:** Use NWS forecasts + Weather-Monitor gadgets; aim for early starts to avoid afternoon storms.
-- **Health:** There is no full zero day. Day 3 is the decisive conditioning test; Days 4, 5, and 8 reduce mileage but still carry meaningful climb/descent loads.
+- **Health:** There is no full zero day. Train separately for Day 2's 8.68-mile full-pack climb, Day 3's timed 12.59-mile day-pack traverse, and Day 7's 1,834-foot descent.
 - **Transportation backstops:** Ash Camp road access must be verified; Mt. Shasta Taxi is useful only if it explicitly accepts FS Road 38N11.
 - **Comms plan:** Daily check-in via InReach; share itinerary & permit copies with family.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /*
- * Validates that pct-hike-viz/src/hike_data.json is in sync with the canonical
- * CA Section O GPX track that feeds the rest of the visualization stack.
+ * Validates that the active Burney Falls → Ash Camp route is in sync with the
+ * equivalent crop of the canonical full CA Section O GPX track.
  *
  * Emits a report comparing total mileage, elevation extrema, and start/end
  * coordinates. Fails with code 1 if any metric drifts beyond a tight tolerance
@@ -83,6 +83,19 @@ const normalizeGpx = (trkpts) =>
     elevation: pt.ele ? parseFloat(pt.ele[0]) * 3.28084 : null // meters → feet
   }));
 
+const nearestIndex = (points, target) => {
+  let bestIndex = 0;
+  let bestDistance = Number.POSITIVE_INFINITY;
+  points.forEach((point, index) => {
+    const distance = haversineMiles(point, target);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      bestIndex = index;
+    }
+  });
+  return bestIndex;
+};
+
 (async () => {
   const hikeData = JSON.parse(fs.readFileSync(HIKE_DATA_PATH, 'utf8'));
   const hikeTrail = normalizeTrail(hikeData.route?.path ?? []);
@@ -94,11 +107,20 @@ const normalizeGpx = (trkpts) =>
   const parser = new xml2js.Parser();
   const gpxContent = fs.readFileSync(SECTION_O_GPX, 'utf8');
   const gpxJson = await parser.parseStringPromise(gpxContent);
-  const gpxTrail = normalizeGpx(gpxJson.gpx.trk?.[0]?.trkseg?.[0]?.trkpt ?? []);
-  if (!gpxTrail.length) {
+  const fullGpxTrail = normalizeGpx(
+    gpxJson.gpx.trk?.[0]?.trkseg?.[0]?.trkpt ?? []
+  );
+  if (!fullGpxTrail.length) {
     console.error('❌ Unable to read GPX track points for Section O');
     process.exit(1);
   }
+  const cropStartIndex = nearestIndex(fullGpxTrail, hikeTrail[0]);
+  const cropEndIndex = nearestIndex(fullGpxTrail, hikeTrail.at(-1));
+  if (cropStartIndex >= cropEndIndex) {
+    console.error('❌ Active route endpoints do not form a northbound GPX crop');
+    process.exit(1);
+  }
+  const gpxTrail = fullGpxTrail.slice(cropStartIndex, cropEndIndex + 1);
 
   const hikeStats = computeStats(hikeTrail);
   const gpxStats = computeStats(gpxTrail);
@@ -136,10 +158,12 @@ const normalizeGpx = (trkpts) =>
     process.exit(1);
   }
 
-  console.log('✅ Map route matches Section O GPX');
+  console.log('✅ Active map route matches the Burney Falls → Ash Camp GPX crop');
   console.table({
     'JSON miles': hikeStats.distance.toFixed(2),
-    'GPX miles': gpxStats.distance.toFixed(2),
+    'Cropped GPX miles': gpxStats.distance.toFixed(2),
+    'Full GPX points': fullGpxTrail.length,
+    'Cropped GPX points': gpxTrail.length,
     'JSON min ft': Math.round(hikeStats.minElevation),
     'GPX min ft': Math.round(gpxStats.minElevation),
     'JSON max ft': Math.round(hikeStats.maxElevation),

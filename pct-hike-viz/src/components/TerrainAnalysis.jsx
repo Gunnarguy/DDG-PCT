@@ -153,11 +153,11 @@ function TerrainAnalysis({ selectedDay = null }) {
         <div className="summary-grid">
           <div className="summary-item">
             <span className="summary-label">Easiest Day</span>
-            <span className="summary-value">🟢 Day 3 (860ft gain)</span>
+            <span className="summary-value">🟢 Day 5 (3.79 mi)</span>
           </div>
           <div className="summary-item">
             <span className="summary-label">Hardest Day</span>
-            <span className="summary-value">🔴 Day 2 (2,256ft gain)</span>
+            <span className="summary-value">🔴 Day 3 (12.59 supported mi)</span>
           </div>
           <div className="summary-item">
             <span className="summary-label">Most Technical</span>
@@ -165,7 +165,7 @@ function TerrainAnalysis({ selectedDay = null }) {
           </div>
           <div className="summary-item">
             <span className="summary-label">Total Elevation</span>
-            <span className="summary-value">+10,659ft / −11,214ft</span>
+            <span className="summary-value">+6,401ft / −6,896ft</span>
           </div>
         </div>
       </div>
@@ -174,10 +174,10 @@ function TerrainAnalysis({ selectedDay = null }) {
       <div className="terrain-gear-tips">
         <h4>🎒 Terrain-Specific Gear Recommendations</h4>
         <ul>
-          <li><strong>Trekking poles:</strong> Prioritize them for Days 5, 6, and 9, which each lose roughly 1,800–2,300ft.</li>
-          <li><strong>Foot care:</strong> Nine consecutive days leave no zero-day recovery; treat hotspots immediately.</li>
+          <li><strong>Trekking poles:</strong> Prioritize them for Days 3, 6, 7, and 8; Day 7 alone loses roughly 1,834ft.</li>
+          <li><strong>Foot care:</strong> Eight consecutive hiking days leave little recovery; treat hotspots immediately.</li>
           <li><strong>Traction:</strong> Use shoes with dependable wet-rock grip; do not imply microspikes are needed without a current snow/ice report.</li>
-          <li><strong>Pacing:</strong> Days 2 and 8 each climb more than 2,200ft. Start early and protect calories and water.</li>
+          <li><strong>Pacing:</strong> Day 2 climbs about 2,199ft; Day 3 is the 12.59-mile supported traverse. Start both early and protect calories and water.</li>
         </ul>
       </div>
 

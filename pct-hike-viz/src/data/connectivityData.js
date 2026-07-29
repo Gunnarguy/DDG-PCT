@@ -14,28 +14,28 @@ export const connectivityZones = [
     notes: 'Expected trailhead coverage; download offline maps here and field-test every carrier.'
   },
   {
-    name: 'Peavine Creek camp',
-    mile: 1434.289,
-    coordinates: [-121.7853913, 41.060513],
+    name: 'Pre-private USFS dry camp',
+    mile: 1434.94,
+    coordinates: [-121.789562, 41.068437],
     cellCoverage: {
       verizon: 'none',
       att: 'none',
       tmobile: 'none'
     },
     satelliteCompatible: true,
-    notes: 'Conservative planning assumption from terrain and legacy notes; carrier coverage has not been field-verified.'
+    notes: 'Conservative no-cell assumption at the GIS-screened dry-camp candidate. Satellite check-in is required; ground capacity remains to be verified.'
   },
   {
-    name: 'Moosehead Creek camp',
-    mile: 1448.818,
-    coordinates: [-121.8318419, 41.1771229],
+    name: 'Bartle Gap support transfer',
+    mile: 1447.531,
+    coordinates: [-121.81993729434907, 41.17064891383052],
     cellCoverage: {
       verizon: 'none',
       att: 'none',
       tmobile: 'none'
     },
     satelliteCompatible: true,
-    notes: 'Conservative no-cell assumption. This is a coverage sample point, not a verified campsite.'
+    notes: 'Exact pickup/re-entry pin. Assume no cell service and coordinate by inReach. This is a timed transfer point—not a campsite.'
   },
   {
     name: 'Alder / Star City camp',

@@ -25,11 +25,12 @@ export const sectionOMeta = {
   bestSeason: 'Late August - Early September',
   highlights: [
     'ACTIVE ROUTE: 51.844 PCTA 2026 miles to the road-accessible Ash Camp finish.',
-    'CAMP STATUS: Kosk is not an overnight; every planned camp still needs a current legality, capacity, hazard, and water check.',
+    'PRIVATE CORRIDOR: no camping from the screened USFS boundary to Bartle Gap; Day 3 is a supported, continuous 12.59-mile day-pack traverse.',
+    'CAMP STATUS: the pre-private dry camp passes desktop ownership, setback, and slope screening but still needs an on-foot surface/capacity check.',
     'Burney Falls - "The 8th Wonder of the World"',
     'McCloud River and Ash Camp finish',
     'Mt. Shasta views',
-    'Eight hiking days averaging 6.48 miles; the 14.53-mile Day 3 is the capability gate'
+    'Eight hiking days averaging 6.48 miles; the longest day is 12.59 miles with a timed Bartle Gap extraction'
   ],
   sources: ['ddg-pdf', 'halfmile', 'pcta', 'farout']
 };
@@ -93,7 +94,8 @@ export const dataSources = {
     type: 'gps',
     distance: tripFacts.route.gpsMiles,
     officialDistance: tripFacts.route.officialMiles,
-    fullTrackDistance: 82.9,
+    userSuppliedFullTrackDistance: 80.826,
+    legacyAppFullTrackDistance: 82.898,
     pointCount: 5917
   },
   routes: [
@@ -133,15 +135,16 @@ export const scheduleOptions = [
     vibe: 'Evidence-backed 51.844-mile Burney Falls to Ash Camp plan.',
     highlights: [
       'Eight camp-to-camp legs averaging 6.48 miles.',
-      'Day 3 is 14.53 miles and must be proven in full-pack training.',
-      'Seven overnight areas still require current campsite and water verification.'
+      'Day 2 ends at a screened USFS dry camp before private timberland.',
+      'Day 3 is a 12.59-mile day-pack traverse with exact Bartle Gap pickup and next-morning re-entry.',
+      'The support driver, road/gate, pickup window, legal overnight, and no-contact fallback must be booked and field-verified.'
     ],
     sourceIds: ['doc-day-plan', 'doc-schedule-options']
   },
   {
     title: 'Future Extended Route',
     dates: 'Not scheduled',
-    vibe: 'The archived 82.9-mile source track is not an active trip option.',
+    vibe: 'The supplied 80.826-mile Garmin source track and 82.898-mile legacy app crop are reference-only—not active trip options.',
     highlights: [
       'Not part of the August 29–September 5 trip or September 6 contingency.',
       'Preserved for a future 14–16 day itinerary.',
@@ -1412,7 +1415,7 @@ export const riskPlaybook = [
       notes: 'Prescription required. Consult physician. Side effects: tingling, frequent urination, carbonated drinks taste flat.',
       forSectionO: 'Not routinely indicated for this approximately 6,146ft route. Any medication decision belongs with a clinician who knows the hiker.'
     },
-    sectionOContext: 'The GPS high point is approximately 6,146ft on Day 4—below the 8,000ft threshold where AMS becomes more common. The largest daily climb is approximately 2,006ft on Day 2; pace conservatively and hydrate.',
+    sectionOContext: 'The GPS high point is approximately 6,146ft on Day 4—below the 8,000ft threshold where AMS becomes more common. The largest daily climb is approximately 2,199ft on Day 2; pace conservatively and hydrate.',
     sourceIds: ['adventurehacks-guide', 'wv-2017-log']
   }
 ];
@@ -1624,7 +1627,9 @@ export const dayItinerary = [
       loss: leg.elevation.loss
     },
     terrain:
-      leg.day === 4
+      leg.day === 3
+        ? 'Continuous private-timberland traverse with day packs and timed Bartle Gap extraction'
+        : leg.day === 4
         ? 'Highest route segment; GPS reaches approximately 6,146 ft'
         : leg.elevation.loss >= 1400
           ? 'Major descent day; protect knees and allow slower footing'
@@ -1639,7 +1644,11 @@ export const dayItinerary = [
     campFeatures:
       leg.campStatus === 'verified-trailhead-finish'
         ? ['Finish/pickup location']
-        : ['Halfmile-documented camp area', 'Current capacity and water still require verification'],
+        : leg.stopType === 'support-transfer'
+          ? ['Exact Bartle Gap transfer pin', 'No camping or extended stop', 'Off-corridor legal overnight required']
+          : leg.campStatus === 'gis-screened-needs-ground-check'
+            ? ['USFS parcel/setback/slope screen passed', 'Ground capacity and hazards still require verification']
+            : ['Halfmile-documented camp area', 'Current capacity and water still require verification'],
     landManagement: {
       zone: 'Verify against current land-management map',
       agency: 'USFS / California State Parks',
@@ -1648,11 +1657,17 @@ export const dayItinerary = [
     notes:
       leg.campStatus === 'verified-trailhead-finish'
         ? 'Finish at Ash Camp and meet Mikaela at the pre-shared 41.1171, -122.0606 pickup pin.'
+        : leg.stopType === 'support-transfer'
+          ? 'Meet the confirmed driver at the exact Bartle Gap PCT crossing. Transfer off private land promptly; return to the same pin before Day 4 hiking.'
         : `${leg.to} at route mile ${leg.routeMileEnd}; ${leg.water}. Verify current conditions before committing.`,
     objectives: [
       'Confirm water before leaving the previous source',
       'Send satellite check-in',
-      leg.campStatus === 'verified-trailhead-finish' ? 'Coordinate pickup' : 'Verify legal low-impact campsite'
+      leg.campStatus === 'verified-trailhead-finish'
+        ? 'Coordinate pickup'
+        : leg.stopType === 'support-transfer'
+          ? 'Execute timed pickup and exact-point re-entry'
+          : 'Verify legal low-impact campsite'
     ],
     timing: { start: '6:30 AM', end: '3:30 PM', movingTime: '5–7h', breakTime: '1.5–2.5h' },
     gradient: leg.terrainLoad.effortRank <= 3 ? 'steep' : 'moderate',
@@ -1667,7 +1682,8 @@ export const dayItinerary = [
 // MILEAGE RECONCILIATION:
 // • Active PCTA 2026 route to Ash Camp: 51.844 miles
 // • Cropped Garmin elevation track:     51.664 miles
-// • Archived source track:              82.9 miles (not an active option)
+// • User-supplied Garmin source track:  80.826 miles (not active)
+// • Existing legacy app full crop:      82.898 miles (different crop; not active)
 // ═══════════════════════════════════════════════════════════════════════════════
 export const tripStats = {
   totalDays: 10, // arrival + eight hiking days + contingency
@@ -1681,17 +1697,17 @@ export const tripStats = {
   totalLoss: tripFacts.route.totalLossFeet,
   avgMilesPerDay: tripFacts.route.averageMilesPerDay,
   targetPace: 'variable',
-  paceNote: 'Eight hiking days average 6.48 miles; Day 3 is 14.53 miles and the final day is 3.85 miles.',
+  paceNote: 'Eight hiking days average 6.48 miles; Day 3 is the 12.59-mile supported traverse and the final day is 3.85 miles.',
   highPoint: { elevation: tripFacts.route.highPointFeet, location: 'High saddle / active route high point', day: 4 },
   lowPoint: { elevation: 2443, location: 'Ash Camp / McCloud River corridor', day: 8 },
   waterSourceCount: 20,
   connectivityBlackoutMiles: 35, // Approximate based on daily connectivity data
   estimatedMovingTime: '37–52 field hours',
-  recommendedWaterCarry: { min: 2, max: 5, unit: 'L', note: 'Day 3 depends on final heat and legal source confirmation' },
+  recommendedWaterCarry: { min: 2, max: 5, unit: 'L', note: 'Day 2 dry camp and Day 3 traverse depend on final heat, current source reports, and driver-staged water' },
   sources: ['ddg-pdf', 'pct-water', 'halfmile', 'gps-route'],
   sourceQuotes: {
     distance: tripFacts.route.distanceEvidence,
-    pace: 'Eight camp-to-camp legs averaging 6.48 miles; longest day 14.53 miles',
+    pace: 'Eight trail legs averaging 6.48 miles; longest day 12.59 miles with day packs and support',
     dates: 'August 29 through September 5, 2026; September 6 contingency'
   }
 };
@@ -1702,7 +1718,7 @@ export const nextStepsChecklist = [
     status: 'completed'
   },
   {
-    task: 'Contact Burney Falls and the McCloud Ranger Station for staging, camping, and Ash Camp road-access confirmation.',
+    task: 'Book the Bartle Gap support driver and verify both approach roads, gates, high-clearance vehicle, exact pickup/re-entry pin, legal overnight, and no-contact fallback.',
     status: 'up next'
   },
   {
@@ -1718,7 +1734,7 @@ export const nextStepsChecklist = [
     status: 'up next'
   },
   {
-    task: 'Book STAGE bus/Taxi slots ~2 weeks pre-trip; confirm Trail Angels.',
+    task: 'Call Burney Taxi at (530) 605-7950 and confirm a licensed/insured backup; use FarNorCal PCT trail angels only after the exact assignment is accepted.',
     status: 'pending'
   },
   {

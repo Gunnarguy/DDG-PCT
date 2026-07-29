@@ -20,10 +20,12 @@ ends at the official Ash Camp pickup at PCTA mile 1472.497. The PCTA January
 51.664 miles and supplies the elevation profile. An arbitrary “mile 52” is not
 a vehicle exit.
 
-The eight legs are 5.609 / 8.027 / 14.529 / 4.082 / 3.789 / 6.350 /
-5.604 / 3.854 miles. Day 3 is the full-pack capability gate; Day 2 has the
-largest climb; Day 7 has the largest knee-load descent. The full 82.9-mile
-Garmin source track is retained as excluded future-trip geometry only.
+The eight legs are 5.609 / 8.678 / 12.591 / 5.369 / 3.789 / 6.350 /
+5.604 / 3.854 miles. Day 2 ends at a screened USFS dry camp. Day 3 is a
+supported day-pack traverse to an exact Bartle Gap extraction/re-entry pin;
+Day 2 has the largest climb and Day 7 has the largest knee-load descent. The
+supplied Garmin source course measures 80.826 miles; the old 82.898-mile app
+crop is a different excluded reference geometry. Neither is the active trip.
 
 ## 🚀 Quick Start
 
@@ -68,7 +70,8 @@ npm run dev:viz                       # Dev server (remote preview)
 npm run build:viz                     # Production build
 npm run fetch:pct                     # Update USFS PCT route data
 node pct-hike-viz/scripts/configure_active_route.js # Regenerate all route bundles
-python scripts/snap_camps_to_route.py # Snap camp coords to trail
+python3 pct-hike-viz/scripts/calculate_day_elevations.py # Recalculate daily terrain
+node scripts/audit_route_parcels.mjs   # Re-run parcel/road/terrain camp screen
 node scripts/validate_water_sources.mjs # Compare itinerary vs PCT Water Report
 ```
 
@@ -150,9 +153,10 @@ The repository ships with placeholder values—replace them with your own keys b
 ## 🎯 Status
 
 ✅ **Route synchronized**: 51.844 official / 51.664 Garmin miles to Ash Camp over eight hiking days
-✅ **Terrain synchronized**: +6,394/−6,881 feet, 6,146-foot high point, exact daily loads
+✅ **Terrain synchronized**: +6,401/−6,896 feet, 6,146-foot high point, exact daily loads
+✅ **Private corridor resolved**: 12.591-mile supported day-pack traverse to Bartle Gap; no private-land campsite assumption
 ✅ **Condition backend live**: daily protected water, wildfire, smoke/AQI, weather, and agency-source snapshot
-⚠️ **Still to verify**: seven overnight areas, Day 3 full-pack capability, Lake Britton crossing, current closures/fire restrictions, FS Road 38N11, and both United bookings
+⚠️ **Operational gates**: book/verify the Bartle driver, road, gate, legal overnight, and exact re-entry; ground-check camps; verify Lake Britton, current restrictions, FS Road 38N11, and both United bookings
 
 ---
 

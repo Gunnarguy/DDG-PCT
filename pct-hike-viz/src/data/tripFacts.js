@@ -1,7 +1,7 @@
 export const TRIP_YEAR = 2026;
 
 export const tripFacts = {
-  status: "planned-with-verification-gates",
+  status: "planned-supported-traverse-with-verification-gates",
   year: TRIP_YEAR,
   route: {
     name: "PCT California Section O",
@@ -12,9 +12,9 @@ export const tripFacts = {
     displayMiles: 51.8,
     hikingDays: 8,
     averageMilesPerDay: 6.48,
-    longestDayMiles: 14.529,
-    totalGainFeet: 6394,
-    totalLossFeet: 6881,
+    longestDayMiles: 12.591,
+    totalGainFeet: 6401,
+    totalLossFeet: 6896,
     highPointFeet: 6146,
     startPctMile: 1420.653,
     finishPctMile: 1472.497,
@@ -24,10 +24,11 @@ export const tripFacts = {
       "The PCTA January 2026 centerline measures 51.844 miles from the actual Burney Falls access to Ash Camp. The cropped Garmin track measures 51.664 miles and supplies the elevation profile.",
     extendedAlternative: {
       finish: "Castle Crags / I-5 corridor",
-      gpsMiles: 82.9,
+      sourceTrackMiles: 80.826,
+      legacyAppMiles: 82.898,
       status: "future-trip-only",
       note:
-        "Retained only as future-trip geometry. It is not part of the August 29–September 5 itinerary or the September 6 contingency day.",
+        "The user-supplied Garmin exports measure 80.826 miles end to end. The old 82.898-mile app value came from a different legacy crop and must not be presented as the same measurement. Neither is part of the August 29–September 5 trip.",
     },
   },
   dates: {
@@ -77,7 +78,7 @@ export const tripFacts = {
     },
     futureExtendedRoute: {
       name: "Castle Crags / Soda Creek Road",
-      routeMile: 82.9,
+      sourceTrackMiles: 80.826,
       access: "Paved I-5 corridor",
       status: "future-trip-only",
     },
@@ -98,11 +99,11 @@ export const tripFacts = {
         "The team should sleep near SJC and leave early August 29 rather than driving to Burney overnight.",
     },
     {
-      id: "camp-waypoints",
+      id: "supported-private-corridor-traverse",
       priority: "critical",
-      label: "Confirm all seven overnight areas and the Day 3 capability gate",
+      label: "Book and field-verify the Day 3 Bartle Gap support plan",
       detail:
-        "Kosk is not a default camp. Confirm public-land legality/capacity at the remaining camps and prove the team can complete the 14.53-mile Peavine-to-Moosehead day with full packs.",
+        "Day 3 is a 12.59-mile continuous private-timberland traverse with day packs. A confirmed driver must transfer overnight packs, verify the Bartle Gap road/gate, meet the team at the exact PCT crossing, provide a legal off-corridor overnight, and return everyone to that exact crossing on Day 4.",
     },
     {
       id: "lake-britton-access",
@@ -126,14 +127,14 @@ const dayDates = [
 ];
 
 const elevationByDay = [
-  { start: 2949, end: 3043, gain: 608, loss: 514, high: 3223 },
-  { start: 3043, end: 4769, gain: 2006, loss: 276, high: 5053 },
-  { start: 4769, end: 5285, gain: 1824, loss: 1313, high: 5490 },
-  { start: 5285, end: 6128, gain: 987, loss: 146, high: 6146 },
-  { start: 6128, end: 5394, gain: 85, loss: 818, high: 6146 },
-  { start: 5394, end: 5197, gain: 884, loss: 1075, high: 5688 },
-  { start: 5197, end: 3360, gain: 0, loss: 1828, high: 5197 },
-  { start: 3360, end: 2443, gain: 0, loss: 912, high: 3360 },
+  { start: 2949, end: 3043, gain: 613, loss: 522, high: 3223 },
+  { start: 3043, end: 4961, gain: 2199, loss: 276, high: 5053 },
+  { start: 4961, end: 5082, gain: 1424, loss: 1312, high: 5490 },
+  { start: 5082, end: 6128, gain: 1209, loss: 157, high: 6146 },
+  { start: 6128, end: 5394, gain: 83, loss: 813, high: 6146 },
+  { start: 5394, end: 5197, gain: 873, loss: 1065, high: 5688 },
+  { start: 5197, end: 3360, gain: 0, loss: 1834, high: 5197 },
+  { start: 3360, end: 2443, gain: 0, loss: 917, high: 3360 },
 ];
 
 const overnightPlan = [
@@ -145,19 +146,35 @@ const overnightPlan = [
     water: "Rock Creek",
   },
   {
-    name: "Peavine Creek camps",
-    routeMile: 13.636,
-    pctMile: 1434.289,
-    coordinates: { latitude: 41.060513, longitude: -121.7853913 },
-    water: "Seasonal Peavine Creek; verify flow before leaving Rock Creek",
+    name: "Pre-private USFS dry camp",
+    routeMile: 14.287,
+    pctMile: 1434.94,
+    coordinates: { latitude: 41.068437, longitude: -121.789562 },
+    trailAccessCoordinates: {
+      latitude: 41.06802432797849,
+      longitude: -121.79029050283134,
+    },
+    stopType: "camp",
+    campStatus: "gis-screened-needs-ground-check",
+    water:
+      "Dry camp. Fill at the last currently confirmed legal source; Peavine flow and collection legality must be rechecked.",
+    note:
+      "Shasta County parcel screen: USFS APN 022-170-001. Candidate is about 250 ft from the PCT, 626 ft from the mapped MVUM road, 0.363 mi from mapped private property, and 5.0% mean sampled slope. Confirm vegetation, hazards, durable surface, and three-person capacity on foot.",
   },
   {
-    name: "Moosehead Creek camp",
-    routeMile: 28.165,
-    pctMile: 1448.818,
-    coordinates: { latitude: 41.1771229, longitude: -121.8318419 },
+    name: "Bartle Gap supported extraction",
+    routeMile: 26.878,
+    pctMile: 1447.531,
+    coordinates: {
+      latitude: 41.17064891383052,
+      longitude: -121.81993729434907,
+    },
+    stopType: "support-transfer",
+    campStatus: "support-transfer-needs-booking-road-check",
     water:
-      "Moosehead Creek; July 11 report said very good flow but overgrown. Reverify immediately before departure.",
+      "Driver-staged water at Bartle Gap. Do not camp or linger on private timberland; extract to a legal overnight and return to this exact PCT crossing the next morning.",
+    note:
+      "This is not a campsite. The driver, vehicle route, gate status, pickup window, exact re-entry pin, and no-contact fallback must be confirmed before the trip.",
   },
   {
     name: "High saddle camp near Road 38N10",
@@ -166,6 +183,8 @@ const overnightPlan = [
     coordinates: { latitude: 41.1767853, longitude: -121.8808339 },
     water:
       "Dry camp: carry from the last confirmed source and plan for the next verified source",
+    stopType: "camp",
+    campStatus: "documented-needs-current-verification",
   },
   {
     name: "Alder / Star City Creek camp",
@@ -174,6 +193,8 @@ const overnightPlan = [
     coordinates: { latitude: 41.157895, longitude: -121.9202143 },
     water:
       "A June 15 report described clear flow around 2 L/min, but parser metadata is incomplete. Verify before relying on it.",
+    stopType: "camp",
+    campStatus: "documented-needs-current-verification",
   },
   {
     name: "Deer Creek Spring camp",
@@ -181,6 +202,8 @@ const overnightPlan = [
     pctMile: 1463.039,
     coordinates: { latitude: 41.1356197, longitude: -121.9860782 },
     water: "Deer Creek Spring",
+    stopType: "camp",
+    campStatus: "documented-needs-current-verification",
   },
   {
     name: "Butcherknife Creek camp",
@@ -188,6 +211,8 @@ const overnightPlan = [
     pctMile: 1468.643,
     coordinates: { latitude: 41.1294222, longitude: -122.0266769 },
     water: "Butcherknife Creek",
+    stopType: "camp",
+    campStatus: "documented-needs-current-verification",
   },
   {
     name: "Ash Camp pickup",
@@ -195,6 +220,8 @@ const overnightPlan = [
     pctMile: 1472.497,
     coordinates: { latitude: 41.1170914, longitude: -122.0606252 },
     water: "McCloud River / nearby creek; treat before drinking",
+    stopType: "finish",
+    campStatus: "verified-trailhead-finish",
   },
 ];
 
@@ -224,7 +251,10 @@ const itineraryWithoutRanks = dayDates.map((date, index) => {
     routeMileEnd: endMile,
     pctMileEnd: destination.pctMile,
     coordinates: destination.coordinates,
+    trailAccessCoordinates: destination.trailAccessCoordinates,
     water: destination.water,
+    note: destination.note,
+    stopType: destination.stopType ?? "camp",
     elevation,
     terrainLoad: {
       netFeet: elevation.end - elevation.start,
@@ -241,8 +271,12 @@ const itineraryWithoutRanks = dayDates.map((date, index) => {
               ? "moderate"
               : "low",
     },
+    packMode: day === 3 ? "day-pack-supported" : "overnight-pack",
     campStatus:
-      day === 8 ? "verified-trailhead-finish" : "documented-needs-current-verification",
+      destination.campStatus ??
+      (day === 8
+        ? "verified-trailhead-finish"
+        : "documented-needs-current-verification"),
   };
 });
 

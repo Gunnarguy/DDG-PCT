@@ -112,7 +112,10 @@
         "segment": "5.6 mi; Rock Creek",
         "mile": 1426.262,
         "routeMile": 5.609,
-        "type": "Camp"
+        "type": "Camp",
+        "stopType": "camp",
+        "campStatus": "documented-needs-current-verification",
+        "packMode": "overnight-pack"
       }
     },
     {
@@ -120,18 +123,22 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -121.7853913,
-          41.060513
+          -121.789562,
+          41.068437
         ]
       },
       "properties": {
-        "name": "Peavine Creek camps",
+        "name": "Pre-private USFS dry camp",
         "day": 2,
         "itinerary": "express",
-        "segment": "8.0 mi; Seasonal Peavine Creek; verify flow before leaving Rock Creek",
-        "mile": 1434.289,
-        "routeMile": 13.636,
-        "type": "Camp"
+        "segment": "8.7 mi; Dry camp. Fill at the last currently confirmed legal source; Peavine flow and collection legality must be rechecked.",
+        "mile": 1434.94,
+        "routeMile": 14.287,
+        "type": "Camp",
+        "stopType": "camp",
+        "campStatus": "gis-screened-needs-ground-check",
+        "packMode": "overnight-pack",
+        "notes": "Shasta County parcel screen: USFS APN 022-170-001. Candidate is about 250 ft from the PCT, 626 ft from the mapped MVUM road, 0.363 mi from mapped private property, and 5.0% mean sampled slope. Confirm vegetation, hazards, durable surface, and three-person capacity on foot."
       }
     },
     {
@@ -139,18 +146,22 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -121.8318419,
-          41.1771229
+          -121.81993729434907,
+          41.17064891383052
         ]
       },
       "properties": {
-        "name": "Moosehead Creek camp",
+        "name": "Bartle Gap supported extraction",
         "day": 3,
         "itinerary": "express",
-        "segment": "14.5 mi; Moosehead Creek; July 11 report said very good flow but overgrown. Reverify immediately before departure.",
-        "mile": 1448.818,
-        "routeMile": 28.165,
-        "type": "Camp"
+        "segment": "12.6 mi supported day-pack traverse; extract immediately and return to this exact crossing on Day 4",
+        "mile": 1447.531,
+        "routeMile": 26.878,
+        "type": "Support Transfer",
+        "stopType": "support-transfer",
+        "campStatus": "support-transfer-needs-booking-road-check",
+        "packMode": "day-pack-supported",
+        "notes": "This is not a campsite. The driver, vehicle route, gate status, pickup window, exact re-entry pin, and no-contact fallback must be confirmed before the trip."
       }
     },
     {
@@ -166,10 +177,13 @@
         "name": "High saddle camp near Road 38N10",
         "day": 4,
         "itinerary": "express",
-        "segment": "4.1 mi; Dry camp: carry from the last confirmed source and plan for the next verified source",
+        "segment": "5.4 mi; Dry camp: carry from the last confirmed source and plan for the next verified source",
         "mile": 1452.9,
         "routeMile": 32.247,
-        "type": "Camp"
+        "type": "Camp",
+        "stopType": "camp",
+        "campStatus": "documented-needs-current-verification",
+        "packMode": "overnight-pack"
       }
     },
     {
@@ -188,7 +202,10 @@
         "segment": "3.8 mi; A June 15 report described clear flow around 2 L/min, but parser metadata is incomplete. Verify before relying on it.",
         "mile": 1456.689,
         "routeMile": 36.036,
-        "type": "Camp"
+        "type": "Camp",
+        "stopType": "camp",
+        "campStatus": "documented-needs-current-verification",
+        "packMode": "overnight-pack"
       }
     },
     {
@@ -207,7 +224,10 @@
         "segment": "6.3 mi; Deer Creek Spring",
         "mile": 1463.039,
         "routeMile": 42.386,
-        "type": "Camp"
+        "type": "Camp",
+        "stopType": "camp",
+        "campStatus": "documented-needs-current-verification",
+        "packMode": "overnight-pack"
       }
     },
     {
@@ -226,7 +246,10 @@
         "segment": "5.6 mi; Butcherknife Creek",
         "mile": 1468.643,
         "routeMile": 47.99,
-        "type": "Camp"
+        "type": "Camp",
+        "stopType": "camp",
+        "campStatus": "documented-needs-current-verification",
+        "packMode": "overnight-pack"
       }
     },
     {
@@ -245,7 +268,10 @@
         "segment": "Ash Camp pickup with Mikaela; FS Road 38N11 condition check required",
         "mile": 1472.497,
         "routeMile": 51.844,
-        "type": "Finish"
+        "type": "Finish",
+        "stopType": "finish",
+        "campStatus": "verified-trailhead-finish",
+        "packMode": "overnight-pack"
       }
     }
   ],
@@ -29850,7 +29876,7 @@
       "full_track_points": 9439,
       "full_track_distance_miles": 82.898,
       "extended_route_status": "historical-future-reference-only",
-      "source_of_truth_version": "2026-07-28-pcta-2026-v1",
+      "source_of_truth_version": "2026-07-29-supported-bartle-v2",
       "geometry_source": "PCTA January 2026 centerline",
       "elevation_source": "Cropped Garmin CA Section O PCT 2025 track",
       "start_name": "Burney Falls PCT access",
@@ -29868,62 +29894,77 @@
       "distance_display_miles": 51.8,
       "distance_method": "PCTA January 2026 centerline endpoints",
       "archived_pre_start_points": 267,
-      "archived_pre_start_status": "excluded-from-active-trip"
+      "archived_pre_start_status": "excluded-from-active-trip",
+      "user_supplied_garmin_export_distance_miles": 80.826,
+      "legacy_app_full_track_distance_miles": 82.898,
+      "full_track_reconciliation": "The supplied Garmin exports measure 80.826 miles. Existing archived app geometry measures 82.898 miles because it is a different legacy crop. Neither controls the active 51.844-mile trip."
     },
     "properties": {
       "min_elevation": 2443,
       "max_elevation": 6146,
-      "total_gain_feet": 6394,
-      "total_loss_feet": 6881,
-      "elevation_accumulation_method": "Garmin elevation, five-point smoothing, 10-foot threshold",
+      "total_gain_feet": 6401,
+      "total_loss_feet": 6896,
+      "elevation_accumulation_method": "Garmin elevation, centered five-point smoothing, cumulative 10-foot threshold carried continuously across day boundaries",
       "segments": [
         {
           "day": 1,
           "distance": 5.609,
           "start": "Burney Falls trailhead",
           "end": "Rock Creek camps",
-          "gain": 608,
-          "loss": 514
+          "gain": 613,
+          "loss": 522,
+          "stopType": "camp",
+          "packMode": "overnight-pack"
         },
         {
           "day": 2,
-          "distance": 8.027,
+          "distance": 8.678,
           "start": "Rock Creek camps",
-          "end": "Peavine Creek camps",
-          "gain": 2006,
-          "loss": 276
+          "end": "Pre-private USFS dry camp",
+          "gain": 2199,
+          "loss": 276,
+          "stopType": "camp",
+          "packMode": "overnight-pack"
         },
         {
           "day": 3,
-          "distance": 14.529,
-          "start": "Peavine Creek camps",
-          "end": "Moosehead Creek camp",
-          "gain": 1824,
-          "loss": 1313
+          "distance": 12.591,
+          "start": "Pre-private USFS dry camp",
+          "end": "Bartle Gap supported extraction",
+          "gain": 1424,
+          "loss": 1312,
+          "stopType": "support-transfer",
+          "packMode": "day-pack-supported"
         },
         {
           "day": 4,
-          "distance": 4.082,
-          "start": "Moosehead Creek camp",
+          "distance": 5.369,
+          "start": "Bartle Gap supported extraction",
           "end": "High saddle camp near Road 38N10",
-          "gain": 987,
-          "loss": 146
+          "gain": 1209,
+          "loss": 157,
+          "stopType": "camp",
+          "packMode": "overnight-pack"
         },
         {
           "day": 5,
           "distance": 3.789,
           "start": "High saddle camp near Road 38N10",
           "end": "Alder / Star City Creek camp",
-          "gain": 85,
-          "loss": 818
+          "gain": 83,
+          "loss": 813,
+          "stopType": "camp",
+          "packMode": "overnight-pack"
         },
         {
           "day": 6,
           "distance": 6.35,
           "start": "Alder / Star City Creek camp",
           "end": "Deer Creek Spring camp",
-          "gain": 884,
-          "loss": 1075
+          "gain": 873,
+          "loss": 1065,
+          "stopType": "camp",
+          "packMode": "overnight-pack"
         },
         {
           "day": 7,
@@ -29931,7 +29972,9 @@
           "start": "Deer Creek Spring camp",
           "end": "Butcherknife Creek camp",
           "gain": 0,
-          "loss": 1828
+          "loss": 1834,
+          "stopType": "camp",
+          "packMode": "overnight-pack"
         },
         {
           "day": 8,
@@ -29939,7 +29982,9 @@
           "start": "Butcherknife Creek camp",
           "end": "Ash Camp pickup",
           "gain": 0,
-          "loss": 912
+          "loss": 917,
+          "stopType": "finish",
+          "packMode": "overnight-pack"
         }
       ]
     },
@@ -47603,6 +47648,15 @@
       "notes": "August 29 hiking start after sleeping near SJC and driving north early that morning."
     },
     {
+      "name": "Bartle Gap Supported Transfer",
+      "type": "support-transfer",
+      "coordinates": [
+        -121.81993729434907,
+        41.17064891383052
+      ],
+      "notes": "August 31 exact PCT pickup and September 1 exact-point re-entry. This is not a campsite. Confirm high-clearance road access, gate status, driver, pickup window, pack transfer, staged water, and no-contact fallback."
+    },
+    {
       "name": "Ash Camp Pickup",
       "type": "shuttle-point",
       "coordinates": [
@@ -50338,7 +50392,17 @@
     "finish": "Ash Camp / McCloud River",
     "finishDate": "2026-09-05",
     "contingencyDate": "2026-09-06",
-    "extendedRouteMiles": 82.9,
-    "extendedRouteStatus": "future-trip-only"
+    "userSuppliedSourceTrackMiles": 80.826,
+    "legacyAppFullTrackMiles": 82.898,
+    "extendedRouteStatus": "future-trip-only",
+    "supportedTraverse": {
+      "date": "2026-08-31",
+      "startRouteMile": 14.287,
+      "endRouteMile": 26.878,
+      "distanceMiles": 12.591,
+      "packMode": "day-pack-supported",
+      "extraction": "Bartle Gap exact PCT crossing",
+      "status": "route-resolved-booking-and-road-check-required"
+    }
   }
 }

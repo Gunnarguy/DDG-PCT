@@ -116,7 +116,19 @@ function routeGeometryFromOsrm(filePath, sampleEvery = 20) {
   };
 }
 
-function makeFeature({ name, coordinates, day, routeMile, type, segment, pctMile }) {
+function makeFeature({
+  name,
+  coordinates,
+  day,
+  routeMile,
+  type,
+  segment,
+  pctMile,
+  stopType,
+  campStatus,
+  packMode,
+  notes,
+}) {
   return {
     type: "Feature",
     geometry: { type: "Point", coordinates: [coordinates.longitude, coordinates.latitude] },
@@ -128,6 +140,10 @@ function makeFeature({ name, coordinates, day, routeMile, type, segment, pctMile
       mile: pctMile,
       routeMile,
       type,
+      stopType,
+      campStatus,
+      packMode,
+      notes,
     },
   };
 }
@@ -188,11 +204,22 @@ const itineraryFeatures = [
       day: leg.day,
       routeMile: leg.routeMileEnd,
       pctMile: leg.pctMileEnd,
-      type: leg.day === primaryItinerary.length ? "Finish" : "Camp",
+      type:
+        leg.stopType === "support-transfer"
+          ? "Support Transfer"
+          : leg.day === primaryItinerary.length
+            ? "Finish"
+            : "Camp",
+      stopType: leg.stopType,
+      campStatus: leg.campStatus,
+      packMode: leg.packMode,
+      notes: leg.note,
       segment:
         leg.day === primaryItinerary.length
           ? "Ash Camp pickup with Mikaela; FS Road 38N11 condition check required"
-          : `${leg.distance.toFixed(1)} mi; ${leg.water}`,
+          : leg.stopType === "support-transfer"
+            ? `${leg.distance.toFixed(1)} mi supported day-pack traverse; extract immediately and return to this exact crossing on Day 4`
+            : `${leg.distance.toFixed(1)} mi; ${leg.water}`,
     }),
   ),
 ];
@@ -205,7 +232,7 @@ data.route = {
   extendedPath,
   metadata: {
     ...data.route.metadata,
-    source_of_truth_version: "2026-07-28-pcta-2026-v1",
+    source_of_truth_version: "2026-07-29-supported-bartle-v2",
     geometry_source: tripFacts.route.geometrySource,
     elevation_source: tripFacts.route.elevationSource,
     start_name: tripFacts.route.start,
@@ -223,6 +250,12 @@ data.route = {
     archived_pre_start_status: "excluded-from-active-trip",
     full_track_points: fullPath.length,
     full_track_distance_miles: fullStats.distance,
+    user_supplied_garmin_export_distance_miles:
+      tripFacts.route.extendedAlternative.sourceTrackMiles,
+    legacy_app_full_track_distance_miles:
+      tripFacts.route.extendedAlternative.legacyAppMiles,
+    full_track_reconciliation:
+      "The supplied Garmin exports measure 80.826 miles. Existing archived app geometry measures 82.898 miles because it is a different legacy crop. Neither controls the active 51.844-mile trip.",
     extended_route_status: "historical-future-reference-only",
   },
   properties: {
@@ -231,7 +264,7 @@ data.route = {
     total_gain_feet: tripFacts.route.totalGainFeet,
     total_loss_feet: tripFacts.route.totalLossFeet,
     elevation_accumulation_method:
-      "Garmin elevation, five-point smoothing, 10-foot threshold",
+      "Garmin elevation, centered five-point smoothing, cumulative 10-foot threshold carried continuously across day boundaries",
     segments: primaryItinerary.map((leg) => ({
       day: leg.day,
       distance: leg.distance,
@@ -239,6 +272,8 @@ data.route = {
       end: leg.to,
       gain: leg.elevation.gain,
       loss: leg.elevation.loss,
+      stopType: leg.stopType,
+      packMode: leg.packMode,
     })),
   },
 };
@@ -276,6 +311,13 @@ data.transport = [
       "August 29 hiking start after sleeping near SJC and driving north early that morning.",
   },
   {
+    name: "Bartle Gap Supported Transfer",
+    type: "support-transfer",
+    coordinates: [-121.81993729434907, 41.17064891383052],
+    notes:
+      "August 31 exact PCT pickup and September 1 exact-point re-entry. This is not a campsite. Confirm high-clearance road access, gate status, driver, pickup window, pack transfer, staged water, and no-contact fallback.",
+  },
+  {
     name: "Ash Camp Pickup",
     type: "shuttle-point",
     coordinates: ASH_CAMP,
@@ -286,17 +328,26 @@ data.transport = [
 
 const inboundRoute = routeGeometryFromOsrm(inboundRoutePath);
 const returnRoute = routeGeometryFromOsrm(returnRoutePath);
+const existingDriveSegments = data.driveSegments ?? [];
 data.driveSegments = [
-  inboundRoute && {
-    name: "SJC → Burney Falls",
-    type: "drive",
-    ...inboundRoute,
-  },
-  returnRoute && {
-    name: "Ash Camp → Campbell",
-    type: "drive",
-    ...returnRoute,
-  },
+  inboundRoute
+    ? {
+        name: "SJC → Burney Falls",
+        type: "drive",
+        ...inboundRoute,
+      }
+    : existingDriveSegments.find(
+        (segment) => segment.name === "SJC → Burney Falls",
+      ),
+  returnRoute
+    ? {
+        name: "Ash Camp → Campbell",
+        type: "drive",
+        ...returnRoute,
+      }
+    : existingDriveSegments.find(
+        (segment) => segment.name === "Ash Camp → Campbell",
+      ),
 ].filter(Boolean);
 
 data.activePlan = {
@@ -307,8 +358,19 @@ data.activePlan = {
   finish: tripFacts.route.finish,
   finishDate: tripFacts.dates.hikingFinish,
   contingencyDate: tripFacts.dates.contingency,
-  extendedRouteMiles: tripFacts.route.extendedAlternative.gpsMiles,
+  userSuppliedSourceTrackMiles:
+    tripFacts.route.extendedAlternative.sourceTrackMiles,
+  legacyAppFullTrackMiles: tripFacts.route.extendedAlternative.legacyAppMiles,
   extendedRouteStatus: "future-trip-only",
+  supportedTraverse: {
+    date: "2026-08-31",
+    startRouteMile: 14.287,
+    endRouteMile: 26.878,
+    distanceMiles: 12.591,
+    packMode: "day-pack-supported",
+    extraction: "Bartle Gap exact PCT crossing",
+    status: "route-resolved-booking-and-road-check-required",
+  },
 };
 
 const output = `${JSON.stringify(data, null, 2)}\n`;

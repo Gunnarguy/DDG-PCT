@@ -63,19 +63,23 @@ const elevationPasses = Math.abs(maxEleFt - 6146) < 100;
 console.log(`   ✓ ${elevationPasses ? 'PASS' : 'FAIL'}\n`);
 if (!elevationPasses) failures.push('active route high point is outside tolerance');
 
-// Check camp points
+// Check itinerary stops (camps plus transfer/finish points)
 const camps = hikeData.features.filter(f => f.properties.day >= 0);
-console.log('🏕️  CAMP POINTS:');
+const day3 = camps.find((stop) => stop.properties.day === 3);
+console.log('🏕️  ITINERARY STOPS:');
 console.log(`   Count: ${camps.length}`);
 console.log(`   First: ${camps[0].properties.name} (Day 0)`);
+console.log(`   Day 3: ${day3?.properties?.name} (${day3?.properties?.type})`);
 console.log(`   Last:  ${camps[camps.length-1].properties.name} (Day ${camps[camps.length-1].properties.day})\n`);
 if (
   camps.length !== 9 ||
   camps.at(-1)?.properties?.day !== 8 ||
   camps.at(-1)?.properties?.name !== 'Ash Camp pickup' ||
-  camps.some((camp) => camp.properties.name.includes('Kosk'))
+  camps.some((camp) => camp.properties.name.includes('Kosk')) ||
+  day3?.properties?.type !== 'Support Transfer' ||
+  day3?.properties?.packMode !== 'day-pack-supported'
 ) {
-  failures.push('camp sequence is not Day 0 plus eight Kosk-free legs ending at Ash Camp');
+  failures.push('itinerary is not Day 0 plus eight Kosk-free legs with a Day 3 Bartle support transfer');
 }
 
 // Check water sources

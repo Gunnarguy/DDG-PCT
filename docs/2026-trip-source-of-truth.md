@@ -2,11 +2,11 @@
 
 ## Burney Falls to Ash Camp, August 28–September 7, 2026
 
-**Audit date:** July 28, 2026
+**Audit date:** July 29, 2026
 
 **Controlling route version:** PCTA January 2026 centerline and 2026 mile markers
 
-**Status:** Evidence-backed planning baseline with explicit pre-trip verification gates
+**Status:** Evidence-backed supported-traverse plan with explicit booking and current-condition gates
 
 **Scope:** Transportation, route geometry, daily itinerary, elevation, land access, camps, water, weather, fire, smoke, communications, equipment, pickup, emergency planning, data architecture, and source hierarchy
 
@@ -16,8 +16,9 @@
 
 ## 1. Executive decision
 
-The intended trip is **not 82.9 miles** and it is **not the legacy 54.2-mile
-route that began south of the real Burney Falls access**.
+The intended trip is **not the 80.826-mile user-supplied Garmin source course**,
+**not the different 82.898-mile legacy app crop**, and **not the legacy
+54.2-mile active route that began south of the real Burney Falls access**.
 
 The defensible current route is:
 
@@ -35,12 +36,20 @@ The defensible current route is:
 - **Contingency/recovery day:** Sunday, September 6
 - **Return flight:** Monday, September 7
 
-The recommended baseline is **eight hiking days plus one true contingency day**, not nine hiking days consuming every available day.
+The recommended baseline is **eight hiking days plus one true contingency
+day**, with a prearranged support operation at Bartle Gap. Day 3 is a
+continuous **12.59-mile day-pack traverse** through the no-camping private
+corridor. A driver extracts the team at the exact Bartle Gap PCT crossing,
+transfers everyone to a legal off-corridor overnight, and returns them to that
+same crossing for Day 4. No PCT miles are skipped.
 
 That decision is driven by four real constraints:
 
 1. The legacy app started approximately **2.57 trail miles before** the actual Burney Falls trailhead.
-2. The legacy Day 3 camp at Kosk Spring appears to be on private land and cannot be assumed legal under the active PCTA timberland access rule.
+2. County parcel data confirms that Clark and Deadman are on Hearst holdings,
+   Kosk is on Pondosa Forest LLC, the historical mile-1444 saddle is on Shasta
+   Cascade Timberlands, and Bartle Gap is on Sierra Pacific land. None can be
+   used as an assumed overnight under the active PCTA rule.
 3. The route has a current brush/blowdown alert around Bartle Gap.
 4. An early September 7 flight makes September 6 a poor day to be depending on a remote pickup, a rough forest road, and a five-hour drive home.
 
@@ -48,13 +57,15 @@ That decision is driven by four real constraints:
 
 | Question | Current answer | Confidence | What can still change it |
 |---|---|---:|---|
-| Is the 82.9-mile route the trip? | No | Confirmed | Only a deliberate scope change |
+| Is either 80.826/82.898-mile route the trip? | No | Confirmed | Only a deliberate scope change |
 | Was the legacy 54.2-mile app route correct? | No | Confirmed | It included an unintended 2.57-mile southern segment; current bundles are cropped |
 | Is the intended route about 52 miles? | Yes, 51.84 official-centerline miles | High | Annual PCTA geometry updates or a reroute |
 | Is Ash Camp the pickup? | Yes | High | Road closure, fire closure, or deliberate pickup change |
 | Is September 5 the preferred finish? | Yes | Recommended | Team pace or itinerary choice |
 | Is September 6 available as a buffer? | Yes | High | A flight change or trip extension |
-| Is Kosk Spring a valid camp? | Do not assume so | High concern | Written/current land-manager confirmation |
+| Is Day 3 still a 14.53-mile full-pack leg? | No | Confirmed | It is replaced by the 12.59-mile supported Bartle traverse |
+| Is a support driver already booked? | No evidence yet | Operational gate | Confirmed driver, vehicle, route, gate, overnight, pickup, and re-entry |
+| Is the pre-private dry camp fully field-verified? | No | Desktop screen passed | On-foot vegetation, hazard, durable-surface, and three-person-capacity check |
 | Are listed water sources flowing now? | Unknown | Low | Current FarOut/PCT Water/ranger reports |
 | Are the United times fully confirmed? | No | Unresolved | Dan's United booking or manage-trip record |
 
@@ -74,7 +85,7 @@ describes a real-world verification gate.
 | Ash Camp is PCT mile 1472.0 | PCTA 2026 geometry places the route endpoint near **1472.50**; the PCTA public page rounds to 1472 | Secondary PCT miles need a source year and precision policy |
 | Day 1 is 8.2 miles | From the real Burney Falls trailhead to Rock Creek it is approximately **5.61 official miles** | Arrival-day effort was overstated |
 | Day 3 ends at Kosk Spring | Kosk does not map to public land in the current screening and is inside the private-land traversal | The “easy” nine-day itinerary may violate current access terms |
-| Total gain/loss is +6,709/−7,286 feet | The cropped intended Garmin profile recomputes to **+6,394/−6,881 feet** using the repository's smoothing method | Dashboard totals are stale |
+| Total gain/loss is +6,709/−7,286 feet | The active cropped profile recomputes to **+6,401/−6,896 feet** using one continuous centered five-point smoothing pass and a cumulative 10-foot threshold | Dashboard totals are stale |
 | All section profile data describe the active trip | One profile dataset still extends nearly 29 miles beyond Ash Camp | UI can show irrelevant or misleading terrain |
 | Water source miles are canonical | Coordinates are useful, but stored miles mix Halfmile 2023, PCTA 2025, and app route miles | Water ordering and “miles to water” can be wrong |
 | Every displayed camp is verified | Camp coordinates are mapped, but land legality and current site condition are not all verified | False reassurance |
@@ -92,6 +103,9 @@ describes a real-world verification gate.
 8. ✅ Separated static water locations from timestamped condition reports.
 9. ✅ Replaced the full-Section-O profile in active-trip views.
 10. ✅ Made September 5 the planned finish and September 6 the visible contingency day.
+11. ✅ Replaced the 14.53-mile Peavine-to-Moosehead full-pack leg with a 12.59-mile supported day-pack traverse to Bartle Gap.
+12. ✅ Screened the pre-private dry camp against current county parcels, USFS MVUM roads, USFS dispersed-camping setbacks, and USGS 3DEP slope/elevation.
+13. ✅ Labeled Bartle Gap as a support transfer rather than a campsite.
 
 ---
 
@@ -186,6 +200,28 @@ Direct services:
 
 The PCTA trailhead coordinate is about 0.027 mile from the centerline. The State Park access coordinate is an access/parking point, not a point snapped directly to the PCT. Connector distance must be represented separately if the team starts at the park rather than the Clark Creek Road trailhead.
 
+### User-supplied Garmin export audit
+
+The July 29 audit parsed the supplied TCX, two GPX files, two KML files, two
+JavaScript/JSON exports, CSV, and FIT:
+
+- TCX, `-2.gpx`, both KML variants, both JavaScript variants, and CSV contain
+  the same 6,916-point geometry/elevation stream.
+- Those seven files measure **80.826 miles** end to end.
+- The original GPX contains 6,991 points and a different elevation stream, but
+  still measures **80.826 miles** with the same endpoints.
+- Cropping either export family to the canonical Burney/Ash pins measures
+  **51.153 miles**. This is corroborating sampled geometry, not the controlling
+  PCTA centerline distance.
+- The FIT file is preserved by SHA-256 receipt but is not decoded by the
+  repository audit script.
+- Raw exported elevations produce **8,100–8,785 feet of apparent gain** on the
+  active crop. That spread is GPS sampling noise. These raw totals are not
+  allowed to overwrite the active thresholded elevation model.
+
+This resolves the old “82.9” ambiguity: **80.826 is the supplied Garmin course;
+82.898 is a different archived app crop; 51.844 PCTA miles is the trip.**
+
 ### Route-mile policy
 
 The product must show two different values:
@@ -228,22 +264,22 @@ Elevation gain/loss below is derived from the cropped Garmin profile using five-
 
 | Day/date | Leg | Daily mi | Cumulative mi | End PCT mi | Gain/loss | End elev. | Planning read | Field window |
 |---|---|---:|---:|---:|---:|---:|---|---:|
-| 1 · Sat Aug 29 | Burney Falls → Rock Creek | **5.61** | 5.61 | 1426.26 | +608 / −514 ft | ~3,043 ft | Arrival-day shakedown; dam/road crossing; water at end | 4–6 hr |
-| 2 · Sun Aug 30 | Rock Creek → Peavine Creek | **8.03** | 13.64 | 1434.29 | +2,006 / −276 ft | ~4,769 ft | Sustained-climb day; highest ascent total | 5.5–7.5 hr |
-| 3 · Mon Aug 31 | Peavine → Moosehead Creek | **14.53** | 28.17 | 1448.82 | +1,824 / −1,313 ft | ~5,285 ft | Longest and hardest day; private-land traverse; brush begins near end | 9–11 hr |
-| 4 · Tue Sep 1 | Moosehead → high saddle near 38N10 | **4.08** | 32.25 | 1452.90 | +987 / −146 ft | ~6,128 ft | Short but steep; route high point; dry camp | 3.5–5 hr |
-| 5 · Wed Sep 2 | High saddle → Alder/Star City | **3.79** | 36.04 | 1456.69 | +85 / −818 ft | ~5,394 ft | Brush/blowdown and knee-loading descent; water uncertain | 3–5 hr |
-| 6 · Thu Sep 3 | Alder/Star City → Deer Creek Spring | **6.35** | 42.39 | 1463.04 | +884 / −1,075 ft | ~5,197 ft | Mixed climbing/descending; verify first dependable water | 5–7 hr |
-| 7 · Fri Sep 4 | Deer Creek Spring → Butcherknife Creek | **5.60** | 47.99 | 1468.64 | +0 / −1,828 ft | ~3,360 ft | Biggest continuous descent; knees are the limiter | 4.5–6.5 hr |
-| 8 · Sat Sep 5 | Butcherknife → Ash Camp | **3.85** | **51.84** | 1472.50 | +0 / −912 ft | ~2,365–2,443 ft | Short pickup day; poison-oak awareness; rough-road pickup | 2.5–4 hr |
+| 1 · Sat Aug 29 | Burney Falls → Rock Creek | **5.61** | 5.61 | 1426.26 | +613 / −522 ft | ~3,043 ft | Arrival-day shakedown; dam/road crossing; water at end | 4–6 hr |
+| 2 · Sun Aug 30 | Rock Creek → pre-private USFS dry camp | **8.68** | 14.29 | 1434.94 | +2,199 / −276 ft | ~4,961 ft on trail; 4,902 ft at USGS camp cell | Largest climb; carry water into dry camp; ground-check candidate | 6–8 hr |
+| 3 · Mon Aug 31 | USFS dry camp → Bartle Gap exact PCT crossing | **12.59** | 26.88 | 1447.53 | +1,424 / −1,312 ft | ~5,082 ft | **Day packs; continuous private-land travel; timed support extraction; no camping/lingering** | 7–9 hr |
+| 4 · Tue Sep 1 | Bartle Gap exact re-entry → high saddle near 38N10 | **5.37** | 32.25 | 1452.90 | +1,209 / −157 ft | ~6,128 ft | Re-enter at exact pin; climb to route high point; dry camp | 4–6 hr |
+| 5 · Wed Sep 2 | High saddle → Alder/Star City | **3.79** | 36.04 | 1456.69 | +83 / −813 ft | ~5,394 ft | Brush/blowdown and knee-loading descent; water uncertain | 3–5 hr |
+| 6 · Thu Sep 3 | Alder/Star City → Deer Creek Spring | **6.35** | 42.39 | 1463.04 | +873 / −1,065 ft | ~5,197 ft | Mixed climbing/descending; verify first dependable water | 5–7 hr |
+| 7 · Fri Sep 4 | Deer Creek Spring → Butcherknife Creek | **5.60** | 47.99 | 1468.64 | +0 / −1,834 ft | ~3,360 ft | Biggest continuous descent; knees are the limiter | 4.5–6.5 hr |
+| 8 · Sat Sep 5 | Butcherknife → Ash Camp | **3.85** | **51.84** | 1472.50 | +0 / −917 ft | ~2,365–2,443 ft | Short pickup day; poison-oak awareness; rough-road pickup | 2.5–4 hr |
 | Buffer · Sun Sep 6 | No scheduled trail miles | — | — | — | — | — | Weather/fire/road/injury buffer and home recovery | — |
 
 ### Route totals
 
 - PCTA 2026 centerline distance: **51.84 miles**
 - Garmin cropped route distance: **51.66 miles**
-- Garmin-derived gain: **6,394 feet**
-- Garmin-derived loss: approximately **6,881 feet**
+- Garmin-derived gain: **6,401 feet**
+- Garmin-derived loss: approximately **6,896 feet**
 - Highest route elevation: approximately **6,146 feet**
 - Lowest finish-area elevation:
   - Garmin track: approximately **2,443 feet**
@@ -253,25 +289,31 @@ The Ash Camp elevation difference is an example of why the app must store source
 
 ### Difficulty ranking
 
-1. **Day 3:** 14.5 miles, 3,137 feet of combined vertical movement, private-land timing, and brush at the end.
-2. **Day 2:** 2,006 feet of climbing over 8 miles.
-3. **Day 7:** 1,828 feet of descent in 5.6 miles; likely the hardest day on knees.
-4. **Day 6:** 1,959 feet of combined vertical movement over 6.35 miles.
-5. **Day 4:** almost 1,000 feet of ascent in only 4.1 miles, ending at the high point.
+1. **Day 3:** 12.59 miles and 2,736 feet of combined vertical movement, plus a non-negotiable timed extraction. Day packs make this materially safer than the rejected full-pack version.
+2. **Day 2:** 2,199 feet of climbing over 8.68 miles, ending dry.
+3. **Day 6:** 1,938 feet of combined vertical movement over 6.35 miles.
+4. **Day 7:** 1,834 feet of descent in 5.6 miles; likely the hardest day on knees.
+5. **Day 1:** moderate terrain, but sleep and transportation make it operationally harder than the profile suggests.
+6. **Day 4:** 1,209 feet of ascent in 5.37 miles after exact-point re-entry, ending at the high point.
 6. **Day 5:** low mileage but descending through the current brush/blowdown alert area.
-7. **Day 1:** moderate terrain, but sleep and transportation make it operationally harder than the profile suggests.
-8. **Day 8:** short, downhill, and pickup-focused.
+7. **Day 8:** short, downhill, and pickup-focused.
+8. **Day 5:** lowest effort-mile score, but still brushy and descent-heavy.
 
-### Nine-day alternative
+### Why a ninth hiking day does not solve the corridor
 
-A nine-day plan that sleeps at Kosk is **not the default**. It becomes eligible only if all of the following are confirmed:
+The exact parcel audit found no legal default overnight inside the private
+corridor. Adding September 6 does not create a campsite. The sensible use of
+support is therefore:
 
-1. The exact Kosk campsite parcel and owner are identified.
-2. Camping is currently authorized there on August 31.
-3. Stove/use restrictions are understood.
-4. The team knowingly accepts having no full contingency day before the return flight.
+1. sleep legally before the private boundary;
+2. transfer overnight packs to the driver;
+3. hike every private-corridor PCT mile continuously with day packs;
+4. extract at Bartle Gap without camping or extended stopping;
+5. sleep legally off corridor; and
+6. return to the exact Bartle Gap crossing before Day 4.
 
-Without those four facts, the app must not present Kosk as a normal green-status camp.
+September 6 remains a true buffer. It is not consumed to legitimize a stale
+Kosk icon.
 
 ---
 
@@ -295,42 +337,97 @@ PCTA specifically warns that private timberland is common between McArthur-Burne
 
 The route was screened against:
 
-- [USGS PAD-US 4.1 Fee Managers](https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Fee_Managers_PADUS/FeatureServer/0)
-- PCTA's Sierra Pacific Industries holdings layer
-- PCTA 2026 centerline
+- Shasta County's current `ParcelAssesseeSitus` assessor layer;
+- the PCTA 2026 centerline;
+- the USFS Enterprise MVUM road layer; and
+- USGS 3DEP 1-meter Northern California terrain samples published March 24,
+  2026.
 
-This is useful screening, not a title report.
+This is a reproducible planning screen, not a title report or a field
+inspection.
+
+| Route landmark | PCTA 2026 mi | Current mapped owner | APN | Operational meaning |
+|---|---:|---|---|---|
+| Pre-private camp trail access | 1434.94 | United States Forest Service | 022-170-001 | Public-side final overnight candidate |
+| Clark Spring | 1438.43 | Hearst Forests | 016-070-001 | Private corridor; passage only under current rule |
+| Deadman Creek | 1440.47 | Hearst Forests | 016-050-007 | Private corridor; passage only |
+| Kosk Spring | 1442.01 | Pondosa Forest LLC | 016-050-004 | Private; stale campsite icon is not permission |
+| Historical PCT 1444 saddle site | ~1444.00 | Shasta Cascade Timberlands | 016-030-012 | Private; not an overnight |
+| Bartle Gap crossing | 1447.53 | Sierra Pacific Industries | 015-140-003 | Timed pickup/re-entry only; no camping |
+| Moosehead area | 1448.81 | United States Forest Service | 015-140-001 | Public again, but no longer needed as Day 3 camp |
+
+The continuously private route begins near trip mile **14.923** and ends near
+trip mile **26.953**, approximately **12.03 miles**. That is why an unsupported
+legal split does not exist in the middle.
+
+### Pre-private camp candidate
+
+The selected candidate is `41.068437, -121.789562`; its on-trail access point
+is approximately `41.06802433, -121.79029050`.
+
+| Screen | Result |
+|---|---:|
+| Route/PCTA mile | 14.287 / 1434.940 |
+| Parcel | USFS APN 022-170-001 |
+| Distance from PCT | ~250 ft |
+| Distance from mapped MVUM road | ~626 ft |
+| Distance from mapped private property | ~0.363 mi |
+| USGS 3DEP elevation | ~4,902 ft |
+| Mean / maximum sampled slope | 5.0% / 7.3% |
+
+The screen applies the USFS planning rules of at least 200 feet from trail,
+road, water, and meadow where applicable, plus at least one-quarter mile from
+private property. It does **not** prove that the ground is durable, clear of
+deadfall, hazard-free, or large enough for three shelters. That final check
+must be made on foot before the team relies on the pin.
 
 | Proposed camp | Current screen | Planning status |
 |---|---|---|
 | Rock Creek | USFS/open-access mapping | Acceptable pending current site check |
-| Peavine Creek | USFS/open-access mapping | Acceptable pending current site/water check |
-| Kosk Spring | Not mapped as public land | **Do not use without confirmation** |
-| Moosehead Creek | USFS/open-access mapping | Acceptable pending current site/water check |
+| Pre-private dry camp | USFS parcel plus setback/slope screen passed | Baseline candidate; ground-check required |
+| Clark/Deadman/Kosk/old mile 1444 | Current county parcels are private | Passage only; no baseline camping |
+| Bartle Gap | Sierra Pacific parcel | Support transfer only; no camping/extended stop |
 | High saddle near 38N10 | USFS/open-access mapping | Acceptable as a dry-camp candidate |
 | Alder/Star City | USFS/open-access mapping | Acceptable pending site/water check |
 | Deer Creek Spring | USFS/open-access mapping | Acceptable pending site/water check |
 | Butcherknife Creek | USFS/open-access mapping | Acceptable pending site/water check |
 | Ash Camp | USFS/open-access mapping | Trailhead/pickup; current road check required |
 
-The screening shows a substantial private/unmapped traversal between Peavine and the Bartle Gap/Moosehead area. That is why Day 3 cannot be casually split at Kosk.
+### Bartle Gap road reality
+
+The current USFS MVUM layer designates public approaches in the Peavine and
+Bartle/Moosehead areas as year-round routes, with a mixture of passenger-car
+and high-clearance/native or gravel segments. It does **not** make the
+private-middle road a public shortcut. Historical drivers have also reported a
+seasonal gate roughly 1.3 road miles from the PCT.
+
+Therefore the app must not promise “Mikaela drives to Deadman.” The baseline
+requires a driver who has physically verified the legal Bartle approach, gate,
+turnaround, and exact PCT crossing. If the vehicle cannot reach the agreed
+transfer point, the team does not start the Day 3 traverse under this plan.
 
 ### Required confirmation calls
 
 Ask the McCloud Ranger Station and PCTA:
 
-1. Is camping at the exact Kosk Spring coordinate legal on August 31, 2026?
-2. Which owner controls the parcel?
-3. Are current private timber restrictions in force?
-4. Is brief water collection at Clark, Deadman, or Kosk allowed during continuous passage?
-5. Is Moosehead Creek camping on public USFS land at the mapped coordinate?
-6. Is camping allowed at the high saddle and Alder/Star City coordinates?
+1. Are the current private timber restrictions still in force on August 31?
+2. Is brief water collection at Clark, Deadman, or Kosk compatible with the
+   continuous-passage rule, and are any sources off the allowed PCT corridor?
+3. Is Bartle Gap Road/39N05 legally open to the planned vehicle on August 31
+   and September 1?
+4. Where is the current gate, if any, and what road walk would it add?
+5. Can the selected driver stop and turn around at the exact Bartle PCT
+   crossing without trespassing or obstructing operations?
+6. Are the high-saddle and remaining USFS camp areas currently open to
+   dispersed camping?
 
 **McCloud Ranger Station:** `(530) 964-2184`
 
 **Shasta-Trinity headquarters:** `(530) 226-2500`
 
 **PCTA main office:** `(916) 285-1846`
+
+**Burney Taxi:** `(530) 605-7950`
 
 Record the date, person, agency, exact question, answer, and any order number in Supabase. Do not reduce a phone answer to an unlabeled green check.
 
@@ -412,24 +509,33 @@ Route mile begins at the real Burney Falls trailhead.
 
 #### Day 2
 
-- Rock Creek to Peavine is a climbing day.
+- Rock Creek to the pre-private USFS camp is the largest climbing day.
 - Upper Jake and Screwdriver are possible intermediate sources.
-- Peavine is seasonal and cannot be the sole plan without a recent report.
+- The selected camp is dry. Peavine is seasonal and cannot be the sole plan
+  without a recent report and legal collection interpretation.
+- Leave the last confirmed legal source with enough water for the remaining
+  Day 2 miles, dinner, overnight, breakfast, and the Day 3 departure reserve.
 
 #### Day 3
 
 - This is the critical water-and-land day.
-- Peavine to Moosehead is approximately 14.5 miles.
+- The pre-private camp to Bartle Gap is **12.59 miles**.
+- The team carries day packs; the driver carries overnight packs and stages
+  treated water at Bartle Gap.
 - Clark, Deadman, and Kosk are mapped, but the route crosses restricted private holdings.
 - Confirm whether collection is allowed and how long it takes.
-- In hot conditions, plan capacity from the last confirmed legal source to Moosehead rather than assuming every mapped spring is available.
+- In hot conditions, plan capacity from the last confirmed legal source to
+  Bartle Gap rather than assuming a private-corridor spring is available.
+- The driver must have enough reserve water for all three hikers even if every
+  middle source is unusable.
 
 #### Days 4–6
 
 - High saddle is a dry camp.
 - Alder/Star City had a positive June 15 report, but the parser lost its date
   metadata and it still needs a pre-trip confirmation.
-- The team may need to carry from Moosehead through the saddle until a verified source.
+- Day 4 starts with driver-staged water at Bartle Gap. Carry enough through the
+  high-saddle dry camp until a currently verified source.
 - Gold Creek must not be treated as a routine fallback; historical notes describe private-property/no-trespassing concerns on the access.
 
 #### Days 7–8
@@ -450,7 +556,11 @@ The app should calculate, per person:
 - whether the source is on private/restricted land; and
 - whether its report is stale.
 
-For Day 3, a **4–5 liter capacity per person** may be appropriate in hot weather, but the actual carry must be set from the final forecast, verified source status, individual consumption, and team experience. Capacity is not the same as a requirement to leave camp carrying every container full.
+For the Day 2 dry camp plus Day 3 traverse, **4–5 liter capacity per person**
+may be appropriate in hot weather, but the actual carry must be set from the
+final forecast, verified source status, driver water cache, individual
+consumption, and team experience. Capacity is not the same as a requirement to
+leave every container full.
 
 Carry two treatment methods across the group:
 
@@ -471,11 +581,9 @@ The [PCTA alert](https://closures.pcta.org/closure/jR2pac6ijlObt8Z2eNGG) covers 
 - likely blowdown;
 - ongoing/planned maintenance in summer 2026.
 
-This overlaps:
-
-- the end of Day 3;
-- all of Day 4; and
-- all of Day 5.
+This begins near the Bartle transfer and overlaps Day 4 and Day 5. The Day 3
+pickup clock must account for slower travel if the maintained/unmaintained
+boundary has shifted south.
 
 Low mileage on Days 4 and 5 is intentional.
 
@@ -669,6 +777,80 @@ Fallback options must be prearranged:
 3. A known trail angel who explicitly accepts the Ash Camp road and date.
 4. Emergency services only for an actual emergency, not routine transportation.
 
+### Day 3 supported-traverse operating plan
+
+This is the plain-English version Dan, Drew, Gunnar, the driver, and Mikaela
+must all agree to:
+
+**Day 2**
+
+1. The team reaches the screened USFS dry camp near route mile 14.287.
+2. Overnight packs remain with the hikers through that night.
+3. The team sends the exact camp pin, health state, water state, and Day 3 go/no-go
+   by inReach.
+
+**Day 3 morning**
+
+1. Start around 6:00–6:30 a.m.
+2. At the agreed public-side transfer location, hand the driver all equipment
+   not required for the day traverse.
+3. Every hiker still carries navigation, satellite communications, water,
+   food, insulation, rain layer, first aid, headlamp, fire/smoke protection,
+   and an emergency bivy. “Day pack” does not mean helpless if the vehicle
+   fails.
+4. Enter the private corridor only when the driver has confirmed the Bartle
+   road, gate, exact pin, and arrival time.
+
+**On trail**
+
+1. Hike continuously; no camping, stove use, smoking, or extended stops.
+2. Treat Clark, Deadman, Kosk, and the old mile-1444 icons as sources/landmarks,
+   not camps.
+3. Send departure, midpoint, three-miles-out, and arrival messages by inReach.
+4. The driver should be parked and ready before the hikers arrive; the hikers
+   should not be waiting on private land.
+
+**Bartle Gap**
+
+- Exact PCT pin: `41.17064891, -121.81993729`
+- Route/PCT mile: `26.878 / 1447.531`
+- Target hiker window: approximately **1:30–3:30 p.m.**
+- Driver ready-by time: approximately **1:00 p.m.**
+- The group loads immediately and leaves the private parcel.
+- Overnight is at a prebooked legal campground/lodging location, not at Bartle.
+- Overnight packs, food, water, and charging gear reunite with the team.
+
+**Day 4**
+
+1. The driver returns all three hikers to the exact Bartle PCT pin.
+2. The team records a re-entry check-in.
+3. Everyone resumes northbound from the point where Day 3 ended. No trail miles
+   are skipped.
+
+**No-contact/no-show fallback**
+
+If the driver is not at Bartle and cannot be reached, the team does not wait or
+camp on the private parcel. It continues approximately 0.91 mile north to the
+desktop-screened emergency USFS candidate near route mile **27.791** at
+`41.177527, -121.827003`, sends an inReach escalation, and uses carried
+emergency bivy gear if necessary. That point is USFS APN 015-140-002, about
+474 feet from trail, 508 feet from mapped road, and 0.284 mile from mapped
+private property; it still requires an on-foot ground check before the trip.
+This is an emergency continuity plan, not the scheduled itinerary.
+
+**Hard go/no-go**
+
+The team does not start this version of the trip unless the support assignment
+is accepted by a named driver and the Bartle approach/gate is physically
+verified. A Facebook “maybe,” an unreturned taxi voicemail, or a map line is not
+a booking.
+
+Burney Taxi is the only named commercial contact in PCTA's regional directory:
+`(530) 605-7950`. Confirm licensing, insurance, commercial-use requirements,
+vehicle clearance, the two-day pickup/re-entry assignment, and the legal
+overnight transfer. The FarNorCal PCT trail-angel group is a secondary
+community lead, not a guaranteed service.
+
 ---
 
 ## 11. Bailout and access points
@@ -680,7 +862,8 @@ Only verified access points belong in the default app.
 | 1420.65 | Burney Falls Trailhead | Dirt/gravel; generally passenger accessible | Start/abort |
 | 1420.66 | Burney Falls State Park | Paved | Start/abort/facilities |
 | 1426.33 | Rock Creek Falls Trailhead | Dirt/gravel; generally passenger accessible | Day 1 bailout or revised start |
-| 1447.53 | Bartle Gap Access Point | Dirt/gravel; high-clearance recommended | Critical Day 3 bailout |
+| 1447.53 | Bartle Gap Access Point | MVUM-designated approaches include high-clearance/native or gravel segments; current gate must be physically checked | Planned Day 3 transfer and Day 4 re-entry |
+| ~1448.44 | Post-Bartle emergency USFS candidate | Near mapped road; not a routine vehicle promise | No-show holding/bivy point after leaving private land |
 | 1472.45–1472.50 | Ash Camp | Dirt/gravel; high-clearance recommended | Finish/pickup |
 
 Road crossings shown in a GPX are not automatically safe pickup points. “Near Road 38N10” remains a provisional emergency access concept until road ownership, gates, condition, and vehicle approach are verified.
@@ -717,7 +900,7 @@ Use the [National Weather Service API](https://www.weather.gov/documentation/ser
 Query representative route zones, not one town:
 
 1. Burney/low southern route;
-2. Peavine/Kosk;
+2. pre-private dry camp/private corridor;
 3. Bartle Gap/high saddle;
 4. Deer/Butcherknife descent; and
 5. Ash Camp/McCloud River.
@@ -904,7 +1087,11 @@ Minimum routine:
 
 Message template:
 
-`DDG OK | Day 3 | Camped Moosehead | 41.xxxxx,-121.xxxxx | all 3 OK | water X L | tomorrow high saddle | next check 0700`
+Day 3 examples:
+
+`DDG OK | D3 DEPART | USFS camp 41.06844,-121.78956 | 3 OK | water X L each | driver confirmed Bartle 1300`
+
+`DDG OK | D3 BARTLE PICKUP | 41.17065,-121.81994 | 3 OK | with driver | legal overnight [name] | re-entry [time]`
 
 Emergency messages should state:
 
@@ -955,7 +1142,9 @@ Plan for:
 
 A common planning range is about 1.5–2 pounds of food per person per day, which implies roughly **13.5–18 pounds per person for nine days of food**. That is a starting estimate, not a prescription. The app should calculate calories, weight, volume, allergens, and ownership per meal.
 
-This food load is one reason Day 3 must be taken seriously.
+The driver can carry Day 3 dinner/breakfast and overnight food, reducing the
+traverse load. Every hiker still carries enough calories for the traverse plus
+an overnight no-show emergency.
 
 ### Bear storage
 
@@ -982,7 +1171,8 @@ Per team:
 - chemical backup;
 - clean/dirty separation;
 - at least one spare cap/gasket;
-- individual capacity suitable for a hot 14.5-mile day; and
+- individual capacity suitable for a dry camp followed by a hot 12.59-mile
+  day-pack traverse; and
 - clearly assigned shared-water responsibilities.
 
 ### Knee and foot preparation
@@ -991,9 +1181,9 @@ The route is not difficult only because of distance.
 
 Train for:
 
-- Day 2's sustained ascent;
-- Day 3's 14.5 loaded miles;
-- Day 7's 1,828-foot descent;
+- Day 2's 8.68-mile full-pack ascent and dry-camp carry;
+- Day 3's 12.59-mile day-pack distance with a firm arrival window;
+- Day 7's 1,834-foot descent;
 - consecutive days;
 - uneven/brushy tread; and
 - full pack weight.
@@ -1060,7 +1250,8 @@ Mikaela and one additional home contact need:
 
 Examples that require reassessment:
 
-- Peavine or Moosehead is dry;
+- the Day 2 dry-camp carry cannot be supported by current water information;
+- the named driver, Bartle road, gate, or exact transfer point is not confirmed;
 - private-land access terms make the Day 3 traverse infeasible;
 - Bartle Gap brush reduces pace below the pickup plan;
 - AQI reaches an unhealthy level for the team;
@@ -1087,6 +1278,8 @@ Examples that require reassessment:
 | AQI/smoke | [AirNow](https://fire.airnow.gov/) |
 | Fire incidents | [CAL FIRE](https://www.fire.ca.gov/incidents), [NIFC](https://www.nifc.gov/fire-information/maps), incident agency |
 | Elevation reference | [USGS 3DEP/EPQS](https://epqs.nationalmap.gov/v1/docs) |
+| Parcel ownership screen | [Shasta County ParcelAssesseeSitus ArcGIS service](https://gis.shastacounty.gov/arcgis/rest/services/OpenData/ParcelAssesseeSitus/MapServer/0) |
+| Motor-vehicle designation screen | [USFS Enterprise MVUM ArcGIS service](https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_MVUM_02/MapServer/1) |
 | Flight | United booking/manage-trip record |
 
 ### Tier 2: operational field intelligence
@@ -1097,7 +1290,7 @@ Examples that require reassessment:
 | Water report | [PCT Water Report](https://www.pcta.org/discover-the-trail/backcountry-basics/water/pct-water-report/) |
 | Trail reports | [PCTA trail conditions](https://www.pcta.org/discover-the-trail/trail-conditions/) |
 | Fire notifications | Watch Duty |
-| Parcel screening | USGS PAD-US, OnX, CalTopo public-land layers |
+| Parcel corroboration | PAD-US, OnX, and CalTopo public-land layers; county assessor screen controls this audit |
 | Road condition | Ranger station plus recent local observation |
 
 ### Tier 3: context only
@@ -1475,13 +1668,18 @@ An offline app must show the age of its last data. It must never look “live”
 
 - Obtain Dan's United booking.
 - Reserve Burney Falls vehicle entry for August 29 if using the park entrance.
-- Call McCloud Ranger Station about Kosk/private land, camps, and 38N11.
+- Call Burney Taxi and at least one backup driver about the August 31 Bartle
+  pickup, legal overnight transfer, and September 1 exact-point re-entry.
+- Call McCloud Ranger Station about Bartle Road/39N05, current gate,
+  private-corridor passage, dispersed camps, and 38N11.
 - Confirm every person's exact legal name/email/access account.
 - Confirm the exact State Park access/drop-off procedure for the canonical Burney Falls PCT start.
 
 ### By August 7
 
 - Lock the eight-day itinerary.
+- Put the accepted driver, vehicle, road route, exact pins, pickup windows,
+  overnight location, cost, and no-contact fallback in the shared plan.
 - Lock shelter, sleep, food-storage, stove/stoveless, water capacity, and satellite device.
 - Export PCTA 2026 route to Garmin/CalTopo/Gaia/FarOut-compatible workflows.
 - Verify the regenerated web and iOS datasets remain synchronized in CI.
@@ -1489,10 +1687,12 @@ An offline app must show the age of its last data. It must never look “live”
 ### By August 15
 
 - Complete a full-pack consecutive-day training test.
-- Confirm Day 3 capability.
+- Complete one 9-mile/2,200-foot full-pack day and one 13-mile timed day-pack
+  day; both must finish without gait-changing knee/foot pain.
 - Weigh every pack.
 - Test filters, satellite messages, power, and offline maps.
-- Confirm Mikaela's vehicle and pickup approach.
+- Confirm the Bartle support vehicle/driver and Mikaela's Ash Camp vehicle and
+  pickup approach separately.
 
 ### August 22–23
 
@@ -1539,22 +1739,28 @@ An offline app must show the age of its last data. It must never look “live”
 
 ---
 
-## 21. Unresolved gates
+## 21. Operational gates
 
-These must remain visually prominent in the product.
+The route is resolved. These are real-world assignments that still must be
+completed; they must remain visible without making the itinerary look
+mathematically or legally ambiguous.
 
 | Gate | Owner | Deadline | Current state |
 |---|---|---|---|
 | Verify UA481 and UA1317 booking/local times | Dan/Gunnar | Immediate | Open |
 | Confirm State Park drop-off/access procedure at the canonical start | Team/Mikaela | Aug 7 | Open |
 | Reserve State Park vehicle entry if needed | Gunnar | Immediate | Open |
-| Verify Kosk/private-land camping legality | Gunnar/Ranger/PCTA | Aug 7 | Open/high priority |
-| Verify Moosehead and remaining camp legality | Gunnar/Ranger | Aug 7 | Open |
+| Book named Bartle support driver and backup | Gunnar | Immediate | Open/required before route go |
+| Verify Bartle approach, current gate, turnaround, exact pin, and commercial-use legality | Driver/Gunnar/Ranger | Aug 7, recheck Aug 27 | Open/high priority |
+| Book legal off-corridor Day 3 overnight and exact Day 4 re-entry time | Gunnar/driver | Aug 7 | Open/high priority |
+| Ground-check pre-private and emergency post-Bartle candidates | Team/qualified local | Aug 15 | Desktop screen complete; field check open |
+| Confirm private-corridor water-collection interpretation | Gunnar/PCTA/land manager | Aug 7 | Open; baseline carry must work without it |
+| Verify remaining USFS camp legality/capacity | Gunnar/Ranger | Aug 15 | Open |
 | Verify Lake Britton Dam crossing | Gunnar/PG&E/PCTA | Aug 22 | Open |
 | Verify Bartle Gap condition after summer work | Gunnar/PCTA/FarOut | Aug 27 | Open |
 | Verify every overnight water source | Team | Aug 27–28 | Open |
 | Verify 38N11 and Ash Camp road | Mikaela/Gunnar/Ranger | Sep 3–4 | Open |
-| Confirm high-clearance pickup vehicle | Mikaela | Aug 15 | Open |
+| Confirm high-clearance Bartle and Ash Camp vehicles | Driver/Mikaela | Aug 15 | Open |
 | Confirm satellite communicator/subscription | Team | Aug 15 | Open |
 | Confirm September 5 primary/September 6 backup pickup | Team/Mikaela | Aug 15 | Proposed |
 | Update web/iOS route and itinerary data | Engineering | Complete | Implemented and validated; future source changes must rerun both integrity checks |
@@ -1563,9 +1769,17 @@ These must remain visually prominent in the product.
 
 ## 22. Final controlling statement
 
-As of July 28, 2026, the best-supported trip definition is:
+As of July 29, 2026, the best-supported trip definition is:
 
-> Dan, Drew, and Gunnar will hike northbound from the actual Burney Falls PCT access near PCTA 2026 mile 1420.65 to Ash Camp near mile 1472.50. The route is approximately 51.84 official PCT miles. The preferred itinerary is August 29 through September 5, with September 6 reserved for contingency and recovery before the September 7 flight. The current Kosk Spring overnight is not valid unless land-access permission is confirmed; the default plan therefore includes a hard 14.53-mile Peavine-to-Moosehead day. Ash Camp is the defined pickup point, not an arbitrary 52-mile mark.
+> Dan, Drew, and Gunnar will hike northbound from the actual Burney Falls PCT
+> access near PCTA 2026 mile 1420.65 to Ash Camp near mile 1472.50. The route is
+> 51.844 official PCT miles over eight hiking days, August 29 through September
+> 5, with September 6 reserved for contingency and recovery. Day 2 ends at the
+> screened pre-private USFS dry camp. Day 3 is a 12.591-mile continuous
+> private-corridor traverse with day packs, ending at the exact Bartle Gap
+> pickup pin. A prebooked driver transfers the team to a legal overnight and
+> returns everyone to the same pin for Day 4, preserving every PCT mile. Ash
+> Camp is the defined final pickup—not an arbitrary 52nd mile.
 
 The website and iOS app are built outward from that statement. Every volatile
 condition must continue to carry its source, observation age, retrieval status,

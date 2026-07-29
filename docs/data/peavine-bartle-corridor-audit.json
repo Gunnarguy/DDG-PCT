@@ -1,0 +1,822 @@
+{
+  "generatedAt": "2026-07-29T06:10:43.933Z",
+  "source": "https://gis.shastacounty.gov/arcgis/rest/services/OpenData/ParcelAssesseeSitus/MapServer/0/query",
+  "dataPath": "pct-hike-viz/public/data/hike_data.json",
+  "pctStart": 1420.653,
+  "bounds": [
+    -121.84967717923224,
+    41.04622872710228,
+    -121.76097415551543,
+    41.189535072296856
+  ],
+  "parcelCount": 73,
+  "mvumRoadCount": 26,
+  "ownershipSegments": [
+    {
+      "classification": "USFS/public",
+      "owner": "UNITED STATES OF AMERICA",
+      "apn": "022-170-006",
+      "startRouteMile": 13.002,
+      "endRouteMile": 13.269,
+      "startPctMile": 1433.655,
+      "endPctMile": 1433.922,
+      "startCoordinate": [
+        -121.77669597789645,
+        41.05622872710228
+      ],
+      "endCoordinate": [
+        -121.78102405741811,
+        41.05800770223141
+      ],
+      "distanceMiles": 0.267
+    },
+    {
+      "classification": "USFS/public",
+      "owner": "UNITED STATES OF AMERICA",
+      "apn": "022-170-005",
+      "startRouteMile": 13.28,
+      "endRouteMile": 13.482,
+      "startPctMile": 1433.933,
+      "endPctMile": 1434.135,
+      "startCoordinate": [
+        -121.78121902048588,
+        41.058075008913875
+      ],
+      "endCoordinate": [
+        -121.784583684057,
+        41.059045968577266
+      ],
+      "distanceMiles": 0.202
+    },
+    {
+      "classification": "USFS/public",
+      "owner": "UNITED STATES FOREST SERVICE",
+      "apn": "022-170-001",
+      "startRouteMile": 13.49,
+      "endRouteMile": 14.91,
+      "startPctMile": 1434.143,
+      "endPctMile": 1435.563,
+      "startCoordinate": [
+        -121.78470212034881,
+        41.059125093743205
+      ],
+      "endCoordinate": [
+        -121.79877575486898,
+        41.07338740490377
+      ],
+      "distanceMiles": 1.42
+    },
+    {
+      "classification": "SPI/private",
+      "owner": "SIERRA PACIFIC LAND & TIMBER COMPANY",
+      "apn": "022-020-006",
+      "startRouteMile": 14.923,
+      "endRouteMile": 15.463,
+      "startPctMile": 1435.576,
+      "endPctMile": 1436.116,
+      "startCoordinate": [
+        -121.79890701547265,
+        41.07354867272079
+      ],
+      "endCoordinate": [
+        -121.79902260191739,
+        41.07955841347575
+      ],
+      "distanceMiles": 0.54
+    },
+    {
+      "classification": "SPI/private",
+      "owner": "SIERRA PACIFIC LAND & TIMBER COMPANY",
+      "apn": "016-070-011",
+      "startRouteMile": 15.473,
+      "endRouteMile": 15.933,
+      "startPctMile": 1436.126,
+      "endPctMile": 1436.586,
+      "startCoordinate": [
+        -121.79889980703592,
+        41.07967643067241
+      ],
+      "endCoordinate": [
+        -121.7990530282259,
+        41.085873590782285
+      ],
+      "distanceMiles": 0.46
+    },
+    {
+      "classification": "SPI/private",
+      "owner": "SIERRA PACIFIC LAND & TIMBER COMPANY",
+      "apn": "022-020-003",
+      "startRouteMile": 15.945,
+      "endRouteMile": 15.964,
+      "startPctMile": 1436.598,
+      "endPctMile": 1436.617,
+      "startCoordinate": [
+        -121.79919485002756,
+        41.08600837178528
+      ],
+      "endCoordinate": [
+        -121.79915486834943,
+        41.08621699735522
+      ],
+      "distanceMiles": 0.019
+    },
+    {
+      "classification": "SPI/private",
+      "owner": "SIERRA PACIFIC LAND & TIMBER COMPANY",
+      "apn": "016-070-011",
+      "startRouteMile": 15.969,
+      "endRouteMile": 15.973,
+      "startPctMile": 1436.622,
+      "endPctMile": 1436.626,
+      "startCoordinate": [
+        -121.79906107485294,
+        41.086218589916825
+      ],
+      "endCoordinate": [
+        -121.79903450421989,
+        41.086271395906806
+      ],
+      "distanceMiles": 0.004
+    },
+    {
+      "classification": "SPI/private",
+      "owner": "SIERRA PACIFIC LAND & TIMBER COMPANY",
+      "apn": "022-020-003",
+      "startRouteMile": 15.98,
+      "endRouteMile": 16.623,
+      "startPctMile": 1436.633,
+      "endPctMile": 1437.276,
+      "startCoordinate": [
+        -121.79911321029067,
+        41.086340630427
+      ],
+      "endCoordinate": [
+        -121.79932032711804,
+        41.09344873577356
+      ],
+      "distanceMiles": 0.643
+    },
+    {
+      "classification": "SPI/private",
+      "owner": "SIERRA PACIFIC LAND & TIMBER COMPANY",
+      "apn": "016-070-011",
+      "startRouteMile": 16.629,
+      "endRouteMile": 16.635,
+      "startPctMile": 1437.282,
+      "endPctMile": 1437.288,
+      "startCoordinate": [
+        -121.79926190525293,
+        41.093526938930154
+      ],
+      "endCoordinate": [
+        -121.79924338124692,
+        41.093618888407946
+      ],
+      "distanceMiles": 0.006
+    },
+    {
+      "classification": "SPI/private",
+      "owner": "SIERRA PACIFIC LAND & TIMBER COMPANY",
+      "apn": "022-020-003",
+      "startRouteMile": 16.645,
+      "endRouteMile": 16.649,
+      "startPctMile": 1437.298,
+      "endPctMile": 1437.302,
+      "startCoordinate": [
+        -121.79929266683757,
+        41.093752244487405
+      ],
+      "endCoordinate": [
+        -121.79929744452238,
+        41.09381519258022
+      ],
+      "distanceMiles": 0.004
+    },
+    {
+      "classification": "Hearst/private",
+      "owner": "HEARST FORESTS LLC",
+      "apn": "016-070-001",
+      "startRouteMile": 16.658,
+      "endRouteMile": 16.704,
+      "startPctMile": 1437.311,
+      "endPctMile": 1437.357,
+      "startCoordinate": [
+        -121.79927003569901,
+        41.09394050203264
+      ],
+      "endCoordinate": [
+        -121.7992774117738,
+        41.09459009952843
+      ],
+      "distanceMiles": 0.046
+    },
+    {
+      "classification": "SPI/private",
+      "owner": "SIERRA PACIFIC LAND & TIMBER COMPANY",
+      "apn": "022-020-003",
+      "startRouteMile": 16.708,
+      "endRouteMile": 16.751,
+      "startPctMile": 1437.361,
+      "endPctMile": 1437.404,
+      "startCoordinate": [
+        -121.79930683225393,
+        41.09464324079454
+      ],
+      "endCoordinate": [
+        -121.79941797628999,
+        41.09513869509101
+      ],
+      "distanceMiles": 0.043
+    },
+    {
+      "classification": "Hearst/private",
+      "owner": "HEARST FORESTS LLC",
+      "apn": "016-070-001",
+      "startRouteMile": 16.759,
+      "endRouteMile": 17.796,
+      "startPctMile": 1437.412,
+      "endPctMile": 1438.449,
+      "startCoordinate": [
+        -121.79928126744926,
+        41.09519049525261
+      ],
+      "endCoordinate": [
+        -121.78727519698441,
+        41.10214068554342
+      ],
+      "distanceMiles": 1.037
+    },
+    {
+      "classification": "Shasta Cascade/private",
+      "owner": "SHASTA CASCADE TIMBERLANDS LLC",
+      "apn": "016-070-024",
+      "startRouteMile": 17.808,
+      "endRouteMile": 18.271,
+      "startPctMile": 1438.461,
+      "endPctMile": 1438.924,
+      "startCoordinate": [
+        -121.78704301826656,
+        41.10218879766762
+      ],
+      "endCoordinate": [
+        -121.78455166518688,
+        41.10751315020025
+      ],
+      "distanceMiles": 0.463
+    },
+    {
+      "classification": "Hearst/private",
+      "owner": "HEARST FORESTS LLC",
+      "apn": "016-050-007",
+      "startRouteMile": 18.29,
+      "endRouteMile": 20.016,
+      "startPctMile": 1438.943,
+      "endPctMile": 1440.669,
+      "startCoordinate": [
+        -121.78483145311475,
+        41.10767743550241
+      ],
+      "endCoordinate": [
+        -121.77809424698353,
+        41.12211459316313
+      ],
+      "distanceMiles": 1.726
+    },
+    {
+      "classification": "Hearst/private",
+      "owner": "HEARST FORESTS LLC",
+      "apn": "016-050-002",
+      "startRouteMile": 20.032,
+      "endRouteMile": 20.215,
+      "startPctMile": 1440.685,
+      "endPctMile": 1440.868,
+      "startCoordinate": [
+        -121.77830915898085,
+        41.12227460369468
+      ],
+      "endCoordinate": [
+        -121.77737474441528,
+        41.1245115660131
+      ],
+      "distanceMiles": 0.183
+    },
+    {
+      "classification": "Shasta Cascade/private",
+      "owner": "SHASTA CASCADE TIMBERLANDS LLC",
+      "apn": "016-050-003",
+      "startRouteMile": 20.226,
+      "endRouteMile": 20.339,
+      "startPctMile": 1440.879,
+      "endPctMile": 1440.992,
+      "startCoordinate": [
+        -121.7771750036627,
+        41.12457468174398
+      ],
+      "endCoordinate": [
+        -121.77603925578296,
+        41.12590178847313
+      ],
+      "distanceMiles": 0.113
+    },
+    {
+      "classification": "Hearst/private",
+      "owner": "HEARST FORESTS LLC",
+      "apn": "016-050-002",
+      "startRouteMile": 20.35,
+      "endRouteMile": 20.959,
+      "startPctMile": 1441.003,
+      "endPctMile": 1441.612,
+      "startCoordinate": [
+        -121.77585870958865,
+        41.12597110681236
+      ],
+      "endCoordinate": [
+        -121.7729081120342,
+        41.131691923365
+      ],
+      "distanceMiles": 0.609
+    },
+    {
+      "classification": "Pondosa/private",
+      "owner": "PONDOSA FOREST LLC",
+      "apn": "016-050-004",
+      "startRouteMile": 20.973,
+      "endRouteMile": 21.391,
+      "startPctMile": 1441.626,
+      "endPctMile": 1442.044,
+      "startCoordinate": [
+        -121.77265053614974,
+        41.13176149316132
+      ],
+      "endCoordinate": [
+        -121.7711519356817,
+        41.137113170698285
+      ],
+      "distanceMiles": 0.418
+    },
+    {
+      "classification": "Shasta Cascade/private",
+      "owner": "SHASTA CASCADE TIMBERLANDS LLC",
+      "apn": "016-030-007",
+      "startRouteMile": 21.396,
+      "endRouteMile": 21.782,
+      "startPctMile": 1442.049,
+      "endPctMile": 1442.435,
+      "startCoordinate": [
+        -121.77117867395282,
+        41.13718441687524
+      ],
+      "endCoordinate": [
+        -121.7727009113878,
+        41.14178909920156
+      ],
+      "distanceMiles": 0.386
+    },
+    {
+      "classification": "Hearst/private",
+      "owner": "HEARST FORESTS LLC",
+      "apn": "016-030-005",
+      "startRouteMile": 21.795,
+      "endRouteMile": 22.732,
+      "startPctMile": 1442.448,
+      "endPctMile": 1443.385,
+      "startCoordinate": [
+        -121.77292956970632,
+        41.14186730235815
+      ],
+      "endCoordinate": [
+        -121.77299444563687,
+        41.1506268940866
+      ],
+      "distanceMiles": 0.937
+    },
+    {
+      "classification": "Shasta Cascade/private",
+      "owner": "SHASTA CASCADE TIMBERLANDS LLC",
+      "apn": "016-030-006",
+      "startRouteMile": 22.744,
+      "endRouteMile": 22.811,
+      "startPctMile": 1443.397,
+      "endPctMile": 1443.464,
+      "startCoordinate": [
+        -121.77286712452769,
+        41.15077458322048
+      ],
+      "endCoordinate": [
+        -121.77254945039749,
+        41.15159827284515
+      ],
+      "distanceMiles": 0.067
+    },
+    {
+      "classification": "Pondosa/private",
+      "owner": "PONDOSA FOREST LLC",
+      "apn": "016-030-003",
+      "startRouteMile": 22.829,
+      "endRouteMile": 22.893,
+      "startPctMile": 1443.482,
+      "endPctMile": 1443.546,
+      "startCoordinate": [
+        -121.77240679040551,
+        41.15183128975332
+      ],
+      "endCoordinate": [
+        -121.77289629355073,
+        41.15257702767849
+      ],
+      "distanceMiles": 0.064
+    },
+    {
+      "classification": "Shasta Cascade/private",
+      "owner": "SHASTA CASCADE TIMBERLANDS LLC",
+      "apn": "016-030-012",
+      "startRouteMile": 22.907,
+      "endRouteMile": 24.112,
+      "startPctMile": 1443.56,
+      "endPctMile": 1444.765,
+      "startCoordinate": [
+        -121.77313635125756,
+        41.152661768719554
+      ],
+      "endCoordinate": [
+        -121.77986450493336,
+        41.166458800435066
+      ],
+      "distanceMiles": 1.205
+    },
+    {
+      "classification": "SPI/private",
+      "owner": "SIERRA PACIFIC LAND & TIMBER COMPANY",
+      "apn": "016-010-001",
+      "startRouteMile": 24.116,
+      "endRouteMile": 25.16,
+      "startPctMile": 1444.769,
+      "endPctMile": 1445.813,
+      "startCoordinate": [
+        -121.77991647273302,
+        41.166500709950924
+      ],
+      "endCoordinate": [
+        -121.79218741133809,
+        41.17110958322883
+      ],
+      "distanceMiles": 1.044
+    },
+    {
+      "classification": "SPI/private",
+      "owner": "SIERRA PACIFIC LAND & TIMBER COMPANY",
+      "apn": "015-140-004",
+      "startRouteMile": 25.166,
+      "endRouteMile": 26.334,
+      "startPctMile": 1445.819,
+      "endPctMile": 1446.987,
+      "startCoordinate": [
+        -121.79225823841989,
+        41.17118636146188
+      ],
+      "endCoordinate": [
+        -121.81101014837623,
+        41.17182984016836
+      ],
+      "distanceMiles": 1.168
+    },
+    {
+      "classification": "SPI/private",
+      "owner": "SIERRA PACIFIC LAND & TIMBER COMPANY",
+      "apn": "015-140-003",
+      "startRouteMile": 26.351,
+      "endRouteMile": 26.953,
+      "startPctMile": 1447.004,
+      "endPctMile": 1447.606,
+      "startCoordinate": [
+        -121.81130108423531,
+        41.1716996692121
+      ],
+      "endCoordinate": [
+        -121.82111755013466,
+        41.17120295763016
+      ],
+      "distanceMiles": 0.602
+    },
+    {
+      "classification": "USFS/public",
+      "owner": "UNITED STATES FOREST SERVICE",
+      "apn": "015-140-002",
+      "startRouteMile": 26.964,
+      "endRouteMile": 28.12,
+      "startPctMile": 1447.617,
+      "endPctMile": 1448.773,
+      "startCoordinate": [
+        -121.82130077853799,
+        41.171281076967716
+      ],
+      "endCoordinate": [
+        -121.83154623024166,
+        41.17631499655545
+      ],
+      "distanceMiles": 1.156
+    },
+    {
+      "classification": "USFS/public",
+      "owner": "UNITED STATES FOREST SERVICE",
+      "apn": "015-140-001",
+      "startRouteMile": 28.129,
+      "endRouteMile": 28.999,
+      "startPctMile": 1448.782,
+      "endPctMile": 1449.652,
+      "startCoordinate": [
+        -121.83170322328806,
+        41.17625758051872
+      ],
+      "endCoordinate": [
+        -121.83967717923224,
+        41.17551075294614
+      ],
+      "distanceMiles": 0.87
+    }
+  ],
+  "landmarks": [
+    {
+      "name": "Peavine camp",
+      "coordinate": [
+        -121.78605462424457,
+        41.060302751138806
+      ],
+      "routeMile": 13.635,
+      "pctMile": 1434.288,
+      "owner": "UNITED STATES FOREST SERVICE",
+      "apn": "022-170-001",
+      "classification": "USFS/public"
+    },
+    {
+      "name": "Clark Spring",
+      "coordinate": [
+        -121.787588596344,
+        41.10205778852105
+      ],
+      "routeMile": 17.778,
+      "pctMile": 1438.431,
+      "owner": "HEARST FORESTS LLC",
+      "apn": "016-070-001",
+      "classification": "Hearst/private"
+    },
+    {
+      "name": "Deadman Creek",
+      "coordinate": [
+        -121.77597748115659,
+        41.1199611146003
+      ],
+      "routeMile": 19.818,
+      "pctMile": 1440.471,
+      "owner": "HEARST FORESTS LLC",
+      "apn": "016-050-007",
+      "classification": "Hearst/private"
+    },
+    {
+      "name": "Kosk Spring",
+      "coordinate": [
+        -121.77104389294982,
+        41.13659634254873
+      ],
+      "routeMile": 21.354,
+      "pctMile": 1442.007,
+      "owner": "PONDOSA FOREST LLC",
+      "apn": "016-050-004",
+      "classification": "Pondosa/private"
+    },
+    {
+      "name": "Historical PCT 1444 saddle campsite",
+      "coordinate": [
+        -121.77536627277732,
+        41.1580022983253
+      ],
+      "routeMile": 23.344,
+      "pctMile": 1443.997,
+      "owner": "SHASTA CASCADE TIMBERLANDS LLC",
+      "apn": "016-030-012",
+      "classification": "Shasta Cascade/private"
+    },
+    {
+      "name": "Bartle Gap access",
+      "coordinate": [
+        -121.81993729434907,
+        41.17064891383052
+      ],
+      "routeMile": 26.878,
+      "pctMile": 1447.531,
+      "owner": "SIERRA PACIFIC LAND & TIMBER COMPANY",
+      "apn": "015-140-003",
+      "classification": "SPI/private"
+    },
+    {
+      "name": "Moosehead camp",
+      "coordinate": [
+        -121.83211150579154,
+        41.175962537527084
+      ],
+      "routeMile": 28.159,
+      "pctMile": 1448.812,
+      "owner": "UNITED STATES FOREST SERVICE",
+      "apn": "015-140-001",
+      "classification": "USFS/public"
+    }
+  ],
+  "campScreening": {
+    "planningMeaning": "Desktop GIS screening only. A passing point satisfies mapped ownership/setback/slope rules but still requires on-foot confirmation for vegetation, hazards, durable surfaces, and three-person capacity.",
+    "ownershipSource": "https://gis.shastacounty.gov/arcgis/rest/services/OpenData/ParcelAssesseeSitus/MapServer/0/query",
+    "motorVehicleSource": "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_MVUM_02/MapServer/1/query",
+    "terrainSource": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/getSamples",
+    "windows": [
+      {
+        "name": "Pre-private USFS dry camp",
+        "routeWindow": [
+          14.3,
+          14.65
+        ],
+        "rulesApplied": {
+          "minimumTrailRoadSetbackFeet": 200,
+          "minimumPrivatePropertySetbackMiles": 0.25,
+          "maximumTrailAccessFeet": 1148,
+          "terrainRadiusFeet": 39,
+          "maximumMeanSlopePercent": 8,
+          "maximumSampleSlopePercent": 14
+        },
+        "gridPointsTested": 7520,
+        "legallyBufferedPoints": 160,
+        "terrainPassingPoints": 4,
+        "candidates": [
+          {
+            "coordinate": [
+              -121.789562,
+              41.068437
+            ],
+            "routeMile": 14.287,
+            "pctMile": 1434.94,
+            "trailDistanceMeters": 76.25275028845621,
+            "roadDistanceMeters": 190.6852792006184,
+            "nearestRoadName": "PEAVINE",
+            "nearestRoadCoordinate": [
+              -121.79144,
+              41.067465
+            ],
+            "nearestRoadClass": "Roads open to all Vehicles, Yearlong",
+            "nearestRoadMaintenance": "2 - HIGH CLEARANCE VEHICLES",
+            "nearestRoadSurface": "NAT - NATIVE MATERIAL",
+            "nearestRoadPassengerDates": "01/01-12/31",
+            "privateDistanceMeters": 584.7234734089598,
+            "owner": "UNITED STATES FOREST SERVICE",
+            "apn": "022-170-001",
+            "elevationFeet": 4902,
+            "trailDistanceFeet": 250,
+            "roadDistanceFeet": 626,
+            "privateDistanceMiles": 0.363,
+            "meanSlopePercent": 5,
+            "maxSlopePercent": 7.3,
+            "terrainSource": "USGS 1 Meter 10 x60y455 CA_NorthernCA_B22",
+            "terrainPublicationDate": 20260324
+          },
+          {
+            "coordinate": [
+              -121.793742,
+              41.069757
+            ],
+            "routeMile": 14.498,
+            "pctMile": 1435.151,
+            "trailDistanceMeters": 73.6229265891242,
+            "roadDistanceMeters": 69.03320080539075,
+            "nearestRoadName": "PEAVINE",
+            "nearestRoadCoordinate": [
+              -121.794362,
+              41.069346
+            ],
+            "nearestRoadClass": "Roads open to all Vehicles, Yearlong",
+            "nearestRoadMaintenance": "2 - HIGH CLEARANCE VEHICLES",
+            "nearestRoadSurface": "NAT - NATIVE MATERIAL",
+            "nearestRoadPassengerDates": "01/01-12/31",
+            "privateDistanceMeters": 424.8858368285838,
+            "owner": "UNITED STATES FOREST SERVICE",
+            "apn": "022-170-001",
+            "elevationFeet": 5032,
+            "trailDistanceFeet": 242,
+            "roadDistanceFeet": 226,
+            "privateDistanceMiles": 0.264,
+            "meanSlopePercent": 7.4,
+            "maxSlopePercent": 13.9,
+            "terrainSource": "USGS 1 Meter 10 x60y455 CA_NorthernCA_B22",
+            "terrainPublicationDate": 20260324
+          },
+          {
+            "coordinate": [
+              -121.789122,
+              41.066237
+            ],
+            "routeMile": 14.154,
+            "pctMile": 1434.807,
+            "trailDistanceMeters": 76.11349272374972,
+            "roadDistanceMeters": 175.4803844658734,
+            "nearestRoadName": "PEAVINE",
+            "nearestRoadCoordinate": [
+              -121.79121,
+              41.066334
+            ],
+            "nearestRoadClass": "Roads open to all Vehicles, Yearlong",
+            "nearestRoadMaintenance": "2 - HIGH CLEARANCE VEHICLES",
+            "nearestRoadSurface": "NAT - NATIVE MATERIAL",
+            "nearestRoadPassengerDates": "01/01-12/31",
+            "privateDistanceMeters": 811.6990611069426,
+            "owner": "UNITED STATES FOREST SERVICE",
+            "apn": "022-170-001",
+            "elevationFeet": 4930,
+            "trailDistanceFeet": 250,
+            "roadDistanceFeet": 576,
+            "privateDistanceMiles": 0.504,
+            "meanSlopePercent": 7.5,
+            "maxSlopePercent": 13.3,
+            "terrainSource": "USGS 1 Meter 10 x60y455 CA_NorthernCA_B22",
+            "terrainPublicationDate": 20260324
+          },
+          {
+            "coordinate": [
+              -121.790882,
+              41.069097
+            ],
+            "routeMile": 14.341,
+            "pctMile": 1434.994,
+            "trailDistanceMeters": 76.0669044874633,
+            "roadDistanceMeters": 175.56555365973415,
+            "nearestRoadName": "PEAVINE",
+            "nearestRoadCoordinate": [
+              -121.791894,
+              41.067706
+            ],
+            "nearestRoadClass": "Roads open to all Vehicles, Yearlong",
+            "nearestRoadMaintenance": "2 - HIGH CLEARANCE VEHICLES",
+            "nearestRoadSurface": "NAT - NATIVE MATERIAL",
+            "nearestRoadPassengerDates": "01/01-12/31",
+            "privateDistanceMeters": 512.1289510519209,
+            "owner": "UNITED STATES FOREST SERVICE",
+            "apn": "022-170-001",
+            "elevationFeet": 4993,
+            "trailDistanceFeet": 250,
+            "roadDistanceFeet": 576,
+            "privateDistanceMiles": 0.318,
+            "meanSlopePercent": 7.8,
+            "maxSlopePercent": 12,
+            "terrainSource": "USGS 1 Meter 10 x60y455 CA_NorthernCA_B22",
+            "terrainPublicationDate": 20260324
+          }
+        ]
+      },
+      {
+        "name": "Post-Bartle USFS dry camp",
+        "routeWindow": [
+          27.2,
+          27.65
+        ],
+        "rulesApplied": {
+          "minimumTrailRoadSetbackFeet": 200,
+          "minimumPrivatePropertySetbackMiles": 0.25,
+          "maximumTrailAccessFeet": 1148,
+          "terrainRadiusFeet": 39,
+          "maximumMeanSlopePercent": 8,
+          "maximumSampleSlopePercent": 14
+        },
+        "gridPointsTested": 6786,
+        "legallyBufferedPoints": 160,
+        "terrainPassingPoints": 2,
+        "candidates": [
+          {
+            "coordinate": [
+              -121.827003,
+              41.177527
+            ],
+            "routeMile": 27.791,
+            "pctMile": 1448.444,
+            "trailDistanceMeters": 144.50224984849254,
+            "roadDistanceMeters": 154.87547977777982,
+            "nearestRoadName": "UPPER MOOSEHEAD",
+            "nearestRoadCoordinate": [
+              -121.827893,
+              41.178754
+            ],
+            "nearestRoadClass": "Roads open to all Vehicles, Yearlong",
+            "nearestRoadMaintenance": "2 - HIGH CLEARANCE VEHICLES",
+            "nearestRoadSurface": "NAT - NATIVE MATERIAL",
+            "nearestRoadPassengerDates": "01/01-12/31",
+            "privateDistanceMeters": 456.7154615962291,
+            "owner": "UNITED STATES FOREST SERVICE",
+            "apn": "015-140-002",
+            "elevationFeet": 5354,
+            "trailDistanceFeet": 474,
+            "roadDistanceFeet": 508,
+            "privateDistanceMiles": 0.284,
+            "meanSlopePercent": 5.7,
+            "maxSlopePercent": 9.6,
+            "terrainSource": "USGS 1 Meter 10 x59y456 CA_NorthernCA_B22",
+            "terrainPublicationDate": 20260324
+          }
+        ]
+      }
+    ]
+  }
+}

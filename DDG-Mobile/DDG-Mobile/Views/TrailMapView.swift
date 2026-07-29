@@ -315,6 +315,7 @@ struct TrailMapView: View {
         let icon: String = switch camp.type {
         case "Trailhead": "flag.fill"
         case "Finish":    "flag.checkered"
+        case "Support Transfer": "car.fill"
         case "Transit":   camp.name.contains("SJC") ? "airplane" : "car.fill"
         case "GasStation": "fuelpump.fill"
         default:          "tent.fill"
@@ -600,11 +601,15 @@ struct CampDetailSheet: View {
                             .foregroundStyle(.secondary)
                     }
                 } else {
-                    // Default Camp Details
-                    Section("Campsite Details") {
-                        LabeledContent("Day", value: "\(camp.day + 1)")
+                    Section(camp.stopType == "support-transfer" ? "Support Transfer Details" : "Itinerary Stop Details") {
+                        LabeledContent("Day", value: "\(camp.day)")
                         LabeledContent("Mile", value: String(format: "%.1f", camp.routeMile))
                         LabeledContent("Distance", value: String(format: "%.1f mi", camp.distance))
+                        LabeledContent("Stop Type", value: camp.type)
+                        LabeledContent(
+                            "Pack Mode",
+                            value: camp.packMode == "day-pack-supported" ? "Supported day pack" : "Overnight pack"
+                        )
                         LabeledContent("Start Elevation", value: camp.startElevation)
                         LabeledContent("End Elevation", value: camp.endElevation)
                     }

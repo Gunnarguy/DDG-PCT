@@ -44,7 +44,10 @@ final class CampSite {
     var latitude: Double
     var longitude: Double
     var day: Int
-    var type: String           // "Trailhead", "Camp", "Finish"
+    var type: String           // "Trailhead", "Camp", "Support Transfer", "Finish"
+    var stopType: String = "camp"       // "camp", "support-transfer", "finish"
+    var campStatus: String = ""         // verification state from the canonical dataset
+    var packMode: String = "overnight-pack" // "overnight-pack" or "day-pack-supported"
     var distance: Double       // miles from previous camp
     var routeMile: Double      // cumulative trail mileage
     var startElevation: String
@@ -58,6 +61,9 @@ final class CampSite {
         longitude: Double,
         day: Int,
         type: String,
+        stopType: String = "camp",
+        campStatus: String = "",
+        packMode: String = "overnight-pack",
         distance: Double,
         routeMile: Double,
         startElevation: String = "",
@@ -70,6 +76,9 @@ final class CampSite {
         self.longitude = longitude
         self.day = day
         self.type = type
+        self.stopType = stopType
+        self.campStatus = campStatus
+        self.packMode = packMode
         self.distance = distance
         self.routeMile = routeMile
         self.startElevation = startElevation

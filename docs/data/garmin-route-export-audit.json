@@ -1,0 +1,286 @@
+{
+  "generatedAt": "2026-07-29T06:10:21.890Z",
+  "method": {
+    "distance": "Haversine point-to-point",
+    "activeCrop": "Nearest source points to canonical Burney Falls PCT access and Ash Camp coordinates",
+    "elevation": "Five-point moving average with cumulative 10-foot change threshold"
+  },
+  "canonicalEndpoints": {
+    "start": [
+      -121.65376551,
+      41.01104125
+    ],
+    "finish": [
+      -122.0606252,
+      41.1170914
+    ]
+  },
+  "duplicateGroups": [
+    {
+      "geometrySha256": "e19012674c4b22fd6f78162edb7e58dc7af5e2d47b35c5230390c82c4867bf52",
+      "files": [
+        "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP.tcx",
+        "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP-2.gpx",
+        "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP.kml-2",
+        "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP.js",
+        "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP.kml",
+        "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP.csv",
+        "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP-2.js"
+      ]
+    },
+    {
+      "geometrySha256": "ba1712074861279b7d5bc76aaf9071fc987574b8c4d8025c2e6a1cf2fced07c3",
+      "files": [
+        "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP.gpx"
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "file": "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP.tcx",
+      "bytes": 2526412,
+      "sha256": "88e796dbdf6bfea4c0fdfe1c34226260e2bb5a3a9a91718ea4893ebc6af33c53",
+      "geometrySha256": "e19012674c4b22fd6f78162edb7e58dc7af5e2d47b35c5230390c82c4867bf52",
+      "coordinateSha256": "6762ede802bdf86b1b17a648d24a9f2da5318bd5811794fbbbf0270b7bf94d2a",
+      "parseStatus": "parsed",
+      "pointCount": 6916,
+      "distanceMiles": 80.826,
+      "start": [
+        -121.65389,
+        41.01072
+      ],
+      "finish": [
+        -122.29838,
+        41.16242
+      ],
+      "minimumElevationFeet": 2090,
+      "maximumElevationFeet": 6155,
+      "activeCrop": {
+        "startIndex": 1,
+        "startOffsetFeet": 117,
+        "finishIndex": 4311,
+        "finishOffsetFeet": 57,
+        "pointCount": 4311,
+        "distanceMiles": 51.153,
+        "gainFeet": 8785,
+        "lossFeet": 9343
+      }
+    },
+    {
+      "file": "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP-2.gpx",
+      "bytes": 913734,
+      "sha256": "9073d39f82e0e6ee68f7acc050e857b235bf3ea8b527c4fa7e9110aca2d2e6e1",
+      "geometrySha256": "e19012674c4b22fd6f78162edb7e58dc7af5e2d47b35c5230390c82c4867bf52",
+      "coordinateSha256": "6762ede802bdf86b1b17a648d24a9f2da5318bd5811794fbbbf0270b7bf94d2a",
+      "parseStatus": "parsed",
+      "pointCount": 6916,
+      "distanceMiles": 80.826,
+      "start": [
+        -121.65389,
+        41.01072
+      ],
+      "finish": [
+        -122.29838,
+        41.16242
+      ],
+      "minimumElevationFeet": 2090,
+      "maximumElevationFeet": 6155,
+      "activeCrop": {
+        "startIndex": 1,
+        "startOffsetFeet": 117,
+        "finishIndex": 4311,
+        "finishOffsetFeet": 57,
+        "pointCount": 4311,
+        "distanceMiles": 51.153,
+        "gainFeet": 8785,
+        "lossFeet": 9343
+      }
+    },
+    {
+      "file": "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP.kml-2",
+      "bytes": 732724,
+      "sha256": "bf2e4668167ae15e7568eae8963c8b3163d40878f7b88b156219a45685544220",
+      "geometrySha256": "e19012674c4b22fd6f78162edb7e58dc7af5e2d47b35c5230390c82c4867bf52",
+      "coordinateSha256": "6762ede802bdf86b1b17a648d24a9f2da5318bd5811794fbbbf0270b7bf94d2a",
+      "parseStatus": "parsed",
+      "pointCount": 6916,
+      "distanceMiles": 80.826,
+      "start": [
+        -121.65389,
+        41.01072
+      ],
+      "finish": [
+        -122.29838,
+        41.16242
+      ],
+      "minimumElevationFeet": 2090,
+      "maximumElevationFeet": 6155,
+      "activeCrop": {
+        "startIndex": 1,
+        "startOffsetFeet": 117,
+        "finishIndex": 4311,
+        "finishOffsetFeet": 57,
+        "pointCount": 4311,
+        "distanceMiles": 51.153,
+        "gainFeet": 8785,
+        "lossFeet": 9343
+      }
+    },
+    {
+      "file": "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP.gpx",
+      "bytes": 611166,
+      "sha256": "d03294d03195259a60623004e4e7007a9abdb02c5cee0667ba1216104e507868",
+      "geometrySha256": "ba1712074861279b7d5bc76aaf9071fc987574b8c4d8025c2e6a1cf2fced07c3",
+      "coordinateSha256": "15f3cbc376f0ee98fc93ec6a699da38b9381cd19b59418966783216ae5ad0773",
+      "parseStatus": "parsed",
+      "pointCount": 6991,
+      "distanceMiles": 80.826,
+      "start": [
+        -121.65389,
+        41.01072
+      ],
+      "finish": [
+        -122.29838,
+        41.16242
+      ],
+      "minimumElevationFeet": 2064,
+      "maximumElevationFeet": 6157,
+      "activeCrop": {
+        "startIndex": 2,
+        "startOffsetFeet": 117,
+        "finishIndex": 4366,
+        "finishOffsetFeet": 57,
+        "pointCount": 4365,
+        "distanceMiles": 51.153,
+        "gainFeet": 8100,
+        "lossFeet": 8617
+      }
+    },
+    {
+      "file": "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP.js",
+      "bytes": 307504,
+      "sha256": "6ddf99afc61245b85feee70c3bc448293d4adad8b1bbcb0c8fc8936d08678df6",
+      "geometrySha256": "e19012674c4b22fd6f78162edb7e58dc7af5e2d47b35c5230390c82c4867bf52",
+      "coordinateSha256": "6762ede802bdf86b1b17a648d24a9f2da5318bd5811794fbbbf0270b7bf94d2a",
+      "parseStatus": "parsed",
+      "pointCount": 6916,
+      "distanceMiles": 80.826,
+      "start": [
+        -121.65389,
+        41.01072
+      ],
+      "finish": [
+        -122.29838,
+        41.16242
+      ],
+      "minimumElevationFeet": 2090,
+      "maximumElevationFeet": 6155,
+      "activeCrop": {
+        "startIndex": 1,
+        "startOffsetFeet": 117,
+        "finishIndex": 4311,
+        "finishOffsetFeet": 57,
+        "pointCount": 4311,
+        "distanceMiles": 51.153,
+        "gainFeet": 8785,
+        "lossFeet": 9343
+      }
+    },
+    {
+      "file": "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP.kml",
+      "bytes": 244332,
+      "sha256": "a3eed6b429ddfb14b4ebc33e259f38897f70da487f4dbd41eda98c8aa4005939",
+      "geometrySha256": "e19012674c4b22fd6f78162edb7e58dc7af5e2d47b35c5230390c82c4867bf52",
+      "coordinateSha256": "6762ede802bdf86b1b17a648d24a9f2da5318bd5811794fbbbf0270b7bf94d2a",
+      "parseStatus": "parsed",
+      "pointCount": 6916,
+      "distanceMiles": 80.826,
+      "start": [
+        -121.65389,
+        41.01072
+      ],
+      "finish": [
+        -122.29838,
+        41.16242
+      ],
+      "minimumElevationFeet": 2090,
+      "maximumElevationFeet": 6155,
+      "activeCrop": {
+        "startIndex": 1,
+        "startOffsetFeet": 117,
+        "finishIndex": 4311,
+        "finishOffsetFeet": 57,
+        "pointCount": 4311,
+        "distanceMiles": 51.153,
+        "gainFeet": 8785,
+        "lossFeet": 9343
+      }
+    },
+    {
+      "file": "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP.csv",
+      "bytes": 219200,
+      "sha256": "dd9221cdd8f4a9af17aa0ab77767c604b1319319a201e1c24a31b11e07d406de",
+      "geometrySha256": "e19012674c4b22fd6f78162edb7e58dc7af5e2d47b35c5230390c82c4867bf52",
+      "coordinateSha256": "6762ede802bdf86b1b17a648d24a9f2da5318bd5811794fbbbf0270b7bf94d2a",
+      "parseStatus": "parsed",
+      "pointCount": 6916,
+      "distanceMiles": 80.826,
+      "start": [
+        -121.65389,
+        41.01072
+      ],
+      "finish": [
+        -122.29838,
+        41.16242
+      ],
+      "minimumElevationFeet": 2090,
+      "maximumElevationFeet": 6155,
+      "activeCrop": {
+        "startIndex": 1,
+        "startOffsetFeet": 117,
+        "finishIndex": 4311,
+        "finishOffsetFeet": 57,
+        "pointCount": 4311,
+        "distanceMiles": 51.153,
+        "gainFeet": 8785,
+        "lossFeet": 9343
+      }
+    },
+    {
+      "file": "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP-2.js",
+      "bytes": 217959,
+      "sha256": "bad393bebf8d69862564881eaca80a7819a40273c00513daacee5fb3bdb23559",
+      "geometrySha256": "e19012674c4b22fd6f78162edb7e58dc7af5e2d47b35c5230390c82c4867bf52",
+      "coordinateSha256": "6762ede802bdf86b1b17a648d24a9f2da5318bd5811794fbbbf0270b7bf94d2a",
+      "parseStatus": "parsed",
+      "pointCount": 6916,
+      "distanceMiles": 80.826,
+      "start": [
+        -121.65389,
+        41.01072
+      ],
+      "finish": [
+        -122.29838,
+        41.16242
+      ],
+      "minimumElevationFeet": 2090,
+      "maximumElevationFeet": 6155,
+      "activeCrop": {
+        "startIndex": 1,
+        "startOffsetFeet": 117,
+        "finishIndex": 4311,
+        "finishOffsetFeet": 57,
+        "pointCount": 4311,
+        "distanceMiles": 51.153,
+        "gainFeet": 8785,
+        "lossFeet": 9343
+      }
+    },
+    {
+      "file": "Pacific_Crest_Trail_PCT_Section_O__Burney_Falls_to_Castle_Crags_SP.fit",
+      "bytes": 145497,
+      "sha256": "deb262f65815317386a2f91f9ffc1a61eff1cf018bc37d8dd6b43a70ca278f70",
+      "parseStatus": "binary-preserved-not-decoded"
+    }
+  ]
+}

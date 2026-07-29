@@ -98,6 +98,35 @@ function main() {
     ),
     "Kosk must not be an active overnight"
   );
+  const day2 = activeFeatures.find(
+    (feature) => Number(feature.properties?.day) === 2
+  );
+  const day3 = activeFeatures.find(
+    (feature) => Number(feature.properties?.day) === 3
+  );
+  assert(
+    day2?.properties?.name === "Pre-private USFS dry camp" &&
+      Math.abs(Number(day2.properties.routeMile) - 14.287) < 0.001,
+    "Day 2 must end at the screened pre-private USFS dry camp"
+  );
+  assert(
+    day3?.properties?.name === "Bartle Gap supported extraction" &&
+      day3?.properties?.type === "Support Transfer" &&
+      day3?.properties?.stopType === "support-transfer" &&
+      day3?.properties?.packMode === "day-pack-supported" &&
+      Math.abs(Number(day3.properties.routeMile) - 26.878) < 0.001,
+    "Day 3 must be the supported day-pack traverse to Bartle Gap, not a camp"
+  );
+  assert(
+    Number(canonical?.route?.properties?.total_gain_feet) === 6401 &&
+      Number(canonical?.route?.properties?.total_loss_feet) === 6896,
+    "Continuous thresholded elevation totals are stale"
+  );
+  assert(
+    Number(canonical?.activePlan?.userSuppliedSourceTrackMiles) === 80.826 &&
+      Number(canonical?.activePlan?.legacyAppFullTrackMiles) === 82.898,
+    "Long-route source measurements must remain explicitly reconciled"
+  );
 
   const segmentMiles = sumRouteSegments(canonical.route);
   if (segmentMiles !== null) {

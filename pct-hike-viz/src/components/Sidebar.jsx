@@ -482,8 +482,9 @@ function Sidebar({
           Distance confidence: the PCTA January 2026 centerline is{" "}
           {tripFacts.route.officialMiles.toFixed(3)} mi. The cropped Garmin
           geometry is {tripFacts.route.gpsMiles.toFixed(3)} mi and supplies the
-          elevation profile. The 82.9-mi source track is future-trip reference
-          geometry only.
+          elevation profile. The supplied Garmin source track is 80.826 mi;
+          the old 82.898-mi app crop is a different legacy geometry. Both are
+          future-trip reference only.
         </p>
       </section>
 
@@ -876,16 +877,18 @@ function Sidebar({
                 </div>
                 <p className="day-card__notes">
                   {day === 3 &&
-                    "Hardest overall day: 14.53 miles and 3,137 vertical feet. "}
+                    "Longest day: 12.59 miles with day packs, continuous private-land travel, and timed Bartle Gap extraction. "}
                   {day === 2 &&
-                    "Largest climb: 2,006 feet with very little descent. "}
+                    "Largest climb: 2,199 feet with very little descent, ending at the screened dry camp. "}
                   {day === 7 &&
-                    "Hardest knee day: sustained 1,828-foot descent. "}
+                    "Hardest knee day: sustained 1,834-foot descent. "}
                   {day === 4 &&
                     "Short mileage hides a steep climb and dry-camp carry. "}
                   {day === 8 &&
                     "Short but descent-heavy; protect pickup timing and avoid rushing. "}
-                  Overnight waypoint remains provisional.
+                  {leg?.stopType === "support-transfer"
+                    ? " This is a transfer point, not an overnight campsite."
+                    : " Overnight waypoint still requires current field verification."}
                 </p>
               </button>
             );
@@ -917,10 +920,10 @@ function Sidebar({
         <p className="lede">
           Published accounts confirm that this terrain can support much longer
           days, but those hikers had day packs, car staging, or thru-hiker
-          conditioning. Your current 5.61 / 8.03 / 14.53 / 4.08 / 3.79 /
-          6.35 / 5.60 / 3.85 miles; Day 3 is a deliberate capability gate,
-          not an “easy average,” and the shorter days protect loaded-pack knee
-          recovery.
+          conditioning. Your current 5.61 / 8.68 / 12.59 / 5.37 / 3.79 /
+          6.35 / 5.60 / 3.85 miles are intentionally uneven. Day 3 is the
+          supported day-pack traverse; the shorter days protect loaded-pack
+          knee recovery.
         </p>
         <div className="evidence-list">
           {comparableHikerEvidence.map((item) => (
@@ -937,7 +940,7 @@ function Sidebar({
         </div>
         <p className="note">
           “Effort miles” is a transparent planning estimate: actual miles +
-          ascent/2,000 + descent/4,000. It is for comparing your nine days, not
+          ascent/2,000 + descent/4,000. It is for comparing your eight days, not
           predicting finish time or medical strain.
         </p>
       </section>

@@ -52,9 +52,9 @@ print(f'Start: {start_elev:.1f} ft')
 print(f'End: {end_elev:.1f} ft')
 print(f'Net change: {net_change:+.1f} ft')
 
-print(f'\nActive GPS start reference: ~3,020 ft')
+print(f'\nActive GPS start reference: ~2,949 ft')
 print(f'GPS route finish elevation: {end_elev:.0f} ft')
-print(f'Start match: {"✓" if 2950 <= start_elev <= 3100 else "✗"}')
+print(f'Start match: {"✓" if 2900 <= start_elev <= 3050 else "✗"}')
 print(f'Finish is plausible for Ash Camp: {"✓" if 2300 <= end_elev <= 3300 else "⚠"}')
 
 # Calculate gain/loss with smoothing (Strava method)

@@ -7,12 +7,13 @@ import SwiftData
 /// - `features[]` → CampSite models (GeoJSON Feature with properties)
 /// - `route.path[]` → TrailPoint models ([longitude, latitude, elevation_meters])
 struct HikeDataIngestor {
+    private static let dataVersion = 11
 
     /// Check if data has already been ingested (avoid re-parsing 48k points)
     static func needsIngest(modelContext: ModelContext) -> Bool {
         print("DEBUG [HikeDataIngestor]: Checking database state...")
         
-        let currentVersion = 10 // PCTA 2026 Burney Falls → Ash Camp route: 51.844 official miles / 8 hiking days.
+        let currentVersion = dataVersion // Supported Bartle itinerary and typed transfer/camp stops.
         let ingestedVersion = UserDefaults.standard.integer(forKey: "hikeDataIngestVersion")
         if ingestedVersion < currentVersion {
             print("DEBUG [HikeDataIngestor]: Forced re-ingestion triggered (version \(ingestedVersion) < \(currentVersion))")
@@ -51,9 +52,8 @@ struct HikeDataIngestor {
         print("DEBUG [HikeDataIngestor]: Successfully read \(data.count) bytes from JSON file.")
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] ?? [:]
 
-        // 1. Parse route path (trail coordinates) first so we can slice it and capture camp coordinates
+        // 1. Parse the active route path.
         var pathCount = 0
-        var coordsAtMiles: [Double: (lat: Double, lon: Double)] = [:]
         var trailMiles: [(lat: Double, lon: Double, mile: Double, elev: Double)] = []
         
         if let route = json["route"] as? [String: Any],
@@ -87,27 +87,6 @@ struct HikeDataIngestor {
                 lastLon = lon
             }
             
-            // Helper to get coordinates closest to target mileage
-            let getCoordsForMile = { (targetMile: Double) -> (lat: Double, lon: Double) in
-                guard !trailMiles.isEmpty else { return (0.0, 0.0) }
-                var bestPt = trailMiles[0]
-                var minDiff = Double.infinity
-                for item in trailMiles {
-                    let diff = abs(item.mile - targetMile)
-                    if diff < minDiff {
-                        minDiff = diff
-                        bestPt = item
-                    }
-                }
-                return (lat: bestPt.lat, lon: bestPt.lon)
-            }
-            
-            // Capture the canonical eight-day camp-to-camp route markers.
-            let keyMiles = [0.0, 5.609, 13.636, 28.165, 32.247, 36.036, 42.386, 47.990, 51.844]
-            for km in keyMiles {
-                coordsAtMiles[km] = getCoordsForMile(km)
-            }
-            
             // Insert the active Burney Falls → Ash Camp route.
             for (index, item) in trailMiles.enumerated() {
                 let trailPoint = TrailPoint(
@@ -122,17 +101,28 @@ struct HikeDataIngestor {
             print("DEBUG [HikeDataIngestor]: Successfully inserted \(pathCount) trail points.")
         }
 
-        // 2. Parse the primary eight-day camp/waypoint features.
+        // 2. Parse the primary eight-day itinerary stops.
         var campCount = 0
         if let features = json["features"] as? [[String: Any]] {
             print("DEBUG [HikeDataIngestor]: Parsing \(features.count) waypoint features...")
+            let routeMilesByDay = Dictionary(
+                uniqueKeysWithValues: features.compactMap { feature -> (Int, Double)? in
+                    guard let props = feature["properties"] as? [String: Any],
+                          let day = (props["day"] as? NSNumber)?.intValue,
+                          day >= 0,
+                          let routeMile = (props["routeMile"] as? NSNumber)?.doubleValue else {
+                        return nil
+                    }
+                    return (day, routeMile)
+                }
+            )
             for feature in features {
-                if let camp = parseCampSite(from: feature, coordsAtMiles: coordsAtMiles) {
+                if let camp = parseCampSite(from: feature, routeMilesByDay: routeMilesByDay) {
                     modelContext.insert(camp)
                     campCount += 1
                 }
             }
-            print("DEBUG [HikeDataIngestor]: Successfully inserted \(campCount) campsites.")
+            print("DEBUG [HikeDataIngestor]: Successfully inserted \(campCount) itinerary stops.")
         }
         
         // 3. Parse water sources and filter to those within 0.5 miles of the active trail.
@@ -162,7 +152,7 @@ struct HikeDataIngestor {
         try modelContext.save()
         
         // Save current version to UserDefaults to track ingestion state
-        UserDefaults.standard.set(9, forKey: "hikeDataIngestVersion")
+        UserDefaults.standard.set(dataVersion, forKey: "hikeDataIngestVersion")
         print("DEBUG [HikeDataIngestor]: Data ingestion complete.")
     }
 
@@ -180,7 +170,10 @@ struct HikeDataIngestor {
         return R * c
     }
 
-    private static func parseCampSite(from feature: [String: Any], coordsAtMiles: [Double: (lat: Double, lon: Double)]) -> CampSite? {
+    private static func parseCampSite(
+        from feature: [String: Any],
+        routeMilesByDay: [Int: Double]
+    ) -> CampSite? {
         guard let geometry = feature["geometry"] as? [String: Any],
               let coords = geometry["coordinates"] as? [Double], coords.count >= 2,
               let props = feature["properties"] as? [String: Any],
@@ -189,6 +182,9 @@ struct HikeDataIngestor {
         }
 
         let type = props["type"] as? String ?? "Camp"
+        let stopType = props["stopType"] as? String ?? (type == "Camp" ? "camp" : type.lowercased())
+        let campStatus = props["campStatus"] as? String ?? ""
+        let packMode = props["packMode"] as? String ?? "overnight-pack"
         let day = (props["day"] as? NSNumber)?.intValue ?? (props["day"] as? Int) ?? 0
         let itinerary = props["itinerary"] as? String
 
@@ -204,6 +200,9 @@ struct HikeDataIngestor {
                 longitude: coords[0],
                 day: day,
                 type: type,
+                stopType: stopType,
+                campStatus: campStatus,
+                packMode: packMode,
                 distance: 0,
                 routeMile: 0,
                 startElevation: props["startElevation"] as? String ?? "",
@@ -214,26 +213,37 @@ struct HikeDataIngestor {
         }
 
         let routeMile = (props["routeMile"] as? NSNumber)?.doubleValue ?? 0
-        let plannedMiles = [0.0, 5.609, 13.636, 28.165, 32.247, 36.036, 42.386, 47.990, 51.844]
-        let priorMile = day > 0 && day < plannedMiles.count ? plannedMiles[day - 1] : 0
+        let priorMile = day > 0 ? routeMilesByDay[day - 1] ?? 0 : 0
         let distance = day > 0 ? max(0, routeMile - priorMile) : 0
         let mappedType = day == 0 ? "Trailhead" : (day == 8 ? "Finish" : type)
-        let mappedCoords = coordsAtMiles[routeMile] ?? (lat: coords[1], lon: coords[0])
         let sourceNotes = props["notes"] as? String ?? ""
-        let verificationNotes = (1...7).contains(day)
-            ? "Provisional GPS split. Verify a legal campsite and current water before committing."
-            : sourceNotes
+        let verificationNotes: String
+        if !sourceNotes.isEmpty {
+            verificationNotes = sourceNotes
+        } else if stopType == "support-transfer" {
+            verificationNotes = "Timed support transfer only. Do not camp or linger; return to this exact pin before Day 4."
+        } else if (1...7).contains(day) {
+            verificationNotes = "Verify legal low-impact space, current hazards, and water before committing."
+        } else {
+            verificationNotes = ""
+        }
+        let profile = TrailConstants.profile(for: day)
 
         return CampSite(
             name: name,
-            latitude: mappedCoords.lat,
-            longitude: mappedCoords.lon,
+            latitude: coords[1],
+            longitude: coords[0],
             day: day,
             type: mappedType,
+            stopType: stopType,
+            campStatus: campStatus,
+            packMode: packMode,
             distance: distance,
             routeMile: routeMile,
-            startElevation: props["startElevation"] as? String ?? "",
-            endElevation: props["endElevation"] as? String ?? "",
+            startElevation: props["startElevation"] as? String
+                ?? profile.map { "\(Int($0.startFeet.rounded())) ft" } ?? "",
+            endElevation: props["endElevation"] as? String
+                ?? profile.map { "\(Int($0.endFeet.rounded())) ft" } ?? "",
             segment: props["segment"] as? String ?? "",
             notes: verificationNotes
         )
