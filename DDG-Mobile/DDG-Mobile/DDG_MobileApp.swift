@@ -96,6 +96,19 @@ struct RootView: View {
     @Environment(AuthManager.self) private var auth
 
     var body: some View {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-DDGSkipAuthenticationForUITesting") {
+            ContentView()
+        } else {
+            authenticatedContent
+        }
+        #else
+        authenticatedContent
+        #endif
+    }
+
+    @ViewBuilder
+    private var authenticatedContent: some View {
         switch auth.authState {
         case .unknown:
             ProgressView("Checking credentials...")

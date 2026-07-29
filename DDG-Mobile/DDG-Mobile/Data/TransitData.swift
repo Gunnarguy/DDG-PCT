@@ -26,9 +26,20 @@ let transitRoutes: [TransitRoute] = [
         stops: ["2800 Joseph Ave", "SJC", "Burney Falls"],
         frequency: "Aug 28 SJC pickup / Aug 29 trailhead drive",
         relevantFor: "Outbound Logistics",
-        notes: "Mikaela collects the team after UA481. Sleep near SJC, then leave around 5:00–5:30 AM Aug 29; do not drive overnight while exhausted.",
+        notes: "Mikaela collects the team after UA481. Sleep near SJC, then leave around 5:00–5:30 AM Aug 29; do not drive overnight while exhausted. The current routed total is 318.5 miles including Campbell → SJC.",
         url: "",
-        distance: "270 miles", cost: nil, emoji: "🚙"
+        distance: "318.5-mile routed snapshot", cost: nil, emoji: "🚙"
+    ),
+    TransitRoute(
+        id: "ash-camp-pickup", type: "car",
+        name: "Ash Camp → Campbell",
+        agency: "Mikaela · Personal Vehicle", route: "FS Road 38N11 → Campbell",
+        stops: ["Ash Camp", "Campbell"],
+        frequency: "Sep 5 primary pickup / Sep 6 contingency",
+        relevantFor: "Post-hike Extraction",
+        notes: "Meet at the exact Ash Camp pin (41.1170914, -122.0606252). The routed snapshot is 333.3 miles / 6.8 hours before stops and traffic. Confirm FS Road 38N11 access and Kia Sportage suitability with McCloud Ranger Station before departure.",
+        url: "https://explore.pcta.org/trailheads/ash-camp",
+        distance: "333.3 miles", cost: "Fuel + food stops", emoji: "🏁"
     ),
     TransitRoute(
         id: "dan-sjc-ua", type: "flight",

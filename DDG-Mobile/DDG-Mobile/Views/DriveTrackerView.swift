@@ -35,13 +35,73 @@ struct FlightInfo: Identifiable, Sendable {
     let delayStats: String
 }
 
+private enum DriveMapMode: Int, CaseIterable, Identifiable {
+    case arrival
+    case end
+    case full
+
+    var id: Int { rawValue }
+
+    var title: String {
+        switch self {
+        case .arrival: "Arrival"
+        case .end: "End Route"
+        case .full: "Full Trip"
+        }
+    }
+
+    var mapTitle: String {
+        switch self {
+        case .arrival: "Arrival Route · Campbell → SJC → Burney Falls"
+        case .end: "End Route · Ash Camp → Campbell"
+        case .full: "Complete Transit · ORD → Trail → Campbell"
+        }
+    }
+}
+
+private struct BundledDriveRoute: Decodable, Sendable {
+    let name: String
+    let type: String
+    let path: [[Double]]
+    let distanceMiles: Double
+    let durationHours: Double
+    let source: String
+
+    var coordinates: [CLLocationCoordinate2D] {
+        path.compactMap { pair in
+            guard pair.count >= 2 else { return nil }
+            return CLLocationCoordinate2D(latitude: pair[1], longitude: pair[0])
+        }
+    }
+
+    static func loadAll() -> [BundledDriveRoute] {
+        struct Root: Decodable {
+            let driveSegments: [BundledDriveRoute]
+        }
+
+        guard let url = Bundle.main.url(forResource: "hike_data", withExtension: "json") else {
+            print("ERROR [DriveTrackerView]: Bundled hike_data.json was not found.")
+            return []
+        }
+
+        do {
+            let data = try Data(contentsOf: url)
+            return try JSONDecoder().decode(Root.self, from: data).driveSegments
+        } catch {
+            print("ERROR [DriveTrackerView]: Could not decode bundled drive routes: \(error)")
+            return []
+        }
+    }
+}
+
 struct DriveTrackerView: View {
-    @State private var route1: MKRoute?
-    @State private var route2: MKRoute?
+    @State private var campbellToSJC: MKRoute?
     @State private var isCalculating = false
     @State private var gasPricePerGallon: Double? = nil
     @State private var position: MapCameraPosition = .automatic
-    @State private var mapMode = 0 // 0 = CA Drive Route, 1 = Full flight & drive
+    @State private var mapMode: DriveMapMode = .arrival
+
+    private let bundledDriveRoutes = BundledDriveRoute.loadAll()
     
     // 2024 Kia Sportage X-Pro Prestige (Gas) - 26 Highway MPG
     let assumedMPG: Double = 26.0
@@ -77,6 +137,14 @@ struct DriveTrackerView: View {
             milesFromStart: 227.0
         )
     ]
+
+    private var arrivalDriveRoute: BundledDriveRoute? {
+        bundledDriveRoutes.first { $0.name == "SJC → Burney Falls" }
+    }
+
+    private var endDriveRoute: BundledDriveRoute? {
+        bundledDriveRoutes.first { $0.name == "Ash Camp → Campbell" }
+    }
     
     let flights = [
         FlightInfo(
@@ -124,7 +192,7 @@ struct DriveTrackerView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Transit & Flight Control")
                         .font(.title2.bold())
-                    Text("Realtime logistics dashboard for Burney Falls insertion")
+                    Text("Burney Falls insertion and Ash Camp extraction")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -133,9 +201,10 @@ struct DriveTrackerView: View {
                 .padding(.top)
                 
                 // Map Selector Control
-                Picker("Map View Mode", selection: $mapMode) {
-                    Text("California Drive Route").tag(0)
-                    Text("Full US Transit Path").tag(1)
+                Picker("Route", selection: $mapMode) {
+                    ForEach(DriveMapMode.allCases) { mode in
+                        Text(mode.title).tag(mode)
+                    }
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
@@ -145,37 +214,51 @@ struct DriveTrackerView: View {
                 
                 // MapKit Map
                 Map(position: $position) {
-                    Marker("Campbell Start", systemImage: "car.fill", coordinate: CLLocationCoordinate2D(latitude: 37.2625, longitude: -121.9331))
-                        .tint(.blue)
-                    
-                    Marker("SJC Airport", systemImage: "airplane", coordinate: CLLocationCoordinate2D(latitude: 37.3639, longitude: -121.9289))
-                        .tint(.indigo)
-                    
-                    Marker("Burney Falls (Drop-off)", systemImage: "flag.fill", coordinate: CLLocationCoordinate2D(latitude: 41.0135, longitude: -121.6207))
-                        .tint(.green)
-                    
-                    // Gas Stop Annotations
-                    ForEach(gasStops) { stop in
-                        Marker(stop.name, systemImage: "fuelpump.fill", coordinate: stop.coordinate)
-                            .tint(.purple)
+                    if mapMode != .end {
+                        Marker("Campbell Start", systemImage: "car.fill", coordinate: CLLocationCoordinate2D(latitude: 37.2625, longitude: -121.9331))
+                            .tint(.blue)
+
+                        Marker("SJC Airport", systemImage: "airplane", coordinate: CLLocationCoordinate2D(latitude: 37.3639, longitude: -121.9289))
+                            .tint(.indigo)
+
+                        Marker("Burney Falls (Drop-off)", systemImage: "flag.fill", coordinate: CLLocationCoordinate2D(latitude: 41.0135, longitude: -121.6207))
+                            .tint(.green)
+
+                        ForEach(gasStops) { stop in
+                            Marker(stop.name, systemImage: "fuelpump.fill", coordinate: stop.coordinate)
+                                .tint(.purple)
+                        }
+
+                        if let campbellToSJC {
+                            MapPolyline(campbellToSJC)
+                                .stroke(.indigo, lineWidth: 4)
+                        }
+
+                        if let arrivalDriveRoute {
+                            MapPolyline(coordinates: arrivalDriveRoute.coordinates)
+                                .stroke(.blue, lineWidth: 4)
+                        }
                     }
-                    
-                    // Flight Markers
-                    if mapMode == 1 {
+
+                    if mapMode != .arrival {
+                        Marker("Ash Camp Pickup", systemImage: "figure.hiking", coordinate: CLLocationCoordinate2D(latitude: 41.1170914, longitude: -122.0606252))
+                            .tint(.orange)
+
+                        Marker("Campbell Home", systemImage: "house.fill", coordinate: CLLocationCoordinate2D(latitude: 37.262499, longitude: -121.933129))
+                            .tint(.green)
+
+                        if let endDriveRoute {
+                            MapPolyline(coordinates: endDriveRoute.coordinates)
+                                .stroke(.orange, lineWidth: 4)
+                        }
+                    }
+
+                    if mapMode == .full {
                         Marker("Chicago (ORD)", systemImage: "airplane.departure", coordinate: CLLocationCoordinate2D(latitude: 41.9742, longitude: -87.9073))
                             .tint(.teal)
 
                         MapPolyline(coordinates: flightCoordinates)
                             .stroke(.teal, style: StrokeStyle(lineWidth: 3, dash: [6, 6]))
-                    }
-                    
-                    if let route1 = route1 {
-                        MapPolyline(route1)
-                            .stroke(.blue, lineWidth: 4)
-                    }
-                    if let route2 = route2 {
-                        MapPolyline(route2)
-                            .stroke(.orange, lineWidth: 4)
                     }
                 }
                 .mapStyle(.standard(elevation: .flat, showsTraffic: true))
@@ -185,6 +268,26 @@ struct DriveTrackerView: View {
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(Color.primary.opacity(0.1), lineWidth: 1)
                 )
+                .padding(.horizontal)
+
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(mapMode.mapTitle)
+                            .font(.caption.bold())
+                        Text(routeSourceDescription)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Spacer()
+
+                    Link(destination: liveRouteURL) {
+                        Label("Open", systemImage: "arrow.up.right.square")
+                            .font(.caption.bold())
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(mapMode == .end ? .orange : .blue)
+                }
                 .padding(.horizontal)
                 
                 // Gas & Car Stats Card
@@ -201,18 +304,25 @@ struct DriveTrackerView: View {
                         }
                     }
                     
-                    if let r1 = route1, let r2 = route2 {
-                        let singleTripMiles = (r1.distance + r2.distance) / 1609.34
-                        let roundTripMiles = singleTripMiles * 2
+                    if let arrivalDriveRoute, let endDriveRoute {
+                        let airportMiles = (campbellToSJC?.distance ?? 0) / 1609.344
+                        let insertionMiles = airportMiles + arrivalDriveRoute.distanceMiles
+                        let extractionMiles = endDriveRoute.distanceMiles
+                        let totalMiles = insertionMiles + extractionMiles
                         let avgPrice = gasPricePerGallon ?? 5.38
-                        let totalGallons = roundTripMiles / assumedMPG
+                        let totalGallons = totalMiles / assumedMPG
                         let fuelCost = totalGallons * avgPrice
                         
-                        HStack(spacing: 8) {
-                            gasBadge(title: "AAA CA AVG", value: String(format: "$%.2f/gal", avgPrice), color: .green)
-                            gasBadge(title: "ROUND TRIP MILES", value: String(format: "%.1f mi", roundTripMiles), color: .blue)
-                            gasBadge(title: "FUEL COST EST.", value: String(format: "$%.2f", fuelCost), color: .purple)
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                            gasBadge(title: "ARRIVAL DRIVE", value: String(format: "%.1f mi", insertionMiles), color: .blue)
+                            gasBadge(title: "END ROUTE", value: String(format: "%.1f mi", extractionMiles), color: .orange)
+                            gasBadge(title: "TOTAL SHUTTLE", value: String(format: "%.1f mi", totalMiles), color: .indigo)
+                            gasBadge(title: "FUEL EST. @ $\(String(format: "%.2f", avgPrice))", value: String(format: "$%.2f", fuelCost), color: .green)
                         }
+
+                        Text("Arrival and end-route mileage are separate routed legs. “Total shuttle” is their sum—not an outbound leg doubled as a fake round trip.")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
                         
                         Divider().padding(.vertical, 4)
                         
@@ -502,20 +612,19 @@ struct DriveTrackerView: View {
                 
                 // Route details
                 VStack(alignment: .leading, spacing: 14) {
-                    Text("Detailed Travel Milestones")
+                    Text(milestoneTitle)
                         .font(.headline)
                         .padding(.bottom, 4)
                     
-                    ForEach(0..<timelineEvents.count, id: \.self) { idx in
-                        let event = timelineEvents[idx]
+                    ForEach(Array(displayedTimelineEvents.enumerated()), id: \.offset) { _, event in
                         HStack(alignment: .top, spacing: 12) {
                             Text(event.time)
                                 .font(.caption.bold())
-                                .foregroundStyle(.blue)
+                                .foregroundStyle(mapMode == .end ? .orange : .blue)
                                 .frame(width: 75, alignment: .leading)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 3)
-                                .background(.blue.opacity(0.1), in: RoundedRectangle(cornerRadius: 6))
+                                .background((mapMode == .end ? Color.orange : Color.blue).opacity(0.1), in: RoundedRectangle(cornerRadius: 6))
                             
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(event.title)
@@ -553,10 +662,59 @@ struct DriveTrackerView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(color.opacity(0.1), in: RoundedRectangle(cornerRadius: 8))
     }
+
+    private var routeSourceDescription: String {
+        switch mapMode {
+        case .arrival:
+            String(
+                format: "%.1f mi after SJC · %.1f hr routing snapshot",
+                arrivalDriveRoute?.distanceMiles ?? 0,
+                arrivalDriveRoute?.durationHours ?? 0
+            )
+        case .end:
+            String(
+                format: "%.1f mi · %.1f hr routing snapshot after pickup",
+                endDriveRoute?.distanceMiles ?? 0,
+                endDriveRoute?.durationHours ?? 0
+            )
+        case .full:
+            "Flight, arrival drive, 51.844-mile hike, and Ash Camp extraction"
+        }
+    }
+
+    private var liveRouteURL: URL {
+        let rawURL: String
+        switch mapMode {
+        case .arrival, .full:
+            rawURL = "https://www.google.com/maps/dir/2800+Joseph+Ave,+Campbell,+CA/San+Jose+Mineta+International+Airport+(SJC),+San+Jose,+CA/Burney+Falls,+CA/"
+        case .end:
+            rawURL = "https://www.google.com/maps/dir/?api=1&origin=41.1170914,-122.0606252&destination=2800+Joseph+Ave,+Campbell,+CA+95008&travelmode=driving"
+        }
+        return URL(string: rawURL)!
+    }
+
+    private var milestoneTitle: String {
+        switch mapMode {
+        case .arrival: "Arrival Route Milestones"
+        case .end: "End Route Milestones"
+        case .full: "Complete Travel Milestones"
+        }
+    }
+
+    private var displayedTimelineEvents: [(time: String, title: String, detail: String)] {
+        switch mapMode {
+        case .arrival:
+            arrivalTimelineEvents
+        case .end:
+            endTimelineEvents
+        case .full:
+            arrivalTimelineEvents + endTimelineEvents
+        }
+    }
     
-    private var timelineEvents: [(time: String, title: String, detail: String)] {
-        let t1 = route1?.expectedTravelTime ?? 900 // default 15m
-        let t2 = route2?.expectedTravelTime ?? 16200 // default 4.5h
+    private var arrivalTimelineEvents: [(time: String, title: String, detail: String)] {
+        let t1 = campbellToSJC?.expectedTravelTime ?? 900
+        let t2 = (arrivalDriveRoute?.durationHours ?? 6.1) * 3600
         
         let leaveCampbell = timeByAdding(seconds: -t1, to: "10:36 PM")
         let sjcArrival = "10:36 PM"
@@ -584,6 +742,16 @@ struct DriveTrackerView: View {
             (burneyArrival, "Burney Falls Access", "Day 1 is intentionally 5.609 miles to Rock Creek because this hike starts after the morning drive.")
         ]
     }
+
+    private var endTimelineEvents: [(time: String, title: String, detail: String)] {
+        let endDriveHours = endDriveRoute?.durationHours ?? 6.8
+        return [
+            ("10–Noon", "Sep 5 · Ash Camp Rendezvous", "Finish at the exact shared pin: 41.1170914, -122.0606252. Mikaela’s final arrival window is set through the inReach check-in protocol."),
+            ("Variable", "Exit FS Road 38N11", "This rough forest-road portion is part of the displayed route. Drive it only after the McCloud Ranger Station confirms current access and vehicle suitability."),
+            ("+\(formatDecimalHours(endDriveHours))", "Campbell Home", "The routed snapshot is \(String(format: "%.1f", endDriveRoute?.distanceMiles ?? 333.3)) miles and \(formatDecimalHours(endDriveHours)) before traffic, food, fuel, and forest-road delays."),
+            ("Sep 6", "Protected Contingency Day", "If the team finishes late or extraction slips, use Sunday as the buffer. Do not spend the Sep 7 early-flight margin on an avoidable same-day airport transfer.")
+        ]
+    }
     
     private func timeByAdding(seconds: TimeInterval, to timeString: String) -> String {
         let formatter = DateFormatter()
@@ -602,59 +770,69 @@ struct DriveTrackerView: View {
         
         let campbell = CLLocation(latitude: 37.2625, longitude: -121.9331)
         let sjc = CLLocation(latitude: 37.3639, longitude: -121.9289)
-        let burney = CLLocation(latitude: 41.0135, longitude: -121.6207)
         
-        let req1 = MKDirections.Request()
-        req1.source = MKMapItem(location: campbell, address: nil)
-        req1.destination = MKMapItem(location: sjc, address: nil)
-        req1.transportType = .automobile
-        
-        let req2 = MKDirections.Request()
-        req2.source = MKMapItem(location: sjc, address: nil)
-        req2.destination = MKMapItem(location: burney, address: nil)
-        req2.transportType = .automobile
+        let request = MKDirections.Request()
+        request.source = MKMapItem(location: campbell, address: nil)
+        request.destination = MKMapItem(location: sjc, address: nil)
+        request.transportType = .automobile
         
         do {
-            let res1 = try await MKDirections(request: req1).calculate()
-            let res2 = try await MKDirections(request: req2).calculate()
+            let response = try await MKDirections(request: request).calculate()
             
             withAnimation {
-                self.route1 = res1.routes.first
-                self.route2 = res2.routes.first
+                self.campbellToSJC = response.routes.first
                 updateMapPosition()
             }
         } catch {
-            print("Route calculation error: \(error)")
+            print("Route calculation error for Campbell to SJC: \(error)")
+            updateMapPosition()
         }
     }
     
     private func updateMapPosition() {
         withAnimation {
-            if mapMode == 0 {
-                // Focus on drive route
-                if let r1 = route1, let r2 = route2 {
-                    let rect1 = r1.polyline.boundingMapRect
-                    let rect2 = r2.polyline.boundingMapRect
-                    self.position = .rect(rect1.union(rect2).insetBy(dx: -15000, dy: -15000))
-                }
-            } else {
-                // Focus on full route (flight + drive)
+            switch mapMode {
+            case .arrival:
                 var rect = MKMapRect.null
-                for coord in flightCoordinates {
-                    let point = MKMapPoint(coord)
-                    rect = rect.union(MKMapRect(x: point.x, y: point.y, width: 0, height: 0))
+                if let campbellToSJC {
+                    rect = rect.union(campbellToSJC.polyline.boundingMapRect)
                 }
-                if let r1 = route1 { rect = rect.union(r1.polyline.boundingMapRect) }
-                if let r2 = route2 { rect = rect.union(r2.polyline.boundingMapRect) }
-                self.position = .rect(rect.insetBy(dx: -50000, dy: -50000))
+                rect = rect.union(mapRect(for: arrivalDriveRoute?.coordinates ?? []))
+                setMapPosition(rect, padding: 15_000)
+            case .end:
+                setMapPosition(mapRect(for: endDriveRoute?.coordinates ?? []), padding: 15_000)
+            case .full:
+                var rect = mapRect(for: flightCoordinates)
+                if let campbellToSJC {
+                    rect = rect.union(campbellToSJC.polyline.boundingMapRect)
+                }
+                rect = rect.union(mapRect(for: arrivalDriveRoute?.coordinates ?? []))
+                rect = rect.union(mapRect(for: endDriveRoute?.coordinates ?? []))
+                setMapPosition(rect, padding: 50_000)
             }
         }
+    }
+
+    private func mapRect(for coordinates: [CLLocationCoordinate2D]) -> MKMapRect {
+        coordinates.reduce(MKMapRect.null) { partial, coordinate in
+            let point = MKMapPoint(coordinate)
+            return partial.union(MKMapRect(x: point.x, y: point.y, width: 1, height: 1))
+        }
+    }
+
+    private func setMapPosition(_ rect: MKMapRect, padding: Double) {
+        guard !rect.isNull, !rect.isEmpty else { return }
+        position = .rect(rect.insetBy(dx: -padding, dy: -padding))
     }
     
     private func formatTime(_ seconds: TimeInterval) -> String {
         let hours = Int(seconds) / 3600
         let minutes = (Int(seconds) % 3600) / 60
         return "\(hours)h \(minutes)m"
+    }
+
+    private func formatDecimalHours(_ decimalHours: Double) -> String {
+        formatTime(decimalHours * 3600)
     }
 
     private func fetchGasPrices() async {

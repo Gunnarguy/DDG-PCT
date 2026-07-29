@@ -132,7 +132,7 @@ struct GearPlannerView: View {
             }
             .background(Color(uiColor: .systemGroupedBackground))
             .navigationTitle("Gear Loadouts")
-            .searchable(text: $searchText, prompt: "Search 88 gear items")
+            .searchable(text: $searchText, prompt: "Search \(customItems.count) gear items")
             .toolbar { toolbarContent }
             .onAppear(perform: prepareCatalog)
             .sheet(isPresented: $showingAddItem) {
