@@ -45,6 +45,7 @@ struct DDG_MobileApp: App {
         SupabaseManager.shared.config.url = Secrets.supabaseURL
         SupabaseManager.shared.config.anonKey = Secrets.supabaseAnonKey
         SupabaseManager.shared.config.epaApiKey = Secrets.epaApiKey
+        AuthManager.shared.start()
 
         // Wire up network reconnection → sync
         NetworkMonitor.shared.onReconnect = { [modelContainer] in

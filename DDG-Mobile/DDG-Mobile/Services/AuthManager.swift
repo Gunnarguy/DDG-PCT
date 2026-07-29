@@ -48,10 +48,17 @@ final class AuthManager {
     private let emailKey = "ddg_user_email"
     private let appleIDKey = "ddg_apple_user_id"
     private var pendingAppleNonce: String?
+    private var hasStarted = false
 
     // MARK: - Init
 
-    private init() {
+    private init() {}
+
+    /// Starts session restoration after the app has configured Supabase.
+    /// Calling this repeatedly is safe.
+    func start() {
+        guard !hasStarted else { return }
+        hasStarted = true
         restoreSession()
     }
 
@@ -105,33 +112,24 @@ final class AuthManager {
 
     // MARK: - Session Restore
 
-    /// Check if we have a persisted session and validate it
+    /// Restore the persisted Supabase session and validate the user's
+    /// RLS-protected team profile.
+    ///
+    /// The Supabase refresh session is the authentication source of truth.
+    /// Apple only returns profile fields such as email on the first sign-in,
+    /// so the separate Apple metadata cache must never gate session restore.
     private func restoreSession() {
-        guard let appleID = readKeychain(key: appleIDKey) else {
-            authState = .signedOut
+        appleUserID = readKeychain(key: appleIDKey)
+        userEmail = readKeychain(key: emailKey)
+
+        guard SupabaseManager.shared.isConfigured else {
+            authState = .error("Supabase is not configured on this build.")
             return
         }
-        let savedEmail = readKeychain(key: emailKey)
 
-        // Verify the Apple credential is still valid
-        let provider = ASAuthorizationAppleIDProvider()
-        provider.getCredentialState(forUserID: appleID) { [weak self] state, _ in
-            guard let manager = self else { return }
-            Task { @MainActor in
-                switch state {
-                case .authorized:
-                    manager.appleUserID = appleID
-                    manager.userEmail = savedEmail
-                    guard SupabaseManager.shared.isConfigured else {
-                        manager.authState = .error("Supabase is not configured on this build.")
-                        return
-                    }
-                    await manager.authorizeStoredSupabaseSession()
-                default:
-                    manager.authState = .signedOut
-                    manager.clearKeychain()
-                }
-            }
+        authState = .unknown
+        Task {
+            await authorizeStoredSupabaseSession()
         }
     }
 
