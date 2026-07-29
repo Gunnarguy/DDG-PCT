@@ -87,7 +87,7 @@ const DAY_COLORS = [
   { fill: 'rgba(211, 47, 47, 0.15)', stroke: '#D32F2F' },   // Day 6
   { fill: 'rgba(94, 53, 177, 0.15)', stroke: '#5E35B1' },   // Day 7
   { fill: 'rgba(0, 121, 107, 0.15)', stroke: '#00796B' },   // Day 8
-  { fill: 'rgba(198, 40, 40, 0.15)', stroke: '#C62828' }    // Day 9
+  { fill: 'rgba(198, 40, 40, 0.15)', stroke: '#C62828' }    // Spare/contingency
 ];
 
 const OVERLAY_SECTION_ORDER = ['section-e', 'section-g', 'section-i', 'section-j'];
@@ -671,7 +671,7 @@ const ElevationProfile = ({
       <div className="elevation-compact-bar">
         <span className="elevation-compact-title">📈 Elevation Profile</span>
         <span className="elevation-compact-stats">
-          {formatMile(stats.totalMiles)} • +{Math.round(stats.totalGain).toLocaleString()}' / -{Math.round(stats.totalLoss).toLocaleString()}'
+          Garmin {formatMile(stats.totalMiles)} • +{Math.round(stats.totalGain).toLocaleString()}' / -{Math.round(stats.totalLoss).toLocaleString()}'
         </span>
       </div>
       {/* DDG Team Header (hidden in compact mode) */}
@@ -707,7 +707,7 @@ const ElevationProfile = ({
           <span className="stat-icon">📏</span>
           <div className="stat-content">
             <span className="stat-value">{formatMile(stats.totalMiles)}</span>
-            <span className="stat-label">Total Distance</span>
+            <span className="stat-label">Cropped Garmin Distance</span>
           </div>
         </div>
         <div className="elevation-stat elevation-stat--gain">
@@ -1234,7 +1234,7 @@ const ElevationProfile = ({
           </svg>
         ) : (
           <div className="elevation-profile-empty">
-            <p className="note">Loading Section O elevation data (Mile 1420.7 → 1472.7)...</p>
+            <p className="note">Loading Section O elevation data (PCTA 1420.653 → 1472.497)...</p>
           </div>
         )}
       </div>

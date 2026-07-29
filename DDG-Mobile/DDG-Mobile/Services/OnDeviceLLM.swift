@@ -89,7 +89,7 @@ final class OnDeviceLLM {
 
             let session = LanguageModelSession(model: .default)
 
-            var context = "Current conditions for the active PCT trip (Burney Falls → Ash Camp, 54.2 GPS mi, 9 days):\n\n"
+            var context = "Current conditions for the active PCT trip (Burney Falls → Ash Camp, 51.844 official mi / 51.664 Garmin mi, 8 hiking days):\n\n"
 
             // Fires
             if fires.isEmpty {
@@ -141,7 +141,7 @@ final class OnDeviceLLM {
             }
 
             let prompt = """
-            You are a trail safety advisor for the DDG PCT hiking team (3 hikers, 9-day section hike).
+            You are a trail safety advisor for the DDG PCT hiking team (3 hikers, 8-day section hike plus a contingency day).
             Based on ALL these conditions, provide a comprehensive but concise safety briefing (3-4 sentences).
             Prioritize: immediate threats (fires, AQI), altitude concerns, water reliability, and communication gaps.
             Include specific actionable advice.
@@ -185,10 +185,10 @@ final class OnDeviceLLM {
             context += "Daily breakdown:\n"
 
             let grouped = Dictionary(grouping: camps, by: \.day).sorted { $0.key < $1.key }
-            for (day, dayCamps) in grouped {
+            for (day, dayCamps) in grouped where day > 0 {
                 let dayDist = dayCamps.reduce(0.0) { $0 + $1.distance }
                 let names = dayCamps.map(\.name).joined(separator: " → ")
-                context += "  Day \(day + 1): \(String(format: "%.1f", dayDist)) mi — \(names)\n"
+                context += "  Day \(day): \(String(format: "%.1f", dayDist)) mi — \(names)\n"
                 if let first = dayCamps.first, !first.segment.isEmpty {
                     context += "    Terrain: \(first.segment)\n"
                 }
@@ -203,7 +203,7 @@ final class OnDeviceLLM {
 
             let prompt = """
             You are a PCT thru-hiking mission planner. Generate a concise mission briefing (3-4 sentences) \
-            that captures the key details of this 9-day section hike. Include: total distance, daily averages, \
+            that captures the key details of this 8-day section hike. Include: total distance, daily averages, \
             terrain character, team composition, and any notable logistical considerations. \
             Make it sound like a professional trail operations brief.
 
@@ -321,7 +321,7 @@ final class OnDeviceLLM {
 
             let session = LanguageModelSession(model: .default)
 
-            var context = "Gear Analysis for DDG PCT Section O (3 hikers, 9 days):\n\n"
+            var context = "Gear Analysis for DDG PCT Section O (3 hikers, 8 hiking days plus 1 emergency food day):\n\n"
             context += "Total pack weight: \(String(format: "%.1f", totalOz)) oz (\(String(format: "%.1f", totalOz / 16.0)) lb)\n"
             context += "Team: \(team.map { "\($0.name) (\($0.role))" }.joined(separator: ", "))\n\n"
 
@@ -336,14 +336,14 @@ final class OnDeviceLLM {
                 context += "  - \(item.name): \(String(format: "%.1f", item.weightInOz)) oz [\(item.category)]\n"
             }
 
-            context += "\nTrail context: 9-day section hike, 54.2 GPS miles, route high point about 6,146 ft.\n"
+            context += "\nTrail context: 8-day section hike, 51.844 official miles / 51.664 Garmin miles, route high point about 6,146 ft.\n"
             context += "Key considerations: water carry between sources, satellite communicator weight, camp cooking gear.\n"
 
             let prompt = """
             You are a gear optimization advisor for a 3-person PCT thru-hiking team.
             Analyze this gear list and provide a brief assessment (3-4 sentences).
             Cover: total weight judgment (ultralight <10lb, light 10-15lb, moderate 15-20lb, heavy 20+lb), \
-            heaviest categories, and any specific suggestions for a 9-day section hike with \
+            heaviest categories, and any specific suggestions for an 8-day section hike with one emergency food day, \
             water carries and moderate altitude. Be practical and specific.
 
             \(context)

@@ -1,5 +1,13 @@
 # GPS Elevation Validation Report
 
+> [!NOTE]
+> This report validates selected elevation samples from an older, longer route
+> dataset; it does not validate the current trip endpoints or daily totals. The
+> controlling route/elevation audit is
+> [docs/2026-trip-source-of-truth.md](docs/2026-trip-source-of-truth.md). Preserve
+> these samples as provenance, but do not use this file to restore the
+> superseded longer profile.
+
 ## Executive Summary
 **GPS elevation data is scientifically accurate** with an average error of **0.4%** compared to USGS National Map authoritative data.
 

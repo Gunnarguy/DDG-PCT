@@ -59,8 +59,17 @@ function main() {
     "Active endpoint must be Ash Camp"
   );
   assert(
-    Math.abs(Number(canonical?.route?.metadata?.active_distance_miles) - 54.2) < 0.2,
-    "Active route must measure approximately 54.2 miles"
+    Math.abs(Number(canonical?.route?.metadata?.active_distance_miles) - 51.844) < 0.01,
+    "Active route must measure 51.844 official PCTA 2026 miles"
+  );
+  assert(
+    Math.abs(Number(canonical?.route?.metadata?.active_gps_distance_miles) - 51.664) < 0.1,
+    "Cropped Garmin route must measure approximately 51.664 miles"
+  );
+  assert(
+    Number(canonical?.route?.metadata?.start_pct_mile) === 1420.653 &&
+      Number(canonical?.route?.metadata?.finish_pct_mile) === 1472.497,
+    "PCTA 2026 start/finish miles are stale"
   );
   assert(
     Array.isArray(canonical?.route?.extendedPath) &&
@@ -69,11 +78,25 @@ function main() {
   );
   assert(
     waterSources.every(
-      (source) =>
-        source.reportStatus === "current-condition-check-required" &&
-        source.reliability === "unverified"
+      (source) => source.reportStatus === "current-condition-check-required"
     ),
-    "Water points must not be presented as current verified flow"
+    "Static water points must require a current-condition check"
+  );
+
+  const activeFeatures = features.filter(
+    (feature) => Number(feature.properties?.day) >= 0
+  );
+  assert(
+    activeFeatures.length === 9 &&
+      activeFeatures.at(-1)?.properties?.day === 8 &&
+      activeFeatures.at(-1)?.properties?.name === "Ash Camp pickup",
+    "Active itinerary must contain Day 0 plus eight legs ending at Ash Camp"
+  );
+  assert(
+    !activeFeatures.some((feature) =>
+      String(feature.properties?.name).toLowerCase().includes("kosk")
+    ),
+    "Kosk must not be an active overnight"
   );
 
   const segmentMiles = sumRouteSegments(canonical.route);

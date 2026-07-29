@@ -12,7 +12,7 @@ struct HikeDataIngestor {
     static func needsIngest(modelContext: ModelContext) -> Bool {
         print("DEBUG [HikeDataIngestor]: Checking database state...")
         
-        let currentVersion = 9 // Active 54.2-mile Burney Falls → Ash Camp route.
+        let currentVersion = 10 // PCTA 2026 Burney Falls → Ash Camp route: 51.844 official miles / 8 hiking days.
         let ingestedVersion = UserDefaults.standard.integer(forKey: "hikeDataIngestVersion")
         if ingestedVersion < currentVersion {
             print("DEBUG [HikeDataIngestor]: Forced re-ingestion triggered (version \(ingestedVersion) < \(currentVersion))")
@@ -102,8 +102,8 @@ struct HikeDataIngestor {
                 return (lat: bestPt.lat, lon: bestPt.lon)
             }
             
-            // Capture the documented nine-day camp-to-camp route markers.
-            let keyMiles = [0.0, 8.2, 16.2, 23.9, 30.6, 34.6, 38.5, 44.9, 50.4, 54.2]
+            // Capture the canonical eight-day camp-to-camp route markers.
+            let keyMiles = [0.0, 5.609, 13.636, 28.165, 32.247, 36.036, 42.386, 47.990, 51.844]
             for km in keyMiles {
                 coordsAtMiles[km] = getCoordsForMile(km)
             }
@@ -122,7 +122,7 @@ struct HikeDataIngestor {
             print("DEBUG [HikeDataIngestor]: Successfully inserted \(pathCount) trail points.")
         }
 
-        // 2. Parse the primary nine-day camp/waypoint features.
+        // 2. Parse the primary eight-day camp/waypoint features.
         var campCount = 0
         if let features = json["features"] as? [[String: Any]] {
             print("DEBUG [HikeDataIngestor]: Parsing \(features.count) waypoint features...")
@@ -214,13 +214,13 @@ struct HikeDataIngestor {
         }
 
         let routeMile = (props["routeMile"] as? NSNumber)?.doubleValue ?? 0
-        let plannedMiles = [0.0, 8.2, 16.2, 23.9, 30.6, 34.6, 38.5, 44.9, 50.4, 54.2]
+        let plannedMiles = [0.0, 5.609, 13.636, 28.165, 32.247, 36.036, 42.386, 47.990, 51.844]
         let priorMile = day > 0 && day < plannedMiles.count ? plannedMiles[day - 1] : 0
         let distance = day > 0 ? max(0, routeMile - priorMile) : 0
-        let mappedType = day == 0 ? "Trailhead" : (day == 9 ? "Finish" : type)
+        let mappedType = day == 0 ? "Trailhead" : (day == 8 ? "Finish" : type)
         let mappedCoords = coordsAtMiles[routeMile] ?? (lat: coords[1], lon: coords[0])
         let sourceNotes = props["notes"] as? String ?? ""
-        let verificationNotes = (1...8).contains(day)
+        let verificationNotes = (1...7).contains(day)
             ? "Provisional GPS split. Verify a legal campsite and current water before committing."
             : sourceNotes
 

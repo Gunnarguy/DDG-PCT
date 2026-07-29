@@ -20,29 +20,30 @@ const mobilePath = path.resolve(
 const inboundRoutePath = "/private/tmp/sjc-burney-route.json";
 const returnRoutePath = "/private/tmp/ash-campbell-route.json";
 
+const BURNEY_FALLS_PCT_ACCESS = [-121.65376551, 41.01104125];
 const ASH_CAMP = [-122.0606252, 41.1170914];
 const MILES_PER_METER = 1 / 1609.344;
 const ACTIVE_WATER_SOURCES = [
-  [1420.7, "HM-START", "Burney Falls State Park water", -121.620709, 41.01348],
-  [1424.7, "HM-ROCK", "Rock Creek", -121.7136343, 41.0250791],
-  [1427.9, "HM-UPPER-JAKE", "Upper Jake Spring", -121.7513636, 41.0306833],
-  [1428.5, "HM-SCREWDRIVER", "Screwdriver Creek", -121.7558923, 41.0376558],
-  [1431.9, "HM-PEAVINE", "Peavine Creek", -121.7848802, 41.0595609],
-  [1435.5, "HM-CLARK", "Clark Creek", -121.7881085, 41.1015591],
-  [1437.0, "HM-DEADMAN", "Deadman Creek", -121.7744761, 41.1188822],
-  [1438.7, "HM-KOSK", "Kosk Spring", -121.7713173, 41.1358169],
-  [1445.1, "HM-MOOSEHEAD-1", "Moosehead Creek", -121.8318419, 41.1771229],
-  [1445.4, "HM-MOOSEHEAD-2", "Moosehead Creek alternate access", -121.8369645, 41.1751461],
-  [1453.4, "HM-STAR-CITY", "Alder Creek / Star City Creek", -121.9207581, 41.1646056],
-  [1458.5, "HM-DEER-SPRING", "Deer Creek Spring", -121.9860782, 41.1356197],
-  [1459.1, "HM-DEER-1", "Deer Creek", -121.9874098, 41.1282766],
-  [1460.0, "HM-DEER-2", "Deer Creek second crossing", -122.0005176, 41.1294277],
-  [1465.8, "HM-BUTCHER-TRIB", "Butcherknife Creek tributary", -122.0251337, 41.1252769],
-  [1466.1, "HM-BUTCHER", "Butcherknife Creek", -122.0265294, 41.1297141],
-  [1467.0, "HM-WA1467", "McCloud River drainage seasonal water", -122.0284611, 41.1277224],
-  [1467.2, "HM-WA1467B", "McCloud River drainage seasonal water", -122.0295905, 41.1262207],
-  [1468.0, "HM-WA1468", "McCloud River drainage seasonal water", -122.0321066, 41.1230707],
-  [1472.0, "HM-ASH", "Ash Camp / McCloud River", -122.0606252, 41.1170914],
+  { routeMile: 0, pctMile: 1420.653, waypoint: "PCTAID_648", name: "Burney Falls State Park water", coordinates: [-121.65376551, 41.01104125], staticReliability: "facility-dependent" },
+  { routeMile: 5.39, pctMile: 1426.04, waypoint: "PCTAID_650", name: "Rock Creek", coordinates: [-121.7136343, 41.0250791], staticReliability: "reliable-creek" },
+  { routeMile: 8.62, pctMile: 1429.28, waypoint: "PCTAID_651", name: "Upper Jake Spring", coordinates: [-121.7513636, 41.0306833], staticReliability: "limited-off-trail" },
+  { routeMile: 9.51, pctMile: 1430.17, waypoint: "PCTAID_652", name: "Screwdriver Creek", coordinates: [-121.7558923, 41.0376558], staticReliability: "seasonal-off-trail" },
+  { routeMile: 13.56, pctMile: 1434.22, waypoint: "PCTAID_653", name: "Peavine Creek", coordinates: [-121.7848802, 41.0595609], staticReliability: "seasonal-alternate-access" },
+  { routeMile: 17.78, pctMile: 1438.43, waypoint: "PCTAID_654", name: "Clark Spring", coordinates: [-121.7881085, 41.1015591], staticReliability: "seasonal-private-land-context" },
+  { routeMile: 19.81, pctMile: 1440.47, waypoint: "PCTAID_655", name: "Deadman Creek", coordinates: [-121.7744761, 41.1188822], staticReliability: "private-land-context" },
+  { routeMile: 21.36, pctMile: 1442.01, waypoint: "PCTAID_656", name: "Kosk Spring", coordinates: [-121.7713173, 41.1358169], staticReliability: "water-only-no-camp-assumption" },
+  { routeMile: 28.16, pctMile: 1448.82, waypoint: "PCTAID_657", name: "Moosehead Creek", coordinates: [-121.8318419, 41.1771229], staticReliability: "reliable-but-brushy" },
+  { routeMile: 28.57, pctMile: 1449.23, waypoint: "PCTAID_658", name: "Moosehead Creek alternate access", coordinates: [-121.8369645, 41.1751461], staticReliability: "limited-alternate" },
+  { routeMile: 35.6, pctMile: 1456.26, waypoint: "PCTAID_659", name: "Alder Creek / Star City Creek", coordinates: [-121.9207581, 41.1646056], staticReliability: "seasonal-parser-date-incomplete" },
+  { routeMile: 42.38, pctMile: 1463.04, waypoint: "PCTAID_661", name: "Deer Creek Spring", coordinates: [-121.9860782, 41.1356197], staticReliability: "spring" },
+  { routeMile: 43.48, pctMile: 1464.13, waypoint: "PCTAID_662", name: "Deer Creek", coordinates: [-121.9874098, 41.1282766], staticReliability: "creek" },
+  { routeMile: 44.6, pctMile: 1465.26, waypoint: "PCTAID_663", name: "Deer Creek second crossing", coordinates: [-122.0005176, 41.1294277], staticReliability: "creek" },
+  { routeMile: 47.66, pctMile: 1468.31, waypoint: "PCTAID_664", name: "Butcherknife Creek tributary", coordinates: [-122.0251337, 41.1252769], staticReliability: "creek" },
+  { routeMile: 48.01, pctMile: 1468.66, waypoint: "PCTAID_665", name: "Butcherknife Creek", coordinates: [-122.0265294, 41.1297141], staticReliability: "creek" },
+  { routeMile: 48.19, pctMile: 1468.84, waypoint: "PCTAID_666", name: "McCloud drainage spring", coordinates: [-122.0284611, 41.1277224], staticReliability: "seasonal" },
+  { routeMile: 48.37, pctMile: 1469.02, waypoint: "PCTAID_667", name: "McCloud drainage creek", coordinates: [-122.0295905, 41.1262207], staticReliability: "seasonal" },
+  { routeMile: 48.72, pctMile: 1469.38, waypoint: "PCTAID_668", name: "McCloud drainage creek", coordinates: [-122.0321066, 41.1230707], staticReliability: "seasonal" },
+  { routeMile: 51.844, pctMile: 1472.497, waypoint: "PCTAID_670", name: "Ash Camp / McCloud River", coordinates: [-122.0606252, 41.1170914], staticReliability: "major-drainage" },
 ];
 
 function haversineMiles(a, b) {
@@ -89,7 +90,7 @@ function routeStats(pathPoints) {
   });
 
   return {
-    distance: Number(distance.toFixed(1)),
+    distance: Number(distance.toFixed(3)),
     gain: Math.round(gain),
     loss: Math.round(loss),
     high: Math.round(high),
@@ -134,16 +135,28 @@ function makeFeature({ name, coordinates, day, routeMile, type, segment, pctMile
 const data = JSON.parse(fs.readFileSync(publicPath, "utf8"));
 const existingActivePath = data.route?.path ?? [];
 const existingExtendedPath = data.route?.extendedPath ?? [];
-const fullPath = existingExtendedPath.length
-  ? [...existingActivePath, ...existingExtendedPath.slice(1)]
-  : existingActivePath;
+const existingArchivedPreStartPath = data.route?.archivedPreStartPath ?? [];
+const fullPath = existingArchivedPreStartPath.length
+  ? [
+      ...existingArchivedPreStartPath.slice(0, -1),
+      ...existingActivePath,
+      ...existingExtendedPath.slice(1),
+    ]
+  : existingExtendedPath.length
+    ? [...existingActivePath, ...existingExtendedPath.slice(1)]
+    : existingActivePath;
 
 if (!fullPath.length) {
   throw new Error("The Garmin route path is missing");
 }
 
+const startIndex = nearestIndex(fullPath, BURNEY_FALLS_PCT_ACCESS);
 const ashIndex = nearestIndex(fullPath, ASH_CAMP);
-const activePath = fullPath.slice(0, ashIndex + 1);
+if (startIndex >= ashIndex) {
+  throw new Error("Canonical Burney Falls start must precede Ash Camp");
+}
+const archivedPreStartPath = fullPath.slice(0, startIndex + 1);
+const activePath = fullPath.slice(startIndex, ashIndex + 1);
 const extendedPath = fullPath.slice(ashIndex);
 const activeStats = routeStats(activePath);
 const fullStats = routeStats(fullPath);
@@ -158,10 +171,13 @@ const startCoordinates = {
 const itineraryFeatures = [
   makeFeature({
     name: "Burney Falls State Park (Start)",
-    coordinates: startCoordinates,
+    coordinates: {
+      longitude: BURNEY_FALLS_PCT_ACCESS[0],
+      latitude: BURNEY_FALLS_PCT_ACCESS[1],
+    },
     day: 0,
     routeMile: 0,
-    pctMile: 1420.7,
+    pctMile: tripFacts.route.startPctMile,
     type: "Trailhead",
     segment: "Trip start",
   }),
@@ -172,9 +188,9 @@ const itineraryFeatures = [
       day: leg.day,
       routeMile: leg.routeMileEnd,
       pctMile: leg.pctMileEnd,
-      type: leg.day === 9 ? "Finish" : "Camp",
+      type: leg.day === primaryItinerary.length ? "Finish" : "Camp",
       segment:
-        leg.day === 9
+        leg.day === primaryItinerary.length
           ? "Ash Camp pickup with Mikaela; FS Road 38N11 condition check required"
           : `${leg.distance.toFixed(1)} mi; ${leg.water}`,
     }),
@@ -185,21 +201,37 @@ data.route = {
   ...data.route,
   name: "Burney Falls to Ash Camp",
   path: activePath,
+  archivedPreStartPath,
   extendedPath,
   metadata: {
     ...data.route.metadata,
+    source_of_truth_version: "2026-07-28-pcta-2026-v1",
+    geometry_source: tripFacts.route.geometrySource,
+    elevation_source: tripFacts.route.elevationSource,
+    start_name: tripFacts.route.start,
+    start_coordinate: BURNEY_FALLS_PCT_ACCESS,
+    start_pct_mile: tripFacts.route.startPctMile,
     active_endpoint: "Ash Camp",
+    finish_coordinate: ASH_CAMP,
+    finish_pct_mile: tripFacts.route.finishPctMile,
     active_points: activePath.length,
-    active_distance_miles: activeStats.distance,
+    active_distance_miles: tripFacts.route.officialMiles,
+    active_gps_distance_miles: activeStats.distance,
+    distance_display_miles: tripFacts.route.displayMiles,
+    distance_method: "PCTA January 2026 centerline endpoints",
+    archived_pre_start_points: archivedPreStartPath.length,
+    archived_pre_start_status: "excluded-from-active-trip",
     full_track_points: fullPath.length,
     full_track_distance_miles: fullStats.distance,
-    extended_route_status: "future-trip-only",
+    extended_route_status: "historical-future-reference-only",
   },
   properties: {
     min_elevation: activeStats.low,
     max_elevation: activeStats.high,
-    total_gain_feet: activeStats.gain,
-    total_loss_feet: activeStats.loss,
+    total_gain_feet: tripFacts.route.totalGainFeet,
+    total_loss_feet: tripFacts.route.totalLossFeet,
+    elevation_accumulation_method:
+      "Garmin elevation, five-point smoothing, 10-foot threshold",
     segments: primaryItinerary.map((leg) => ({
       day: leg.day,
       distance: leg.distance,
@@ -213,16 +245,18 @@ data.route = {
 
 data.features = [...retainedFeatures, ...itineraryFeatures];
 data.waterSources = ACTIVE_WATER_SOURCES.map(
-  ([mile, waypoint, name, longitude, latitude]) => ({
-    mile,
+  ({ routeMile, pctMile, waypoint, name, coordinates, staticReliability }) => ({
+    mile: pctMile,
+    pctMile,
+    routeMile,
     waypoint,
     name,
-    coordinates: [longitude, latitude],
+    coordinates,
     report:
-      "Mapped water access only. Current flow and potability are unverified; check FarOut/PCT Water Report and ranger guidance immediately before relying on it.",
-    reliability: "unverified",
+      "Static water location only. Merge with the newest timestamped Supabase/PCT Water/FarOut observation before relying on it.",
+    reliability: staticReliability,
     reportStatus: "current-condition-check-required",
-    locationSource: "Halfmile 2023 GPS waypoint",
+    locationSource: "PCTA 2026 mile remap with legacy waypoint coordinates",
     type: "water",
   }),
 );
@@ -231,20 +265,22 @@ data.transport = [
     name: "San Jose International Airport (SJC)",
     type: "airport",
     coordinates: [-121.9289, 37.3639],
-    notes: "Dan and Drew arrive August 28 at 6:05 PM.",
+    notes:
+      "Working schedule: UA481 arrives August 28 at 10:36 PM PDT. Verify in United Manage Trip.",
   },
   {
     name: "Burney Falls Trailhead",
     type: "trailhead-parking",
     coordinates: startCoordinates,
-    notes: "August 29 hiking start; late-night staging access must be confirmed.",
+    notes:
+      "August 29 hiking start after sleeping near SJC and driving north early that morning.",
   },
   {
     name: "Ash Camp Pickup",
     type: "shuttle-point",
     coordinates: ASH_CAMP,
     notes:
-      "September 6 primary finish. FS Road 38N11 is rough; verify Kia Sportage access with the McCloud Ranger Station.",
+      "September 5 primary pickup; September 6 contingency. FS Road 38N11 is rough and must be rechecked.",
   },
 ];
 
@@ -264,10 +300,13 @@ data.driveSegments = [
 ].filter(Boolean);
 
 data.activePlan = {
-  distanceMiles: tripFacts.route.gpsMiles,
+  distanceMiles: tripFacts.route.officialMiles,
+  gpsDistanceMiles: tripFacts.route.gpsMiles,
+  distanceDisplayMiles: tripFacts.route.displayMiles,
   hikingDays: tripFacts.route.hikingDays,
   finish: tripFacts.route.finish,
   finishDate: tripFacts.dates.hikingFinish,
+  contingencyDate: tripFacts.dates.contingency,
   extendedRouteMiles: tripFacts.route.extendedAlternative.gpsMiles,
   extendedRouteStatus: "future-trip-only",
 };
@@ -280,7 +319,11 @@ if (fs.existsSync(sourceMirrorPath)) {
 fs.writeFileSync(mobilePath, output);
 
 console.log(
-  `Configured ${activeStats.distance.toFixed(1)} active miles to Ash Camp; retained ${(
-    fullStats.distance - activeStats.distance
-  ).toFixed(1)} extended miles for a future trip.`,
+  `Configured ${tripFacts.route.officialMiles.toFixed(3)} official miles (${activeStats.distance.toFixed(
+    3,
+  )} Garmin miles) to Ash Camp; archived ${routeStats(archivedPreStartPath).distance.toFixed(
+    1,
+  )} pre-start miles and retained ${routeStats(extendedPath).distance.toFixed(
+    1,
+  )} post-Ash miles as non-active reference geometry.`,
 );

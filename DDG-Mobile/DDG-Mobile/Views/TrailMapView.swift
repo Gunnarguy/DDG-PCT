@@ -467,17 +467,17 @@ struct CampDetailSheet: View {
     
     let flights = [
         FlightInfo(
-            flightNumber: "INBOUND",
-            carrier: "Confirm from booking",
-            origin: "Origin airport",
-            originCode: "TBD",
+            flightNumber: "UA481",
+            carrier: "United Airlines",
+            origin: "Chicago O'Hare (ORD)",
+            originCode: "ORD",
             destination: "San Jose Mineta (SJC)",
             destinationCode: "SJC",
-            departureTime: "Check booking",
-            arrivalTime: "Aug 28 • 6:05 PM",
-            duration: "Check booking",
-            status: "Arrival time confirmed by team",
-            terminalInfo: "Check airline reservation",
+            departureTime: "Aug 28 • 8:00 PM CDT",
+            arrivalTime: "Aug 28 • 10:36 PM PDT",
+            duration: "4h 36m scheduled",
+            status: "WORKING SCHEDULE — VERIFY BOOKING",
+            terminalInfo: "Verify in United Manage Trip",
             aircraft: "Not yet verified",
             gate: "Check day-of-flight",
             baggageClaim: "Check SJC monitors",
@@ -485,22 +485,22 @@ struct CampDetailSheet: View {
             delayStats: "Build 45–60 minutes for bags and loading"
         ),
         FlightInfo(
-            flightNumber: "OUTBOUND",
-            carrier: "Confirm from booking",
+            flightNumber: "UA1317",
+            carrier: "United Airlines",
             origin: "San Jose Mineta (SJC)",
             originCode: "SJC",
-            destination: "Destination airport",
-            destinationCode: "TBD",
-            departureTime: "Sep 7 • 6:40 AM or 10:40 AM",
-            arrivalTime: "Check booking",
-            duration: "Check booking",
-            status: "TIME UNCONFIRMED",
-            terminalInfo: "Protect the earlier airport report time",
+            destination: "Chicago O'Hare (ORD)",
+            destinationCode: "ORD",
+            departureTime: "Sep 7 • 6:40 AM PDT",
+            arrivalTime: "Sep 7 • 11:00 AM CDT",
+            duration: "4h 20m scheduled",
+            status: "WORKING SCHEDULE — VERIFY BOOKING",
+            terminalInfo: "Verify in United Manage Trip",
             aircraft: "Not yet verified",
             gate: "Check day-of-flight",
             baggageClaim: "Check destination monitors",
             onboardServices: [],
-            delayStats: "Resolve before locking September 6 sleep and airport transport"
+            delayStats: "Keep Sep 6 as the home/airport-buffer day"
         )
     ]
 

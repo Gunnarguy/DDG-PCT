@@ -1,63 +1,77 @@
 export const TRIP_YEAR = 2026;
 
 export const tripFacts = {
-  status: "planned",
+  status: "planned-with-verification-gates",
   year: TRIP_YEAR,
   route: {
     name: "PCT California Section O",
-    start: "McArthur-Burney Falls Memorial State Park",
+    start: "Burney Falls PCT access",
     finish: "Ash Camp / McCloud River",
-    gpsMiles: 54.2,
-    hikingDays: 9,
-    averageMilesPerDay: 6.0,
-    longestDayMiles: 8.2,
-    totalGainFeet: 6709,
-    totalLossFeet: 7286,
+    officialMiles: 51.844,
+    gpsMiles: 51.664,
+    displayMiles: 51.8,
+    hikingDays: 8,
+    averageMilesPerDay: 6.48,
+    longestDayMiles: 14.529,
+    totalGainFeet: 6394,
+    totalLossFeet: 6881,
     highPointFeet: 6146,
+    startPctMile: 1420.653,
+    finishPctMile: 1472.497,
+    geometrySource: "PCTA January 2026 centerline",
+    elevationSource: "Cropped Garmin CA Section O PCT 2025 track",
     distanceEvidence:
-      "Garmin route geometry measures 54.2 miles from Burney Falls to the official Ash Camp pickup pin.",
+      "The PCTA January 2026 centerline measures 51.844 miles from the actual Burney Falls access to Ash Camp. The cropped Garmin track measures 51.664 miles and supplies the elevation profile.",
     extendedAlternative: {
       finish: "Castle Crags / I-5 corridor",
       gpsMiles: 82.9,
       status: "future-trip-only",
       note:
-        "Retained for a future trip with more days. It is not part of the August 29–September 6 itinerary.",
+        "Retained only as future-trip geometry. It is not part of the August 29–September 5 itinerary or the September 6 contingency day.",
     },
   },
   dates: {
     arrival: "2026-08-28",
     hikingStart: "2026-08-29",
-    hikingFinish: "2026-09-06",
+    hikingFinish: "2026-09-05",
+    contingency: "2026-09-06",
     departure: "2026-09-07",
   },
   inboundFlight: {
     travelers: ["Dan", "Drew"],
+    flightNumber: "UA481",
+    origin: "ORD",
     airport: "SJC",
-    arrivalLocal: "6:05 PM",
-    flightNumber: null,
-    verification: "confirmed-by-team",
+    scheduledDepartureLocal: "8:00 PM CDT",
+    scheduledArrivalLocal: "10:36 PM PDT",
+    scheduledArrivalDate: "2026-08-28",
+    verification: "calendar-normalized-needs-united-booking",
   },
   outboundFlight: {
     travelers: ["Dan", "Drew"],
+    flightNumber: "UA1317",
     airport: "SJC",
-    departureLocalOptions: ["6:40 AM", "10:40 AM"],
-    flightNumber: null,
-    verification: "needs-booking-confirmation",
+    destination: "ORD",
+    scheduledDepartureLocal: "6:40 AM PDT",
+    scheduledDepartureDate: "2026-09-07",
+    scheduledArrivalLocal: "11:00 AM CDT",
+    verification: "provided-by-team-needs-united-booking",
   },
   groundTransport: {
     driver: "Mikaela",
     vehicle: "Kia Sportage",
-    outboundDate: "2026-08-28",
+    outboundDate: "2026-08-29",
     note:
-      "SJC pickup followed by the Burney drive. A 6:05 PM landing makes the trail-area arrival late at night; confirm legal after-hours campground access or reserve a nearby sleep fallback.",
+      "Sleep near SJC after the late August 28 arrival, then leave around 5:00–5:30 AM on August 29 for Burney. Do not plan an exhausted overnight drive to the trailhead.",
   },
   extractionOptions: {
     primary: {
       name: "Ash Camp",
-      routeMile: 54.2,
-      pctMile: 1472.0,
-      coordinates: { latitude: 41.1171, longitude: -122.0606 },
-      plannedDate: "2026-09-06",
+      routeMile: 51.844,
+      pctMile: 1472.497,
+      coordinates: { latitude: 41.1170914, longitude: -122.0606252 },
+      plannedDate: "2026-09-05",
+      backupDate: "2026-09-06",
       access: "Unpaved FS Road 38N11; rough; high-clearance recommended",
       status: "primary-needs-road-check",
     },
@@ -72,22 +86,23 @@ export const tripFacts = {
     {
       id: "return-flight-time",
       priority: "critical",
-      label: "Confirm September 7 SJC departure",
-      detail: "Current possibilities are 6:40 AM or 10:40 AM.",
+      label: "Verify UA481 and UA1317 in United Manage Trip",
+      detail:
+        "The working schedule is UA481 arriving SJC at 10:36 PM PDT August 28 and UA1317 departing SJC at 6:40 AM PDT September 7. The airline booking remains controlling.",
     },
     {
       id: "burney-late-arrival",
       priority: "critical",
       label: "Confirm August 28 late-arrival sleep plan",
       detail:
-        "Park day-use hours end at sunset and campground quiet hours begin at 10 PM.",
+        "The team should sleep near SJC and leave early August 29 rather than driving to Burney overnight.",
     },
     {
       id: "camp-waypoints",
       priority: "critical",
-      label: "Confirm all eight documented overnight areas",
+      label: "Confirm all seven overnight areas and the Day 3 capability gate",
       detail:
-        "Halfmile documents camps at each planned area, but current capacity, restrictions, and water still require FarOut/ranger verification immediately before the trip.",
+        "Kosk is not a default camp. Confirm public-land legality/capacity at the remaining camps and prove the team can complete the 14.53-mile Peavine-to-Moosehead day with full packs.",
     },
     {
       id: "lake-britton-access",
@@ -108,85 +123,77 @@ const dayDates = [
   "2026-09-03",
   "2026-09-04",
   "2026-09-05",
-  "2026-09-06",
 ];
 
 const elevationByDay = [
-  { start: 3020, end: 3043, gain: 713, loss: 690, high: 3223 },
-  { start: 3043, end: 4769, gain: 2027, loss: 302, high: 5053 },
-  { start: 4769, end: 5126, gain: 1058, loss: 702, high: 5490 },
-  { start: 5126, end: 5285, gain: 852, loss: 692, high: 5407 },
-  { start: 5285, end: 6109, gain: 990, loss: 166, high: 6109 },
-  { start: 6109, end: 5394, gain: 129, loss: 844, high: 6146 },
-  { start: 5394, end: 5140, gain: 937, loss: 1191, high: 5688 },
-  { start: 5140, end: 3360, gain: 1, loss: 1780, high: 5136 },
-  { start: 3360, end: 2443, gain: 3, loss: 920, high: 3359 },
+  { start: 2949, end: 3043, gain: 608, loss: 514, high: 3223 },
+  { start: 3043, end: 4769, gain: 2006, loss: 276, high: 5053 },
+  { start: 4769, end: 5285, gain: 1824, loss: 1313, high: 5490 },
+  { start: 5285, end: 6128, gain: 987, loss: 146, high: 6146 },
+  { start: 6128, end: 5394, gain: 85, loss: 818, high: 6146 },
+  { start: 5394, end: 5197, gain: 884, loss: 1075, high: 5688 },
+  { start: 5197, end: 3360, gain: 0, loss: 1828, high: 5197 },
+  { start: 3360, end: 2443, gain: 0, loss: 912, high: 3360 },
 ];
 
 const overnightPlan = [
   {
     name: "Rock Creek camps",
-    routeMile: 8.2,
-    pctMile: 1425.6,
+    routeMile: 5.609,
+    pctMile: 1426.262,
     coordinates: { latitude: 41.0229341, longitude: -121.7148808 },
     water: "Rock Creek",
   },
   {
     name: "Peavine Creek camps",
-    routeMile: 16.2,
-    pctMile: 1433.7,
+    routeMile: 13.636,
+    pctMile: 1434.289,
     coordinates: { latitude: 41.060513, longitude: -121.7853913 },
     water: "Seasonal Peavine Creek; verify flow before leaving Rock Creek",
   },
   {
-    name: "Kosk Spring camp",
-    routeMile: 23.9,
-    pctMile: 1441.4,
-    coordinates: { latitude: 41.1358169, longitude: -121.7713173 },
-    water: "Kosk Spring, approximately 0.2 mile off trail",
-  },
-  {
     name: "Moosehead Creek camp",
-    routeMile: 30.6,
-    pctMile: 1448.2,
+    routeMile: 28.165,
+    pctMile: 1448.818,
     coordinates: { latitude: 41.1771229, longitude: -121.8318419 },
-    water: "Moosehead Creek; verify current flow",
+    water:
+      "Moosehead Creek; July 11 report said very good flow but overgrown. Reverify immediately before departure.",
   },
   {
     name: "High saddle camp near Road 38N10",
-    routeMile: 34.6,
-    pctMile: 1452.3,
+    routeMile: 32.247,
+    pctMile: 1452.9,
     coordinates: { latitude: 41.1767853, longitude: -121.8808339 },
     water:
       "Dry camp: carry from the last confirmed source and plan for the next verified source",
   },
   {
     name: "Alder / Star City Creek camp",
-    routeMile: 38.5,
-    pctMile: 1456.1,
+    routeMile: 36.036,
+    pctMile: 1456.689,
     coordinates: { latitude: 41.157895, longitude: -121.9202143 },
     water:
-      "Star City Creek is off trail and has no dependable static flow report; verify before relying on it",
+      "A June 15 report described clear flow around 2 L/min, but parser metadata is incomplete. Verify before relying on it.",
   },
   {
     name: "Deer Creek Spring camp",
-    routeMile: 44.9,
-    pctMile: 1462.6,
+    routeMile: 42.386,
+    pctMile: 1463.039,
     coordinates: { latitude: 41.1356197, longitude: -121.9860782 },
     water: "Deer Creek Spring",
   },
   {
     name: "Butcherknife Creek camp",
-    routeMile: 50.4,
-    pctMile: 1468.0,
+    routeMile: 47.99,
+    pctMile: 1468.643,
     coordinates: { latitude: 41.1294222, longitude: -122.0266769 },
     water: "Butcherknife Creek",
   },
   {
     name: "Ash Camp pickup",
-    routeMile: 54.2,
-    pctMile: 1472.0,
-    coordinates: { latitude: 41.1171, longitude: -122.0606 },
+    routeMile: 51.844,
+    pctMile: 1472.497,
+    coordinates: { latitude: 41.1170914, longitude: -122.0606252 },
     water: "McCloud River / nearby creek; treat before drinking",
   },
 ];
@@ -196,7 +203,7 @@ const itineraryWithoutRanks = dayDates.map((date, index) => {
   const destination = overnightPlan[index];
   const startMile = index === 0 ? 0 : overnightPlan[index - 1].routeMile;
   const endMile = destination.routeMile;
-  const distance = Number((endMile - startMile).toFixed(1));
+  const distance = Number((endMile - startMile).toFixed(3));
   const elevation = elevationByDay[index];
   const ascentPerMile = Math.round(elevation.gain / distance);
   const descentPerMile = Math.round(elevation.loss / distance);
@@ -235,7 +242,7 @@ const itineraryWithoutRanks = dayDates.map((date, index) => {
               : "low",
     },
     campStatus:
-      day === 9 ? "verified-trailhead-finish" : "documented-needs-current-verification",
+      day === 8 ? "verified-trailhead-finish" : "documented-needs-current-verification",
   };
 });
 
@@ -259,7 +266,7 @@ export const comparableHikerEvidence = [
     gainFeet: 2000,
     elapsed: "just over 6 hours",
     context:
-      "Included a roughly 900-foot climb in under two miles. Day-pack pace is not equivalent to a nine-day backpack.",
+      "Included a roughly 900-foot climb in under two miles. Day-pack pace is not equivalent to an eight-day backpack.",
     source:
       "https://trailhiker.wordpress.com/2017/11/09/pct-section-o-cabin-creek-to-ash-camp/",
   },

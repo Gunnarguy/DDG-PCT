@@ -49,6 +49,7 @@ function WildfireMonitor() {
     pctWater: 'PCT Water Report',
     nifcFirePerimeters: 'Wildfire incidents / perimeters',
     smokeAqi: 'Smoke / AQI model',
+    weatherForecast: 'Seven-day weather forecast',
     shastaTrinityAlerts: 'Shasta-Trinity alerts',
     lassenAlerts: 'Lassen alerts',
     burneyPark: 'Burney Falls park',
@@ -164,7 +165,7 @@ function WildfireMonitor() {
       </div>
 
       <div className="condition-section">
-        <h4>💧 Current PCT Water Report · route miles 1420–1473</h4>
+        <h4>💧 PCT Water Report · PCTA 1420.653–1472.497</h4>
         <p className="condition-meta">
           {conditions?.water?.updatedText || 'Report update time unavailable'} ·{' '}
           {conditions?.water?.count ?? 0} entries in the active corridor
@@ -181,7 +182,15 @@ function WildfireMonitor() {
                 <small>
                   {source.reportDate ? `Reported ${source.reportDate}` : 'No report date'}
                   {source.reportedBy ? ` by ${source.reportedBy}` : ''}
+                  {Number.isFinite(source.ageDays) ? ` · ${source.ageDays} day${source.ageDays === 1 ? '' : 's'} old` : ''}
+                  {source.freshness ? ` · ${source.freshness}` : ''}
                 </small>
+                {source.dateConflict && (
+                  <small>
+                    Date repaired from the latest report text; the sheet’s
+                    separate date cell says {source.metadataDate || 'unknown'}.
+                  </small>
+                )}
               </article>
             ))}
           </div>
@@ -206,7 +215,7 @@ function WildfireMonitor() {
         </div>
         <p className="truth-note">
           Forest alert pages include forest-wide orders and can also contain
-          named closures outside this 54.2-mile corridor. Treat each extracted
+          named closures outside this 51.844-mile corridor. Treat each extracted
           item as a review lead; open the source and confirm its map/order
           boundaries before changing the itinerary.
         </p>
@@ -266,6 +275,37 @@ function WildfireMonitor() {
         )}
       </div>
 
+      <div className="air-quality-section">
+        <h4>🌦️ Seven-Day Corridor Weather</h4>
+        <div className="aqi-grid">
+          {(conditions?.weather?.locations ?? []).map((location) => {
+            const today = location.daily?.[0];
+            return (
+              <div className="aqi-card" key={location.location}>
+                <div className="aqi-location">{location.location}</div>
+                <div className="aqi-value">
+                  {location.current?.temperatureF == null
+                    ? '—'
+                    : `${Math.round(location.current.temperatureF)}°F`}
+                </div>
+                <div className="aqi-category">
+                  {today?.minTemperatureF == null || today?.maxTemperatureF == null
+                    ? 'Daily range unavailable'
+                    : `${Math.round(today.minTemperatureF)}°–${Math.round(today.maxTemperatureF)}°F`}
+                </div>
+                <div className="aqi-detail">
+                  Rain {today?.precipitationProbability ?? '—'}% · gusts{' '}
+                  {today?.maxGustMph == null ? '—' : `${Math.round(today.maxGustMph)} mph`}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <p className="aqi-note">
+          ℹ️ {conditions?.weather?.note || 'Weather forecast unavailable'}
+        </p>
+      </div>
+
       {/* Air Quality Readings */}
       <div className="air-quality-section">
         <h4>💨 Air Quality Index (AQI)</h4>
@@ -319,8 +359,8 @@ function WildfireMonitor() {
       {/* Data Sources */}
       <div className="monitor-footer">
         <p className="data-sources">
-          Data: PCT Water Report · NIFC · Open-Meteo CAMS · USFS · California
-          State Parks · PCTA official links
+          Data: PCT Water Report · NIFC · Open-Meteo weather/CAMS · USFS ·
+          California State Parks · PCTA official links
         </p>
         <p className="monitoring-note">
           ⏰ Supabase saves one server snapshot daily; open apps check a

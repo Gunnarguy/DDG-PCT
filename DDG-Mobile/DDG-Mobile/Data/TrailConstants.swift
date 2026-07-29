@@ -118,17 +118,16 @@ enum TrailConstants {
         return baseTime + gainTime  // hours
     }
 
-    /// Smoothed GPS-derived terrain for the primary nine-day, 54.2-mile itinerary.
+    /// Smoothed Garmin-derived terrain for the primary eight-day, 51.844-official-mile itinerary.
     static let dayProfiles: [TrailDayProfile] = [
-        TrailDayProfile(day: 1, miles: 8.2, gainFeet: 713, lossFeet: 690, startFeet: 3_020, endFeet: 3_043, highPointFeet: 3_223, difficultyRank: 2, kneeLoad: .moderate, note: "A long opening day. The rolling terrain hides almost as much descent as climbing."),
-        TrailDayProfile(day: 2, miles: 8.0, gainFeet: 2_027, lossFeet: 302, startFeet: 3_043, endFeet: 4_769, highPointFeet: 5_053, difficultyRank: 1, kneeLoad: .low, note: "The biggest climbing day by far. Protect pace early and budget extra water and calories."),
-        TrailDayProfile(day: 3, miles: 7.7, gainFeet: 1_058, lossFeet: 702, startFeet: 4_769, endFeet: 5_126, highPointFeet: 5_490, difficultyRank: 3, kneeLoad: .moderate, note: "Sustained mixed terrain on tired legs after the hardest climbing day."),
-        TrailDayProfile(day: 4, miles: 6.7, gainFeet: 852, lossFeet: 692, startFeet: 5_126, endFeet: 5_285, highPointFeet: 5_407, difficultyRank: 4, kneeLoad: .moderate, note: "A balanced up-and-down day; easier than Days 1–3, but not a recovery stroll."),
-        TrailDayProfile(day: 5, miles: 4.0, gainFeet: 990, lossFeet: 166, startFeet: 5_285, endFeet: 6_109, highPointFeet: 6_109, difficultyRank: 7, kneeLoad: .low, note: "Short but steep. The dry-camp water carry can make this feel harder than the mileage suggests."),
-        TrailDayProfile(day: 6, miles: 3.9, gainFeet: 129, lossFeet: 844, startFeet: 6_109, endFeet: 5_394, highPointFeet: 6_146, difficultyRank: 8, kneeLoad: .moderate, note: "Low aerobic load, but mostly downhill. Use poles and keep the descent controlled."),
-        TrailDayProfile(day: 7, miles: 6.4, gainFeet: 937, lossFeet: 1_191, startFeet: 5_394, endFeet: 5_140, highPointFeet: 5_688, difficultyRank: 5, kneeLoad: .high, note: "The largest total vertical day after Day 2, with enough descent to punish fatigued knees."),
-        TrailDayProfile(day: 8, miles: 5.5, gainFeet: 1, lossFeet: 1_780, startFeet: 5_140, endFeet: 3_360, highPointFeet: 5_136, difficultyRank: 6, kneeLoad: .veryHigh, note: "The knee day: roughly 324 feet of descent per mile. Slow down, shorten stride, and use poles."),
-        TrailDayProfile(day: 9, miles: 3.8, gainFeet: 3, lossFeet: 920, startFeet: 3_360, endFeet: 2_443, highPointFeet: 3_359, difficultyRank: 9, kneeLoad: .high, note: "Short extraction morning, but still about 242 feet of descent per mile before Ash Camp pickup.")
+        TrailDayProfile(day: 1, miles: 5.609, gainFeet: 608, lossFeet: 514, startFeet: 2_949, endFeet: 3_043, highPointFeet: 3_223, difficultyRank: 5, kneeLoad: .low, note: "A deliberately shorter opening day after the early drive from SJC. Rolling terrain still adds more than 1,100 vertical feet."),
+        TrailDayProfile(day: 2, miles: 8.027, gainFeet: 2_006, lossFeet: 276, startFeet: 3_043, endFeet: 4_769, highPointFeet: 5_053, difficultyRank: 2, kneeLoad: .low, note: "The biggest climbing day. Protect pace early and budget extra water and calories."),
+        TrailDayProfile(day: 3, miles: 14.529, gainFeet: 1_824, lossFeet: 1_313, startFeet: 4_769, endFeet: 5_285, highPointFeet: 5_490, difficultyRank: 1, kneeLoad: .high, note: "The capability gate: longest mileage and 3,137 total vertical feet. Prove this full-pack distance before committing."),
+        TrailDayProfile(day: 4, miles: 4.082, gainFeet: 987, lossFeet: 146, startFeet: 5_285, endFeet: 6_128, highPointFeet: 6_146, difficultyRank: 6, kneeLoad: .low, note: "Short but steep to the route high point; the dry-camp carry can make it feel harder than the mileage."),
+        TrailDayProfile(day: 5, miles: 3.789, gainFeet: 85, lossFeet: 818, startFeet: 6_128, endFeet: 5_394, highPointFeet: 6_146, difficultyRank: 8, kneeLoad: .moderate, note: "Low aerobic load, but mostly downhill. Use poles and keep the descent controlled."),
+        TrailDayProfile(day: 6, miles: 6.350, gainFeet: 884, lossFeet: 1_075, startFeet: 5_394, endFeet: 5_197, highPointFeet: 5_688, difficultyRank: 3, kneeLoad: .high, note: "Nearly 2,000 vertical feet of mixed terrain on accumulated fatigue."),
+        TrailDayProfile(day: 7, miles: 5.604, gainFeet: 0, lossFeet: 1_828, startFeet: 5_197, endFeet: 3_360, highPointFeet: 5_197, difficultyRank: 4, kneeLoad: .veryHigh, note: "The knee day: roughly 326 feet of descent per mile. Slow down, shorten stride, and use poles."),
+        TrailDayProfile(day: 8, miles: 3.854, gainFeet: 0, lossFeet: 912, startFeet: 3_360, endFeet: 2_443, highPointFeet: 3_360, difficultyRank: 7, kneeLoad: .high, note: "Short extraction morning, but still about 237 feet of descent per mile before Ash Camp pickup.")
     ]
 
     static var totalMiles: Double { dayProfiles.reduce(0) { $0 + $1.miles } }

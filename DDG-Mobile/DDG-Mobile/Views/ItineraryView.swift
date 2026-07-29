@@ -77,21 +77,21 @@ struct ItineraryView: View {
             title: "Arrival & Assembly",
             camps: [],
             isTravelDay: true,
-            travelDetails: "✈️ Dan & Drew land at SJC at 6:05 PM.\n🚙 Mikaela collects the group in the Kia Sportage and drives north.\n⚠️ A late-night Burney arrival is likely. Confirm legal after-hours campground access or reserve a sleep fallback; hiking starts only after adequate rest.",
+            travelDetails: "✈️ UA481 is scheduled to land at SJC at 10:36 PM PDT.\n🚙 Mikaela collects the group in the Kia Sportage.\n🛏️ Sleep near SJC, then leave around 5:00–5:30 AM Aug 29. Verify the airline booking before locking pickup time.",
             hikeDayIndex: nil
         ))
         
-        // Aug 29 - Sept 6: nine GPS-balanced hiking days.
+        // Aug 29 - Sept 5: eight canonical hiking days. Sept 6 remains contingency.
         let hikeGroups = Dictionary(grouping: camps, by: \.day)
-        for day in 1...9 {
+        for day in 1...8 {
             let dayCamps = hikeGroups[day]?.sorted(by: { $0.routeMile < $1.routeMile }) ?? []
             days.append(TimelineDay(
                 dayOffset: day,
-                title: day == 9 ? "Day 9 & Extraction" : "Expedition Day \(day)",
+                title: day == 8 ? "Day 8 & Extraction" : "Expedition Day \(day)",
                 camps: dayCamps,
                 isTravelDay: false,
-                travelDetails: day == 9
-                    ? "Complete the 54.2-mile route to Ash Camp, meet Mikaela at the pre-shared pin between 10:00 AM and noon, and return to the Bay Area."
+                travelDetails: day == 8
+                    ? "Complete the 51.844-mile route to Ash Camp. Use the final inReach check-in to confirm the provisional 10:00 AM–noon rendezvous; Sep 6 is the contingency day."
                     : nil,
                 hikeDayIndex: day
             ))
@@ -103,7 +103,7 @@ struct ItineraryView: View {
             title: "Departure",
             camps: [],
             isTravelDay: true,
-            travelDetails: "✈️ Dan & Drew depart SJC. Booking time is not yet confirmed: 6:40 AM or 10:40 AM. Until the reservation is checked, protect the earlier airport report time.",
+            travelDetails: "✈️ UA1317 is scheduled to depart SJC at 6:40 AM PDT and arrive ORD at 11:00 AM CDT. Verify the airline booking in United Manage Trip.",
             hikeDayIndex: nil
         ))
         
@@ -408,7 +408,7 @@ private struct TerrainOverviewCard: View {
             Label("Route Reality Check", systemImage: "mountain.2.fill")
                 .font(.headline)
 
-            Text("This is a 54.2-mile trip—not a flat 6.2 miles every day.")
+            Text("This is a 51.844-mile trip—not a flat 6.5 miles every day.")
                 .font(.subheadline.bold())
 
             HStack {
@@ -419,7 +419,7 @@ private struct TerrainOverviewCard: View {
                 overviewValue("−\(TrailConstants.totalLossFeet.formatted(.number.precision(.fractionLength(0))))", "loss ft")
             }
 
-            Text("Day 2 is the hardest climbing day. Day 8 is the most demanding descent and the biggest knee-risk day. “Effort miles” combine distance, climbing, and descending only to compare days—they are not promised hiking times.")
+            Text("Day 3 is hardest overall at 14.53 miles and 3,137 vertical feet. Day 2 has the largest climb; Day 7 is the biggest knee-risk descent. “Effort miles” compare terrain loads—they are not promised hiking times.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

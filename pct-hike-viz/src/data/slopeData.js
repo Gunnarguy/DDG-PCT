@@ -89,75 +89,67 @@ export const slopeCategories = [
  */
 export const sectionOTerrainProfile = {
   day1: {
-    distance: 8.2,
-    elevationGain: 713,
-    elevationLoss: 690,
+    distance: 5.609,
+    elevationGain: 608,
+    elevationLoss: 514,
     maxGrade: 8.5,
     difficulty: 'Moderate',
-    notes: 'Opening rollers to the documented Rock Creek camps.'
+    notes: 'Shorter opening leg after the early drive from SJC; rolling terrain to Rock Creek.'
   },
   day2: {
-    distance: 8.0,
-    elevationGain: 2027,
-    elevationLoss: 302,
+    distance: 8.027,
+    elevationGain: 2006,
+    elevationLoss: 276,
     maxGrade: 7.1,
     difficulty: 'Strenuous',
     notes: 'Largest early climb; start before the heat and pace conservatively.'
   },
   day3: {
-    distance: 7.7,
-    elevationGain: 1058,
-    elevationLoss: 702,
+    distance: 14.529,
+    elevationGain: 1824,
+    elevationLoss: 1313,
     maxGrade: 7.3,
-    difficulty: 'Moderate',
-    notes: 'Rolling high-country terrain with more descent than climb.'
+    difficulty: 'Very Strenuous',
+    notes: 'Longest leg and largest total vertical load; this is the full-pack capability gate.'
   },
   day4: {
-    distance: 6.8,
-    elevationGain: 852,
-    elevationLoss: 692,
+    distance: 4.082,
+    elevationGain: 987,
+    elevationLoss: 146,
     maxGrade: 8.9,
     difficulty: 'Strenuous',
-    notes: 'Moderate leg to Moosehead Creek; verify campsite capacity and water.'
+    notes: 'Short steep climb to the route high point and a planned dry camp.'
   },
   day5: {
-    distance: 4.0,
-    elevationGain: 990,
-    elevationLoss: 166,
+    distance: 3.789,
+    elevationGain: 85,
+    elevationLoss: 818,
     maxGrade: 9.6,
     difficulty: 'Strenuous',
-    notes: 'Intentional short climb to the high saddle; this is a dry-camp plan.'
+    notes: 'Short but predominantly downhill from the high saddle.'
   },
   day6: {
-    distance: 3.8,
-    elevationGain: 129,
-    elevationLoss: 844,
+    distance: 6.350,
+    elevationGain: 884,
+    elevationLoss: 1075,
     maxGrade: 6.2,
     difficulty: 'Strenuous (downhill)',
-    notes: 'Crosses the 6,146-ft route high point before descending to Alder / Star City.'
+    notes: 'Nearly 2,000 vertical feet of mixed terrain to Deer Creek Spring.'
   },
   day7: {
-    distance: 6.5,
-    elevationGain: 937,
-    elevationLoss: 1191,
+    distance: 5.604,
+    elevationGain: 0,
+    elevationLoss: 1828,
     maxGrade: 8.3,
     difficulty: 'Strenuous',
-    notes: 'Rolling ridge and descent to Deer Creek Spring.'
+    notes: 'The knee-intensive sustained descent to Butcherknife Creek.'
   },
   day8: {
-    distance: 5.5,
-    elevationGain: 1,
-    elevationLoss: 1780,
+    distance: 3.854,
+    elevationGain: 0,
+    elevationLoss: 912,
     maxGrade: 10.2,
     difficulty: 'Very Strenuous',
-    notes: 'Knee-intensive descent to Butcherknife Creek.'
-  },
-  day9: {
-    distance: 3.8,
-    elevationGain: 3,
-    elevationLoss: 920,
-    maxGrade: 9.3,
-    difficulty: 'Strenuous (downhill)',
     notes: 'Short final descent to the Ash Camp pickup.'
   }
 };
@@ -168,13 +160,13 @@ export const sectionOTerrainProfile = {
 export const terrainHazards = [
   {
     location: 'Day 2: major climb',
-    concern: 'Approximately 2,027 ft of gain in 8.0 miles',
+    concern: 'Approximately 2,006 ft of gain in 8.027 miles',
     mitigation: 'Start early, use a sustainable pace, and leave the last confirmed source with enough water.',
     coordinates: [-121.798667, 41.085022]
   },
   {
-    location: 'Day 8: Butcherknife Creek descent',
-    concern: 'Approximately 1,780 ft of loss in 5.5 miles',
+    location: 'Day 7: Butcherknife Creek descent',
+    concern: 'Approximately 1,828 ft of loss in 5.604 miles',
     mitigation: 'Use poles, shorten stride, manage hotspots early, and allow more time than flat mileage suggests.',
     coordinates: [-122.026677, 41.129422]
   }

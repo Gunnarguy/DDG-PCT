@@ -16,8 +16,8 @@ struct PrepView: View {
                         // Action Required Section
                         VStack(alignment: .leading, spacing: 12) {
                             SectionHeader(title: "Critical Path", icon: "exclamationmark.triangle.fill", color: .orange)
-                            PrepTaskCard(title: "Confirm Local Overnight Rules", subtitle: "This 54.2 mi trip is not eligible for the 500 mi PCTA permit", icon: "doc.plaintext.fill")
-                            PrepTaskCard(title: "Burney Falls Arrival", subtitle: "Reserve legal Aug 28 sleep access; weekend day use is advance-only", icon: "car.fill")
+                            PrepTaskCard(title: "Confirm Local Overnight Rules", subtitle: "This 51.844 mi trip is not eligible for the 500 mi PCTA permit", icon: "doc.plaintext.fill")
+                            PrepTaskCard(title: "Late SJC Arrival", subtitle: "Sleep near SJC Aug 28, then leave around 5:00–5:30 AM Aug 29", icon: "bed.double.fill")
                             PrepTaskCard(title: "Campfire Permit", subtitle: "CAL FIRE — Free", icon: "flame.fill")
                         }
                         

@@ -24,9 +24,9 @@ let transitRoutes: [TransitRoute] = [
         name: "Mikaela's Shuttle",
         agency: "Personal Vehicle", route: "Campbell → SJC → Burney Falls",
         stops: ["2800 Joseph Ave", "SJC", "Burney Falls"],
-        frequency: "Aug 28 Drop-off",
+        frequency: "Aug 28 SJC pickup / Aug 29 trailhead drive",
         relevantFor: "Outbound Logistics",
-        notes: "Mikaela driving. Real-time gas tracking in Prep tab.",
+        notes: "Mikaela collects the team after UA481. Sleep near SJC, then leave around 5:00–5:30 AM Aug 29; do not drive overnight while exhausted.",
         url: "",
         distance: "270 miles", cost: nil, emoji: "🚙"
     ),
@@ -37,7 +37,7 @@ let transitRoutes: [TransitRoute] = [
         stops: ["SJC"],
         frequency: "Aug 28 Inbound / Sep 7 Outbound",
         relevantFor: "Dan's Arrival & Departure",
-        notes: "Arrive Aug 28 at 6:05 PM. Sep 7 departure is unconfirmed: 6:40 AM or 10:40 AM.",
+        notes: "Working schedule: UA481 arrives Aug 28 at 10:36 PM PDT; UA1317 departs Sep 7 at 6:40 AM PDT. Verify both in United Manage Trip.",
         url: "",
         distance: nil, cost: nil, emoji: "✈️"
     ),
@@ -158,7 +158,7 @@ let parkingLocations: [ParkingLocation] = [
         cost: "No service assumed",
         phone: "(530) 964-2184",
         security: "Remote forest-road rendezvous",
-        notes: "Day 9 finish only. McCloud Ranger Station must confirm road conditions and Kia Sportage suitability before Mikaela drives in."
+        notes: "Day 8 finish; Sep 6 is contingency only. McCloud Ranger Station must confirm road conditions and Kia Sportage suitability before Mikaela drives in."
     ),
 ]
 
@@ -174,5 +174,5 @@ struct ResupplyTown: Identifiable, Sendable {
 }
 
 let resupplyTowns: [ResupplyTown] = [
-    ResupplyTown(id: "burney", town: "Burney", services: ["Grocery", "Gas", "Restaurants", "Hardware store", "Post office"], transitAccess: "RABA Route 5 from Redding", trailDistance: "Pre-hike only", notes: "Buy and pack all nine days of food before starting. There is no on-route resupply in the active 54.2-mile itinerary."),
+    ResupplyTown(id: "burney", town: "Burney", services: ["Grocery", "Gas", "Restaurants", "Hardware store", "Post office"], transitAccess: "RABA Route 5 from Redding", trailDistance: "Pre-hike only", notes: "Pack eight hiking days plus one emergency food day before starting. There is no on-route resupply in the active 51.844-mile itinerary."),
 ]

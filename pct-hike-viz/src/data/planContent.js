@@ -3,10 +3,9 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 import { primaryItinerary, tripFacts } from './tripFacts';
 
-// PCT mile labels vary between guide-data vintages. Route-relative GPS mileage
-// is the canonical distance throughout the app.
-// GPS-measured active distance: 54.2 miles from Burney Falls to Ash Camp.
-// The remaining Garmin geometry to Castle Crags is retained as a future-trip alternative.
+// PCTA January 2026 centerline miles control distance and PCT-mile labels.
+// The cropped Garmin geometry supplies the elevation profile and measures
+// slightly shorter because of track sampling. Excluded geometry is reference-only.
 // Region: Shasta-Trinity National Forest, NorCal
 // Best season: Late Aug - Early Sept (after snowmelt, before fall rains)
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -14,22 +13,23 @@ import { primaryItinerary, tripFacts } from './tripFacts';
 export const sectionOMeta = {
   name: 'Section O',
   fullName: 'California Section O',
-  route: 'Burney Falls → Ash Camp (9-day plan)',
-  pctMileStart: 1420.7,
-  pctMileEnd: 1472.0,
+  route: 'Burney Falls → Ash Camp (8-day plan)',
+  pctMileStart: tripFacts.route.startPctMile,
+  pctMileEnd: tripFacts.route.finishPctMile,
+  officialDistance: tripFacts.route.officialMiles,
   gpsDistance: tripFacts.route.gpsMiles,
-  sourceEstimate: 'approximately 52 PCT miles / 54.2 Garmin miles',
+  sourceEstimate: '51.844 PCTA 2026 miles / 51.664 cropped Garmin miles',
   region: 'Shasta-Trinity National Forest',
   wilderness: 'No Castle Crags segment in the active trip',
   permitType: 'Local rules must be confirmed',
   bestSeason: 'Late August - Early September',
   highlights: [
-    'ACTIVE ROUTE: 54.2 Garmin miles to the road-accessible Ash Camp finish.',
-    'CAMP STATUS: each overnight is documented in Halfmile data but still needs a current capacity, restriction, and water check.',
+    'ACTIVE ROUTE: 51.844 PCTA 2026 miles to the road-accessible Ash Camp finish.',
+    'CAMP STATUS: Kosk is not an overnight; every planned camp still needs a current legality, capacity, hazard, and water check.',
     'Burney Falls - "The 8th Wonder of the World"',
     'McCloud River and Ash Camp finish',
     'Mt. Shasta views',
-    'Nine hiking days averaging 6.0 miles; longest day 8.2 miles'
+    'Eight hiking days averaging 6.48 miles; the 14.53-mile Day 3 is the capability gate'
   ],
   sources: ['ddg-pdf', 'halfmile', 'pcta', 'farout']
 };
@@ -89,11 +89,12 @@ export const dataSources = {
   gps: {
     id: 'gps-route',
     name: 'Garmin Course 334289912',
-    description: 'Garmin geometry cropped at the official Ash Camp pickup pin',
+    description: 'Garmin geometry cropped at the actual Burney Falls access and official Ash Camp pickup pin',
     type: 'gps',
-    distance: 54.2,
+    distance: tripFacts.route.gpsMiles,
+    officialDistance: tripFacts.route.officialMiles,
     fullTrackDistance: 82.9,
-    pointCount: 6183
+    pointCount: 5917
   },
   routes: [
     { id: 'wilderness-vagabond', url: 'http://wildernessvagabond.com/PCT-2017/PCT-2017.htm', name: 'Wilderness Vagabond 2017 PCT log' },
@@ -127,22 +128,22 @@ export const dataSources = {
 
 export const scheduleOptions = [
   {
-    title: '9-Day Primary',
-    dates: 'Sat, Aug 29 – Sun, Sep 6, 2026',
-    vibe: 'Confirmed 54.2-mile Burney Falls to Ash Camp trip.',
+    title: '8-Day Primary + Buffer',
+    dates: 'Sat, Aug 29 – Sat, Sep 5, 2026 · Sep 6 contingency',
+    vibe: 'Evidence-backed 51.844-mile Burney Falls to Ash Camp plan.',
     highlights: [
-      'Nine documented camp-to-camp legs averaging 6.0 miles.',
-      'Longest day is 8.2 miles; Days 5, 6, and 9 are intentionally short.',
-      'Eight overnight areas still require current campsite and water verification.'
+      'Eight camp-to-camp legs averaging 6.48 miles.',
+      'Day 3 is 14.53 miles and must be proven in full-pack training.',
+      'Seven overnight areas still require current campsite and water verification.'
     ],
     sourceIds: ['doc-day-plan', 'doc-schedule-options']
   },
   {
     title: 'Future Extended Route',
     dates: 'Not scheduled',
-    vibe: 'The retained 82.9-mile Garmin track to Castle Crags requires a longer trip window.',
+    vibe: 'The archived 82.9-mile source track is not an active trip option.',
     highlights: [
-      'Not part of the August 29–September 6 trip.',
+      'Not part of the August 29–September 5 trip or September 6 contingency.',
       'Preserved for a future 14–16 day itinerary.',
       'Requires new camps, water validation, pickup logistics, and PTO.'
     ],
@@ -160,15 +161,19 @@ export const travelPlan = {
   ],
   inbound: [
     {
-      step: "Friday, August 28: Mikaela picks up Dan and Drew at SJC after their confirmed 6:05 PM landing.",
+      step: "Friday, August 28: UA481 is expected at SJC around 10:36 PM PDT; verify the booking in United Manage Trip.",
       sourceIds: ["doc-day-plan"],
     },
     {
-      step: "Allow roughly 45–60 minutes for bags and loading, then drive toward Burney via I-680/I-80/I-505/I-5/CA-299/CA-89.",
+      step: "Mikaela collects the team, then everyone sleeps near SJC. Do not turn the late flight into an overnight Burney drive.",
+      sourceIds: ["doc-day-plan"],
+    },
+    {
+      step: "Saturday, August 29 around 5:00–5:30 AM: drive toward Burney via I-680/I-80/I-505/I-5/CA-299/CA-89.",
       sourceIds: ["pcta-transport"],
     },
     {
-      step: "Treat arrival near Burney as late-night. Confirm campground after-hours entry in advance and keep a reserved motel/camp fallback.",
+      step: "Reserve Burney Falls weekend vehicle entry if using the State Park access and confirm the exact trail connector.",
       sourceIds: ["parks-burney"],
     },
     {
@@ -179,14 +184,14 @@ export const travelPlan = {
   shortExit: {
     title: "Primary Ash Camp extraction",
     summary:
-      "Do not leave the PCT at arbitrary route mile 52. Continue 2.2 GPS miles to the verified Ash Camp access at route mile 54.2 / PCT mile 1472.",
+      "Ash Camp is the route endpoint at route mile 51.844 / PCTA 2026 mile 1472.497. Do not leave the PCT at an arbitrary rounded mile.",
     mapUrl:
       "https://www.google.com/maps/search/?api=1&query=41.1171%2C-122.0606",
     coordinates: "41.1171, -122.0606",
     schedule:
-      "The active itinerary reaches Ash Camp on Day 9, Sunday, September 6 after 54.2 GPS miles. Day 9 is 3.8 miles from Butcherknife Creek with roughly 920 ft of descent.",
+      "The primary itinerary reaches Ash Camp on Day 8, Saturday, September 5 after 51.844 official miles. The final leg is 3.854 miles from Butcherknife Creek with about 912 ft of descent.",
     pickupWindow:
-      "Provisional September 6 rendezvous: 10:00 AM–noon after a 6:30–7:00 AM start. Mikaela waits at the shared Ash Camp pin; the hikers send satellite updates rather than relying on cell service.",
+      "Primary September 5 rendezvous: 9:30 AM–12:30 PM after a 6:30–7:00 AM start. September 6 is the contingency pickup date. Mikaela waits at the shared Ash Camp pin; the hikers send satellite updates rather than relying on cell service.",
     road:
       "FS Road 38N11 is unpaved and can be rough; PCTA recommends high clearance. Mikaela should call the McCloud Ranger Station at 530-964-2184 during the week before pickup and again 24–48 hours before driving it. Do not commit the Kia Sportage if the ranger reports washouts, deep ruts, or high-clearance/4WD-only conditions.",
     backup:
@@ -194,7 +199,7 @@ export const travelPlan = {
     comms: [
       "T-24 hours: hikers send expected departure camp, start time, and two-hour pickup window by inReach.",
       "Morning of exit: send STARTING FOR ASH CAMP with battery status and route mile.",
-      "At route mile 52: send 2.2 MILES TO ASH CAMP; do not leave the PCT there.",
+      "At Butcherknife departure and roughly two miles from Ash: send a progress check-in with ETA.",
       "At the trailhead: send ARRIVED ASH CAMP. Mikaela does not enter the trail or keep driving beyond the agreed pin.",
       "If more than two hours late with no message, Mikaela stays at the agreed safe location and follows the overdue protocol; she does not search forest roads alone.",
     ],
@@ -202,7 +207,7 @@ export const travelPlan = {
   },
   exit: [
     {
-      step: "Sunday, September 6: finish at Ash Camp, route mile 54.2 / PCT mile 1472, and meet Mikaela at 41.1171, -122.0606.",
+      step: "Saturday, September 5: finish at Ash Camp, route mile 51.844 / PCTA 2026 mile 1472.497, and meet Mikaela at 41.1170914, -122.0606252.",
       sourceIds: ["pcta-ash-camp", "gps-route"],
     },
     {
@@ -218,11 +223,11 @@ export const travelPlan = {
       sourceIds: ["pcta-transport"],
     },
     {
-      step: "Return to the Bay Area Sunday evening. Protect the September 7 airport report time based on the earlier possible 6:40 AM departure.",
+      step: "Return to the Bay Area Saturday. Keep Sunday, September 6 available for a delayed pickup, recovery, and preparation for the early flight.",
       sourceIds: ["doc-day-plan"],
     },
     {
-      step: "UNRESOLVED: Dan and Drew's September 7 SJC flight is either 6:40 AM or 10:40 AM. Verify the booking before locking pickup and sleep timing.",
+      step: "Working return schedule: UA1317 departs SJC at 6:40 AM PDT September 7. Verify the United booking before locking airport report time.",
       sourceIds: ["doc-day-plan"],
     },
   ],
@@ -232,7 +237,7 @@ export const travelPlan = {
 
 export const resupplyPlan = {
   town: 'No on-route resupply',
-  timing: 'Carry all nine days of food from Burney Falls; Ash Camp has no store.',
+  timing: 'Carry eight hiking days plus one emergency day of food; Ash Camp has no store.',
   sourceIds: ['pcta-resupply', 'pcta-ash-camp'],
   access: [
     { item: 'Primary extraction is Ash Camp via FS Road 38N11.', sourceIds: ['pcta-ash-camp'] },
@@ -250,7 +255,7 @@ export const resupplyPlan = {
 export const permitChecklist = [
   {
     name: 'Local overnight permit determination',
-    coverage: '54.2-mile Burney Falls to Ash Camp trip; not eligible for the 500-mile PCT Long-distance Permit',
+    coverage: '51.844-mile Burney Falls to Ash Camp trip; not eligible for the 500-mile PCT Long-distance Permit',
     source: 'Shasta-Trinity National Forest / PCTA local-permit guidance',
     cost: 'Verify',
     notes: 'Call the managing ranger district with the exact GPX and camps. Do not treat the original narrative’s self-issue claim as confirmed.',
@@ -298,8 +303,8 @@ export const referenceLibrary = {
 export const prepGuideMeta = {
   filename: 'PCT-prep-guide.md',
   repoLocation: '../PCT-prep-guide.md',
-  summary: 'Single-source briefing for the active 54.2-mile Burney Falls ➜ Ash Camp trip.',
-  reminder: 'Review + update that markdown before tweaking data here so the dashboard stays faithful to the written plan.'
+  summary: 'Evidence-backed briefing for the active 51.844-mile Burney Falls ➜ Ash Camp trip.',
+  reminder: 'The controlling document is docs/2026-trip-source-of-truth.md; generated runtime data must remain consistent with it.'
 };
 
 export const gearBlueprint = {
@@ -1407,7 +1412,7 @@ export const riskPlaybook = [
       notes: 'Prescription required. Consult physician. Side effects: tingling, frequent urination, carbonated drinks taste flat.',
       forSectionO: 'Not routinely indicated for this approximately 6,146ft route. Any medication decision belongs with a clinician who knows the hiker.'
     },
-    sectionOContext: 'The GPS high point is approximately 6,146ft on Day 6—below the 8,000ft threshold where AMS becomes more common. The largest daily GPS climb is approximately 2,027ft on Day 2; pace conservatively and hydrate.',
+    sectionOContext: 'The GPS high point is approximately 6,146ft on Day 4—below the 8,000ft threshold where AMS becomes more common. The largest daily climb is approximately 2,006ft on Day 2; pace conservatively and hydrate.',
     sourceIds: ['adventurehacks-guide', 'wv-2017-log']
   }
 ];
@@ -1417,7 +1422,7 @@ export const riskPlaybook = [
 // DAY-BY-DAY ITINERARY
 // ═══════════════════════════════════════════════════════════════════════════════
 // Historical narrative values only. The active itinerary is generated from
-// tripFacts.js using the active Ash Camp route and nine hiking days.
+// tripFacts.js using the active Ash Camp route and eight hiking days.
 // ═══════════════════════════════════════════════════════════════════════════════
 // Retained as historical context from Dan's narrative. Its place names and
 // camp claims are not used by the active GPS-backed Ash Camp itinerary.
@@ -1592,16 +1597,16 @@ export const dayItinerary = [
     to: 'Burney area',
     distance: 0,
     type: 'drive',
-    elevation: { start: 0, end: 3020, gain: 0, loss: 0 },
-    terrain: 'Evening airport pickup followed by a long NorCal drive',
+    elevation: { start: 0, end: 0, gain: 0, loss: 0 },
+    terrain: 'Late airport pickup followed by sleep near SJC',
     waterSources: [],
     waterCarry: 'Travel day',
     connectivity: { verizon: 'variable', att: 'variable', tmobile: 'variable', satellite: true },
-    campFeatures: ['Late-arrival access must be confirmed'],
-    notes: 'Dan and Drew land at SJC at 6:05 PM. Mikaela drives the group north. Do not assume the park can accept an unplanned near-midnight arrival.',
-    objectives: ['Collect luggage', 'Eat before remote highways', 'Confirm legal sleep location', 'Sleep before hiking'],
-    timing: { start: '6:05 PM', end: 'Late night', movingTime: '4.5–5.5h', breakTime: '45–60m airport buffer' },
-    sourceIds: ['doc-day-plan', 'parks-burney']
+    campFeatures: ['Reserved sleep near SJC'],
+    notes: 'Working schedule: UA481 reaches SJC around 10:36 PM PDT. Mikaela collects the team; everyone sleeps near SJC before the early August 29 drive.',
+    objectives: ['Verify United flight', 'Collect luggage', 'Eat', 'Sleep before driving and hiking'],
+    timing: { start: '10:36 PM', end: 'Overnight near SJC', movingTime: '<1h local transfer', breakTime: 'Airline-dependent' },
+    sourceIds: ['doc-day-plan']
   },
   ...primaryItinerary.map((leg) => ({
     day: leg.day,
@@ -1619,7 +1624,7 @@ export const dayItinerary = [
       loss: leg.elevation.loss
     },
     terrain:
-      leg.day === 6
+      leg.day === 4
         ? 'Highest route segment; GPS reaches approximately 6,146 ft'
         : leg.elevation.loss >= 1400
           ? 'Major descent day; protect knees and allow slower footing'
@@ -1660,39 +1665,40 @@ export const dayItinerary = [
 // Aggregate stats for the full trip
 // ═══════════════════════════════════════════════════════════════════════════════
 // MILEAGE RECONCILIATION:
-// • Active Garmin route to Ash Camp:      54.2 miles
-// • PCT guide mileage to Ash Camp:       approximately 52 miles
-// • Full Garmin track to Castle Crags:   82.9 miles (future trip only)
+// • Active PCTA 2026 route to Ash Camp: 51.844 miles
+// • Cropped Garmin elevation track:     51.664 miles
+// • Archived source track:              82.9 miles (not an active option)
 // ═══════════════════════════════════════════════════════════════════════════════
 export const tripStats = {
-  totalDays: 10,
+  totalDays: 10, // arrival + eight hiking days + contingency
   hikingDays: tripFacts.route.hikingDays,
-  totalMiles: tripFacts.route.gpsMiles,
-  gpsCalculated: true, // Flag: actual value comes from routeSegments in App.jsx
-  segmentRange: '54.2 (Burney Falls → Ash Camp)',
-  pdfEstimates: 52,
+  totalMiles: tripFacts.route.officialMiles,
+  gpsMiles: tripFacts.route.gpsMiles,
+  gpsCalculated: false,
+  segmentRange: '51.844 (Burney Falls PCT access → Ash Camp)',
+  pdfEstimates: null,
   totalGain: tripFacts.route.totalGainFeet,
   totalLoss: tripFacts.route.totalLossFeet,
   avgMilesPerDay: tripFacts.route.averageMilesPerDay,
-  targetPace: '6.0',
-  paceNote: 'Nine hiking days average 6.0 miles; the longest day is 8.2 miles and the final day is 3.8 miles.',
-  highPoint: { elevation: tripFacts.route.highPointFeet, location: 'High saddle / active route high point', day: 6 },
-  lowPoint: { elevation: 2443, location: 'Ash Camp / McCloud River corridor', day: 9 },
+  targetPace: 'variable',
+  paceNote: 'Eight hiking days average 6.48 miles; Day 3 is 14.53 miles and the final day is 3.85 miles.',
+  highPoint: { elevation: tripFacts.route.highPointFeet, location: 'High saddle / active route high point', day: 4 },
+  lowPoint: { elevation: 2443, location: 'Ash Camp / McCloud River corridor', day: 8 },
   waterSourceCount: 20,
   connectivityBlackoutMiles: 35, // Approximate based on daily connectivity data
-  estimatedMovingTime: '32–39 hours',
-  recommendedWaterCarry: { min: 2, max: 4, unit: 'L' },
+  estimatedMovingTime: '37–52 field hours',
+  recommendedWaterCarry: { min: 2, max: 5, unit: 'L', note: 'Day 3 depends on final heat and legal source confirmation' },
   sources: ['ddg-pdf', 'pct-water', 'halfmile', 'gps-route'],
   sourceQuotes: {
     distance: tripFacts.route.distanceEvidence,
-    pace: 'Nine camp-to-camp legs averaging 6.0 miles; longest day 8.2 miles',
-    dates: 'August 29 through September 6, 2026'
+    pace: 'Eight camp-to-camp legs averaging 6.48 miles; longest day 14.53 miles',
+    dates: 'August 29 through September 5, 2026; September 6 contingency'
   }
 };
 
 export const nextStepsChecklist = [
   {
-    task: 'Lock August 29–September 6 as the primary hiking window.',
+    task: 'Lock August 29–September 5 as the primary hiking window and September 6 as contingency.',
     status: 'completed'
   },
   {

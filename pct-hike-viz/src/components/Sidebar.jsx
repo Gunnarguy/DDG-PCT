@@ -205,7 +205,7 @@ function Sidebar({
   const stats = computedStats ?? tripStats;
   const blackoutMiles =
     stats?.connectivityBlackoutMiles ?? tripStats.connectivityBlackoutMiles;
-  const basePlanMiles = stats?.totalMiles ?? tripStats.totalMiles;
+  const basePlanMiles = tripFacts.route.displayMiles;
   const timelineRangeMiles = stats?.connectivityRangeMiles || 90;
   const selectedSchedule =
     scheduleOptions?.find((option) =>
@@ -479,9 +479,11 @@ function Sidebar({
           </div>
         </div>
         <p className="note">
-          Distance confidence: active Garmin geometry is 54.2 mi to the
-          official Ash Camp pin. The complete 82.9-mi track is retained only
-          as a future-trip reference.
+          Distance confidence: the PCTA January 2026 centerline is{" "}
+          {tripFacts.route.officialMiles.toFixed(3)} mi. The cropped Garmin
+          geometry is {tripFacts.route.gpsMiles.toFixed(3)} mi and supplies the
+          elevation profile. The 82.9-mi source track is future-trip reference
+          geometry only.
         </p>
       </section>
 
@@ -554,14 +556,14 @@ function Sidebar({
             📅{" "}
             {selectedSchedule?.dates ??
               (selectedItinerary === "express"
-                ? "Aug 29 – Sep 6, 2026"
+                ? "Aug 29 – Sep 5, 2026 · Sep 6 contingency"
                 : "Aug 22 – Sep 6")}
           </span>
           <span className="date-note">
             {selectedSchedule
               ? `${selectedSchedule.title} schedule`
               : selectedItinerary === "express"
-                ? "9-day primary schedule"
+                ? "8 hiking days + 1 contingency day"
                 : "16-day relaxed schedule"}
           </span>
         </div>
@@ -636,7 +638,7 @@ function Sidebar({
             <div className="highlight-content">
               <span className="highlight-title">Ash Camp Finish</span>
               <span className="highlight-desc">
-                Route mile 54.2 · McCloud River pickup - Day 9
+                Route mile 51.844 · PCTA 1472.497 · pickup Day 8
               </span>
             </div>
           </div>
@@ -800,10 +802,9 @@ function Sidebar({
             </div>
             <h3 className="day-card__route">Arrival & Assembly</h3>
             <p className="day-card__terrain">
-              ✈️ Dan &amp; Drew land at SJC at 6:05 PM.<br />
-              🚙 Mikaela drives the Kia Sportage north. Confirm legal
-              after-hours sleep access before relying on a late-night park
-              arrival.
+              ✈️ UA481 is scheduled to land at SJC at 10:36 PM PDT.<br />
+              🛏️ Sleep near SJC, then leave around 5:00–5:30 AM on Aug 29.
+              Verify the airline booking before locking the pickup time.
             </p>
           </button>
           
@@ -874,15 +875,15 @@ function Sidebar({
                   </span>
                 </div>
                 <p className="day-card__notes">
-                  {terrainLoad?.effortRank === 1 &&
-                    "Hardest aerobic day: the route’s largest climb. "}
-                  {day === 8 &&
-                    "Hardest knee day: sustained 1,780-foot descent. "}
+                  {day === 3 &&
+                    "Hardest overall day: 14.53 miles and 3,137 vertical feet. "}
+                  {day === 2 &&
+                    "Largest climb: 2,006 feet with very little descent. "}
                   {day === 7 &&
-                    "Hardest mixed up/down day: nearly 2,130 vertical feet. "}
-                  {day === 5 &&
+                    "Hardest knee day: sustained 1,828-foot descent. "}
+                  {day === 4 &&
                     "Short mileage hides a steep climb and dry-camp carry. "}
-                  {day === 9 &&
+                  {day === 8 &&
                     "Short but descent-heavy; protect pickup timing and avoid rushing. "}
                   Overnight waypoint remains provisional.
                 </p>
@@ -898,9 +899,9 @@ function Sidebar({
             </div>
             <h3 className="day-card__route">Departure</h3>
             <p className="day-card__terrain">
-              ✈️ Dan &amp; Drew depart SJC. Booking time still unresolved:
-              <strong> 6:40 AM or 10:40 AM</strong>. Plan airport transport
-              against the earlier time until confirmed.
+              ✈️ UA1317 is scheduled to depart SJC at
+              <strong> 6:40 AM PDT</strong>. Verify the booking in United
+              Manage Trip before locking airport transport.
             </p>
           </button>
         </div>
@@ -916,8 +917,9 @@ function Sidebar({
         <p className="lede">
           Published accounts confirm that this terrain can support much longer
           days, but those hikers had day packs, car staging, or thru-hiker
-          conditioning. Your 8.2 / 8.0 / 7.7 / 6.7 / 4.0 / 3.9 / 6.4 / 5.5 /
-          3.8-mile split is deliberately conservative for loaded packs and knee
+          conditioning. Your current 5.61 / 8.03 / 14.53 / 4.08 / 3.79 /
+          6.35 / 5.60 / 3.85 miles; Day 3 is a deliberate capability gate,
+          not an “easy average,” and the shorter days protect loaded-pack knee
           recovery.
         </p>
         <div className="evidence-list">
@@ -1592,7 +1594,7 @@ function Sidebar({
           onClick={() => onItineraryChange("express")}
           className="itinerary-toggle-btn is-active"
         >
-          🏕️ Active · 54.2 mi / 9 days
+          🏕️ Active · 51.844 mi / 8 hiking days
         </button>
       </div>
 

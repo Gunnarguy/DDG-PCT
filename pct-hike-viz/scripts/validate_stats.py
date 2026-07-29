@@ -39,8 +39,8 @@ total_miles = total_meters / 1609.34
 
 print(f'\n--- DISTANCE ---')
 print(f'Calculated: {total_miles:.2f} miles')
-print(f'Active plan: 54.2 GPS miles to Ash Camp')
-print(f'Match: {"✓" if abs(total_miles - 54.2) <= 0.2 else "✗"}')
+print(f'Active Garmin route: 51.664 GPS miles to Ash Camp')
+print(f'Match: {"✓" if abs(total_miles - 51.664) <= 0.2 else "✗"}')
 
 # Elevation analysis
 start_elev = coords[0][2]
@@ -91,7 +91,7 @@ doc_loss = (3600-5850)
 print(f'\nLegacy six-row estimated gain: ~{doc_gain} ft')
 print(f'Legacy six-row estimated loss: ~{abs(doc_loss)} ft')
 
-print(f'\nNote: the six-row narrative stops at 52 miles and is not the active itinerary.')
+print(f'\nNote: the historical six-row narrative stops at 52 miles and is not the active itinerary.')
 print(f'The truncated GPS route to Ash Camp is the active source for distance and terrain.')
 
 print('\n' + '=' * 60)

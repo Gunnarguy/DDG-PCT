@@ -267,7 +267,7 @@ export const getFireRestrictions = () => {
  * Section O summary statistics
  */
 export const sectionOLandManagement = {
-  totalMiles: 54.2,
+  totalMiles: 51.844,
   zones: landManagementZones.length,
   breakdown: {
     federal: 53.5,

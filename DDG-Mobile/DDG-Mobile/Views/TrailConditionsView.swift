@@ -41,6 +41,7 @@ struct TrailConditionsView: View {
                         waterSection(snapshot)
                         agencyAlertSection(snapshot)
                         wildfireSection(snapshot)
+                        weatherSection(snapshot)
                         airQualitySection(snapshot)
                         briefingSection(snapshot)
                     }
@@ -200,7 +201,7 @@ struct TrailConditionsView: View {
     private func waterSection(_ snapshot: TrailConditionsSnapshot) -> some View {
         section(title: "PCT Water Report", icon: "drop.fill") {
             if let water = snapshot.water {
-                Text("\(water.count) entries · route miles 1420–1473")
+                Text("\(water.count) entries · PCTA 1420.653–1472.497")
                     .font(.subheadline.bold())
                 Text(water.updatedText ?? "Source update time unavailable")
                     .font(.caption)
@@ -215,12 +216,19 @@ struct TrailConditionsView: View {
                                 [
                                     source.reportDate.map { "Reported \($0)" },
                                     source.reportedBy.map { "by \($0)" },
+                                    source.ageDays.map { "· \($0) day\($0 == 1 ? "" : "s") old" },
+                                    source.freshness.map { "· \($0)" },
                                 ]
                                 .compactMap { $0 }
                                 .joined(separator: " ")
                             )
                             .font(.caption2)
                             .foregroundStyle(.secondary)
+                            if source.dateConflict == true {
+                                Text("Date repaired from latest report text; sheet date cell: \(source.metadataDate ?? "unknown").")
+                                    .font(.caption2)
+                                    .foregroundStyle(.orange)
+                            }
                         }
                         .padding(.top, 6)
                     } label: {
@@ -255,7 +263,7 @@ struct TrailConditionsView: View {
     private func agencyAlertSection(_ snapshot: TrailConditionsSnapshot) -> some View {
         section(title: "Closures & Restrictions", icon: "exclamationmark.triangle.fill") {
             if let alerts = snapshot.agencyAlerts, !alerts.isEmpty {
-                Text("These are review leads. Forest pages can include orders outside the 54.2-mile corridor; open each order and confirm its mapped boundary.")
+                Text("These are review leads. Forest pages can include orders outside the 51.844-mile corridor; open each order and confirm its mapped boundary.")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
 
@@ -355,6 +363,35 @@ struct TrailConditionsView: View {
                 }
             } else {
                 unavailableText("No AQI readings are available.")
+            }
+        }
+    }
+
+    private func weatherSection(_ snapshot: TrailConditionsSnapshot) -> some View {
+        section(title: "Seven-Day Corridor Weather", icon: "cloud.sun.fill") {
+            if let locations = snapshot.weather?.locations, !locations.isEmpty {
+                ForEach(locations) { location in
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(location.location).font(.headline)
+                        if let current = location.current.temperatureF {
+                            Text("\(current.formatted(.number.precision(.fractionLength(0))))°F now")
+                                .font(.title3.bold())
+                        }
+                        if let today = location.daily.first {
+                            Text(
+                                "\(today.minTemperatureF?.formatted(.number.precision(.fractionLength(0))) ?? "—")°–\(today.maxTemperatureF?.formatted(.number.precision(.fractionLength(0))) ?? "—")°F · rain \(today.precipitationProbability.map(String.init) ?? "—")% · gusts \(today.maxGustMph?.formatted(.number.precision(.fractionLength(0))) ?? "—") mph"
+                            )
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        }
+                    }
+                    Divider()
+                }
+                Text(snapshot.weather?.note ?? "Modeled forecast; refresh before every daily go/no-go check.")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            } else {
+                unavailableText("No corridor weather forecast is available.")
             }
         }
     }

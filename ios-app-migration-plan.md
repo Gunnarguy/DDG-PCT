@@ -26,7 +26,7 @@
 | -------------- | ---------------------------------------------------------------------------------- |
 | Trigger        | Free-tier projects pause after **7 days** with zero DB queries or dashboard visits |
 | Symptom        | API returns **503 Service Unavailable** for 1–3 min while DB cold-starts           |
-| Trail scenario | Day 9, 1 bar of cell at Hat Creek Rim — sync request silently dropped              |
+| Trail scenario | Day 8, 1 bar of cell near the Ash Camp approach — sync request silently dropped    |
 
 **Mitigation strategy (ranked):**
 

@@ -369,7 +369,7 @@ export const resourcesIndex = [
     type: 'external',
     category: 'official',
     url: 'https://explore.pcta.org/trailheads/ash-camp',
-    excerpt: 'Official access point at PCT mile 1472. FS Road 38N11 is unpaved, can be rough, and high clearance is recommended.',
+    excerpt: 'Official access point at PCTA 2026 mile 1472.497. FS Road 38N11 is unpaved, can be rough, and high clearance is recommended.',
     tags: ['transport', 'trailhead', 'ash-camp', 'pickup'],
     icon: '📍'
   },

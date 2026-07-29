@@ -70,7 +70,7 @@ let connectivityZones: [ConnectivityZone] = [
     ConnectivityZone(
         id: "ash-camp",
         name: "Ash Camp Pickup",
-        mile: 1472.0,
+        mile: 1472.497,
         longitude: -122.0606252, latitude: 41.1170914,
         cellCoverage: CellCoverage(verizon: "unknown", att: "unknown", tmobile: "unknown"),
         satelliteCompatible: true,
@@ -140,6 +140,6 @@ let satelliteDevices: [SatelliteDevice] = [
         cost: "$599 + $14.95+/mo subscription",
         notes: "Full-featured GPS with inReach built in. Heavy but self-contained.",
         compatibility: "Standalone + Bluetooth",
-        trailNotes: "Heavier than phone-only navigation, but dependable for a nine-day route with long cell gaps."
+        trailNotes: "Heavier than phone-only navigation, but dependable for an eight-day route with long cell gaps."
     ),
 ]

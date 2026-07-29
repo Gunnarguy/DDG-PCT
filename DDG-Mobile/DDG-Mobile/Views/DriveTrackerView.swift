@@ -80,17 +80,17 @@ struct DriveTrackerView: View {
     
     let flights = [
         FlightInfo(
-            flightNumber: "INBOUND",
-            carrier: "Confirm from booking",
-            origin: "Origin airport",
-            originCode: "TBD",
+            flightNumber: "UA481",
+            carrier: "United Airlines",
+            origin: "Chicago O'Hare (ORD)",
+            originCode: "ORD",
             destination: "San Jose Mineta (SJC)",
             destinationCode: "SJC",
-            departureTime: "Check booking",
-            arrivalTime: "Aug 28 • 6:05 PM",
-            duration: "Check booking",
-            status: "Arrival time confirmed by team",
-            terminalInfo: "Check airline reservation",
+            departureTime: "Aug 28 • 8:00 PM CDT",
+            arrivalTime: "Aug 28 • 10:36 PM PDT",
+            duration: "4h 36m scheduled",
+            status: "WORKING SCHEDULE — VERIFY BOOKING",
+            terminalInfo: "Verify in United Manage Trip",
             aircraft: "Not yet verified",
             gate: "Check day-of-flight",
             baggageClaim: "Check SJC monitors",
@@ -98,22 +98,22 @@ struct DriveTrackerView: View {
             delayStats: "Build 45–60 minutes for bags and loading"
         ),
         FlightInfo(
-            flightNumber: "OUTBOUND",
-            carrier: "Confirm from booking",
+            flightNumber: "UA1317",
+            carrier: "United Airlines",
             origin: "San José Mineta (SJC)",
             originCode: "SJC",
-            destination: "Destination airport",
-            destinationCode: "TBD",
-            departureTime: "Sep 7 • 6:40 AM or 10:40 AM",
-            arrivalTime: "Check booking",
-            duration: "Check booking",
-            status: "TIME UNCONFIRMED",
-            terminalInfo: "Protect the earlier airport report time",
+            destination: "Chicago O'Hare (ORD)",
+            destinationCode: "ORD",
+            departureTime: "Sep 7 • 6:40 AM PDT",
+            arrivalTime: "Sep 7 • 11:00 AM CDT",
+            duration: "4h 20m scheduled",
+            status: "WORKING SCHEDULE — VERIFY BOOKING",
+            terminalInfo: "Verify in United Manage Trip",
             aircraft: "Not yet verified",
             gate: "Check day-of-flight",
             baggageClaim: "Check destination monitors",
             onboardServices: [],
-            delayStats: "Resolve before locking September 6 sleep and airport transport"
+            delayStats: "Keep Sep 6 as the home/airport-buffer day"
         )
     ]
 
@@ -417,7 +417,7 @@ struct DriveTrackerView: View {
                         Spacer()
                     }
                     
-                    Text("The active 54.2-mile trip ends at Ash Camp on Sunday, September 6. Mikaela pickup is the primary plan; every fallback must be confirmed before departure.")
+                    Text("The active 51.844-mile trip should end at Ash Camp on Saturday, September 5; Sunday, September 6 is the contingency day. Mikaela pickup is primary and every fallback must be confirmed before departure.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     
@@ -428,11 +428,11 @@ struct DriveTrackerView: View {
                                     .font(.caption.bold())
                                     .foregroundStyle(.orange)
                                 Spacer()
-                                Text("GPS MI 54.2")
+                                Text("PCTA MI 51.844")
                                     .font(.caption2.bold())
                                     .foregroundStyle(.secondary)
                             }
-                            Text("Continue past route mile 52 to the official Ash Camp pin (PCT mile 1472; 41.1171, -122.0606). Target pickup is 10:00 AM–12:00 PM on Day 9, Sunday Sep 6. FS Road 38N11 is rough and high clearance is recommended. Mikaela must confirm road access with the McCloud Ranger Station (530-964-2184) before committing the Kia Sportage.")
+                            Text("Finish at the official Ash Camp pin (PCTA 2026 mile 1472.497; 41.1170914, -122.0606252). The provisional rendezvous is 10:00 AM–noon on Day 8, Saturday Sep 5, finalized by inReach; Sep 6 is contingency. FS Road 38N11 is rough and high clearance is recommended. Mikaela must confirm road access with the McCloud Ranger Station (530-964-2184) before committing the Kia Sportage.")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
@@ -488,7 +488,7 @@ struct DriveTrackerView: View {
                                     .font(.caption2.bold())
                                     .foregroundStyle(.secondary)
                             }
-                            Text("Send an inReach check-in at the Day 9 start, at route mile 52, and on arrival. Mikaela waits at the exact shared pin and does not drive or hike up-trail searching. If the team misses the agreed overdue threshold, follow the written emergency contact plan; use SOS only for an actual emergency.")
+                            Text("Send an inReach check-in at the Day 8 start, at Butcherknife Creek/PCTA 1468.643, and on arrival at Ash Camp. Mikaela waits at the exact shared pin and does not drive or hike up-trail searching. If the team misses the agreed overdue threshold, follow the written emergency contact plan; use SOS only for an actual emergency.")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
@@ -558,9 +558,9 @@ struct DriveTrackerView: View {
         let t1 = route1?.expectedTravelTime ?? 900 // default 15m
         let t2 = route2?.expectedTravelTime ?? 16200 // default 4.5h
         
-        let leaveCampbell = timeByAdding(seconds: -t1, to: "6:05 PM")
-        let sjcArrival = "6:05 PM"
-        let sjcDeparture = "7:05 PM"
+        let leaveCampbell = timeByAdding(seconds: -t1, to: "10:36 PM")
+        let sjcArrival = "10:36 PM"
+        let sjcDeparture = "5:15 AM"
         
         // Vacaville is ~29% of SJC->Burney Falls drive
         let tVacaville = t2 * 0.29
@@ -576,12 +576,12 @@ struct DriveTrackerView: View {
         let burneyArrival = timeByAdding(seconds: t2 + 1800, to: sjcDeparture)
         
         return [
-            (leaveCampbell, "Campbell Depart", "Mikaela leaves for SJC. Drive: \(formatTime(t1))"),
-            (sjcArrival, "Flight Lands", "Dan & Drew's confirmed SJC landing time. Check the booking and live airport status for terminal and baggage."),
-            (sjcDeparture, "SJC Depart", "Head north on highway. Drive time: \(formatTime(t2))"),
+            (leaveCampbell, "Aug 28 · Campbell Depart", "Mikaela leaves for SJC. Drive: \(formatTime(t1))"),
+            (sjcArrival, "Aug 28 · UA481 Lands", "Working SJC landing time. Verify the booking and live airport status for terminal and baggage, then sleep near SJC."),
+            (sjcDeparture, "Aug 29 · SJC Depart", "Leave after sleep around 5:00–5:30 AM. Drive time: \(formatTime(t2))"),
             (vacavilleArrival, "Vacaville Refuel", "Arrive Costco Gas (~78 mi). Quick snacks. Depart at \(vacavilleDeparture) (20m stop)."),
             (reddingArrival, "Redding Refuel", "Arrive Safeway Fuel (~227 mi). Final top-up. Depart at \(reddingDeparture) (10m stop)."),
-            (burneyArrival, "Burney Area Arrive", "Use the pre-confirmed legal late-arrival sleep plan. Do not assume after-hours park entry.")
+            (burneyArrival, "Burney Falls Access", "Day 1 is intentionally 5.609 miles to Rock Creek because this hike starts after the morning drive.")
         ]
     }
     

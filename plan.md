@@ -1,6 +1,16 @@
 # Plan: PCT Hike Visualization (Burney Falls to Ash Camp)
 
-This plan outlines the original implementation of a PCT planning application. The current canonical itinerary covers 54.2 Garmin miles from Burney Falls to Ash Camp over nine hiking days. The remaining geometry to Castle Crags is preserved for a future trip with a longer vacation window.
+> [!NOTE]
+> **Historical implementation plan.** Its 54.2-mile/nine-day values are
+> superseded by
+> [docs/2026-trip-source-of-truth.md](docs/2026-trip-source-of-truth.md). Keep
+> this file for architectural history; do not treat it as trail truth.
+
+This plan outlines the original implementation of a PCT planning application.
+The current canonical itinerary is documented separately: 51.844 PCTA 2026
+miles / 51.664 cropped Garmin miles from Burney Falls access to Ash Camp over
+eight hiking days. The remaining geometry to Castle Crags is preserved for a
+future trip with a longer vacation window.
 
 ## 1. Investigation Findings
 

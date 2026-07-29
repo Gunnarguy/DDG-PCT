@@ -7,8 +7,10 @@ const corsHeaders = {
 };
 
 const ROUTE = {
-  minPctMile: 1420,
-  maxPctMile: 1473,
+  // The water report rounds PCTA mileage to one decimal, so retain a narrow
+  // tolerance around the exact 2026 endpoints (1420.653 → 1472.497).
+  minPctMile: 1420.55,
+  maxPctMile: 1472.55,
   bbox: { west: -122.15, south: 40.95, east: -121.55, north: 41.25 },
 };
 
@@ -25,10 +27,10 @@ const SOURCES = {
 };
 
 const MONITORING_POINTS = [
-  { name: "Burney Falls", latitude: 41.0135, longitude: -121.6207 },
+  { name: "Burney Falls PCT access", latitude: 41.01104125, longitude: -121.65376551 },
   { name: "Section O high country", latitude: 41.1723, longitude: -121.9085 },
   { name: "McCloud River", latitude: 41.1119, longitude: -122.0478 },
-  { name: "Ash Camp finish", latitude: 41.1171, longitude: -122.0606 },
+  { name: "Ash Camp finish", latitude: 41.1170914, longitude: -122.0606252 },
 ];
 
 type SourceStatus = {
@@ -99,6 +101,70 @@ const waterCondition = (report: string) => {
   return "unknown";
 };
 
+const parseReportObservation = (
+  latestReport: string,
+  metadataDate: string | null,
+  checkedAt: Date,
+) => {
+  const leadingDate = latestReport.match(/^\s*(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/);
+  const fallbackDate = metadataDate?.match(/^\s*(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/);
+  const match = leadingDate ?? fallbackDate;
+  if (!match) {
+    return {
+      reportDate: metadataDate,
+      observedAt: null,
+      reportDateSource: metadataDate ? "sheet-date-column" : "unavailable",
+      metadataDate,
+      dateConflict: false,
+      ageDays: null,
+      freshness: "unknown",
+    };
+  }
+
+  const [, monthText, dayText, yearText] = match;
+  const yearNumber = Number(yearText);
+  const year = yearText.length === 2
+    ? (yearNumber >= 70 ? 1900 + yearNumber : 2000 + yearNumber)
+    : yearNumber;
+  const month = Number(monthText);
+  const day = Number(dayText);
+  const observed = new Date(Date.UTC(year, month - 1, day, 12));
+  const valid =
+    observed.getUTCFullYear() === year &&
+    observed.getUTCMonth() === month - 1 &&
+    observed.getUTCDate() === day;
+  if (!valid) {
+    return {
+      reportDate: metadataDate,
+      observedAt: null,
+      reportDateSource: "invalid",
+      metadataDate,
+      dateConflict: false,
+      ageDays: null,
+      freshness: "unknown",
+    };
+  }
+
+  const reportDate = `${month}/${day}/${String(year).slice(-2)}`;
+  const ageDays = Math.max(
+    0,
+    Math.floor((checkedAt.getTime() - observed.getTime()) / 86_400_000),
+  );
+  return {
+    reportDate,
+    observedAt: observed.toISOString().slice(0, 10),
+    reportDateSource: leadingDate ? "latest-report-text" : "sheet-date-column",
+    metadataDate,
+    dateConflict: Boolean(
+      leadingDate &&
+      metadataDate &&
+      metadataDate.replace(/^0/, "") !== reportDate.replace(/^0/, ""),
+    ),
+    ageDays,
+    freshness: ageDays <= 14 ? "recent" : ageDays <= 45 ? "aging" : "stale",
+  };
+};
+
 const fetchWater = async () => {
   const response = await fetch(WATER_URL, {
     headers: { "User-Agent": "DDG-PCT-Mission-Control/1.0" },
@@ -112,19 +178,22 @@ const fetchWater = async () => {
     .slice(0, headerIndex)
     .flat()
     .find((value) => /Updated\s+\d/i.test(value)) ?? null;
+  const checkedAt = new Date();
   const sources = rows.slice(headerIndex + 1).flatMap((row) => {
     const mile = Number(row[1]);
     if (!Number.isFinite(mile) || mile < ROUTE.minPctMile || mile > ROUTE.maxPctMile) {
       return [];
     }
     const report = row[4]?.trim() ?? "";
+    const latestReport = report.split(/\r?\n/).find(Boolean)?.trim() || "No current report";
+    const metadataDate = row[5]?.trim() || null;
     return [{
       mile,
       waypoint: row[2]?.replace(/\s+/g, " ").trim() || null,
       name: row[3]?.trim() || "Unnamed water source",
-      latestReport: report.split(/\r?\n/).find(Boolean)?.trim() || "No current report",
+      latestReport,
       report,
-      reportDate: row[5]?.trim() || null,
+      ...parseReportObservation(latestReport, metadataDate, checkedAt),
       reportedBy: row[6]?.trim() || null,
       condition: waterCondition(report),
     }];
@@ -291,6 +360,59 @@ const fetchAirQuality = async () => {
   return { readings, note: "Modeled current conditions from Open-Meteo CAMS" };
 };
 
+const fetchWeather = async () => {
+  const locations = await Promise.all(MONITORING_POINTS.map(async (point) => {
+    const url = new URL("https://api.open-meteo.com/v1/forecast");
+    url.search = new URLSearchParams({
+      latitude: String(point.latitude),
+      longitude: String(point.longitude),
+      current:
+        "temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m",
+      daily:
+        "weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_gusts_10m_max,sunrise,sunset",
+      temperature_unit: "fahrenheit",
+      wind_speed_unit: "mph",
+      precipitation_unit: "inch",
+      timezone: "America/Los_Angeles",
+      forecast_days: "7",
+    }).toString();
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Open-Meteo weather returned ${response.status}`);
+    const data = await response.json();
+    const dailyTimes: string[] = data.daily?.time ?? [];
+    return {
+      location: point.name,
+      latitude: point.latitude,
+      longitude: point.longitude,
+      current: {
+        timestamp: data.current?.time ?? null,
+        temperatureF: data.current?.temperature_2m ?? null,
+        apparentTemperatureF: data.current?.apparent_temperature ?? null,
+        precipitationIn: data.current?.precipitation ?? null,
+        weatherCode: data.current?.weather_code ?? null,
+        windMph: data.current?.wind_speed_10m ?? null,
+        gustMph: data.current?.wind_gusts_10m ?? null,
+      },
+      daily: dailyTimes.map((date, index) => ({
+        date,
+        weatherCode: data.daily?.weather_code?.[index] ?? null,
+        maxTemperatureF: data.daily?.temperature_2m_max?.[index] ?? null,
+        minTemperatureF: data.daily?.temperature_2m_min?.[index] ?? null,
+        precipitationIn: data.daily?.precipitation_sum?.[index] ?? null,
+        precipitationProbability: data.daily?.precipitation_probability_max?.[index] ?? null,
+        maxGustMph: data.daily?.wind_gusts_10m_max?.[index] ?? null,
+        sunrise: data.daily?.sunrise?.[index] ?? null,
+        sunset: data.daily?.sunset?.[index] ?? null,
+      })),
+    };
+  }));
+  return {
+    locations,
+    note:
+      "Seven-day modeled forecast from Open-Meteo. Forecast skill declines with lead time; refresh before every day’s go/no-go check.",
+  };
+};
+
 const resultValue = <T>(result: PromiseSettledResult<T>, fallback: T): T =>
   result.status === "fulfilled" ? result.value : fallback;
 
@@ -348,7 +470,7 @@ Deno.serve(async (req: Request) => {
     authorization: `Bearer ${serviceRoleKey}`,
     "Content-Type": "application/json",
   };
-  if (isScheduledAnon) {
+  if (isScheduledAnon && !requestBody.force) {
     const latestResponse = await fetch(
       `${supabaseUrl}/rest/v1/trail_condition_snapshots?select=payload,fetched_at,source_status&order=fetched_at.desc&limit=1`,
       { headers: dbHeaders },
@@ -369,6 +491,7 @@ Deno.serve(async (req: Request) => {
     waterResult,
     fireResult,
     airResult,
+    weatherResult,
     shastaResult,
     lassenResult,
     burneyResult,
@@ -378,6 +501,7 @@ Deno.serve(async (req: Request) => {
     fetchWater(),
     fetchWildfires(),
     fetchAirQuality(),
+    fetchWeather(),
     fetchAgencyPage("Shasta-Trinity National Forest", SOURCES.shastaTrinity, forestKeywords),
     fetchAgencyPage("Lassen National Forest", SOURCES.lassen, forestKeywords),
     fetchAgencyPage("McArthur-Burney Falls State Park", SOURCES.burneyPark, parkKeywords),
@@ -424,18 +548,19 @@ Deno.serve(async (req: Request) => {
     pctWater: sourceState(waterResult, SOURCES.pctWater, checkedAt),
     nifcFirePerimeters: sourceState(fireResult, "https://data-nifc.opendata.arcgis.com/", checkedAt),
     smokeAqi: sourceState(airResult, "https://open-meteo.com/en/docs/air-quality-api", checkedAt),
+    weatherForecast: sourceState(weatherResult, "https://open-meteo.com/en/docs", checkedAt),
     shastaTrinityAlerts: sourceState(shastaResult, SOURCES.shastaTrinity, checkedAt),
     lassenAlerts: sourceState(lassenResult, SOURCES.lassen, checkedAt),
     burneyPark: sourceState(burneyResult, SOURCES.burneyPark, checkedAt),
     burneyClosures: sourceState(burneyClosureResult, SOURCES.burneyClosures, checkedAt),
-    pctaClosures: pctaResult.status === "fulfilled"
-      ? { status: "live", checkedAt, url: SOURCES.pctaClosures }
-      : {
-          status: "manual_required",
-          checkedAt,
-          url: SOURCES.pctaClosures,
-          detail: "The official PCTA closure map blocks reliable automated reading. Open it before every go/no-go decision.",
-        },
+    pctaClosures: {
+      status: "manual_required",
+      checkedAt,
+      url: SOURCES.pctaClosures,
+      detail: pctaResult.status === "fulfilled"
+        ? "The PCTA page was fetched, but its mapped closure boundaries are not machine-verifiable here. Open the official map before every go/no-go decision."
+        : "The official PCTA closure map could not be fetched reliably. Open it before every go/no-go decision.",
+    },
     campsiteAvailability: {
       status: "manual_required",
       checkedAt,
@@ -455,13 +580,41 @@ Deno.serve(async (req: Request) => {
     sourceStatus.nifcFirePerimeters.url = fireResult.value.sourceUrl;
     sourceStatus.nifcFirePerimeters.detail = fireResult.value.source;
   }
+  if (waterResult.status === "fulfilled") {
+    const conflictCount = water.sources.filter(
+      (source: { dateConflict?: boolean }) => source.dateConflict,
+    ).length;
+    sourceStatus.pctWater.detail =
+      `${water.updatedText ?? "Sheet update timestamp unavailable"}; ` +
+      `${water.count} route entries; ${conflictCount} sheet date-column conflicts corrected from latest report text.`;
+  }
+  for (const key of [
+    "shastaTrinityAlerts",
+    "lassenAlerts",
+    "burneyPark",
+    "burneyClosures",
+  ]) {
+    if (sourceStatus[key].status === "live") {
+      sourceStatus[key].detail =
+        "Page fetched successfully; extracted text is a review lead, not a verified route closure boundary.";
+    }
+  }
 
   const payload = {
     fetchedAt: checkedAt,
-    route: "Burney Falls to Ash Camp",
+    planVersion: "pcta-2026-burney-ash-v1",
+    route: "Burney Falls PCT access to Ash Camp",
+    routeFacts: {
+      name: "Burney Falls PCT access to Ash Camp",
+      officialMiles: 51.844,
+      gpsMiles: 51.664,
+      startPctMile: 1420.653,
+      finishPctMile: 1472.497,
+    },
     water,
     wildfire: resultValue(fireResult, { count: 0, fires: [], unavailable: true }),
     airQuality: resultValue(airResult, { readings: [], note: "AQI unavailable" }),
+    weather: resultValue(weatherResult, { locations: [], note: "Weather forecast unavailable" }),
     agencyAlerts,
     closures: {
       pcta: resultValue(pctaResult, { name: "PCTA closures", url: PCTA_CLOSURES_URL, snippets: [] }),

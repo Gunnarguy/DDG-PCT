@@ -1,6 +1,11 @@
 # DDG-Mobile
 
-Native iOS mission control for the DDG team's active 54.2-mile, nine-day PCT hike from Burney Falls to Ash Camp.
+> [!IMPORTANT]
+> [docs/2026-trip-source-of-truth.md](../docs/2026-trip-source-of-truth.md)
+> controls the bundled route, daily terrain, flights, and extraction facts.
+> SwiftData ingestion version 10 replaces the old route on launch.
+
+Native iOS mission control for the DDG team's active 51.844-mile, eight-day PCT hike from Burney Falls to Ash Camp, with September 6 reserved as contingency.
 
 ## Quick Start
 
@@ -24,7 +29,7 @@ Then in Xcode:
 - **Swift Charts elevation profile** with altitude physiology zones
 - **RPG gear planner** with weight tracking per hiker
 - **Ops log** with auto-classification (NOTE/TASK/ALERT) and sync status badges
-- **Canonical active data** ported: nine trail legs, mapped water access, connectivity planning assumptions, Ash Camp pickup, travel, and satellite devices
+- **Canonical active data** ported: eight trail legs, mapped water access, exact daily terrain loads, Ash Camp pickup, flights, weather/condition snapshots, and satellite devices
 
 ## What's Next
 

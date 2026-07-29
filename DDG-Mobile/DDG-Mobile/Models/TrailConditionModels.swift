@@ -2,10 +2,13 @@ import Foundation
 
 nonisolated struct TrailConditionsSnapshot: Codable, Sendable {
     var fetchedAt: String
+    var planVersion: String?
     var route: String?
+    var routeFacts: TrailConditionRouteFacts?
     var water: TrailWaterReport?
     var wildfire: TrailWildfireReport?
     var airQuality: TrailAirQualityReport?
+    var weather: TrailWeatherReport?
     var agencyAlerts: [TrailAgencyAlert]?
     var bridgeCrossing: TrailBridgeCrossing?
     var campsiteAvailability: TrailManualCondition?
@@ -35,6 +38,14 @@ nonisolated struct TrailConditionsSnapshot: Codable, Sendable {
     }
 }
 
+nonisolated struct TrailConditionRouteFacts: Codable, Sendable {
+    let name: String
+    let officialMiles: Double
+    let gpsMiles: Double
+    let startPctMile: Double
+    let finishPctMile: Double
+}
+
 nonisolated struct TrailWaterReport: Codable, Sendable {
     let updatedText: String?
     let count: Int
@@ -51,6 +62,12 @@ nonisolated struct TrailWaterCondition: Codable, Sendable, Identifiable {
     let latestReport: String
     let report: String?
     let reportDate: String?
+    let observedAt: String?
+    let reportDateSource: String?
+    let metadataDate: String?
+    let dateConflict: Bool?
+    let ageDays: Int?
+    let freshness: String?
     let reportedBy: String?
     let condition: String
 }
@@ -91,6 +108,45 @@ nonisolated struct TrailAirQualityReading: Codable, Sendable, Identifiable {
     let ozoneUnit: String?
     let timestamp: String?
     let source: String?
+}
+
+nonisolated struct TrailWeatherReport: Codable, Sendable {
+    let locations: [TrailWeatherLocation]
+    let note: String?
+}
+
+nonisolated struct TrailWeatherLocation: Codable, Sendable, Identifiable {
+    var id: String { location }
+
+    let location: String
+    let latitude: Double
+    let longitude: Double
+    let current: TrailCurrentWeather
+    let daily: [TrailDailyWeather]
+}
+
+nonisolated struct TrailCurrentWeather: Codable, Sendable {
+    let timestamp: String?
+    let temperatureF: Double?
+    let apparentTemperatureF: Double?
+    let precipitationIn: Double?
+    let weatherCode: Int?
+    let windMph: Double?
+    let gustMph: Double?
+}
+
+nonisolated struct TrailDailyWeather: Codable, Sendable, Identifiable {
+    var id: String { date }
+
+    let date: String
+    let weatherCode: Int?
+    let maxTemperatureF: Double?
+    let minTemperatureF: Double?
+    let precipitationIn: Double?
+    let precipitationProbability: Int?
+    let maxGustMph: Double?
+    let sunrise: String?
+    let sunset: String?
 }
 
 nonisolated struct TrailAgencyAlert: Codable, Sendable, Identifiable {

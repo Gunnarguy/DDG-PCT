@@ -1,5 +1,5 @@
 // Cell coverage and satellite connectivity data for Section O
-// Conservative planning assumptions for the active 54.2-mile Burney Falls → Ash Camp route.
+// Conservative planning assumptions for the active 51.844-mile Burney Falls → Ash Camp route.
 export const connectivityZones = [
   {
     name: 'Burney Falls Trailhead',
@@ -63,7 +63,7 @@ export const connectivityZones = [
   },
   {
     name: 'Ash Camp pickup',
-    mile: 1472.0,
+    mile: 1472.497,
     coordinates: [-122.0606252, 41.1170914],
     cellCoverage: {
       verizon: 'unknown',

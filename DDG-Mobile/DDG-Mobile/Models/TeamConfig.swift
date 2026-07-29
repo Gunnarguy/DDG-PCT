@@ -38,7 +38,7 @@ let dayColors: [DayColor] = [
     DayColor(fill: "rgba(211, 47, 47, 0.15)",    stroke: "#D32F2F"),   // Day 6 — Summit red
     DayColor(fill: "rgba(94, 53, 177, 0.15)",    stroke: "#5E35B1"),   // Day 7 — River violet
     DayColor(fill: "rgba(0, 121, 107, 0.15)",    stroke: "#00796B"),   // Day 8 — Climb green
-    DayColor(fill: "rgba(198, 40, 40, 0.15)",    stroke: "#C62828"),   // Day 9 — Finish red
+    DayColor(fill: "rgba(198, 40, 40, 0.15)",    stroke: "#C62828"),   // Spare/contingency red
 ]
 
 // MARK: - Color from Hex

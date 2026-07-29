@@ -2,8 +2,8 @@
 /**
  * Data Integrity Verification Script
  * 
- * Verifies the active 54.2-mile Burney Falls to Ash Camp plan while ensuring
- * the remaining Garmin geometry is retained only as a future-trip alternative.
+ * Verifies the active 51.844-mile Burney Falls to Ash Camp plan while ensuring
+ * excluded Garmin geometry is retained only as non-active reference data.
  */
 
 const hikeData = require('../pct-hike-viz/src/hike_data.json');
@@ -42,10 +42,10 @@ for(let i=1; i<route.length; i++) {
 
 console.log('📏 DISTANCE:');
 console.log(`   Calculated: ${totalMiles.toFixed(2)} miles`);
-console.log(`   Expected:   54.2 miles (active Ash Camp plan)`);
-const distancePasses = Math.abs(totalMiles - 54.2) <= 0.2;
+console.log(`   Expected:   ~51.664 Garmin miles / 51.844 PCTA miles`);
+const distancePasses = Math.abs(totalMiles - 51.664) <= 0.1;
 console.log(`   ✓ ${distancePasses ? 'PASS' : 'FAIL'}\n`);
-if (!distancePasses) failures.push('active route distance is not 54.2 ± 0.2 miles');
+if (!distancePasses) failures.push('active Garmin route distance is not 51.664 ± 0.1 miles');
 
 // Check elevations
 const startEleFt = route[0][2];
@@ -69,16 +69,21 @@ console.log('🏕️  CAMP POINTS:');
 console.log(`   Count: ${camps.length}`);
 console.log(`   First: ${camps[0].properties.name} (Day 0)`);
 console.log(`   Last:  ${camps[camps.length-1].properties.name} (Day ${camps[camps.length-1].properties.day})\n`);
-if (camps.length !== 10 || camps.at(-1)?.properties?.name !== 'Ash Camp pickup') {
-  failures.push('camp sequence does not contain Day 0 plus nine active legs ending at Ash Camp');
+if (
+  camps.length !== 9 ||
+  camps.at(-1)?.properties?.day !== 8 ||
+  camps.at(-1)?.properties?.name !== 'Ash Camp pickup' ||
+  camps.some((camp) => camp.properties.name.includes('Kosk'))
+) {
+  failures.push('camp sequence is not Day 0 plus eight Kosk-free legs ending at Ash Camp');
 }
 
 // Check water sources
 console.log('💧 WATER SOURCES:');
 console.log(`   Count: ${hikeData.waterSources.length}`);
 console.log(`   Avg spacing: ${(totalMiles / hikeData.waterSources.length).toFixed(1)} mi\n`);
-if (!hikeData.waterSources.every((source) => source.reliability === 'unverified')) {
-  failures.push('one or more water locations claim current reliability');
+if (!hikeData.waterSources.every((source) => source.reportStatus === 'current-condition-check-required')) {
+  failures.push('one or more static water locations does not require a current-condition check');
 }
 
 // Check transport points
@@ -91,10 +96,10 @@ console.log('');
 
 // Data source attribution
 console.log('📚 DATA SOURCE:');
-console.log('   ✓ Garmin full track retained at 82.9 mi as future-trip geometry');
-console.log('   ✓ Active track truncated at official Ash Camp pin');
-console.log('   ✓ Halfmile GPS coordinates for mapped water access');
-console.log('   ✓ Current water flow explicitly marked unverified\n');
+console.log('   ✓ PCTA January 2026 miles control route distance');
+console.log('   ✓ Garmin track cropped at actual Burney Falls access and Ash Camp');
+console.log('   ✓ Excluded pre-start and post-Ash geometry is non-active reference data');
+console.log('   ✓ Static water coordinates remain separate from timestamped flow reports\n');
 
 console.log('═══════════════════════════════════════════════════');
 if (failures.length) {

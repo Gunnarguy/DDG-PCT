@@ -1,6 +1,16 @@
 # DDG · Burney Falls ➜ Ash Camp Mission Control
 
-This Vite + React application is the planning surface for the active **54.2-mile, nine-day** trip from Burney Falls to Ash Camp, August 29–September 6, 2026. The complete 82.9-mile Garmin track remains in the data as a clearly separated future-trip alternative; it is not an active schedule, pickup plan, or mileage target.
+> [!IMPORTANT]
+> [The 2026 trip source of truth](../docs/2026-trip-source-of-truth.md)
+> controls the generated route and itinerary. Current field conditions are
+> timestamped separately in Supabase and retain explicit manual-verification
+> states where no authoritative machine-readable status exists.
+
+This Vite + React application is the planning surface for the active
+**51.844-official-mile, eight-day** trip from Burney Falls to Ash Camp,
+August 29–September 5, 2026, with September 6 reserved as contingency. The
+complete 82.9-mile Garmin source track is excluded from active metrics and
+retained only as future-trip reference geometry.
 
 ## How the NST Guide repos show up here
 
@@ -18,7 +28,7 @@ This Vite + React application is the planning surface for the active **54.2-mile
 
 * **Deck.gl route layer** – multicolor segments show the active GPS-derived daily mileage.
 * **Interactive markers** – tap a campsite to view day-specific notes, elevation, water-verification requirements, and pickup details.
-* **Schedule context** – the nine-day plan is active; the longer route is retained only as a future reference.
+* **Schedule context** – eight hiking days are active; September 6 is contingency and the longer route is future reference only.
 * **Travel, food carry, permits, and extraction** – the active plan ends at the official Ash Camp pin on rough FS Road 38N11.
 
 ## Getting started

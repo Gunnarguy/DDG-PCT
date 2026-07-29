@@ -2,16 +2,24 @@
 
 _Compiled from Original-DDG-PCT narrative notes + supporting resources_
 
+> [!IMPORTANT]
+> The evidence and uncertainty register in
+> [docs/2026-trip-source-of-truth.md](docs/2026-trip-source-of-truth.md)
+> controls this field guide. Water observations, closures, smoke, weather, fire
+> restrictions, campsite legality, and road access must still be refreshed near
+> departure; a recently fetched page is not automatically an all-clear.
+
 ---
 
 ## 1. Executive Snapshot
 
-- **Primary window:** Sat **29 Aug** → Sun **6 Sep 2026**
-- **Mileage:** **54.2 Garmin miles** over nine hiking days, averaging 6.0 mi/day; longest day 8.2 miles.
-- **Finish:** **Ash Camp**, PCT mile 1472 / route mile 54.2, at **41.1171, -122.0606**.
+- **Primary window:** Sat **29 Aug** → Sat **5 Sep 2026**; Sun **6 Sep** is contingency.
+- **Mileage:** **51.844 PCTA 2026 miles** / **51.664 cropped Garmin miles** over eight hiking days, averaging 6.48 official mi/day; longest day 14.529 miles.
+- **Terrain:** approximately **+6,394/−6,881 ft**, with a **6,146 ft** high point.
+- **Finish:** **Ash Camp**, PCTA 2026 mile **1472.497** / route mile **51.844**, at **41.1170914, -122.0606252**.
 - **Future option:** The complete 82.9-mile Garmin track to Castle Crags is retained for a later trip with more days. It is not part of this itinerary.
-- **Team plan:** Dan and Drew land at **SJC at 6:05 PM on Aug 28**; Mikaela drives the group north and handles the planned extraction.
-- **Open flight fact:** Sep 7 SJC departure is **6:40 AM or 10:40 AM**; verify the booking.
+- **Team plan:** Working schedule UA481 lands at **SJC at 10:36 PM PDT Aug 28**. Sleep near SJC, then Mikaela drives the group north around **5:00–5:30 AM Aug 29**.
+- **Return flight:** Working schedule UA1317 leaves SJC at **6:40 AM PDT Sep 7** and arrives ORD at **11:00 AM CDT**. Verify both flights in United Manage Trip.
 - **Support roles:** Mom coordinates parallel women’s adventures; budget sharing limited, so keep plans cash-aware.
 
 ---
@@ -20,26 +28,26 @@ _Compiled from Original-DDG-PCT narrative notes + supporting resources_
 
 | Option | Pros | Trade-offs | Decision Notes |
 | --- | --- | --- | --- |
-| **9-Day Ash Camp Primary** (Aug 29–Sep 6) | 6.0 mi/day average; 8.2 mi maximum; three intentionally short recovery legs | No full zero day; camps and water require current verification | **Confirmed active plan** |
+| **8-Day Ash Camp Primary** (Aug 29–Sep 5) | 6.48 official mi/day average; multiple recovery-distance legs | Day 3 is 14.529 miles; no full zero day; camps and water require current verification | **Active baseline; Sep 6 contingency** |
 | **Future 82.9-mile Castle Crags route** | Preserves the complete Garmin course | Requires roughly 14–16 days, new camps, water work, pickup planning, and PTO | Not scheduled |
 
-> **Action:** Treat the 54.2-mile Ash Camp route as the only active plan. Verify camps, water, closures, FS Road 38N11, and the return booking before treating it as executable.
+> **Action:** Treat the 51.844-mile Ash Camp route as the only active plan. Prove Day 3 with full packs and verify camps, water, crossings, closures, fire restrictions, smoke, weather, FS Road 38N11, and both bookings before treating it as executable.
 
 ## 3. Day-by-Day Trail Plan (Burney Falls → Ash Camp)
 
-The active Garmin geometry is **54.2 miles** with approximately **6,709 ft gain**, **7,286 ft loss**, and a **6,146 ft high point**.
+PCTA mileage controls horizontal distance. The cropped Garmin geometry supplies
+the day-level elevation profile.
 
 | Day | Segment | Dist. | Gain / Loss | Camp and water reality |
 | --- | --- | --- | --- | --- |
-| 1 · Aug 29 | Burney Falls → Rock Creek camps, route mi 8.2 | 8.2 mi | +713' / −690' | Halfmile-documented camps; Rock Creek water |
-| 2 · Aug 30 | Rock Creek → Peavine Creek camps, mi 16.2 | 8.0 mi | +2,027' / −302' | Hardest climbing day; Peavine is seasonal—verify before leaving Rock Creek |
-| 3 · Aug 31 | Peavine Creek → Kosk Spring camp, mi 23.9 | 7.7 mi | +1,058' / −702' | Documented camp; spring approximately 0.2 mi off trail |
-| 4 · Sep 1 | Kosk Spring → Moosehead Creek camp, mi 30.6 | 6.8 mi | +852' / −692' | Documented camp; verify Moosehead flow |
-| 5 · Sep 2 | Moosehead Creek → high saddle camp, mi 34.6 | 4.0 mi | +990' / −166' | Intentional short climb; **dry camp**, carry enough water |
-| 6 · Sep 3 | High saddle → Alder/Star City camp, mi 38.5 | 3.8 mi | +129' / −844' | Crosses the 6,146' route high point; Star City water is not dependable without a live report |
-| 7 · Sep 4 | Alder/Star City → Deer Creek Spring camp, mi 44.9 | 6.5 mi | +937' / −1,191' | Documented spring and campsite |
-| 8 · Sep 5 | Deer Creek Spring → Butcherknife Creek camp, mi 50.4 | 5.5 mi | +1' / −1,780' | Major knee-intensive descent; camp and creek documented |
-| 9 · Sep 6 | Butcherknife Creek → Ash Camp, mi 54.2 | 3.8 mi | +3' / −920' | Short final descent; planned Mikaela pickup |
+| 1 · Aug 29 | Burney Falls → Rock Creek, route mi 5.609 | 5.609 mi | +608' / −514' | Shorter post-drive opening leg; Rock Creek water |
+| 2 · Aug 30 | Rock Creek → Peavine Creek, mi 13.636 | 8.027 mi | +2,006' / −276' | Largest climb; Peavine is seasonal—verify before leaving Rock Creek |
+| 3 · Aug 31 | Peavine Creek → Moosehead Creek, mi 28.165 | 14.529 mi | +1,824' / −1,313' | Hardest overall day and full-pack capability gate; Kosk is not a default camp |
+| 4 · Sep 1 | Moosehead → high saddle near 38N10, mi 32.247 | 4.082 mi | +987' / −146' | Route high point; **dry camp**, carry enough water |
+| 5 · Sep 2 | High saddle → Alder/Star City, mi 36.036 | 3.789 mi | +85' / −818' | Short but descent-heavy; live water metadata is incomplete |
+| 6 · Sep 3 | Alder/Star City → Deer Creek Spring, mi 42.386 | 6.350 mi | +884' / −1,075' | Nearly 2,000 total vertical feet on accumulated fatigue |
+| 7 · Sep 4 | Deer Creek Spring → Butcherknife Creek, mi 47.990 | 5.604 mi | +0' / −1,828' | Highest knee load; poles and controlled pace |
+| 8 · Sep 5 | Butcherknife Creek → Ash Camp, mi 51.844 | 3.854 mi | +0' / −912' | Short descent; planned Mikaela pickup |
 
 > **Camp warning:** “documented” means the location appears in Halfmile trail data—not that space, legality, hazards, or water are guaranteed in September 2026. Recheck FarOut, PCTA/USFS alerts, fire restrictions, and same-day water before each commitment.
 
@@ -48,19 +56,19 @@ The active Garmin geometry is **54.2 miles** with approximately **6,709 ft gain*
 ## 4. Travel & Shuttle Logistics
 
 - **Inbound:**
-  - Dan and Drew land at **SJC Friday, Aug 28 at 6:05 PM**.
-  - Mikaela collects the group in the Kia Sportage and drives north.
-  - Confirm legal late-arrival campground access or reserve a sleep fallback; do not begin hiking sleep-deprived.
+  - UA481 is scheduled to land at **SJC Friday, Aug 28 at 10:36 PM PDT**.
+  - Mikaela collects the group in the Kia Sportage; the group sleeps near SJC.
+  - Leave around **5:00–5:30 AM Aug 29**. Do not substitute an exhausted overnight drive.
 - **Trailhead staging:** Confirm overnight parking rules with Burney Falls SP.
 - **Outbound / Extraction: Ash Camp**
 
 - **Do not exit at route mile 52.0.** That GPS point is still on the PCT with no verified vehicle access.
-- Continue **2.2 GPS miles** to **Ash Camp**, route mile **54.2** / PCT mile **1472**, at **41.1171, -122.0606**.
-- The nine-day itinerary reaches Ash Camp on **Sunday, September 6**.
-- Mikaela should use the shared Ash Camp pin and a two-hour rendezvous window. Day 9 is 3.8 miles with roughly 920 feet of descent; the provisional window after a 6:30–7:00 AM start is **10:00 AM–noon**.
+- Finish at **Ash Camp**, route mile **51.844** / PCTA 2026 mile **1472.497**, at **41.1170914, -122.0606252**.
+- The primary itinerary reaches Ash Camp on **Saturday, September 5**; **September 6 is contingency**.
+- Mikaela uses the shared exact pin. The provisional Day 8 window is **10:00 AM–noon**, finalized through the agreed inReach check-ins.
 - FS Road 38N11 is unpaved, can be rough, and PCTA recommends high clearance. Call the **McCloud Ranger Station (530-964-2184)** during the week before pickup and again 24–48 hours before committing the Kia Sportage.
 - If the road is unsuitable, pre-book **Mt. Shasta Taxi (530-859-3266)** only after it confirms an Ash Camp pickup in an appropriate vehicle. Do not rely on an unconfirmed trail angel.
-- Satellite messages: send the next-day window; send `STARTING FOR ASH CAMP`; at route mile 52 send `2.2 MILES TO ASH CAMP`; on arrival send `ARRIVED ASH CAMP`. Mikaela waits at the agreed pin and does not search forest roads alone.
+- Satellite messages: send the next-day window; send `STARTING DAY 8`; at Butcherknife/PCTA 1468.643 send the ETA; on arrival send `ARRIVED ASH CAMP`. Mikaela waits at the agreed pin and does not search forest roads alone.
 - **Parallel trips:** Coordinate with Mom for the women’s adventure (financially limited support from “manboys”).
 
 ## 5. Food Carry & Post-Hike Services
@@ -68,13 +76,13 @@ The active Garmin geometry is **54.2 miles** with approximately **6,709 ft gain*
 - **No on-route resupply:** carry all breakfasts, trail food, dinners, and emergency food from Burney Falls.
 - **Ash Camp has no store, lodging, charging, or dependable public transit.**
 - **Post-hike:** Mikaela drives toward McCloud/Mount Shasta for food, fuel, showers/lodging if needed, then Campbell.
-- **Weight implication:** calculate consumables by person and day; the 54.2-mile route is easier on legs but still starts with nine days of food.
+- **Weight implication:** calculate consumables by person and day; start with eight hiking days plus one emergency food day.
 
 ## 6. Permits & Compliance Checklist
 
 | Permit | Coverage | Where | Cost | Notes |
 | --- | --- | --- | --- | --- |
-| Local overnight rules | 54.2-mile PCT route from Burney Falls to Ash Camp | Confirm with Shasta-Trinity ranger district using the exact GPX and camps | Verify | Not eligible for the 500-mile PCTA permit; do not assume the original self-issue claim |
+| Local overnight rules | 51.844-mile PCT route from Burney Falls to Ash Camp | Confirm with Shasta-Trinity ranger district using the exact GPX and camps | Verify | Not eligible for the 500-mile PCTA permit; do not assume the original self-issue claim |
 | California Campfire Permit | All stove/open flame use state-wide | [permit.pcta.org](https://permit.pcta.org) or ReadyForWildfire site | Free (video + quiz) | Carry paper + digital copies; required for canister stoves |
 
 > Recheck [PCTA permit portal](https://www.pcta.org/discover-the-trail/permits/) and [Shasta-Trinity NF](http://www.fs.usda.gov/r05/shasta-trinity/permits) for updates before departure.
@@ -102,7 +110,7 @@ The active Garmin geometry is **54.2 miles** with approximately **6,709 ft gain*
 
 - **Wildfire smoke/closures:** Monitor CalFire, NIFC (from NST Guide data repo). Prepare reroutes or shuttle skips.
 - **Weather:** Use NWS forecasts + Weather-Monitor gadgets; aim for early starts to avoid afternoon storms.
-- **Health:** There is no full zero day, but Days 5, 6, and 9 are deliberately short. Days 1–3 remain the conditioning test.
+- **Health:** There is no full zero day. Day 3 is the decisive conditioning test; Days 4, 5, and 8 reduce mileage but still carry meaningful climb/descent loads.
 - **Transportation backstops:** Ash Camp road access must be verified; Mt. Shasta Taxi is useful only if it explicitly accepts FS Road 38N11.
 - **Comms plan:** Daily check-in via InReach; share itinerary & permit copies with family.
 
@@ -131,10 +139,10 @@ The active Garmin geometry is **54.2 miles** with approximately **6,709 ft gain*
 
 ## 10. Next Steps Checklist
 
-1. ✅ Lock the 54.2-mile Burney Falls → Ash Camp route.
+1. ✅ Lock and synchronize the 51.844-mile Burney Falls → Ash Camp route.
 2. 🟩 Contact Burney Falls and McCloud Ranger Station for staging, camp rules, and FS Road 38N11.
 3. 🟩 Confirm local overnight rules, then print any required local and campfire permits.
 4. 🟩 Confirm Mikaela’s Sportage access or book a suitable Ash Camp driver approximately two weeks pre-trip.
 5. 🟩 Upload latest itinerary + contact tree into shared drive & InReach.
 
-_“Nursing blisters with the salve of memories” starts with preparation—this guide keeps the actual nine-day Ash Camp trip honest and executable._
+_“Nursing blisters with the salve of memories” starts with preparation—this guide keeps the actual eight-day Ash Camp trip honest and executable._
