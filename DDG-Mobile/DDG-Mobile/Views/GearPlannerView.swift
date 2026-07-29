@@ -33,6 +33,26 @@ struct GearPlannerView: View {
 
     private let catalog = GearCatalog.bundled
 
+    private var visibleItems: [CustomItem] {
+        let canonicalIds = Set(catalog.items.map(\.id))
+        let canonicalNames = Set(catalog.items.map { normalizedName($0.name) })
+        var seenIds = Set<String>()
+        var seenNames = Set<String>()
+
+        return customItems
+            .sorted {
+                (canonicalIds.contains($0.stableId) ? 0 : 1, $0.createdAt) <
+                    (canonicalIds.contains($1.stableId) ? 0 : 1, $1.createdAt)
+            }
+            .filter { item in
+                let name = normalizedName(item.name)
+                if !canonicalIds.contains(item.stableId), canonicalNames.contains(name) {
+                    return false
+                }
+                return seenIds.insert(item.stableId).inserted && seenNames.insert(name).inserted
+            }
+    }
+
     private var activeLoadout: GearLoadout? {
         loadouts.first { $0.hikerId == selectedHiker }
     }
@@ -42,7 +62,7 @@ struct GearPlannerView: View {
     }
 
     private var equippedItems: [CustomItem] {
-        customItems.filter { equippedIds.contains($0.stableId) }
+        visibleItems.filter { equippedIds.contains($0.stableId) }
     }
 
     private var categoryNames: [String] {
@@ -50,7 +70,7 @@ struct GearPlannerView: View {
     }
 
     private var filteredItems: [CustomItem] {
-        customItems
+        visibleItems
             .filter { item in
                 switch listMode {
                 case .pack: equippedIds.contains(item.stableId)
@@ -88,11 +108,17 @@ struct GearPlannerView: View {
             ScrollView {
                 LazyVStack(spacing: 16) {
                     hikerPicker
+                    TeamGearSetupPanel(
+                        selectedHiker: selectedHiker,
+                        loadouts: loadouts,
+                        onAddPersonalEssentials: applyPersonalEssentials,
+                        onApplyShelterPlan: applyShelterPlan
+                    )
                     GearWeightDashboard(
                         selectedHiker: selectedHiker,
                         equippedItems: equippedItems,
                         loadouts: loadouts,
-                        allItems: customItems,
+                        allItems: visibleItems,
                         goalPounds: catalog.baseWeightGoalPounds
                     )
 
@@ -132,7 +158,7 @@ struct GearPlannerView: View {
             }
             .background(Color(uiColor: .systemGroupedBackground))
             .navigationTitle("Gear Loadouts")
-            .searchable(text: $searchText, prompt: "Search \(customItems.count) gear items")
+            .searchable(text: $searchText, prompt: "Search \(visibleItems.count) gear items")
             .toolbar { toolbarContent }
             .onAppear(perform: prepareCatalog)
             .sheet(isPresented: $showingAddItem) {
@@ -185,7 +211,7 @@ struct GearPlannerView: View {
             HStack {
                 Text("\(filteredItems.count) shown")
                 Spacer()
-                Text("\(equippedItems.count) equipped · \(customItems.count - equippedItems.count) missing")
+                Text("\(equippedItems.count) equipped · \(visibleItems.count - equippedItems.count) missing")
             }
             .font(.caption)
             .foregroundStyle(.secondary)
@@ -287,6 +313,44 @@ struct GearPlannerView: View {
         listMode = .pack
     }
 
+    private func applyPersonalEssentials() {
+        let personalIds: Set<String> = [
+            "backpack", "quilt", "pad", "phone", "power-bank", "cables", "headlamp",
+            "rain-jacket", "sun-hoodie", "base-layer", "puffy", "hiking-pants",
+            "trail-shoes", "underwear", "socks", "hat", "gloves", "smartwater",
+            "spork", "toothbrush", "personal-medications", "id-emergency-card"
+        ]
+        for member in DDGTeam.roster {
+            let current = Set(loadouts.first { $0.hikerId == member.id }?.itemIds ?? [])
+            setLoadoutItems(Array(current.union(personalIds)), for: member.id)
+        }
+    }
+
+    private func applyShelterPlan(_ plan: ShelterPlan) {
+        let shelterIds: Set<String> = ["tent", "shared-tent-3p", "shared-tent-2p-a"]
+        var assignments = Dictionary(
+            uniqueKeysWithValues: DDGTeam.roster.map { member in
+                (member.id, Set(loadouts.first { $0.hikerId == member.id }?.itemIds ?? []).subtracting(shelterIds))
+            }
+        )
+
+        switch plan {
+        case .solo:
+            for member in DDGTeam.roster { assignments[member.id]?.insert("tent") }
+        case .shared:
+            assignments[selectedHiker]?.insert("shared-tent-3p")
+        case .twoPlusOne:
+            assignments[selectedHiker]?.insert("shared-tent-2p-a")
+            if let other = DDGTeam.roster.first(where: { $0.id != selectedHiker }) {
+                assignments[other.id]?.insert("tent")
+            }
+        }
+
+        for member in DDGTeam.roster {
+            setLoadoutItems(Array(assignments[member.id] ?? []), for: member.id)
+        }
+    }
+
     private func clearActiveLoadout() {
         setLoadoutItems([], for: selectedHiker)
     }
@@ -338,6 +402,102 @@ struct GearPlannerView: View {
         } catch {
             gearBriefing = "Could not analyze gear: \(error.localizedDescription)"
         }
+    }
+
+    private func normalizedName(_ name: String) -> String {
+        name
+            .folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+    }
+}
+
+private enum ShelterPlan: String, CaseIterable, Identifiable {
+    case solo = "3 Solo"
+    case shared = "1 Shared"
+    case twoPlusOne = "2 + 1"
+
+    var id: Self { self }
+}
+
+private struct TeamGearSetupPanel: View {
+    let selectedHiker: String
+    let loadouts: [GearLoadout]
+    let onAddPersonalEssentials: () -> Void
+    let onApplyShelterPlan: (ShelterPlan) -> Void
+
+    private var selectedName: String {
+        DDGTeam.roster.first { $0.id == selectedHiker }?.name ?? selectedHiker.capitalized
+    }
+
+    private var hikersWithBackpacks: Int {
+        loadouts.filter { $0.itemIds.contains("backpack") }.count
+    }
+
+    private var hikersWithPhones: Int {
+        loadouts.filter { $0.itemIds.contains("phone") }.count
+    }
+
+    private var activeShelterPlan: ShelterPlan? {
+        let allIds = loadouts.flatMap(\.itemIds)
+        if allIds.contains("shared-tent-3p") { return .shared }
+        if allIds.contains("shared-tent-2p-a"), allIds.contains("tent") { return .twoPlusOne }
+        if loadouts.filter({ $0.itemIds.contains("tent") }).count == 3 { return .solo }
+        return nil
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Label("Team Setup", systemImage: "person.3.fill")
+                .font(.headline)
+
+            Text("Start with the obvious personal gear, then choose how the three of you will split shelter.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            Button(action: onAddPersonalEssentials) {
+                Label("Give all 3 their personal essentials", systemImage: "checklist")
+                    .font(.subheadline.bold())
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+
+            HStack {
+                setupStatus("Backpacks", count: hikersWithBackpacks)
+                setupStatus("Phones", count: hikersWithPhones)
+            }
+
+            Divider()
+
+            Text("Shelter plan")
+                .font(.subheadline.bold())
+            Text("For shared options, \(selectedName) is assigned the shared tent as its primary carrier. You can change carriers on the item afterward.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            HStack {
+                ForEach(ShelterPlan.allCases) { plan in
+                    Button(plan.rawValue) { onApplyShelterPlan(plan) }
+                        .buttonStyle(.borderedProminent)
+                        .tint(activeShelterPlan == plan ? .blue : .gray)
+                        .frame(maxWidth: .infinity)
+                }
+            }
+
+            Text("3 Solo = one tent each · 1 Shared = one 3P tent · 2 + 1 = one 2P tent plus one solo tent")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18))
+    }
+
+    private func setupStatus(_ label: String, count: Int) -> some View {
+        Label("\(label): \(count)/3", systemImage: count == 3 ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
+            .font(.caption.bold())
+            .foregroundStyle(count == 3 ? .green : .orange)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

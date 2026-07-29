@@ -23,6 +23,15 @@ import {
 } from "../lib/supabase";
 
 const AuthContext = createContext(null);
+const PROFILE_TIMEOUT_MS = 8000;
+
+const withTimeout = (promise, timeoutMs, message) =>
+  Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      window.setTimeout(() => reject(new Error(message)), timeoutMs);
+    }),
+  ]);
 
 /**
  * Hook to access auth context
@@ -65,7 +74,11 @@ export function AuthProvider({ children }) {
     setProfileError(null);
 
     try {
-      const teamProfile = await getTeamProfile(authUser.id);
+      const teamProfile = await withTimeout(
+        getTeamProfile(authUser.id),
+        PROFILE_TIMEOUT_MS,
+        "Team access check timed out. Your sign-in is still saved.",
+      );
       setProfile(teamProfile);
       setProfileCheckedUserId(authUser.id);
       return teamProfile;

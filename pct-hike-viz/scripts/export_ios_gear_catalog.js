@@ -93,7 +93,7 @@ const referencedSourceIds = new Set(
 );
 
 const catalog = {
-  version: 3,
+  version: packPlanner.version ?? 1,
   generatedFrom: "pct-hike-viz/src/data/planContent.js#packPlanner",
   packName: packPlanner.packName,
   capacityLiters: packPlanner.capacityLiters,

@@ -360,6 +360,7 @@ export const gearBlueprint = {
 // trip reports, and official guidance. This powers the GearPlanner component.
 // ═══════════════════════════════════════════════════════════════════════════════
 export const packPlanner = {
+  version: 4,
   packName: "DDG Mission Loadout",
   capacityLiters: 60,
   baseWeightGoalLbs: 20,
@@ -376,6 +377,26 @@ export const packPlanner = {
       focus: "Storm-ready kit for late-summer NorCal weather volatility.",
       sourceIds: ["doc-day-plan", "wv-2017-log", "adventurehacks-guide"],
       items: [
+        {
+          id: "shared-tent-3p",
+          name: "Shared 3-person backpacking tent",
+          detail:
+            "One shelter for all three hikers. Assign it to exactly one carrier, then split poles/stakes with another hiker if needed.",
+          weight: "4.0 lb",
+          specs: ["Sleeps 3", "Shared option", "Assign one primary carrier"],
+          defaultPacked: false,
+          sourceIds: ["doc-day-plan", "reddit-gear-recs"],
+        },
+        {
+          id: "shared-tent-2p-a",
+          name: "Shared 2-person tent (pair)",
+          detail:
+            "The two-person shelter when using a 2+1 setup. Assign it to one of the two occupants.",
+          weight: "2.5 lb",
+          specs: ["Sleeps 2", "2+1 shelter option"],
+          defaultPacked: false,
+          sourceIds: ["doc-day-plan", "reddit-gear-recs"],
+        },
         {
           id: "tent",
           name: "1-person backpacking tent",
@@ -696,6 +717,39 @@ export const packPlanner = {
       sourceIds: ["adventurehacks-guide", "reddit-gear-recs", "wv-2017-log"],
       items: [
         {
+          id: "backpack",
+          name: "Fitted backpack (50–65L)",
+          detail:
+            "Every hiker needs their own properly fitted pack. Confirm torso length, hip-belt fit, and comfort with the expected loaded weight.",
+          weight: "3.0 lb",
+          specs: ["One per person", "Fitted before trip", "Practice fully loaded"],
+          defaultPacked: true,
+          sourceIds: ["doc-day-plan", "reddit-gear-recs"],
+        },
+        {
+          id: "trail-shoes",
+          name: "Broken-in trail shoes",
+          detail:
+            "Every hiker needs their own proven footwear. Do not begin this trip in new or untested shoes.",
+          weightBucket: "worn",
+          weight: "1.5 lb",
+          specs: ["One pair per person", "Broken in", "Room for foot swelling"],
+          defaultPacked: true,
+          sourceIds: ["reddit-gear-recs", "halfway-anywhere"],
+        },
+        {
+          id: "underwear",
+          name: "Hiking underwear",
+          detail:
+            "Quick-drying personal underwear; carry enough to rotate and wash while keeping one dry pair available.",
+          weightBucket: "worn",
+          qty: 2,
+          weight: "0.3 lb",
+          specs: ["Two per person", "Quick drying"],
+          defaultPacked: true,
+          sourceIds: ["reddit-gear-recs"],
+        },
+        {
           id: "rain-jacket",
           name: "Lightweight rain jacket",
           detail:
@@ -832,6 +886,26 @@ export const packPlanner = {
         "First aid, blister management, and backcountry hygiene per multiple trip reports.",
       sourceIds: ["doc-day-plan", "wv-2017-log", "adventurehacks-guide"],
       items: [
+        {
+          id: "personal-medications",
+          name: "Personal prescriptions and medications",
+          detail:
+            "Each hiker carries their own required medicine plus a labeled trip buffer. The group first-aid kit is not a substitute.",
+          weight: "0.2 lb",
+          specs: ["One set per person", "Original labels", "Trip buffer"],
+          defaultPacked: true,
+          sourceIds: ["doc-day-plan"],
+        },
+        {
+          id: "id-emergency-card",
+          name: "Photo ID + emergency information card",
+          detail:
+            "Each hiker carries identification, allergies, medications, insurance details, and emergency contacts in a waterproof sleeve.",
+          weight: "0.1 lb",
+          specs: ["One per person", "Waterproof", "Emergency contacts"],
+          defaultPacked: true,
+          sourceIds: ["doc-day-plan"],
+        },
         {
           id: "first-aid",
           name: "First aid kit",
