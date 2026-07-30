@@ -4166,24 +4166,24 @@ body.is-resizing-profile {
 /* Camp marker animations */
 .camp-marker-group {
   cursor: pointer;
-  transition: transform 0.2s ease;
   outline: none;
-}
-
-.camp-marker-group.is-hovered {
-  transform: scale(1.1);
 }
 
 .camp-marker-circle {
   transition: all 0.2s ease;
 }
 
+.camp-marker-group.is-hovered .camp-marker-circle,
 .camp-marker-group:hover .camp-marker-circle {
-  transform: scale(1.2);
+  stroke-width: 3px;
 }
 
 .camp-marker-group:focus .camp-marker-circle {
   stroke-width: 3px;
+}
+
+.camp-tooltip {
+  pointer-events: none;
 }
 
 .profile-node-legend {
