@@ -6,6 +6,7 @@ import { tripFacts } from '../data/tripFacts';
 
 const MILES_TO_METERS = 1609.34;
 const METERS_TO_FEET = 3.28084;
+const MAX_PROFILE_MARKER_DISTANCE_METERS = MILES_TO_METERS;
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // ALTITUDE PHYSIOLOGY ZONES
@@ -490,7 +491,7 @@ const ElevationProfile = ({
     }).filter(Boolean);
   }, [campPoints, getElevationAtMile, profileData.length, totalDistance, xScale, yScale]);
 
-  const getMileFromCoordinates = useCallback((coord) => {
+  const getTrailProjection = useCallback((coord) => {
     if (!profileData.length || !coord) return null;
     let closestPoint = profileData[0];
     let minDiff = Infinity;
@@ -502,7 +503,7 @@ const ElevationProfile = ({
         closestPoint = pt;
       }
     }
-    return closestPoint.dist;
+    return { mile: closestPoint.dist, distanceMeters: minDiff };
   }, [profileData]);
 
   const getTransportIcon = (type) => {
@@ -522,7 +523,14 @@ const ElevationProfile = ({
       points.forEach((pt, idx) => {
         let mile = pt.mile;
         if (typeof mile !== 'number' && pt.coordinates) {
-          mile = getMileFromCoordinates(pt.coordinates);
+          const projection = getTrailProjection(pt.coordinates);
+          if (
+            !projection ||
+            projection.distanceMeters > MAX_PROFILE_MARKER_DISTANCE_METERS
+          ) {
+            return;
+          }
+          mile = projection.mile;
         }
         if (typeof mile !== 'number') return;
         
@@ -554,7 +562,7 @@ const ElevationProfile = ({
     processPoints(connectivityZones, () => 'Connectivity', () => '📡');
 
     return markers;
-  }, [townPins, transportPoints, waterSources, connectivityZones, profileData.length, xScale, yScale, getMileFromCoordinates, getElevationAtMile, totalDistance]);
+  }, [townPins, transportPoints, waterSources, connectivityZones, profileData.length, xScale, yScale, getTrailProjection, getElevationAtMile, totalDistance]);
 
   const allMarkers = useMemo(() => [...campMarkers, ...extraMarkers], [campMarkers, extraMarkers]);
 

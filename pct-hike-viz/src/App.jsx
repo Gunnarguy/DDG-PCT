@@ -572,18 +572,11 @@ function App() {
         };
       });
 
-      const transitFeatures = [...hikeData.features]
-        .filter((f) => f.properties.day === -1)
-        .map(normalizeFeaturePoint)
-        .filter(Boolean);
-      return [...transitFeatures, ...expressCamps];
+      return expressCamps;
     }
 
     return [...hikeData.features]
-      .filter(
-        (feature) =>
-          feature.properties.day >= 0 || feature.properties.day === -1,
-      )
+      .filter((feature) => feature.properties.day >= 0)
       .map(normalizeFeaturePoint)
       .filter(Boolean)
       .sort((a, b) => a.properties.day - b.properties.day);
@@ -670,10 +663,26 @@ function App() {
     [hikeData],
   );
   const transportPoints = useMemo(
-    () =>
-      (hikeData?.transport ?? [])
+    () => {
+      const legacyLogistics = (hikeData?.features ?? [])
+        .filter((feature) => feature.properties?.day === -1)
+        .map(normalizeFeaturePoint)
+        .filter(Boolean)
+        .map((feature) => ({
+          name: feature.properties?.name,
+          type: feature.properties?.type,
+          notes: feature.properties?.notes,
+          coordinates: feature.geometry.coordinates,
+        }));
+      const dedicatedTransport = (hikeData?.transport ?? [])
         .map(normalizeCoordinatePoint)
-        .filter(Boolean),
+        .filter(Boolean);
+      const uniqueByName = new Map();
+      [...legacyLogistics, ...dedicatedTransport].forEach((point) => {
+        uniqueByName.set(point.name, point);
+      });
+      return [...uniqueByName.values()];
+    },
     [hikeData],
   );
   const waterSources = useMemo(() => {
