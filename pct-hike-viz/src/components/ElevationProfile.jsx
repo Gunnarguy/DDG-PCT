@@ -504,8 +504,8 @@ const ElevationProfile = ({
 
     const processPoints = (points, typeFn, iconFn, colorFn, statusFn) => {
       points.forEach((pt, idx) => {
-        let mile = pt.mile;
-        if (typeof mile !== 'number' && pt.coordinates) {
+        let mile = Number.isFinite(pt.routeMile) ? pt.routeMile : null;
+        if (!Number.isFinite(mile) && pt.coordinates) {
           const projection = getTrailProjection(pt.coordinates);
           if (
             !projection ||
@@ -515,7 +515,12 @@ const ElevationProfile = ({
           }
           mile = projection.mile;
         }
-        if (typeof mile !== 'number') return;
+        if (!Number.isFinite(mile) && Number.isFinite(pt.mile)) {
+          // Some source records use absolute PCT miles rather than 0-based
+          // route miles. Convert them instead of collapsing them at the finish.
+          mile = pt.mile > totalDistance ? pt.mile - 1420.653 : pt.mile;
+        }
+        if (!Number.isFinite(mile) || mile < -0.1 || mile > totalDistance + 0.1) return;
         
         const clampedMile = Math.max(0, Math.min(mile, totalDistance));
         const eleAtPt = getElevationAtMile(clampedMile);
@@ -580,7 +585,25 @@ const ElevationProfile = ({
     return markers;
   }, [waterSources, connectivityZones, profileData.length, xScale, yScale, getTrailProjection, getElevationAtMile, totalDistance]);
 
-  const allMarkers = useMemo(() => [...campMarkers, ...extraMarkers], [campMarkers, extraMarkers]);
+  const allMarkers = useMemo(() => {
+    const sorted = [...campMarkers, ...extraMarkers].sort((a, b) => {
+      if (a.mile !== b.mile) return a.mile - b.mile;
+      return a.type === 'Camp' ? -1 : 1;
+    });
+    const activeMarkers = [];
+
+    return sorted.map((marker) => {
+      while (activeMarkers.length && marker.cx - activeMarkers[0].cx > 24) {
+        activeMarkers.shift();
+      }
+      const occupiedLanes = new Set(activeMarkers.map((item) => item.lane));
+      let lane = 0;
+      while (occupiedLanes.has(lane)) lane += 1;
+      const nodeCy = Math.max(margin.top + 12, marker.cy - lane * 22);
+      activeMarkers.push({ cx: marker.cx, lane });
+      return { ...marker, nodeCy, lane };
+    });
+  }, [campMarkers, extraMarkers, margin.top]);
 
   // Y-axis tick marks
   const yTicks = useMemo(() => {
@@ -1122,18 +1145,28 @@ const ElevationProfile = ({
               >
                 <line
                   x1={marker.cx}
-                  y1={marker.cy}
+                  y1={marker.nodeCy}
                   x2={marker.cx}
-                  y2={height - margin.bottom}
+                  y2={marker.cy}
                   stroke={marker.color}
                   strokeWidth="1.25"
-                  strokeDasharray="3,4"
-                  opacity="0.38"
+                  strokeDasharray={marker.lane ? "3,3" : undefined}
+                  opacity={marker.lane ? 0.7 : 0}
                 />
+                {marker.lane > 0 && (
+                  <circle
+                    cx={marker.cx}
+                    cy={marker.cy}
+                    r="2.5"
+                    fill={marker.color}
+                    stroke="#fff"
+                    strokeWidth="1"
+                  />
+                )}
                 
                 <circle 
                   cx={marker.cx} 
-                  cy={marker.cy} 
+                  cy={marker.nodeCy}
                   r={hoveredCamp === marker.id || selectedMarker?.id === marker.id ? 12 : 9}
                   fill={marker.color}
                   stroke="#fff"
@@ -1145,7 +1178,7 @@ const ElevationProfile = ({
                 
                 <text
                   x={marker.cx}
-                  y={marker.cy}
+                  y={marker.nodeCy}
                   textAnchor="middle"
                   dominantBaseline="central"
                   fontSize="10"
@@ -1160,7 +1193,7 @@ const ElevationProfile = ({
                     margin.left,
                     Math.min(marker.cx - tooltipWidth / 2, width - margin.right - tooltipWidth),
                   );
-                  const tooltipY = Math.max(24, marker.cy - 72);
+                  const tooltipY = Math.max(24, marker.nodeCy - 72);
                   return (
                     <g className="camp-tooltip">
                       <rect
