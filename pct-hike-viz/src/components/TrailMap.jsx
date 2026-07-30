@@ -1,5 +1,3 @@
-import { ScatterplotLayer } from "@deck.gl/layers";
-import { MapboxOverlay } from "@deck.gl/mapbox";
 import PropTypes from "prop-types";
 import { useEffect, useState, useMemo, useRef } from "react";
 import Map, {
@@ -10,18 +8,8 @@ import Map, {
   ScaleControl,
   Source,
   Layer,
-  useControl,
 } from "react-map-gl/maplibre";
 import { normalizeCoordinatePair } from "../utils/coordinates";
-
-function DeckOverlay({ layers }) {
-  const overlay = useControl(() => new MapboxOverlay({ interleaved: true }));
-  // Only set layers if we have valid data to prevent render errors
-  if (layers?.length) {
-    overlay.setProps({ layers });
-  }
-  return null;
-}
 
 const getTransportIcon = (type) => {
   switch (type) {
@@ -115,43 +103,38 @@ function TrailMap({
     [driveSegments],
   );
 
-  const deckLayers = useMemo(() => {
-    const layers = [];
+  const connectivityGeoJSON = useMemo(() => {
+    const radiusForCoverage = (coverage) => {
+      switch (coverage?.toLowerCase()) {
+        case "excellent": return 8;
+        case "good": return 4;
+        case "fair": return 2;
+        case "spotty": return 0.8;
+        default: return 0;
+      }
+    };
 
-    // Add cell coverage circles
-    if (connectivityZones?.length) {
-      layers.push(
-        new ScatterplotLayer({
-          id: "cell-coverage",
-          data: connectivityZones,
-          getPosition: (d) => [d.coordinates[0], d.coordinates[1]],
-          getRadius: (d) => {
-            const coverages = [d.cellCoverage.verizon, d.cellCoverage.att, d.cellCoverage.tmobile];
-            let maxRadiusMiles = 0;
-            coverages.forEach((c) => {
-              let r = 0;
-              switch (c?.toLowerCase()) {
-                case "excellent": r = 8.0; break;
-                case "good":      r = 4.0; break;
-                case "fair":      r = 2.0; break;
-                case "spotty":    r = 0.8; break;
-                default:          r = 0;
-              }
-              if (r > maxRadiusMiles) maxRadiusMiles = r;
-            });
-            return maxRadiusMiles * 1609.34;
-          },
-          radiusUnits: "meters",
-          getFillColor: [147, 51, 234, 35], // purple opacity
-          getLineColor: [147, 51, 234, 100],
-          lineWidthUnits: "pixels",
-          getLineWidth: 1.5,
-          pickable: false,
+    return {
+      type: "FeatureCollection",
+      features: (connectivityZones ?? [])
+        .map((zone) => {
+          const coordinates = normalizeCoordinatePair(zone.coordinates);
+          if (!coordinates) return null;
+          const coverage = zone.cellCoverage ?? {};
+          const radiusMiles = Math.max(
+            radiusForCoverage(coverage.verizon),
+            radiusForCoverage(coverage.att),
+            radiusForCoverage(coverage.tmobile),
+          );
+          if (radiusMiles <= 0) return null;
+          return {
+            type: "Feature",
+            properties: { radiusMiles },
+            geometry: { type: "Point", coordinates },
+          };
         })
-      );
-    }
-
-    return layers;
+        .filter(Boolean),
+    };
   }, [connectivityZones]);
 
   const plannedMiles = basePlanMiles ?? totalMiles ?? 0;
@@ -296,7 +279,34 @@ function TrailMap({
           </Source>
         )}
 
-        <DeckOverlay layers={deckLayers} />
+        {connectivityGeoJSON.features.length > 0 && (
+          <Source
+            id="connectivity-coverage-source"
+            type="geojson"
+            data={connectivityGeoJSON}
+          >
+            <Layer
+              id="connectivity-coverage-circles"
+              type="circle"
+              paint={{
+                "circle-radius": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  6,
+                  ["*", ["get", "radiusMiles"], 1.5],
+                  12,
+                  ["*", ["get", "radiusMiles"], 25],
+                ],
+                "circle-color": "#9333ea",
+                "circle-opacity": 0.14,
+                "circle-stroke-color": "#9333ea",
+                "circle-stroke-opacity": 0.4,
+                "circle-stroke-width": 1.5,
+              }}
+            />
+          </Source>
+        )}
         <NavigationControl position="top-left" />
         <ScaleControl maxWidth={120} unit="imperial" position="bottom-left" />
         <FullscreenControl position="top-left" />

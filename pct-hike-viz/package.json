@@ -17,10 +17,6 @@
     "supabase:seed-emails": "node scripts/seed_allowed_emails.js"
   },
   "dependencies": {
-    "@deck.gl/core": "^9.2.2",
-    "@deck.gl/layers": "^9.2.2",
-    "@deck.gl/mapbox": "^9.2.2",
-    "@deck.gl/react": "^9.2.2",
     "@supabase/supabase-js": "^2.86.2",
     "d3-scale": "^4.0.2",
     "maplibre-gl": "^5.13.0",
