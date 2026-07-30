@@ -40,6 +40,7 @@ const DATASET_VERSION =
 const HIKEDATA_CACHE_KEY = "pct-hike-viz::hike-data";
 const HIKEDATA_CACHE_META_KEY = `${HIKEDATA_CACHE_KEY}::meta`;
 const USER_STORAGE_KEY = "pct-hike-viz::current-user";
+const PROFILE_HEIGHT_STORAGE_KEY = "pct-hike-viz::profile-height-vh";
 const FALLBACK_TIMEOUT_MS = 6500;
 
 // Build URL to fetch hike data from public/data at runtime
@@ -342,6 +343,11 @@ function App() {
   const [profileHoverPoint, setProfileHoverPoint] = useState(null);
   const [sidebarWidth, setSidebarWidth] = useState(28); // percent of app width
   const [isDragging, setIsDragging] = useState(false);
+  const [profileHeight, setProfileHeight] = useState(() => {
+    const storedHeight = Number(getLocalStorage()?.getItem(PROFILE_HEIGHT_STORAGE_KEY));
+    return Number.isFinite(storedHeight) ? Math.max(26, Math.min(65, storedHeight)) : 42;
+  });
+  const [isProfileDragging, setIsProfileDragging] = useState(false);
   const [computedStats, setComputedStats] = useState(null);
 
   // Fetch hike data on mount (from cache or network)
@@ -424,6 +430,50 @@ function App() {
       document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDragging]);
+
+  const handleProfileResizeStart = useCallback((event) => {
+    event.preventDefault();
+    setIsProfileDragging(true);
+  }, []);
+
+  const handleProfileResizeKeyDown = useCallback((event) => {
+    if (!["ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    if (event.key === "Home") {
+      setProfileHeight(26);
+    } else if (event.key === "End") {
+      setProfileHeight(65);
+    } else {
+      setProfileHeight((height) =>
+        Math.max(26, Math.min(65, height + (event.key === "ArrowUp" ? 2 : -2))),
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isProfileDragging) return;
+
+    const handlePointerMove = (event) => {
+      const requestedHeight =
+        ((window.innerHeight - event.clientY) / window.innerHeight) * 100;
+      setProfileHeight(Math.max(26, Math.min(65, requestedHeight)));
+    };
+    const handlePointerUp = () => setIsProfileDragging(false);
+
+    document.body.classList.add("is-resizing-profile");
+    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("pointerup", handlePointerUp);
+
+    return () => {
+      document.body.classList.remove("is-resizing-profile");
+      document.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("pointerup", handlePointerUp);
+    };
+  }, [isProfileDragging]);
+
+  useEffect(() => {
+    getLocalStorage()?.setItem(PROFILE_HEIGHT_STORAGE_KEY, String(profileHeight));
+  }, [profileHeight]);
 
   useEffect(() => {
     const storage = getLocalStorage();
@@ -746,7 +796,10 @@ function App() {
       className="app-shell"
       style={{ "--sidebar-width": `${sidebarWidth}%` }}
     >
-      <div className="map-column">
+      <div
+        className="map-column"
+        style={{ "--profile-height": `${profileHeight}vh` }}
+      >
         <div className="map-panel">
           <Suspense fallback={<MapLoadingFallback />}>
             <TrailMap
@@ -770,6 +823,19 @@ function App() {
             />
           </Suspense>
         </div>
+
+        <div
+          className={`profile-resize-handle ${isProfileDragging ? "dragging" : ""}`}
+          onPointerDown={handleProfileResizeStart}
+          onKeyDown={handleProfileResizeKeyDown}
+          role="separator"
+          tabIndex="0"
+          aria-label="Resize map and elevation profile"
+          aria-orientation="horizontal"
+          aria-valuemin="26"
+          aria-valuemax="65"
+          aria-valuenow={Math.round(profileHeight)}
+        />
 
         <ElevationProfile
           hikingTrail={hikingTrail}

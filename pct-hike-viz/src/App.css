@@ -32,7 +32,8 @@
 }
 
 @media (max-width: 1023px) {
-  .resize-handle {
+  .resize-handle,
+  .profile-resize-handle {
     display: none;
   }
 }
@@ -66,10 +67,45 @@
   display: grid;
   /* Keep the map primary. The rich profile scrolls inside its own bounded
      workspace instead of collapsing the map on desktop-height screens. */
-  grid-template-rows: minmax(50vh, 1fr) minmax(260px, 42vh);
+  grid-template-rows: minmax(calc(35vh - 8px), 1fr) 8px minmax(260px, var(--profile-height, 42vh));
   height: 100vh;
   overflow: hidden;
   border-right: 1px solid var(--dash-border);
+}
+
+.profile-resize-handle {
+  position: relative;
+  z-index: 20;
+  cursor: row-resize;
+  touch-action: none;
+  background: transparent;
+}
+
+.profile-resize-handle::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  width: 52px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--sand-300);
+  opacity: 0.7;
+  transform: translateX(-50%);
+  transition: width 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+}
+
+.profile-resize-handle:hover::before,
+.profile-resize-handle.dragging::before,
+.profile-resize-handle:focus-visible::before {
+  width: 82px;
+  background: var(--pine-500);
+  opacity: 1;
+}
+
+body.is-resizing-profile {
+  cursor: row-resize;
+  user-select: none;
 }
 
 .map-column .map-panel {
@@ -4721,7 +4757,7 @@
 
   .map-column {
     --map-panel-min: 70vh;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto 0 auto;
     height: auto;
   }
 
