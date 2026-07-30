@@ -131,8 +131,6 @@ function getGradeColor(gradePercent) {
 const ElevationProfile = ({ 
   hikingTrail, 
   campPoints = [], 
-  townPins = [],
-  transportPoints = [],
   waterSources = [],
   connectivityZones = [],
   onHover 
@@ -141,6 +139,7 @@ const ElevationProfile = ({
   const [hoverX, setHoverX] = useState(null);
   const [hoverMeta, setHoverMeta] = useState(null);
   const [hoveredCamp, setHoveredCamp] = useState(null);
+  const [selectedMarker, setSelectedMarker] = useState(null);
   const [selectedHiker, setSelectedHiker] = useState(null);
   const [activeOverlayIds, setActiveOverlayIds] = useState([]);
 
@@ -263,8 +262,8 @@ const ElevationProfile = ({
   );
 
   const width = 1000;
-  const height = 160;
-  const margin = { top: 15, right: 50, bottom: 30, left: 70 };
+  const height = 280;
+  const margin = { top: 38, right: 50, bottom: 40, left: 70 };
 
   const totalDistance = profileData.length ? profileData[profileData.length - 1].dist : 0;
   const minElevation = profileData.length ? Math.min(...profileData.map((d) => d.ele)) : 0;
@@ -423,21 +422,6 @@ const ElevationProfile = ({
     return segments;
   }, [hasProfile, campPoints, profileData, xScale]);
 
-  const areaPath = useMemo(() => {
-    if (!hasProfile) return '';
-    return `
-      M ${xScale(profileData[0].dist)} ${height - margin.bottom}
-      L ${profileData.map((d) => `${xScale(d.dist)} ${yScale(d.ele)}`).join(' L ')}
-      L ${xScale(profileData[profileData.length - 1].dist)} ${height - margin.bottom}
-      Z
-    `;
-  }, [hasProfile, xScale, yScale, profileData, height, margin.bottom]);
-  
-  const linePath = useMemo(() => {
-    if (!hasProfile) return '';
-    return `M ${profileData.map((d) => `${xScale(d.dist)} ${yScale(d.ele)}`).join(' L ')}`;
-  }, [hasProfile, xScale, yScale, profileData]);
-
   const getElevationAtMile = useCallback((mile) => {
     if (!profileData.length) return null;
     if (mile <= 0) return profileData[0].ele;
@@ -485,8 +469,16 @@ const ElevationProfile = ({
         day,
         type: camp.properties?.type ?? 'Camp',
         color: DAY_COLORS[colorIdx].stroke,
+        icon: camp.properties?.type === 'Trailhead'
+          ? '🚩'
+          : camp.properties?.type === 'Finish'
+            ? '🏁'
+            : camp.properties?.type === 'Support Transfer'
+              ? '↔'
+              : '⛺',
         notes: camp.properties?.notes,
-        segment: camp.properties?.segment
+        segment: camp.properties?.segment,
+        status: camp.properties?.campStatus
       };
     }).filter(Boolean);
   }, [campPoints, getElevationAtMile, profileData.length, totalDistance, xScale, yScale]);
@@ -506,20 +498,11 @@ const ElevationProfile = ({
     return { mile: closestPoint.dist, distanceMeters: minDiff };
   }, [profileData]);
 
-  const getTransportIcon = (type) => {
-    switch (type) {
-      case "airport": return "✈️";
-      case "trailhead-parking": return "🅿️";
-      case "shuttle-point": return "🚐";
-      default: return "📍";
-    }
-  };
-
   const extraMarkers = useMemo(() => {
     if (!profileData.length || !xScale || !yScale) return [];
     const markers = [];
 
-    const processPoints = (points, typeFn, iconFn) => {
+    const processPoints = (points, typeFn, iconFn, colorFn, statusFn) => {
       points.forEach((pt, idx) => {
         let mile = pt.mile;
         if (typeof mile !== 'number' && pt.coordinates) {
@@ -550,19 +533,52 @@ const ElevationProfile = ({
           elevation: eleAtPt,
           type: typeFn(pt),
           icon: iconFn(pt),
-          color: '#666', // Neutral color for non-camp markers
-          notes: pt.notes || pt.report || (pt.cellCoverage ? 'Cell coverage check' : null)
+          color: colorFn(pt),
+          notes: pt.notes || pt.report || (pt.cellCoverage ? 'Cell coverage check' : null),
+          status: statusFn(pt),
+          source: pt
         });
       });
     };
 
-    processPoints(townPins, () => 'Town', () => '🏘️');
-    processPoints(transportPoints, (pt) => pt.type || 'Transport', (pt) => getTransportIcon(pt.type));
-    processPoints(waterSources, () => 'Water', () => '💧');
-    processPoints(connectivityZones, () => 'Connectivity', () => '📡');
+    processPoints(
+      waterSources,
+      () => 'Water',
+      () => '💧',
+      (source) => {
+        const condition = `${source.condition ?? source.status ?? ''}`.toLowerCase();
+        if (condition.includes('dry')) return '#D32F2F';
+        if (condition.includes('limited') || source.reliability?.includes('limited')) return '#F57C00';
+        if (condition.includes('flowing') || source.reliability?.includes('reliable')) return '#1479D1';
+        return '#607D8B';
+      },
+      (source) => source.condition
+        ?? source.reportStatus
+        ?? source.reliability
+        ?? 'Current condition not verified',
+    );
+    processPoints(
+      connectivityZones,
+      () => 'Connectivity',
+      (zone) => {
+        const coverage = zone.cellCoverage ?? {};
+        return Object.values(coverage).some((value) => value && value !== 'none') ? '📡' : '📵';
+      },
+      (zone) => {
+        const coverage = zone.cellCoverage ?? {};
+        return Object.values(coverage).some((value) => value && value !== 'none') ? '#7B1FA2' : '#D32F2F';
+      },
+      (zone) => {
+        const coverage = zone.cellCoverage ?? {};
+        const available = Object.entries(coverage)
+          .filter(([, value]) => value && value !== 'none')
+          .map(([carrier, value]) => `${carrier}: ${value}`);
+        return available.length ? available.join(' · ') : 'No cellular signal reported';
+      },
+    );
 
     return markers;
-  }, [townPins, transportPoints, waterSources, connectivityZones, profileData.length, xScale, yScale, getTrailProjection, getElevationAtMile, totalDistance]);
+  }, [waterSources, connectivityZones, profileData.length, xScale, yScale, getTrailProjection, getElevationAtMile, totalDistance]);
 
   const allMarkers = useMemo(() => [...campMarkers, ...extraMarkers], [campMarkers, extraMarkers]);
 
@@ -966,7 +982,7 @@ const ElevationProfile = ({
               ))}
             </g>
             
-            {/* Day segment backgrounds */}
+            {/* Day-colored terrain: the fill and ridge line share the iOS palette. */}
             {daySegments.map((seg, idx) => {
               const segPoints = seg.points;
               if (!segPoints || segPoints.length < 2) return null;
@@ -984,12 +1000,20 @@ const ElevationProfile = ({
                     d={segPath}
                     fill={`url(#dayGradient${(seg.day - 1) % DAY_COLORS.length})`}
                     stroke="none"
-                    opacity="0.8"
+                    opacity="1"
+                  />
+                  <path
+                    d={`M ${segPoints.map((d) => `${xScale(d.dist)} ${yScale(d.ele)}`).join(' L ')}`}
+                    fill="none"
+                    stroke={seg.color.stroke}
+                    strokeWidth="2.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   {/* Day label at top */}
                   <text
                     x={(seg.x1 + seg.x2) / 2}
-                    y={margin.top - 8}
+                    y={18}
                     textAnchor="middle"
                     fontSize="10"
                     fontWeight="600"
@@ -1000,14 +1024,6 @@ const ElevationProfile = ({
                 </g>
               );
             })}
-            
-            {/* Main elevation area */}
-            <path 
-              d={areaPath} 
-              fill="url(#elevationGradientDDG)" 
-              stroke="none"
-              className="elevation-area"
-            />
 
             {/* Comparison overlays */}
             {overlayPaths.map((overlay) => (
@@ -1040,17 +1056,6 @@ const ElevationProfile = ({
                 </text>
               </g>
             ))}
-            
-            {/* Elevation line with gradient based on grade */}
-            <path 
-              d={linePath} 
-              fill="none" 
-              stroke="#2E7D32" 
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="elevation-line"
-            />
             
             {/* Axes */}
             <line 
@@ -1093,60 +1098,76 @@ const ElevationProfile = ({
               Elevation (ft)
             </text>
             
-            {/* Camp Markers */}
+            {/* Interactive trail-stop, water, and connectivity nodes. */}
             {allMarkers.map((marker) => (
               <g 
                 key={marker.id} 
-                className={`camp-marker-group ${hoveredCamp === marker.id ? 'is-hovered' : ''}`}
+                className={`camp-marker-group ${hoveredCamp === marker.id || selectedMarker?.id === marker.id ? 'is-hovered' : ''}`}
                 onMouseEnter={() => setHoveredCamp(marker.id)}
                 onMouseLeave={() => setHoveredCamp(null)}
-                filter={hoveredCamp === marker.id ? 'url(#glow)' : undefined}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setSelectedMarker((current) => current?.id === marker.id ? null : marker);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    setSelectedMarker((current) => current?.id === marker.id ? null : marker);
+                  }
+                }}
+                role="button"
+                tabIndex="0"
+                aria-label={`${marker.type}: ${marker.name}, mile ${marker.mile.toFixed(1)}, ${formatElevation(marker.elevation)}`}
+                filter={hoveredCamp === marker.id || selectedMarker?.id === marker.id ? 'url(#glow)' : undefined}
               >
-                {/* Vertical line to base */}
                 <line
                   x1={marker.cx}
                   y1={marker.cy}
                   x2={marker.cx}
                   y2={height - margin.bottom}
                   stroke={marker.color}
-                  strokeWidth="1"
-                  strokeDasharray="3,3"
-                  opacity="0.5"
+                  strokeWidth="1.25"
+                  strokeDasharray="3,4"
+                  opacity="0.38"
                 />
                 
-                {/* Marker circle */}
                 <circle 
                   cx={marker.cx} 
                   cy={marker.cy} 
-                  r={hoveredCamp === marker.id ? 8 : (marker.icon ? 5 : 6)}
-                  fill="#fff" 
-                  stroke={marker.color} 
-                  strokeWidth={marker.icon ? "2" : "3"}
+                  r={hoveredCamp === marker.id || selectedMarker?.id === marker.id ? 12 : 9}
+                  fill={marker.color}
+                  stroke="#fff"
+                  strokeWidth="2"
                   filter="url(#markerShadow)"
                   className="camp-marker-circle"
                   style={{ transition: 'r 0.2s ease, transform 0.2s ease' }}
                 />
                 
-                {/* Marker icon */}
                 <text
                   x={marker.cx}
-                  y={Math.max(14, marker.cy - 16)}
+                  y={marker.cy}
                   textAnchor="middle"
-                  fontSize={marker.icon ? "12" : "14"}
+                  dominantBaseline="central"
+                  fontSize="10"
+                  pointerEvents="none"
                 >
-                  {marker.icon || (marker.type === 'Trailhead' ? '🚗' : marker.type === 'Finish' ? '🏁' : '⛺')}
+                  {marker.icon}
                 </text>
                 
-                {/* Tooltip on hover */}
-                {hoveredCamp === marker.id && (() => {
-                  const tooltipY = Math.max(5, marker.cy - 70);
+                {(hoveredCamp === marker.id || selectedMarker?.id === marker.id) && (() => {
+                  const tooltipWidth = 190;
+                  const tooltipX = Math.max(
+                    margin.left,
+                    Math.min(marker.cx - tooltipWidth / 2, width - margin.right - tooltipWidth),
+                  );
+                  const tooltipY = Math.max(24, marker.cy - 72);
                   return (
                     <g className="camp-tooltip">
                       <rect
-                        x={marker.cx - 80}
+                        x={tooltipX}
                         y={tooltipY}
-                        width="160"
-                        height="50"
+                        width={tooltipWidth}
+                        height="54"
                         rx="8"
                         fill="rgba(255,255,255,0.95)"
                         stroke={marker.color}
@@ -1154,23 +1175,33 @@ const ElevationProfile = ({
                         filter="url(#markerShadow)"
                       />
                       <text
-                        x={marker.cx}
+                        x={tooltipX + tooltipWidth / 2}
                         y={tooltipY + 18}
                         textAnchor="middle"
                         fontSize="11"
                         fontWeight="700"
                         fill="#333"
                       >
-                        {marker.name?.length > 20 ? marker.name.slice(0, 18) + '…' : marker.name}
+                        {marker.name?.length > 26 ? marker.name.slice(0, 24) + '…' : marker.name}
                       </text>
                       <text
-                        x={marker.cx}
+                        x={tooltipX + tooltipWidth / 2}
                         y={tooltipY + 32}
                         textAnchor="middle"
                         fontSize="10"
                         fill="#666"
                       >
                         Mile {marker.mile.toFixed(1)} · {formatElevation(marker.elevation)}
+                      </text>
+                      <text
+                        x={tooltipX + tooltipWidth / 2}
+                        y={tooltipY + 45}
+                        textAnchor="middle"
+                        fontSize="9"
+                        fontWeight="700"
+                        fill={marker.color}
+                      >
+                        {marker.type}{marker.status ? ` · ${String(marker.status).replaceAll('-', ' ')}` : ''}
                       </text>
                     </g>
                   );
@@ -1248,6 +1279,26 @@ const ElevationProfile = ({
           </div>
         )}
       </div>
+
+      <div className="profile-node-legend" aria-label="Elevation chart marker legend">
+        <span><i className="node-swatch node-swatch--camp">⛺</i>Camp / stop</span>
+        <span><i className="node-swatch node-swatch--water">💧</i>Water</span>
+        <span><i className="node-swatch node-swatch--signal">📡</i>Signal</span>
+        <span className="profile-node-help">Tap any node for its exact mile, elevation, and current status.</span>
+      </div>
+
+      {selectedMarker && (
+        <div className="profile-node-detail" style={{ '--node-color': selectedMarker.color }}>
+          <div className="profile-node-detail__icon">{selectedMarker.icon}</div>
+          <div>
+            <strong>{selectedMarker.name}</strong>
+            <span>{selectedMarker.type} · Mile {selectedMarker.mile.toFixed(1)} · {formatElevation(selectedMarker.elevation)}</span>
+            {selectedMarker.status && <span className="profile-node-detail__status">{String(selectedMarker.status).replaceAll('-', ' ')}</span>}
+            {(selectedMarker.notes || selectedMarker.segment) && <p>{selectedMarker.notes || selectedMarker.segment}</p>}
+          </div>
+          <button type="button" onClick={() => setSelectedMarker(null)} aria-label="Close marker details">×</button>
+        </div>
+      )}
       
       {/* Hover readout bar */}
       <div className="elevation-readout-bar">

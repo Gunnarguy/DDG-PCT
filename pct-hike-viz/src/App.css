@@ -4090,7 +4090,9 @@
   background: var(--dash-bg);
   flex: 0 0 auto;
   width: 100%;
-  aspect-ratio: 1000 / 160;
+  aspect-ratio: 1000 / 280;
+  min-height: 220px;
+  max-height: 360px;
   overflow: hidden;
 }
 
@@ -4124,6 +4126,7 @@
 .camp-marker-group {
   cursor: pointer;
   transition: transform 0.2s ease;
+  outline: none;
 }
 
 .camp-marker-group.is-hovered {
@@ -4136,6 +4139,105 @@
 
 .camp-marker-group:hover .camp-marker-circle {
   transform: scale(1.2);
+}
+
+.camp-marker-group:focus .camp-marker-circle {
+  stroke-width: 3px;
+}
+
+.profile-node-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.9rem;
+  padding: 0.55rem 0.25rem 0;
+  color: var(--dash-text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.profile-node-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.node-swatch {
+  display: inline-grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  color: white;
+  font-size: 0.66rem;
+  font-style: normal;
+}
+
+.node-swatch--camp { background: #2E7D32; }
+.node-swatch--water { background: #1479D1; }
+.node-swatch--signal { background: #7B1FA2; }
+
+.profile-node-help {
+  margin-left: auto;
+  font-weight: 500;
+}
+
+.profile-node-detail {
+  --node-color: #607D8B;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  align-items: start;
+  margin-top: 0.55rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--node-color) 55%, transparent);
+  border-left: 4px solid var(--node-color);
+  border-radius: 0.7rem;
+  background: color-mix(in srgb, var(--node-color) 7%, var(--dash-panel));
+  color: var(--dash-text);
+}
+
+.profile-node-detail__icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--node-color);
+  font-size: 0.9rem;
+}
+
+.profile-node-detail strong,
+.profile-node-detail span {
+  display: block;
+}
+
+.profile-node-detail span {
+  margin-top: 0.1rem;
+  font-size: 0.72rem;
+  color: var(--dash-text-muted);
+}
+
+.profile-node-detail .profile-node-detail__status {
+  color: var(--node-color);
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.profile-node-detail p {
+  margin: 0.35rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--dash-text-muted);
+}
+
+.profile-node-detail button {
+  border: 0;
+  background: transparent;
+  color: var(--dash-text-muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
 }
 
 /* Readout Bar */
