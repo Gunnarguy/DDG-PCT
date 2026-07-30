@@ -1,4 +1,4 @@
-import { PathLayer, ScatterplotLayer } from "@deck.gl/layers";
+import { ScatterplotLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import PropTypes from "prop-types";
 import { useEffect, useState, useMemo, useRef } from "react";
@@ -8,6 +8,8 @@ import Map, {
   NavigationControl,
   Popup,
   ScaleControl,
+  Source,
+  Layer,
   useControl,
 } from "react-map-gl/maplibre";
 import { normalizeCoordinatePair } from "../utils/coordinates";
@@ -81,42 +83,40 @@ function TrailMap({
     return hikingTrail.map((coord) => [coord[0], coord[1]]);
   }, [hikingTrail]);
 
+  const hikingRouteGeoJSON = useMemo(
+    () => ({
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "LineString",
+        coordinates: flatTrail,
+      },
+    }),
+    [flatTrail],
+  );
+
+  const driveRoutesGeoJSON = useMemo(
+    () => ({
+      type: "FeatureCollection",
+      features: (driveSegments ?? [])
+        .filter((segment) => segment.path?.length > 1)
+        .map((segment, index) => ({
+          type: "Feature",
+          properties: {
+            id: segment.id ?? `drive-${index}`,
+            routeType: segment.type ?? "drive",
+          },
+          geometry: {
+            type: "LineString",
+            coordinates: segment.path,
+          },
+        })),
+    }),
+    [driveSegments],
+  );
+
   const deckLayers = useMemo(() => {
     const layers = [];
-
-    // Only add hiking trail layer if we have path data
-    if (flatTrail.length > 1) {
-      layers.push(
-        new PathLayer({
-          id: "hiking-trail",
-          data: [{ path: flatTrail }],
-          getPath: (d) => d.path,
-          getColor: [255, 94, 105, 255],
-          widthUnits: "pixels",
-          getWidth: 5,
-          jointRounded: true,
-          capRounded: true,
-        })
-      );
-    }
-
-    // Only add drive routes if we have segments
-    if (driveSegments?.length) {
-      layers.push(
-        new PathLayer({
-          id: "drive-routes",
-          data: driveSegments,
-          getPath: (d) => d.path,
-          getColor: (d) =>
-            d.type === "drive" ? [120, 120, 120, 180] : [82, 160, 126, 200],
-          widthUnits: "pixels",
-          getWidth: 4,
-          getDashArray: [8, 4],
-          dashJustified: true,
-          extensions: [],
-        })
-      );
-    }
 
     // Add cell coverage circles
     if (connectivityZones?.length) {
@@ -152,7 +152,7 @@ function TrailMap({
     }
 
     return layers;
-  }, [flatTrail, driveSegments, connectivityZones]);
+  }, [connectivityZones]);
 
   const plannedMiles = basePlanMiles ?? totalMiles ?? 0;
   const optionalExtension =
@@ -254,6 +254,48 @@ function TrailMap({
         }}
         attributionControl
       >
+        {flatTrail.length > 1 && (
+          <Source id="hiking-route-source" type="geojson" data={hikingRouteGeoJSON}>
+            <Layer
+              id="hiking-route-line"
+              type="line"
+              layout={{
+                "line-cap": "round",
+                "line-join": "round",
+              }}
+              paint={{
+                "line-color": "#ff5e69",
+                "line-width": 5,
+                "line-opacity": 1,
+              }}
+            />
+          </Source>
+        )}
+
+        {driveRoutesGeoJSON.features.length > 0 && (
+          <Source id="drive-routes-source" type="geojson" data={driveRoutesGeoJSON}>
+            <Layer
+              id="drive-routes-line"
+              type="line"
+              layout={{
+                "line-cap": "round",
+                "line-join": "round",
+              }}
+              paint={{
+                "line-color": [
+                  "case",
+                  ["==", ["get", "routeType"], "drive"],
+                  "#787878",
+                  "#52a07e",
+                ],
+                "line-width": 4,
+                "line-opacity": 0.8,
+                "line-dasharray": [2, 1.5],
+              }}
+            />
+          </Source>
+        )}
+
         <DeckOverlay layers={deckLayers} />
         <NavigationControl position="top-left" />
         <ScaleControl maxWidth={120} unit="imperial" position="bottom-left" />
