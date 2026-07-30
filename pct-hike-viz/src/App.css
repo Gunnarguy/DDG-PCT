@@ -64,7 +64,9 @@
   --map-panel-min: 320px;
   min-width: 0;
   display: grid;
-  grid-template-rows: 1fr auto;
+  /* Keep the map primary. The rich profile scrolls inside its own bounded
+     workspace instead of collapsing the map on desktop-height screens. */
+  grid-template-rows: minmax(50vh, 1fr) minmax(260px, 42vh);
   height: 100vh;
   overflow: hidden;
   border-right: 1px solid var(--dash-border);
@@ -3708,7 +3710,10 @@
   border-top: 1px solid var(--dash-border);
   flex: 0 0 auto;
   min-height: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
   display: flex;
   flex-direction: column;
 }
@@ -4716,6 +4721,7 @@
 
   .map-column {
     --map-panel-min: 70vh;
+    grid-template-rows: auto auto;
     height: auto;
   }
 
@@ -4725,6 +4731,7 @@
 
   .elevation-profile-shell {
     padding: 1.25rem 1.35rem 1.5rem;
+    overflow: visible;
   }
 
   .sidebar {
