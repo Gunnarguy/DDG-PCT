@@ -11,6 +11,37 @@ import Map, {
 } from "react-map-gl/maplibre";
 import { normalizeCoordinatePair } from "../utils/coordinates";
 
+const DAY_ROUTE_COLORS = [
+  "#2E7D32",
+  "#1565C0",
+  "#F57C00",
+  "#9C27B0",
+  "#009688",
+  "#D32F2F",
+  "#5E35B1",
+  "#00796B",
+];
+const DRIVE_IN_COLOR = "#007AFF";
+const DRIVE_HOME_COLOR = "#009688";
+
+const nearestTrailIndex = (trail, coordinates, minimumIndex = 0) => {
+  const target = normalizeCoordinatePair(coordinates);
+  if (!target || !trail.length) return null;
+
+  let nearestIndex = null;
+  let nearestDistance = Number.POSITIVE_INFINITY;
+  for (let index = minimumIndex; index < trail.length; index += 1) {
+    const deltaLongitude = trail[index][0] - target[0];
+    const deltaLatitude = trail[index][1] - target[1];
+    const distance = deltaLongitude ** 2 + deltaLatitude ** 2;
+    if (distance < nearestDistance) {
+      nearestDistance = distance;
+      nearestIndex = index;
+    }
+  }
+  return nearestIndex;
+};
+
 const getTransportIcon = (type) => {
   switch (type) {
     case "airport":
@@ -71,17 +102,50 @@ function TrailMap({
     return hikingTrail.map((coord) => [coord[0], coord[1]]);
   }, [hikingTrail]);
 
-  const hikingRouteGeoJSON = useMemo(
-    () => ({
-      type: "Feature",
-      properties: {},
-      geometry: {
-        type: "LineString",
-        coordinates: flatTrail,
-      },
-    }),
-    [flatTrail],
-  );
+  const hikingRouteGeoJSON = useMemo(() => {
+    const stops = [...(campPoints ?? [])]
+      .filter((camp) => Number.isFinite(camp.properties?.day))
+      .sort((a, b) => a.properties.day - b.properties.day);
+    const features = [];
+    let previousIndex = 0;
+
+    for (let index = 1; index < stops.length; index += 1) {
+      const day = stops[index].properties.day;
+      if (day < 1 || day > DAY_ROUTE_COLORS.length) continue;
+      const endIndex = nearestTrailIndex(
+        flatTrail,
+        stops[index].geometry?.coordinates,
+        previousIndex,
+      );
+      if (endIndex === null || endIndex <= previousIndex) continue;
+      features.push({
+        type: "Feature",
+        properties: { day },
+        geometry: {
+          type: "LineString",
+          coordinates: flatTrail.slice(previousIndex, endIndex + 1),
+        },
+      });
+      previousIndex = endIndex;
+    }
+
+    if (previousIndex < flatTrail.length - 1 && features.length) {
+      features[features.length - 1].geometry.coordinates.push(
+        ...flatTrail.slice(previousIndex + 1),
+      );
+    }
+
+    return {
+      type: "FeatureCollection",
+      features: features.length
+        ? features
+        : [{
+          type: "Feature",
+          properties: { day: 1 },
+          geometry: { type: "LineString", coordinates: flatTrail },
+        }],
+    };
+  }, [campPoints, flatTrail]);
 
   const driveRoutesGeoJSON = useMemo(
     () => ({
@@ -92,7 +156,7 @@ function TrailMap({
           type: "Feature",
           properties: {
             id: segment.id ?? `drive-${index}`,
-            routeType: segment.type ?? "drive",
+            routeRole: index === 0 ? "drive-in" : "drive-home",
           },
           geometry: {
             type: "LineString",
@@ -200,6 +264,13 @@ function TrailMap({
             Map and stats reflect the base plan only. Add the Dunsmuir extension
             if we decide to hike the full Section O.
           </p>
+          <div className="route-color-legend" aria-label="Route color legend">
+            <span><i style={{ backgroundColor: DRIVE_IN_COLOR }} />Drive In</span>
+            {DAY_ROUTE_COLORS.map((color, index) => (
+              <span key={color}><i style={{ backgroundColor: color }} />Day {index + 1}</span>
+            ))}
+            <span><i style={{ backgroundColor: DRIVE_HOME_COLOR }} />Drive Home</span>
+          </div>
         </div>
         <div
           className="style-switcher"
@@ -247,7 +318,19 @@ function TrailMap({
                 "line-join": "round",
               }}
               paint={{
-                "line-color": "#ff5e69",
+                "line-color": [
+                  "match",
+                  ["get", "day"],
+                  1, DAY_ROUTE_COLORS[0],
+                  2, DAY_ROUTE_COLORS[1],
+                  3, DAY_ROUTE_COLORS[2],
+                  4, DAY_ROUTE_COLORS[3],
+                  5, DAY_ROUTE_COLORS[4],
+                  6, DAY_ROUTE_COLORS[5],
+                  7, DAY_ROUTE_COLORS[6],
+                  8, DAY_ROUTE_COLORS[7],
+                  DAY_ROUTE_COLORS[0],
+                ],
                 "line-width": 5,
                 "line-opacity": 1,
               }}
@@ -266,10 +349,11 @@ function TrailMap({
               }}
               paint={{
                 "line-color": [
-                  "case",
-                  ["==", ["get", "routeType"], "drive"],
+                  "match",
+                  ["get", "routeRole"],
+                  "drive-in", DRIVE_IN_COLOR,
+                  "drive-home", DRIVE_HOME_COLOR,
                   "#787878",
-                  "#52a07e",
                 ],
                 "line-width": 4,
                 "line-opacity": 0.8,

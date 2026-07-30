@@ -290,6 +290,29 @@
   margin: 0;
 }
 
+.route-color-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.7rem;
+  margin-top: 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--ink-600);
+}
+
+.route-color-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.route-color-legend i {
+  width: 0.75rem;
+  height: 0.22rem;
+  border-radius: 999px;
+}
+
 .style-switcher {
   display: grid;
   gap: 0.5rem;
