@@ -10,6 +10,7 @@ import Map, {
   ScaleControl,
   useControl,
 } from "react-map-gl/maplibre";
+import { normalizeCoordinatePair } from "../utils/coordinates";
 
 function DeckOverlay({ layers }) {
   const overlay = useControl(() => new MapboxOverlay({ interleaved: true }));
@@ -53,6 +54,10 @@ function TrailMap({
   activeTab,
 }) {
   const mapRef = useRef(null);
+  const popupCoordinates = normalizeCoordinatePair(
+    popupInfo?.geometry?.coordinates ?? popupInfo?.coordinates,
+  );
+  const hoverCoordinates = normalizeCoordinatePair(hoverHighlight?.coordinates);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -323,10 +328,10 @@ function TrailMap({
           </Marker>
         ))}
 
-        {hoverHighlight?.coordinates && (
+        {hoverCoordinates && (
           <Marker
-            longitude={hoverHighlight.coordinates[0]}
-            latitude={hoverHighlight.coordinates[1]}
+            longitude={hoverCoordinates[0]}
+            latitude={hoverCoordinates[1]}
             anchor="bottom"
           >
             <div className="marker marker--profile">📈</div>
@@ -356,15 +361,11 @@ function TrailMap({
           );
         })}
 
-        {popupInfo && (
+        {popupInfo && popupCoordinates && (
           <Popup
             anchor="top"
-            longitude={
-              popupInfo.geometry?.coordinates?.[0] ?? popupInfo.coordinates?.[0]
-            }
-            latitude={
-              popupInfo.geometry?.coordinates?.[1] ?? popupInfo.coordinates?.[1]
-            }
+            longitude={popupCoordinates[0]}
+            latitude={popupCoordinates[1]}
             onClose={() => setPopupInfo(null)}
           >
             <div className="popup">

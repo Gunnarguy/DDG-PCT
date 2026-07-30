@@ -27,11 +27,16 @@ import {
   travelPlan,
 } from "./data/planContent";
 import { fetchLiveSatelliteCoverage } from "./services/liveSatelliteService";
+import {
+  normalizeCoordinatePoint,
+  normalizeFeaturePoint,
+  normalizeTrailCoordinate,
+} from "./utils/coordinates";
 const TrailMap = React.lazy(() => import("./components/TrailMap"));
 
 // Bump VITE_HIKE_DATA_VERSION whenever hike_data.json changes to invalidate cached copies.
 const DATASET_VERSION =
-  import.meta.env.VITE_HIKE_DATA_VERSION ?? "2026-07-29-normalized-garmin-v3";
+  import.meta.env.VITE_HIKE_DATA_VERSION ?? "2026-07-29-coordinate-guard-v4";
 const HIKEDATA_CACHE_KEY = "pct-hike-viz::hike-data";
 const HIKEDATA_CACHE_META_KEY = `${HIKEDATA_CACHE_KEY}::meta`;
 const USER_STORAGE_KEY = "pct-hike-viz::current-user";
@@ -491,14 +496,7 @@ function App() {
       const R = 6371e3; // meters
       const rawPath =
         hikeData.route?.path ?? hikeData.route?.geometry?.coordinates ?? [];
-      const trailPoints = rawPath.filter(
-        (pt) =>
-          Array.isArray(pt) &&
-          pt.length >= 3 &&
-          pt[0] != null &&
-          pt[1] != null &&
-          pt[2] != null,
-      );
+      const trailPoints = rawPath.map(normalizeTrailCoordinate).filter(Boolean);
 
       const trailPointsWithDistance = [];
       let totalDistM = 0;
@@ -574,9 +572,10 @@ function App() {
         };
       });
 
-      const transitFeatures = [...hikeData.features].filter(
-        (f) => f.properties.day === -1,
-      );
+      const transitFeatures = [...hikeData.features]
+        .filter((f) => f.properties.day === -1)
+        .map(normalizeFeaturePoint)
+        .filter(Boolean);
       return [...transitFeatures, ...expressCamps];
     }
 
@@ -585,6 +584,8 @@ function App() {
         (feature) =>
           feature.properties.day >= 0 || feature.properties.day === -1,
       )
+      .map(normalizeFeaturePoint)
+      .filter(Boolean)
       .sort((a, b) => a.properties.day - b.properties.day);
   }, [hikeData, selectedItinerary]);
 
@@ -593,14 +594,7 @@ function App() {
     const rawPath =
       hikeData.route?.path ?? hikeData.route?.geometry?.coordinates ?? [];
     // Filter out any malformed points to keep elevation profile rendering
-    const filtered = rawPath.filter(
-      (pt) =>
-        Array.isArray(pt) &&
-        pt.length >= 3 &&
-        pt[0] != null &&
-        pt[1] != null &&
-        pt[2] != null,
-    );
+    const filtered = rawPath.map(normalizeTrailCoordinate).filter(Boolean);
     return filtered;
   }, [hikeData]);
 
@@ -656,15 +650,35 @@ function App() {
   );
 
   const driveSegments = useMemo(
-    () => hikeData?.driveSegments ?? [],
+    () =>
+      (hikeData?.driveSegments ?? [])
+        .map((segment) => ({
+          ...segment,
+          path: (segment.path ?? [])
+            .map((coordinates) => {
+              const point = normalizeCoordinatePoint({ coordinates });
+              return point?.coordinates ?? null;
+            })
+            .filter(Boolean),
+        }))
+        .filter((segment) => segment.path.length > 1),
     [hikeData],
   );
 
-  const townPins = hikeData?.towns ?? [];
-  const transportPoints = hikeData?.transport ?? [];
+  const townPins = useMemo(
+    () => (hikeData?.towns ?? []).map(normalizeCoordinatePoint).filter(Boolean),
+    [hikeData],
+  );
+  const transportPoints = useMemo(
+    () =>
+      (hikeData?.transport ?? [])
+        .map(normalizeCoordinatePoint)
+        .filter(Boolean),
+    [hikeData],
+  );
   const waterSources = useMemo(() => {
     const rawWater = hikeData?.waterSources ?? [];
-    return rawWater;
+    return rawWater.map(normalizeCoordinatePoint).filter(Boolean);
   }, [hikeData]);
   const waterSourceMeta = useMemo(
     () => deriveWaterMeta(waterSources),

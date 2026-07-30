@@ -47668,10 +47668,10 @@
     {
       "name": "Burney Falls Trailhead",
       "type": "trailhead-parking",
-      "coordinates": {
-        "longitude": -121.65325761772692,
-        "latitude": 41.01110969670117
-      },
+      "coordinates": [
+        -121.65325761772692,
+        41.01110969670117
+      ],
       "notes": "August 29 hiking start after sleeping near SJC and driving north early that morning."
     },
     {
