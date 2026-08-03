@@ -25,7 +25,12 @@ export const normalizeTrailCoordinate = (coordinates) => {
   if (coordinates?.[2] == null) return null;
   const elevation = Number(coordinates?.[2]);
   if (!pair || !Number.isFinite(elevation)) return null;
-  return [...pair, elevation];
+  const routeMile = Number(coordinates?.[3]);
+  // Canonical PCTA terrain points carry a fourth, explicit route-mile value.
+  // Preserve it rather than recomputing mileage from a projected map line.
+  return Number.isFinite(routeMile)
+    ? [...pair, elevation, routeMile]
+    : [...pair, elevation];
 };
 
 export const normalizeCoordinatePoint = (point) => {

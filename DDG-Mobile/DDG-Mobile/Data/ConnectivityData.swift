@@ -47,7 +47,7 @@ let connectivityZones: [ConnectivityZone] = [
         longitude: -121.81993729434907, latitude: 41.17064891383052,
         cellCoverage: CellCoverage(verizon: "none", att: "none", tmobile: "none"),
         satelliteCompatible: true,
-        notes: "Exact planned Day 3 pickup and Day 4 re-entry pin. Assume no cell and coordinate by inReach. Private-corridor camping is prohibited, so this is part of the working itinerary—not a campsite or a casual bailout."
+        notes: "Exact planned Day 3 pickup and Day 4 re-entry pin. Assume no cell and coordinate with the tested two-way satellite communicator. Private-corridor camping is prohibited, so this is part of the working itinerary—not a campsite or a casual bailout."
     ),
     ConnectivityZone(
         id: "star-city",
@@ -74,7 +74,7 @@ let connectivityZones: [ConnectivityZone] = [
         longitude: -122.0606252, latitude: 41.1170914,
         cellCoverage: CellCoverage(verizon: "unknown", att: "unknown", tmobile: "unknown"),
         satelliteCompatible: true,
-        notes: "Remote forest-road trailhead. Use inReach for pickup coordination and assume no cellular service."
+        notes: "Remote forest-road trailhead. Use the tested two-way satellite communicator for pickup coordination and assume no cellular service."
     ),
 ]
 
@@ -93,53 +93,23 @@ struct SatelliteDevice: Identifiable, Sendable {
 
 let satelliteDevices: [SatelliteDevice] = [
     SatelliteDevice(
-        id: "iphone-16",
-        device: "iPhone 16 Pro Max",
-        features: ["Emergency SOS via satellite", "Crash Detection", "Find My via satellite"],
-        coverage: "Globalstar satellite network (limited availability in canyons)",
-        cost: "Free for 2 years with iPhone purchase",
-        notes: "Emergency only — no custom messages. Requires clear sky view.",
-        compatibility: "iOS 18.1+, iPhone 14 or later",
-        trailNotes: "Good for SOS. Not a replacement for a dedicated communicator."
+        id: "phone-satellite-fallback",
+        device: "Compatible phone satellite features",
+        features: ["Emergency escalation", "Possible contact messaging", "Location sharing where supported"],
+        coverage: "Eligibility varies by device, account, software, country, and open-sky conditions",
+        cost: "Check current manufacturer and carrier terms",
+        notes: "Useful personal fallback. It is not the shared team communications plan.",
+        compatibility: "Confirm on each hiker's actual phone before departure",
+        trailNotes: "Test outdoors before the trip; trees, terrain, and conditions can delay or block a connection."
     ),
     SatelliteDevice(
-        id: "inreach-mini2",
-        device: "Garmin inReach Mini 2",
-        features: ["Two-way messaging", "SOS", "Tracking", "Weather forecast"],
-        coverage: "Iridium satellite network (global, pole-to-pole)",
-        cost: "$14.95+/mo subscription",
-        notes: "Best weight-to-features ratio. Pairs with phone via Garmin Messenger app.",
-        compatibility: "Bluetooth LE, any smartphone",
-        trailNotes: "DDG team recommended. Set up tracking share before departure."
-    ),
-    SatelliteDevice(
-        id: "inreach-messenger",
-        device: "Garmin inReach Messenger",
-        features: ["Two-way messaging", "SOS", "Tracking", "Location sharing"],
-        coverage: "Iridium satellite network (global)",
-        cost: "$14.95+/mo subscription",
-        notes: "Messaging focused. Lighter than Mini 2 but fewer features.",
-        compatibility: "Bluetooth LE, any smartphone",
-        trailNotes: "Good budget option if you don't need weather forecasts."
-    ),
-    SatelliteDevice(
-        id: "zoleo",
-        device: "Zoleo Satellite Communicator",
-        features: ["Two-way messaging", "SOS", "Check-in", "Weather"],
-        coverage: "Iridium satellite network",
-        cost: "$20/mo subscription",
-        notes: "Simple interface. Good for non-tech-savvy team members.",
-        compatibility: "Bluetooth, iOS/Android app",
-        trailNotes: "Reliable but slightly heavier. Good backup device."
-    ),
-    SatelliteDevice(
-        id: "gpsmap-67i",
-        device: "Garmin GPSMAP 67i",
-        features: ["Two-way messaging", "SOS", "Tracking", "Topo maps", "GPS navigation"],
-        coverage: "Iridium satellite network + GPS/GLONASS/Galileo",
-        cost: "$599 + $14.95+/mo subscription",
-        notes: "Full-featured GPS with inReach built in. Heavy but self-contained.",
-        compatibility: "Standalone + Bluetooth",
-        trailNotes: "Heavier than phone-only navigation, but dependable for an eight-day route with long cell gaps."
+        id: "two-way-communicator",
+        device: "Dedicated two-way satellite communicator",
+        features: ["Two-way check-ins", "SOS", "Location sharing", "Weather or tracking if included in the selected service"],
+        coverage: "Depends on the actual device, subscription, satellite network, and sky view",
+        cost: "Choose, subscribe, and test the exact unit before departure",
+        notes: "This is the required shared coordination path for the Day 3 transfer and Ash Camp pickup.",
+        compatibility: "Assign a primary owner and a backup owner",
+        trailNotes: "Send and acknowledge a real message with every team contact before the trip; save the protocol offline."
     ),
 ]

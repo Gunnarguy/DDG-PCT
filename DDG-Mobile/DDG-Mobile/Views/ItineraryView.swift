@@ -6,6 +6,7 @@ struct ItineraryView: View {
     @Query private var waterSources: [WaterSource]
     @Query(sort: \TrailPoint.index) private var trailPoints: [TrailPoint]
 
+    private let operations = TripOperations.bundled
     @State private var dayBriefings: [Int: String] = [:]
     @State private var generatingDay: Int?
 
@@ -42,13 +43,40 @@ struct ItineraryView: View {
     // MARK: - Date Mapping
 
     private var tripStartDate: Date {
-        var components = DateComponents()
-        components.year = 2026
-        components.month = 8
-        components.day = 28
-        components.hour = 6
-        components.timeZone = TimeZone(identifier: "America/Los_Angeles")
-        return Calendar.current.date(from: components) ?? Date()
+        calendarDate(from: operations.tripDates.arrival)
+    }
+
+    private var departureOffset: Int {
+        Calendar.current.dateComponents(
+            [.day],
+            from: tripStartDate,
+            to: calendarDate(from: operations.tripDates.departure)
+        ).day ?? 10
+    }
+
+    private var inboundTravelDetails: String {
+        let flight = operations.workingFlights.inbound
+        return "✈️ \(flight.flightNumber) · \(flight.origin) → \(flight.destination)\nScheduled arrival: \(flight.scheduledArrivalLocal).\n🚙 \(operations.arrivalPlan.driver) drives the \(operations.arrivalPlan.vehicle).\n🛏️ \(operations.arrivalPlan.instruction)\n⚠️ \(operations.workingFlights.disclaimer)"
+    }
+
+    private var finishTravelDetails: String {
+        let route = operations.canonicalRoute
+        let finish = operations.finishPlan
+        return "Complete the \(String(format: "%.3f", route.officialPctaMiles))-mile route to \(route.finish.name).\n🚙 \(finish.driver) pickup window: \(finish.pickupWindow).\n🛣️ \(finish.road)\nSep 6 remains the contingency day."
+    }
+
+    private var outboundTravelDetails: String {
+        let flight = operations.workingFlights.outbound
+        return "✈️ \(flight.flightNumber) · \(flight.origin) → \(flight.destination)\nScheduled departure: \(flight.scheduledDepartureLocal). Arrival: \(flight.scheduledArrivalLocal).\n⚠️ \(operations.workingFlights.disclaimer)"
+    }
+
+    private func calendarDate(from isoDate: String) -> Date {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "America/Los_Angeles")
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.date(from: isoDate) ?? Date()
     }
 
     private func dateString(for dayOffset: Int) -> String {
@@ -77,7 +105,7 @@ struct ItineraryView: View {
             title: "Arrival & Assembly",
             camps: [],
             isTravelDay: true,
-            travelDetails: "✈️ UA481 is scheduled to land at SJC at 10:36 PM PDT.\n🚙 Mikaela collects the group in the Kia Sportage.\n🛏️ Sleep near SJC, then leave around 5:00–5:30 AM Aug 29. Verify the airline booking before locking pickup time.",
+            travelDetails: inboundTravelDetails,
             hikeDayIndex: nil
         ))
         
@@ -91,7 +119,7 @@ struct ItineraryView: View {
                 camps: dayCamps,
                 isTravelDay: false,
                 travelDetails: day == 8
-                    ? "Complete the 51.844-mile route to Ash Camp. Use the final inReach check-in to confirm the provisional 10:00 AM–noon rendezvous; Sep 6 is the contingency day."
+                    ? finishTravelDetails
                     : nil,
                 hikeDayIndex: day
             ))
@@ -99,11 +127,11 @@ struct ItineraryView: View {
         
         // Sept 7: Departure
         days.append(TimelineDay(
-            dayOffset: 10,
+            dayOffset: departureOffset,
             title: "Departure",
             camps: [],
             isTravelDay: true,
-            travelDetails: "✈️ UA1317 is scheduled to depart SJC at 6:40 AM PDT and arrive ORD at 11:00 AM CDT. Verify the airline booking in United Manage Trip.",
+            travelDetails: outboundTravelDetails,
             hikeDayIndex: nil
         ))
         
@@ -197,7 +225,7 @@ struct ItineraryView: View {
                 }
                 
                 // Water Sources
-                let dayWater = waterSourcesForDay(tDay.camps)
+                let dayWater = tDay.hikeDayIndex.map { waterSourcesForDay($0) } ?? []
                 if !dayWater.isEmpty {
                     waterCard(water: dayWater)
                 }
@@ -269,11 +297,15 @@ struct ItineraryView: View {
                 .padding(.top, 2)
             
             VStack(alignment: .leading, spacing: 6) {
-                Text("Water Sources (\(water.count))")
+                Text("Offline water location markers (\(water.count))")
                     .font(.caption.bold())
                     .foregroundStyle(.cyan)
                 
                 Text(water.map { "\($0.name)" }.joined(separator: " • "))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+
+                Text("Map locations only. Verify current flow, access, and treatment need in Field → Daily Conditions before moving.")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -296,16 +328,11 @@ struct ItineraryView: View {
         return altitudeZones.first { maxElev >= $0.minFt && maxElev < $0.maxFt }
     }
 
-    private func waterSourcesForDay(_ camps: [CampSite]) -> [WaterSource] {
-        guard !camps.isEmpty else { return [] }
-        let minLat = camps.map(\.latitude).min()! - 0.05
-        let maxLat = camps.map(\.latitude).max()! + 0.05
-        let minLon = camps.map(\.longitude).min()! - 0.05
-        let maxLon = camps.map(\.longitude).max()! + 0.05
-
-        return waterSources.filter { ws in
-            ws.latitude >= minLat && ws.latitude <= maxLat &&
-            ws.longitude >= minLon && ws.longitude <= maxLon
+    private func waterSourcesForDay(_ day: Int) -> [WaterSource] {
+        guard let profile = TrailConstants.profile(for: day) else { return [] }
+        return waterSources.filter { source in
+            source.routeMile > profile.routeMileStart &&
+            source.routeMile <= profile.routeMileEnd
         }
     }
 

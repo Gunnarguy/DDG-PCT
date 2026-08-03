@@ -381,6 +381,11 @@ body.is-resizing-profile {
   cursor: pointer;
 }
 
+.marker--transfer {
+  cursor: pointer;
+  font-size: 1.45rem;
+}
+
 .marker--town {
   font-size: 1.5rem;
 }
@@ -391,8 +396,31 @@ body.is-resizing-profile {
 }
 
 .marker--water {
-  font-size: 1.3rem;
+  display: grid;
+  place-items: center;
+  min-width: 1.55rem;
+  min-height: 1.55rem;
+  padding: 0.08rem;
+  font-size: 1.02rem;
+  border: 2px solid #607d8b;
+  border-radius: 999px;
+  background: rgba(96, 125, 139, 0.16);
   cursor: pointer;
+}
+
+.marker--water-flowing {
+  border-color: #1479d1;
+  background: rgba(20, 121, 209, 0.18);
+}
+
+.marker--water-limited {
+  border-color: #f57c00;
+  background: rgba(245, 124, 0, 0.18);
+}
+
+.marker--water-dry {
+  border-color: #d32f2f;
+  background: rgba(211, 47, 47, 0.18);
 }
 
 .marker--connectivity {
@@ -434,6 +462,32 @@ body.is-resizing-profile {
 
 .popup {
   max-width: 240px;
+}
+
+.popup-water-status {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0.65rem 0;
+  padding: 0.6rem;
+  border-left: 3px solid #1479d1;
+  border-radius: 0.35rem;
+  background: var(--sand-50);
+  font-size: 0.78rem;
+}
+
+.popup-water-status strong {
+  color: var(--pine-700);
+  text-transform: capitalize;
+}
+
+.popup-water-status span {
+  color: var(--ink-500);
+}
+
+.popup-water-status a {
+  width: fit-content;
+  color: var(--pine-700);
+  font-weight: 700;
 }
 
 .day-pill {
@@ -4270,6 +4324,14 @@ body.is-resizing-profile {
   font-size: 0.72rem;
   line-height: 1.4;
   color: var(--dash-text-muted);
+}
+
+.profile-node-detail a {
+  display: inline-block;
+  margin-top: 0.35rem;
+  color: var(--node-color);
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 .profile-node-detail button {

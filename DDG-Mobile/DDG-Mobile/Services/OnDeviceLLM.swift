@@ -89,7 +89,7 @@ final class OnDeviceLLM {
 
             let session = LanguageModelSession(model: .default)
 
-            var context = "Current conditions for the active PCT trip (Burney Falls → Ash Camp, 51.844 official mi / 51.664 Garmin mi, 8 hiking days):\n\n"
+            var context = "Current conditions for the active PCT trip (Burney Falls → Ash Camp, \(String(format: "%.3f", TrailConstants.totalMiles)) PCTA-calibrated mi, 8 hiking days):\n\n"
 
             // Fires
             if fires.isEmpty {
@@ -199,7 +199,7 @@ final class OnDeviceLLM {
                 $0.cellCoverage.verizon == "none" && $0.cellCoverage.att == "none" && $0.cellCoverage.tmobile == "none"
             }
             context += "\n- Connectivity: \(noCellZones.count) of \(connectivityZones.count) zones have NO cell coverage\n"
-            context += "- Resupply towns: \(resupplyTowns.map(\.town).joined(separator: ", "))\n"
+            context += "- Resupply: no on-route resupply; carry eight hiking days plus one emergency day\n"
 
             let prompt = """
             You are a PCT thru-hiking mission planner. Generate a concise mission briefing (3-4 sentences) \
@@ -343,7 +343,8 @@ final class OnDeviceLLM {
                 context += "  - \(item.name): \(String(format: "%.1f", item.weightInOz)) oz [\(item.category)]\n"
             }
 
-            context += "\nTrail context: 8-day section hike, 51.844 official miles, normalized Garmin route high point about 6,129 ft.\n"
+            let routeHighPoint = TrailConstants.dayProfiles.map(\.highPointFeet).max() ?? 0
+            context += "\nTrail context: 8-day section hike, \(String(format: "%.3f", TrailConstants.totalMiles)) PCTA-calibrated miles, USGS 3DEP route high point about \(Int(routeHighPoint.rounded())) ft.\n"
             context += "Key considerations: water carry between sources, satellite communicator weight, camp cooking gear.\n"
 
             let prompt = """
@@ -621,7 +622,7 @@ final class OnDeviceLLM {
 
     private func fallbackConnectivityBriefing(noCellCount: Int) -> String {
         return "\(noCellCount) of \(connectivityZones.count) zones have no cell coverage. " +
-            "Satellite communicator (inReach Mini 2 recommended) required for \(noCellCount > 3 ? "most of" : "parts of") the route. " +
+            "A tested two-way satellite communicator is required for \(noCellCount > 3 ? "most of" : "parts of") the route. " +
             "Send check-ins from zones with coverage: \(connectivityZones.filter { $0.cellCoverage.verizon != "none" }.map(\.name).joined(separator: ", "))."
     }
 

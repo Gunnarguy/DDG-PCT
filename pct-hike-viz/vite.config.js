@@ -9,7 +9,7 @@ export default defineConfig(({ command }) => ({
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff,woff2}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,md,woff,woff2}']
       },
       manifest: {
         name: 'PCT Mission Control',

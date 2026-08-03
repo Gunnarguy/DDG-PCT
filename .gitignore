@@ -29,6 +29,7 @@ pct-hike-viz/src/hike_data.json
 !pct-hike-viz/src/hike_data.placeholder.json
 *.gpx
 !docs/data/source/garmin-section-o-80.826mi.gpx
+!docs/data/source/garmin-section-o-alternate.gpx
 Section*/
 Garmin-compatible GPX files*/
 

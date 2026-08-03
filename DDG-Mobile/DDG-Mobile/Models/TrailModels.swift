@@ -18,12 +18,22 @@ final class TrailPoint {
     var longitude: Double
     var elevation: Double   // meters
     var index: Int          // position in path array for ordering
+    /// Explicit PCTA-calibrated mileage from the canonical terrain artifact.
+    /// Never infer this from map geometry when the bundled value is present.
+    var routeMile: Double = 0
 
-    init(latitude: Double, longitude: Double, elevation: Double, index: Int) {
+    init(
+        latitude: Double,
+        longitude: Double,
+        elevation: Double,
+        index: Int,
+        routeMile: Double = 0
+    ) {
         self.latitude = latitude
         self.longitude = longitude
         self.elevation = elevation
         self.index = index
+        self.routeMile = routeMile
     }
 
     var coordinate: CLLocationCoordinate2D {

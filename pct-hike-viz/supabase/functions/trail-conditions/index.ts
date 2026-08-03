@@ -14,6 +14,18 @@ const ROUTE = {
   bbox: { west: -122.15, south: 40.95, east: -121.55, north: 41.25 },
 };
 
+// Keep live conditions explicitly attached to the same frozen PCTA + USGS
+// terrain contract rendered by both clients. Garmin exports remain comparison
+// evidence only and must never leak back into a live safety payload.
+const TERRAIN_CONTRACT = {
+  version: "2026-08-02-pcta-usgs-v1",
+  dataContractSha256: "185e86a3863c0b2f335eaa51ad6a8220916f9fd25bbeaa30782ddc278e67b66c",
+  officialMiles: 51.844,
+  centerlineGeometryMiles: 51.833902,
+  startPctMile: 1420.653,
+  finishPctMile: 1472.497,
+};
+
 const WATER_URL =
   "https://docs.google.com/spreadsheets/d/1Tk7yDPd9JWAm7sbbad9idZxcDJlv7ilMz6qZa6pal8w/export?format=csv";
 const PCTA_CLOSURES_URL = "https://closures.pcta.org/";
@@ -602,14 +614,16 @@ Deno.serve(async (req: Request) => {
 
   const payload = {
     fetchedAt: checkedAt,
-    planVersion: "pcta-2026-burney-ash-v1",
+    planVersion: TERRAIN_CONTRACT.version,
     route: "Burney Falls PCT access to Ash Camp",
     routeFacts: {
       name: "Burney Falls PCT access to Ash Camp",
-      officialMiles: 51.844,
-      gpsMiles: 51.664,
-      startPctMile: 1420.653,
-      finishPctMile: 1472.497,
+      officialMiles: TERRAIN_CONTRACT.officialMiles,
+      centerlineGeometryMiles: TERRAIN_CONTRACT.centerlineGeometryMiles,
+      terrainContractVersion: TERRAIN_CONTRACT.version,
+      dataContractSha256: TERRAIN_CONTRACT.dataContractSha256,
+      startPctMile: TERRAIN_CONTRACT.startPctMile,
+      finishPctMile: TERRAIN_CONTRACT.finishPctMile,
     },
     water,
     wildfire: resultValue(fireResult, { count: 0, fires: [], unavailable: true }),

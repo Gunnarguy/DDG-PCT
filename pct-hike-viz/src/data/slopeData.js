@@ -1,249 +1,139 @@
-import { primaryItinerary } from './tripFacts';
+import terrain from "./tripTerrain.generated.json";
+import { primaryItinerary, tripFacts } from "./tripFacts";
 
-/**
- * Slope Angle Shading Configuration
- * 
- * Defines terrain difficulty visualization layers.
- * Based on nst.guide slope-angle methodology using color scheme matching CalTopo.
- * 
- * Color scheme indicates steepness:
- * - Green: 0-15° (easy walking)
- * - Yellow: 15-25° (moderate, some exertion)
- * - Orange: 25-35° (steep, significant effort)
- * - Red: 35-45° (very steep, challenging)
- * - Purple: 45-50° (extreme, scrambling territory)
- * - Black: 50°+ (technical climbing)
- */
-
-export const slopeColorScheme = [
-  { angle: 0, color: [76, 167, 35, 0], label: 'Flat (0-15°)' },       // Transparent green
-  { angle: 15, color: [248, 253, 85, 180], label: 'Moderate (15-25°)' }, // Yellow
-  { angle: 25, color: [241, 184, 64, 200], label: 'Steep (25-35°)' },    // Orange
-  { angle: 35, color: [238, 128, 49, 220], label: 'Very Steep (35-40°)' }, // Dark orange
-  { angle: 40, color: [235, 51, 35, 240], label: 'Extreme (40-45°)' },  // Red
-  { angle: 45, color: [122, 41, 217, 255], label: 'Scrambling (45-50°)' }, // Purple
-  { angle: 50, color: [0, 38, 245, 255], label: 'Technical (50°+)' }   // Blue/black
-];
-
-/**
- * Slope angle categories with hiking implications
- */
+// These classes are generated from non-overlapping 100m windows of the same
+// normalized USGS 3DEP profile drawn in the elevation chart. They describe a
+// planning-grade signal, not a surveyed trail-grade or a promise about footing.
 export const slopeCategories = [
   {
-    range: '0-15°',
-    label: 'Easy Walking',
-    color: '#4CA723',
-    emoji: '🟢',
-    description: 'Comfortable terrain. Normal hiking pace. Good for recovery days.',
-    hikingSpeed: '3.0 mph',
-    difficulty: 'Easy'
+    id: "easy",
+    range: "0–5%",
+    label: "Gentle grade",
+    color: "#4CA723",
+    emoji: "🟢",
+    maxPercent: 5,
+    description: "Mostly level or gently rolling in the 100m profile windows.",
   },
   {
-    range: '15-25°',
-    label: 'Moderate Grade',
-    color: '#F8FD55',
-    emoji: '🟡',
-    description: 'Noticeable uphill. Reduced pace. Standard PCT climbing.',
-    hikingSpeed: '2.0-2.5 mph',
-    difficulty: 'Moderate'
+    id: "moderate",
+    range: "5–10%",
+    label: "Moderate grade",
+    color: "#F8FD55",
+    emoji: "🟡",
+    maxPercent: 10,
+    description: "Noticeable climbing or descending; adjust pace and footing.",
   },
   {
-    range: '25-35°',
-    label: 'Steep Climb',
-    color: '#F1B840',
-    emoji: '🟠',
-    description: 'Sustained steep sections. Frequent breaks. Trekking poles helpful.',
-    hikingSpeed: '1.5-2.0 mph',
-    difficulty: 'Strenuous'
+    id: "steep",
+    range: "10–15%",
+    label: "Steep grade",
+    color: "#F1B840",
+    emoji: "🟠",
+    maxPercent: 15,
+    description: "Sustained enough to slow a loaded group or increase knee load.",
   },
   {
-    range: '35-45°',
-    label: 'Very Steep',
-    color: '#EE3323',
-    emoji: '🔴',
-    description: 'Hands-on-knees territory. Slow pace. Full exertion.',
-    hikingSpeed: '1.0-1.5 mph',
-    difficulty: 'Very Strenuous'
+    id: "verySteep",
+    range: "15%+",
+    label: "Very steep grade",
+    color: "#EE3323",
+    emoji: "🔴",
+    maxPercent: Number.POSITIVE_INFINITY,
+    description: "The strongest 100m planning-grade windows in the normalized profile.",
   },
-  {
-    range: '45-50°',
-    label: 'Extreme Grade',
-    color: '#7A29D9',
-    emoji: '🟣',
-    description: 'Scrambling may be required. Use handholds. Consider pack hoisting.',
-    hikingSpeed: '<1.0 mph',
-    difficulty: 'Extreme'
-  },
-  {
-    range: '50°+',
-    label: 'Technical',
-    color: '#0026F5',
-    emoji: '⚫',
-    description: 'Climbing skills required. Not typical PCT terrain. Avoid if possible.',
-    hikingSpeed: 'N/A',
-    difficulty: 'Technical'
-  }
 ];
 
-const terrainMetadataByDay = {
-  1: {
-    maxGrade: 8.5,
-    difficulty: 'Moderate',
-    notes: 'Short opening leg after the early drive from SJC; rolling terrain to Rock Creek.'
-  },
-  2: {
-    maxGrade: 7.1,
-    difficulty: 'Strenuous',
-    notes: 'Largest climb and a dry-camp finish; start early, pace conservatively, and carry verified water.'
-  },
-  3: {
-    maxGrade: 7.3,
-    difficulty: 'Very Strenuous',
-    notes: 'Longest day, but completed with day packs and a timed Bartle Gap extraction. Continuous travel through private timberland is mandatory.'
-  },
-  4: {
-    maxGrade: 8.9,
-    difficulty: 'Strenuous',
-    notes: 'Exact-point Bartle Gap re-entry followed by the climb to the route high point and a dry camp.'
-  },
-  5: {
-    maxGrade: 9.6,
-    difficulty: 'Strenuous',
-    notes: 'Short but predominantly downhill from the high saddle.'
-  },
-  6: {
-    maxGrade: 6.2,
-    difficulty: 'Strenuous (downhill)',
-    notes: 'Nearly 2,000 vertical feet of mixed terrain to Deer Creek Spring.'
-  },
-  7: {
-    maxGrade: 8.3,
-    difficulty: 'Strenuous',
-    notes: 'The knee-intensive sustained descent to Butcherknife Creek.'
-  },
-  8: {
-    maxGrade: 10.2,
-    difficulty: 'Very Strenuous',
-    notes: 'Short final descent to the Ash Camp pickup.'
-  }
-};
-
-/**
- * Section O terrain profile from the canonical itinerary. Daily elevation
- * changes are attributed from one continuous, distance-smoothed track so day
- * boundaries do not reset the 20-foot accumulation threshold.
- */
-export const sectionOTerrainProfile = Object.fromEntries(
-  primaryItinerary.map((leg) => [
-    `day${leg.day}`,
-    {
-      distance: leg.distance,
-      elevationGain: leg.elevation.gain,
-      elevationLoss: leg.elevation.loss,
-      ...terrainMetadataByDay[leg.day]
-    }
-  ])
+const gradeByDay = new Map(
+  (terrain.gradeAnalysis?.days ?? []).map((day) => [Number(day.day), day]),
 );
 
-/**
- * Key terrain hazards identified from slope analysis
- */
+const narrativeByDay = {
+  1: "Short opening leg after travel. Treat it as a shakedown rather than a free day.",
+  2: "The largest climb, ending at a dry-camp candidate that still needs current field verification.",
+  3: "The longest day, completed with day packs and a timed Bartle Gap extraction. Continuous travel through private timberland is mandatory.",
+  4: "Exact-point Bartle Gap re-entry, followed by the climb to the route high point and dry camp.",
+  5: "A short day with meaningful downhill. Keep the descent controlled rather than treating the mileage as automatic recovery.",
+  6: "Mixed climbing and descending on accumulated fatigue.",
+  7: "The knee-intensive sustained descent to Butcherknife Creek.",
+  8: "Short final descent to the Ash Camp pickup, with the road-access plan still needing verification.",
+};
+
+function difficultyFor(leg) {
+  if (leg.stopType === "support-transfer") return "Very strenuous";
+  if (leg.terrainLoad.kneeLoad === "very-high" || leg.terrainLoad.kneeLoad === "high") {
+    return "Strenuous (downhill)";
+  }
+  if (leg.terrainLoad.effortRank <= 3) return "Strenuous";
+  if (leg.terrainLoad.effortRank >= 7) return "Easy–moderate";
+  return "Moderate";
+}
+
+function categoryFor(grade) {
+  return (
+    slopeCategories.find(
+      (category) => grade.maxAbsolutePercent < category.maxPercent,
+    ) ?? slopeCategories.at(-1)
+  );
+}
+
+export const sectionOTerrainProfile = Object.fromEntries(
+  primaryItinerary.map((leg) => {
+    const grade = gradeByDay.get(leg.day);
+    const category = grade ? categoryFor(grade) : slopeCategories[0];
+    return [
+      `day${leg.day}`,
+      {
+        ...leg,
+        elevationGain: leg.elevation.gain,
+        elevationLoss: leg.elevation.loss,
+        maxUphillPercent: grade?.maxUphillPercent ?? 0,
+        maxDownhillPercent: grade?.maxDownhillPercent ?? 0,
+        maxAbsolutePercent: grade?.maxAbsolutePercent ?? 0,
+        maxAbsoluteAngleDegrees: grade?.maxAbsoluteAngleDegrees ?? 0,
+        terrainBreakdown: grade?.mix ?? {},
+        gradeWindowCount: grade?.windowCount ?? 0,
+        difficulty: difficultyFor(leg),
+        notes: narrativeByDay[leg.day] ?? "Current field verification required.",
+        categoryEmoji: category.emoji,
+        categoryLabel: category.label,
+        estimatedTime: `${leg.timeEstimate.lowHours}–${leg.timeEstimate.highHours} hours`,
+      },
+    ];
+  }),
+);
+
+const profileFor = (day) => sectionOTerrainProfile[`day${day}`];
+
 export const terrainHazards = [
   {
-    location: 'Day 2: major climb',
-    concern: 'Approximately 2,175 ft of gain in 8.678 miles, ending at a dry camp',
-    mitigation: 'Start early, use a sustainable pace, and leave the last confirmed legal source with enough water for camp and the supported traverse.',
-    coordinates: [-121.798667, 41.085022]
+    location: "Day 2: largest climb",
+    concern: `+${profileFor(2).elevationGain.toLocaleString()} ft in ${profileFor(2).distance.toFixed(3)} miles, ending at a dry camp`,
+    mitigation:
+      "Start early, use a sustainable pace, and leave the last confirmed legal source with enough water for camp and the supported traverse.",
+    coordinates: profileFor(2).coordinates,
   },
   {
-    location: 'Day 7: Butcherknife Creek descent',
-    concern: 'Approximately 1,786 ft of loss in 5.604 miles',
-    mitigation: 'Use poles, shorten stride, manage hotspots early, and allow more time than flat mileage suggests.',
-    coordinates: [-122.026677, 41.129422]
-  }
+    location: "Day 7: Butcherknife Creek descent",
+    concern: `−${profileFor(7).elevationLoss.toLocaleString()} ft in ${profileFor(7).distance.toFixed(3)} miles`,
+    mitigation:
+      "Use poles, shorten stride, manage hotspots early, and allow more time than flat mileage suggests.",
+    coordinates: profileFor(7).coordinates,
+  },
 ];
 
-// Pre-compute the maximum grade for each category to avoid parsing strings during lookup
-const categoryMaxGrades = slopeCategories.map(cat => {
-  const max = parseInt(cat.range.split('-')[1]);
-  return isNaN(max) ? Infinity : max;
-});
+export const getDayTerrainSummary = (day) => sectionOTerrainProfile[`day${day}`] ?? null;
 
-/**
- * Generate slope difficulty summary for a day
- */
-export const getDayTerrainSummary = (day) => {
-  const profile = sectionOTerrainProfile[`day${day}`];
-  if (!profile) return null;
-  
-  const category = slopeCategories.find((_, index) => {
-    return profile.maxGrade <= categoryMaxGrades[index];
-  }) || slopeCategories[slopeCategories.length - 1];
-  
-  return {
-    ...profile,
-    categoryEmoji: category.emoji,
-    categoryLabel: category.label,
-    estimatedTime: formatLoadedGroupTime(profile, day),
-    terrainBreakdown: estimateTerrainBreakdown(profile)
-  };
+export const terrainGradeMethod = {
+  method: terrain.gradeAnalysis?.method ?? "Grade analysis unavailable.",
+  windowMeters: terrain.gradeAnalysis?.windowMeters ?? 100,
+  totalGainFeet: tripFacts.route.totalGainFeet,
+  totalLossFeet: tripFacts.route.totalLossFeet,
 };
-
-const formatLoadedGroupTime = (profile, day) => {
-  const movingSpeed = day === 3 ? 2.1 : 1.85;
-  const effortMiles =
-    profile.distance +
-    profile.elevationGain / 2000 +
-    profile.elevationLoss / 4000;
-  const movingHours = effortMiles / movingSpeed;
-  const roundQuarterHour = (hours) => Math.round(hours * 4) / 4;
-  const low = roundQuarterHour(movingHours * 1.12);
-  const high = roundQuarterHour(movingHours * 1.35);
-  return `${low}–${high} hours`;
-};
-
-/**
- * Estimate terrain difficulty breakdown
- */
-const estimateTerrainBreakdown = (profile) => {
-  // Simplified model based on elevation gain/loss and distance
-  const gainRatio = profile.elevationGain / profile.distance / 100;
-  const lossRatio = Math.abs(profile.elevationLoss) / profile.distance / 100;
-  
-  return {
-    easy: Math.max(0, 100 - (gainRatio + lossRatio) * 20),
-    moderate: Math.min(50, (gainRatio + lossRatio) * 15),
-    steep: Math.min(30, (gainRatio + lossRatio) * 5),
-    verysteep: Math.min(20, Math.max(0, (gainRatio + lossRatio) - 10) * 2)
-  };
-};
-
-/**
- * MapLibre GL style for slope angle overlay
- * Compatible with terrain RGB tiles
- */
-export const getSlopeAngleStyle = (visible = true) => ({
-  id: 'slope-angle-shading',
-  type: 'hillshade',
-  source: 'terrain-rgb',
-  layout: {
-    visibility: visible ? 'visible' : 'none'
-  },
-  paint: {
-    // Use hillshade to approximate slope visualization
-    // In production, would use actual slope-angle raster tiles like nst.guide
-    'hillshade-exaggeration': 0.6,
-    'hillshade-shadow-color': 'rgba(238, 128, 49, 0.3)', // Orange tint for steep areas
-    'hillshade-highlight-color': 'rgba(248, 253, 85, 0.2)', // Yellow tint for moderate
-    'hillshade-illumination-direction': 315
-  }
-});
 
 export default {
-  slopeColorScheme,
   slopeCategories,
   sectionOTerrainProfile,
   terrainHazards,
   getDayTerrainSummary,
-  getSlopeAngleStyle
+  terrainGradeMethod,
 };

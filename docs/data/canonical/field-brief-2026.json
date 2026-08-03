@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-02",
+  "scope": "Offline operational and emergency reference for the Burney Falls PCT access to Ash Camp route. It complements live conditions; it never converts a stale report into an all-clear.",
+  "operationalRules": [
+    {
+      "id": "terrain-contract",
+      "title": "Follow the checked-in PCTA route, not an old Garmin export",
+      "detail": "The active plan is the 51.844-mile PCTA-marker itinerary. Garmin files stay comparison evidence only. If a map, app, or person disagrees, stop treating the number as authoritative until it is reconciled."
+    },
+    {
+      "id": "conditions-not-clearance",
+      "title": "Refresh conditions, then make a human go/no-go call",
+      "detail": "Water reports, smoke, fires, crossings, campsite availability, road access, and closures have different update paths. A responding feed is not a safety certification."
+    },
+    {
+      "id": "private-corridor",
+      "title": "Day 3 is a support operation, not an overnight plan",
+      "detail": "Travel continuously through the private-timberland corridor with day packs. Do not camp, wait, or treat the Bartle Gap field pin as a casual pickup."
+    },
+    {
+      "id": "finish-not-teleport",
+      "title": "Ash Camp is the finish and vehicle extraction point",
+      "detail": "Finish at the PCTA route boundary, then use the separately verified Ash Camp / FS 38N11 field pickup plan. Do not assume the road is suitable for the Kia Sportage until it is checked 24–48 hours beforehand."
+    }
+  ],
+  "dayFocus": [
+    {
+      "day": 1,
+      "title": "Start deliberately after the long approach drive",
+      "detail": "The opening mileage is short on purpose. Verify the Burney entry, PCT connector, Lake Britton/Pit No. 3 crossing, and the current water report before moving."
+    },
+    {
+      "day": 2,
+      "title": "Protect the largest climbing day and carry through camp",
+      "detail": "This is the biggest ascent. The pre-private site is GIS-screened rather than ground-approved; inspect durable surface, hazards, capacity, and water before committing."
+    },
+    {
+      "day": 3,
+      "title": "Execute the supported private-corridor traverse",
+      "detail": "Carry day packs only, move continuously, meet the driver at the exact field pin, sleep legally off-corridor, and return to the same crossing before Day 4. Dense brush and blowdown remain an explicit field check."
+    },
+    {
+      "day": 4,
+      "title": "Re-enter exactly where Day 3 exited",
+      "detail": "Return to the same Bartle Gap crossing before climbing to the high saddle. Treat the dry camp and water plan as current-condition decisions, not reserved sites."
+    },
+    {
+      "day": 5,
+      "title": "Control the descent even though mileage is short",
+      "detail": "The day is mostly downhill. Use poles, short steps, and a deliberate pace; do not let the lower mileage disguise knee load."
+    },
+    {
+      "day": 6,
+      "title": "Budget for mixed vertical on accumulated fatigue",
+      "detail": "This is a mixed up-and-down day, not a flat recovery. Refresh water evidence and evaluate the group before leaving camp."
+    },
+    {
+      "day": 7,
+      "title": "Treat this as the knee-protection day",
+      "detail": "The route loses roughly 343 feet per mile. Slow the descent, maintain spacing, and make pole use a group default rather than an afterthought."
+    },
+    {
+      "day": 8,
+      "title": "Finish to the actual Ash Camp pickup",
+      "detail": "The final morning still descends substantially. Hit the canonical finish, then use a driver who has already confirmed FS 38N11, gates, turnaround, weather, and vehicle suitability."
+    }
+  ],
+  "emergency": {
+    "disclaimer": "This is a coordination reference, not medical treatment instruction. In an emergency, use the fastest available emergency channel.",
+    "actions": [
+      {
+        "id": "life-threatening",
+        "title": "Immediate threat to life or property",
+        "detail": "Call 911 when cellular service is available. Without service, activate the tested satellite SOS device and keep the group together unless staying creates a greater immediate danger."
+      },
+      {
+        "id": "share-facts",
+        "title": "Send the facts that rescuers need",
+        "detail": "Send the exact coordinate, PCT and route mile, condition, injuries or hazards, party count, intended movement, and battery / communication status. Do not replace facts with a vague 'help' message."
+      },
+      {
+        "id": "preserve-capability",
+        "title": "Preserve navigation and communication capability",
+        "detail": "Keep one phone and the satellite device powered, protect them from water and cold, and write down the last confirmed location if screens or batteries fail."
+      },
+      {
+        "id": "notify-contact",
+        "title": "Notify the preassigned contact only after emergency contact is underway",
+        "detail": "Use the actual team contact tree and check-in protocol after the emergency channel is engaged. The app deliberately does not invent a family contact or a rescue ETA."
+      }
+    ],
+    "contacts": [
+      {
+        "id": "emergency-911",
+        "title": "Emergency services",
+        "value": "911",
+        "when": "Life-threatening emergency when cellular service is available.",
+        "sourceIds": ["shasta-emergency"]
+      },
+      {
+        "id": "shasta-dispatch",
+        "title": "Shasta County Sheriff's dispatch",
+        "value": "+1-530-245-6540",
+        "when": "Non-emergency support or coordination; do not use instead of 911 for an emergency.",
+        "sourceIds": ["shasta-dispatch"]
+      },
+      {
+        "id": "poison-control",
+        "title": "Poison Control",
+        "value": "+1-800-222-1222",
+        "when": "Possible poisoning or exposure; use 911 for collapse, seizure, trouble breathing, or inability to awaken.",
+        "sourceIds": ["poison-control"]
+      },
+      {
+        "id": "burney-park",
+        "title": "McArthur-Burney Falls Memorial State Park",
+        "value": "+1-530-335-2777",
+        "when": "Start-side access, reservations, and park notices; not a substitute for emergency dispatch.",
+        "sourceIds": ["parks-burney-2026"]
+      },
+      {
+        "id": "mccloud-ranger",
+        "title": "McCloud Ranger Station",
+        "value": "+1-530-964-2184",
+        "when": "FS 38N11 / Ash Camp road suitability and forest access questions before pickup.",
+        "sourceIds": ["usfs-mccloud-offices"]
+      }
+    ],
+    "checkInProtocol": [
+      {
+        "id": "test-before-leaving",
+        "title": "Before departure: test it, do not assume it",
+        "detail": "Send one real satellite outbound message and receive an acknowledgement. Put each hiker's phone, offline map, charging cable, and emergency contact list through the same test."
+      },
+      {
+        "id": "daily-cadence",
+        "title": "Each hiking day: use a named cadence",
+        "detail": "Agree on a start, destination, and end-of-day check-in before leaving camp. Record missed check-ins and any route/condition change in Field → Ops Log when signal returns."
+      },
+      {
+        "id": "day-three-cadence",
+        "title": "Day 3: driver and hikers share the same no-contact rule",
+        "detail": "The driver receives the field pin, target window, re-entry time, and no-show rule before the hikers enter the private corridor. No one waits or camps on private land."
+      },
+      {
+        "id": "extraction-cadence",
+        "title": "Ash Camp: confirm driver movement before the final descent",
+        "detail": "Confirm road suitability and pickup timing before Day 8. Send the finishing message from the PCTA boundary; do not promise an exact arrival time based on an unverified road."
+      }
+    ]
+  },
+  "offlineLimitations": [
+    "This bundle retains the confirmed itinerary and official sources but cannot see a same-day closure, road gate, fire order, smoke plume, water flow, campsite occupancy, passenger check-in, baggage, or live airline gate change unless Flight Watch is refreshed.",
+    "A live condition snapshot has an explicit fetched time and source status. If it is stale, missing, or marked manual-required, perform that named check before treating it as usable.",
+    "Keep a separate offline topographic/navigation map on every hiker's phone; this app is an operational companion, not the only navigation tool."
+  ],
+  "sourceIds": [
+    "pcta-private-timberland",
+    "pcta-bartle-gap",
+    "pcta-ash-camp",
+    "parks-burney-2026",
+    "usfs-pct-access-points",
+    "usfs-mccloud-offices",
+    "shasta-emergency",
+    "shasta-dispatch",
+    "poison-control",
+    "ready-communication-plan"
+  ]
+}

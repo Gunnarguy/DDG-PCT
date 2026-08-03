@@ -1,0 +1,855 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-03T00:34:21.608Z",
+  "terrainContractSha256": "185e86a3863c0b2f335eaa51ad6a8220916f9fd25bbeaa30782ddc278e67b66c",
+  "route": {
+    "officialPctaMiles": 51.844,
+    "extractedCenterlineMiles": 51.833902,
+    "startPctMile": 1420.653,
+    "finishPctMile": 1472.497,
+    "totalGainFeet": 6244,
+    "totalLossFeet": 6795,
+    "minElevationFeet": 2402,
+    "maxElevationFeet": 6134,
+    "geometrySource": "PCTA authoritative Centerline Feature Service, calibrated to PCTA 2026 half-mile markers",
+    "elevationSource": "USGS 3DEP elevation service (bare-earth DEM); retained Garmin tracks are comparison evidence",
+    "elevationMethod": "25m resampling, centered 200m moving mean, continuous 20ft hysteresis carried across day boundaries",
+    "gradeMethod": "Non-overlapping 100m windows from the rendered USGS 3DEP normalized elevation profile; use as a planning-grade indicator, not a surveyed trail-grade claim."
+  },
+  "dayBoundaries": [
+    {
+      "day": 0,
+      "name": "Burney Falls State Park (Start)",
+      "routeMile": 0,
+      "pctMile": 1420.653,
+      "trailCoordinates": [
+        -121.653273591,
+        41.011147813
+      ],
+      "fieldCoordinates": [
+        -121.65376551,
+        41.01104125
+      ],
+      "fieldToTrailOffsetFeet": 141,
+      "stopType": "camp",
+      "campStatus": null,
+      "packMode": "overnight-pack",
+      "notes": ""
+    },
+    {
+      "day": 1,
+      "name": "Rock Creek camps",
+      "routeMile": 5.609,
+      "pctMile": 1426.262,
+      "trailCoordinates": [
+        -121.714759638,
+        41.022883022
+      ],
+      "fieldCoordinates": [
+        -121.7148808,
+        41.0229341
+      ],
+      "fieldToTrailOffsetFeet": 38,
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "notes": ""
+    },
+    {
+      "day": 2,
+      "name": "Pre-private USFS dry camp",
+      "routeMile": 14.287,
+      "pctMile": 1434.94,
+      "trailCoordinates": [
+        -121.789362546,
+        41.067388597
+      ],
+      "fieldCoordinates": [
+        -121.789562,
+        41.068437
+      ],
+      "fieldToTrailOffsetFeet": 386,
+      "stopType": "camp",
+      "campStatus": "gis-screened-needs-ground-check",
+      "packMode": "overnight-pack",
+      "notes": "Shasta County parcel screen: USFS APN 022-170-001. Candidate is about 250 ft from the PCT, 626 ft from the mapped MVUM road, 0.363 mi from mapped private property, and 5.0% mean sampled slope. Confirm vegetation, hazards, durable surface, and three-person capacity on foot."
+    },
+    {
+      "day": 3,
+      "name": "Bartle Gap planned pickup / re-entry",
+      "routeMile": 26.878,
+      "pctMile": 1447.531,
+      "trailCoordinates": [
+        -121.818152464,
+        41.170304935
+      ],
+      "fieldCoordinates": [
+        -121.819937294,
+        41.170648914
+      ],
+      "fieldToTrailOffsetFeet": 506,
+      "stopType": "support-transfer",
+      "campStatus": "support-transfer-needs-booking-road-check",
+      "packMode": "day-pack-supported",
+      "notes": "This is a required itinerary handoff, not a campsite or a casual bailout: immediate Day 3 pickup, legal off-corridor overnight, then Day 4 return to this exact pin. The driver, vehicle route, gate status, pickup window, and no-contact fallback must be confirmed before the trip."
+    },
+    {
+      "day": 4,
+      "name": "High saddle camp near Road 38N10",
+      "routeMile": 32.247,
+      "pctMile": 1452.9,
+      "trailCoordinates": [
+        -121.880263526,
+        41.176779699
+      ],
+      "fieldCoordinates": [
+        -121.8808339,
+        41.1767853
+      ],
+      "fieldToTrailOffsetFeet": 157,
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "notes": ""
+    },
+    {
+      "day": 5,
+      "name": "Alder / Star City Creek camp",
+      "routeMile": 36.036,
+      "pctMile": 1456.689,
+      "trailCoordinates": [
+        -121.91985045,
+        41.158050122
+      ],
+      "fieldCoordinates": [
+        -121.9202143,
+        41.157895
+      ],
+      "fieldToTrailOffsetFeet": 115,
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "notes": ""
+    },
+    {
+      "day": 6,
+      "name": "Deer Creek Spring camp",
+      "routeMile": 42.386,
+      "pctMile": 1463.039,
+      "trailCoordinates": [
+        -121.985819307,
+        41.13616572
+      ],
+      "fieldCoordinates": [
+        -121.9860782,
+        41.1356197
+      ],
+      "fieldToTrailOffsetFeet": 212,
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "notes": ""
+    },
+    {
+      "day": 7,
+      "name": "Butcherknife Creek camp",
+      "routeMile": 47.99,
+      "pctMile": 1468.643,
+      "trailCoordinates": [
+        -122.026645468,
+        41.129292405
+      ],
+      "fieldCoordinates": [
+        -122.0266769,
+        41.1294222
+      ],
+      "fieldToTrailOffsetFeet": 48,
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "notes": ""
+    },
+    {
+      "day": 8,
+      "name": "Ash Camp pickup",
+      "routeMile": 51.844,
+      "pctMile": 1472.497,
+      "trailCoordinates": [
+        -122.060477854,
+        41.117288505
+      ],
+      "fieldCoordinates": [
+        -122.0606252,
+        41.1170914
+      ],
+      "fieldToTrailOffsetFeet": 83,
+      "stopType": "finish",
+      "campStatus": "verified-trailhead-finish",
+      "packMode": "overnight-pack",
+      "notes": ""
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "startRouteMile": 0,
+      "endRouteMile": 5.609,
+      "startPctMile": 1420.653,
+      "endPctMile": 1426.262,
+      "distanceMiles": 5.609,
+      "startElevationFeet": 2959,
+      "endElevationFeet": 3069,
+      "highPointFeet": 3229,
+      "lowPointFeet": 2749,
+      "gainFeet": 612,
+      "lossFeet": 522,
+      "from": "Burney Falls State Park (Start)",
+      "to": "Rock Creek camps",
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "trailEndCoordinates": [
+        -121.714759638,
+        41.022883022
+      ],
+      "fieldEndCoordinates": [
+        -121.7148808,
+        41.0229341
+      ],
+      "fieldToTrailOffsetFeet": 38
+    },
+    {
+      "day": 2,
+      "startRouteMile": 5.609,
+      "endRouteMile": 14.287,
+      "startPctMile": 1426.262,
+      "endPctMile": 1434.94,
+      "distanceMiles": 8.678,
+      "startElevationFeet": 3069,
+      "endElevationFeet": 4935,
+      "highPointFeet": 5039,
+      "lowPointFeet": 3069,
+      "gainFeet": 2119,
+      "lossFeet": 253,
+      "from": "Rock Creek camps",
+      "to": "Pre-private USFS dry camp",
+      "stopType": "camp",
+      "campStatus": "gis-screened-needs-ground-check",
+      "packMode": "overnight-pack",
+      "trailEndCoordinates": [
+        -121.789362546,
+        41.067388597
+      ],
+      "fieldEndCoordinates": [
+        -121.789562,
+        41.068437
+      ],
+      "fieldToTrailOffsetFeet": 386
+    },
+    {
+      "day": 3,
+      "startRouteMile": 14.287,
+      "endRouteMile": 26.878,
+      "startPctMile": 1434.94,
+      "endPctMile": 1447.531,
+      "distanceMiles": 12.591,
+      "startElevationFeet": 4935,
+      "endElevationFeet": 5071,
+      "highPointFeet": 5489,
+      "lowPointFeet": 4935,
+      "gainFeet": 1458,
+      "lossFeet": 1291,
+      "from": "Pre-private USFS dry camp",
+      "to": "Bartle Gap planned pickup / re-entry",
+      "stopType": "support-transfer",
+      "campStatus": "support-transfer-needs-booking-road-check",
+      "packMode": "day-pack-supported",
+      "trailEndCoordinates": [
+        -121.818152464,
+        41.170304935
+      ],
+      "fieldEndCoordinates": [
+        -121.819937294,
+        41.170648914
+      ],
+      "fieldToTrailOffsetFeet": 506
+    },
+    {
+      "day": 4,
+      "startRouteMile": 26.878,
+      "endRouteMile": 32.247,
+      "startPctMile": 1447.531,
+      "endPctMile": 1452.9,
+      "distanceMiles": 5.369,
+      "startElevationFeet": 5071,
+      "endElevationFeet": 6092,
+      "highPointFeet": 6104,
+      "lowPointFeet": 5071,
+      "gainFeet": 1118,
+      "lossFeet": 112,
+      "from": "Bartle Gap planned pickup / re-entry",
+      "to": "High saddle camp near Road 38N10",
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "trailEndCoordinates": [
+        -121.880263526,
+        41.176779699
+      ],
+      "fieldEndCoordinates": [
+        -121.8808339,
+        41.1767853
+      ],
+      "fieldToTrailOffsetFeet": 157
+    },
+    {
+      "day": 5,
+      "startRouteMile": 32.247,
+      "endRouteMile": 36.036,
+      "startPctMile": 1452.9,
+      "endPctMile": 1456.689,
+      "distanceMiles": 3.789,
+      "startElevationFeet": 6092,
+      "endElevationFeet": 5417,
+      "highPointFeet": 6134,
+      "lowPointFeet": 5415,
+      "gainFeet": 155,
+      "lossFeet": 813,
+      "from": "High saddle camp near Road 38N10",
+      "to": "Alder / Star City Creek camp",
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "trailEndCoordinates": [
+        -121.91985045,
+        41.158050122
+      ],
+      "fieldEndCoordinates": [
+        -121.9202143,
+        41.157895
+      ],
+      "fieldToTrailOffsetFeet": 115
+    },
+    {
+      "day": 6,
+      "startRouteMile": 36.036,
+      "endRouteMile": 42.386,
+      "startPctMile": 1456.689,
+      "endPctMile": 1463.039,
+      "distanceMiles": 6.35,
+      "startElevationFeet": 5417,
+      "endElevationFeet": 5207,
+      "highPointFeet": 5653,
+      "lowPointFeet": 5207,
+      "gainFeet": 782,
+      "lossFeet": 994,
+      "from": "Alder / Star City Creek camp",
+      "to": "Deer Creek Spring camp",
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "trailEndCoordinates": [
+        -121.985819307,
+        41.13616572
+      ],
+      "fieldEndCoordinates": [
+        -121.9860782,
+        41.1356197
+      ],
+      "fieldToTrailOffsetFeet": 212
+    },
+    {
+      "day": 7,
+      "startRouteMile": 42.386,
+      "endRouteMile": 47.99,
+      "startPctMile": 1463.039,
+      "endPctMile": 1468.643,
+      "distanceMiles": 5.604,
+      "startElevationFeet": 5207,
+      "endElevationFeet": 3297,
+      "highPointFeet": 5207,
+      "lowPointFeet": 3297,
+      "gainFeet": 0,
+      "lossFeet": 1920,
+      "from": "Deer Creek Spring camp",
+      "to": "Butcherknife Creek camp",
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "trailEndCoordinates": [
+        -122.026645468,
+        41.129292405
+      ],
+      "fieldEndCoordinates": [
+        -122.0266769,
+        41.1294222
+      ],
+      "fieldToTrailOffsetFeet": 48
+    },
+    {
+      "day": 8,
+      "startRouteMile": 47.99,
+      "endRouteMile": 51.844,
+      "startPctMile": 1468.643,
+      "endPctMile": 1472.497,
+      "distanceMiles": 3.854,
+      "startElevationFeet": 3297,
+      "endElevationFeet": 2402,
+      "highPointFeet": 3297,
+      "lowPointFeet": 2402,
+      "gainFeet": 0,
+      "lossFeet": 890,
+      "from": "Butcherknife Creek camp",
+      "to": "Ash Camp pickup",
+      "stopType": "finish",
+      "campStatus": "verified-trailhead-finish",
+      "packMode": "overnight-pack",
+      "trailEndCoordinates": [
+        -122.060477854,
+        41.117288505
+      ],
+      "fieldEndCoordinates": [
+        -122.0606252,
+        41.1170914
+      ],
+      "fieldToTrailOffsetFeet": 83
+    }
+  ],
+  "sensitivity": [
+    {
+      "smoothingMeters": 100,
+      "thresholdFeet": 10,
+      "totalGainFeet": 6829,
+      "totalLossFeet": 7383
+    },
+    {
+      "smoothingMeters": 150,
+      "thresholdFeet": 10,
+      "totalGainFeet": 6651,
+      "totalLossFeet": 7209
+    },
+    {
+      "smoothingMeters": 200,
+      "thresholdFeet": 10,
+      "totalGainFeet": 6515,
+      "totalLossFeet": 7065
+    },
+    {
+      "smoothingMeters": 300,
+      "thresholdFeet": 10,
+      "totalGainFeet": 6294,
+      "totalLossFeet": 6844
+    },
+    {
+      "smoothingMeters": 150,
+      "thresholdFeet": 20,
+      "totalGainFeet": 6396,
+      "totalLossFeet": 6955
+    },
+    {
+      "smoothingMeters": 200,
+      "thresholdFeet": 20,
+      "totalGainFeet": 6244,
+      "totalLossFeet": 6795
+    }
+  ],
+  "gradeAnalysis": {
+    "method": "Non-overlapping 100m windows from the rendered USGS 3DEP normalized elevation profile; use as a planning-grade indicator, not a surveyed trail-grade claim.",
+    "windowMeters": 100,
+    "classes": [
+      {
+        "id": "easy",
+        "label": "0–5% gentle"
+      },
+      {
+        "id": "moderate",
+        "label": "5–10% moderate"
+      },
+      {
+        "id": "steep",
+        "label": "10–15% steep"
+      },
+      {
+        "id": "verySteep",
+        "label": "15%+ very steep"
+      }
+    ],
+    "days": [
+      {
+        "day": 1,
+        "windowCount": 91,
+        "maxUphillPercent": 14.1,
+        "maxDownhillPercent": 11.4,
+        "maxAbsolutePercent": 14.1,
+        "maxAbsoluteAngleDegrees": 8,
+        "mix": {
+          "easy": {
+            "label": "0–5% gentle",
+            "meters": 5800,
+            "percent": 64.3
+          },
+          "moderate": {
+            "label": "5–10% moderate",
+            "meters": 2315.6,
+            "percent": 25.7
+          },
+          "steep": {
+            "label": "10–15% steep",
+            "meters": 900,
+            "percent": 10
+          },
+          "verySteep": {
+            "label": "15%+ very steep",
+            "meters": 0,
+            "percent": 0
+          }
+        },
+        "stopType": "camp"
+      },
+      {
+        "day": 2,
+        "windowCount": 140,
+        "maxUphillPercent": 10.5,
+        "maxDownhillPercent": 9.5,
+        "maxAbsolutePercent": 10.5,
+        "maxAbsoluteAngleDegrees": 6,
+        "mix": {
+          "easy": {
+            "label": "0–5% gentle",
+            "meters": 5000,
+            "percent": 35.9
+          },
+          "moderate": {
+            "label": "5–10% moderate",
+            "meters": 8538.7,
+            "percent": 61.3
+          },
+          "steep": {
+            "label": "10–15% steep",
+            "meters": 400,
+            "percent": 2.9
+          },
+          "verySteep": {
+            "label": "15%+ very steep",
+            "meters": 0,
+            "percent": 0
+          }
+        },
+        "stopType": "camp"
+      },
+      {
+        "day": 3,
+        "windowCount": 203,
+        "maxUphillPercent": 10.6,
+        "maxDownhillPercent": 11.3,
+        "maxAbsolutePercent": 11.3,
+        "maxAbsoluteAngleDegrees": 6.5,
+        "mix": {
+          "easy": {
+            "label": "0–5% gentle",
+            "meters": 11563.7,
+            "percent": 57.1
+          },
+          "moderate": {
+            "label": "5–10% moderate",
+            "meters": 8300,
+            "percent": 41
+          },
+          "steep": {
+            "label": "10–15% steep",
+            "meters": 400,
+            "percent": 2
+          },
+          "verySteep": {
+            "label": "15%+ very steep",
+            "meters": 0,
+            "percent": 0
+          }
+        },
+        "stopType": "support-transfer"
+      },
+      {
+        "day": 4,
+        "windowCount": 87,
+        "maxUphillPercent": 9.8,
+        "maxDownhillPercent": 8.6,
+        "maxAbsolutePercent": 9.8,
+        "maxAbsoluteAngleDegrees": 5.6,
+        "mix": {
+          "easy": {
+            "label": "0–5% gentle",
+            "meters": 5131.1,
+            "percent": 59.4
+          },
+          "moderate": {
+            "label": "5–10% moderate",
+            "meters": 3500,
+            "percent": 40.6
+          },
+          "steep": {
+            "label": "10–15% steep",
+            "meters": 0,
+            "percent": 0
+          },
+          "verySteep": {
+            "label": "15%+ very steep",
+            "meters": 0,
+            "percent": 0
+          }
+        },
+        "stopType": "camp"
+      },
+      {
+        "day": 5,
+        "windowCount": 62,
+        "maxUphillPercent": 8.2,
+        "maxDownhillPercent": 11,
+        "maxAbsolutePercent": 11,
+        "maxAbsoluteAngleDegrees": 6.3,
+        "mix": {
+          "easy": {
+            "label": "0–5% gentle",
+            "meters": 3107.7,
+            "percent": 50.9
+          },
+          "moderate": {
+            "label": "5–10% moderate",
+            "meters": 2400,
+            "percent": 39.3
+          },
+          "steep": {
+            "label": "10–15% steep",
+            "meters": 600,
+            "percent": 9.8
+          },
+          "verySteep": {
+            "label": "15%+ very steep",
+            "meters": 0,
+            "percent": 0
+          }
+        },
+        "stopType": "camp"
+      },
+      {
+        "day": 6,
+        "windowCount": 103,
+        "maxUphillPercent": 10.6,
+        "maxDownhillPercent": 11.8,
+        "maxAbsolutePercent": 11.8,
+        "maxAbsoluteAngleDegrees": 6.7,
+        "mix": {
+          "easy": {
+            "label": "0–5% gentle",
+            "meters": 4000,
+            "percent": 39.1
+          },
+          "moderate": {
+            "label": "5–10% moderate",
+            "meters": 5700,
+            "percent": 55.7
+          },
+          "steep": {
+            "label": "10–15% steep",
+            "meters": 526.7,
+            "percent": 5.2
+          },
+          "verySteep": {
+            "label": "15%+ very steep",
+            "meters": 0,
+            "percent": 0
+          }
+        },
+        "stopType": "camp"
+      },
+      {
+        "day": 7,
+        "windowCount": 91,
+        "maxUphillPercent": 3.2,
+        "maxDownhillPercent": 9.9,
+        "maxAbsolutePercent": 9.9,
+        "maxAbsoluteAngleDegrees": 5.6,
+        "mix": {
+          "easy": {
+            "label": "0–5% gentle",
+            "meters": 1100,
+            "percent": 12.2
+          },
+          "moderate": {
+            "label": "5–10% moderate",
+            "meters": 7932.2,
+            "percent": 87.8
+          },
+          "steep": {
+            "label": "10–15% steep",
+            "meters": 0,
+            "percent": 0
+          },
+          "verySteep": {
+            "label": "15%+ very steep",
+            "meters": 0,
+            "percent": 0
+          }
+        },
+        "stopType": "camp"
+      },
+      {
+        "day": 8,
+        "windowCount": 63,
+        "maxUphillPercent": 4,
+        "maxDownhillPercent": 13.1,
+        "maxAbsolutePercent": 13.1,
+        "maxAbsoluteAngleDegrees": 7.5,
+        "mix": {
+          "easy": {
+            "label": "0–5% gentle",
+            "meters": 3802.8,
+            "percent": 61.3
+          },
+          "moderate": {
+            "label": "5–10% moderate",
+            "meters": 1900,
+            "percent": 30.6
+          },
+          "steep": {
+            "label": "10–15% steep",
+            "meters": 500,
+            "percent": 8.1
+          },
+          "verySteep": {
+            "label": "15%+ very steep",
+            "meters": 0,
+            "percent": 0
+          }
+        },
+        "stopType": "finish"
+      }
+    ]
+  },
+  "sourceReceipts": {
+    "pcta": {
+      "capturedAt": "2026-08-03T00:31:04.122Z",
+      "centerlineService": "https://services5.arcgis.com/ZldHa25efPFpMmfB/arcgis/rest/services/PCTA_Centerline/FeatureServer",
+      "markerService": "https://services5.arcgis.com/ZldHa25efPFpMmfB/arcgis/rest/services/PCT_Mile_Markers_2026/FeatureServer",
+      "serviceDescription": "PCTA's authoritative PCT Centerline dataset. This data was originally created using Halfmile's 2018 data release, and updated with all recent reroutes incorporated into the data from 2021, 2022, 2023, and 2024.",
+      "serviceItemId": "71882372584549e3ab6b61fb9c1a0263",
+      "serviceCurrentVersion": 12,
+      "centerlineObjectId": 1,
+      "fullCenterlinePointCount": 1210247,
+      "cropRawPointCount": 16777,
+      "cropNativeMeters": 83418.579,
+      "cropNativeMiles": 51.833902,
+      "startPctaMile": 1420.653,
+      "finishPctaMile": 1472.497,
+      "officialPctaMiles": 51.844,
+      "startControlCoordinate": [
+        -121.65376551,
+        41.01104125
+      ],
+      "finishControlCoordinate": [
+        -122.0606252,
+        41.1170914
+      ],
+      "sourceCrop": "docs/data/source/pcta-centerline-2026-burney-ash.geojson",
+      "sourceCropSha256": "c1cf6064e0c0145b6f9e93c507bf63e38ffe452832f5ff978763a8412d85ed9a"
+    },
+    "usgs3dep": {
+      "endpoint": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/getSamples",
+      "fetchedAt": "2026-08-03T00:34:21.620Z",
+      "sourceTiles": [
+        {
+          "title": "USGS 1 Meter 10 x61y455 CA_NorthernCA_B22",
+          "pointCount": 212,
+          "productName": "USGS_3DEP",
+          "source": "USGS",
+          "verticalDatum": "North American Vertical Datum of 1988 (NAVD 88)",
+          "acquisitionDate": 1712448000000,
+          "publicationDate": 20260324
+        },
+        {
+          "title": "USGS 1 Meter 10 x60y455 CA_NorthernCA_B22",
+          "pointCount": 872,
+          "productName": "USGS_3DEP",
+          "source": "USGS",
+          "verticalDatum": "North American Vertical Datum of 1988 (NAVD 88)",
+          "acquisitionDate": 1712448000000,
+          "publicationDate": 20260324
+        },
+        {
+          "title": "USGS 1 Meter 10 x60y456 CA_NorthernCA_B22",
+          "pointCount": 607,
+          "productName": "USGS_3DEP",
+          "source": "USGS",
+          "verticalDatum": "North American Vertical Datum of 1988 (NAVD 88)",
+          "acquisitionDate": 1712448000000,
+          "publicationDate": 20260324
+        },
+        {
+          "title": "USGS 1 Meter 10 x59y456 CA_NorthernCA_B22",
+          "pointCount": 665,
+          "productName": "USGS_3DEP",
+          "source": "USGS",
+          "verticalDatum": "North American Vertical Datum of 1988 (NAVD 88)",
+          "acquisitionDate": 1712448000000,
+          "publicationDate": 20260324
+        },
+        {
+          "title": "USGS 1 Meter 10 x58y456 CA_NorthernCA_B22",
+          "pointCount": 239,
+          "productName": "USGS_3DEP",
+          "source": "USGS",
+          "verticalDatum": "North American Vertical Datum of 1988 (NAVD 88)",
+          "acquisitionDate": 1712448000000,
+          "publicationDate": 20260324
+        },
+        {
+          "title": "USGS 1 Meter 10 x58y456 CA_CarrHirzDeltaFires_2019_B19",
+          "pointCount": 660,
+          "productName": "USGS_3DEP",
+          "source": "USGS",
+          "verticalDatum": "North American Vertical Datum of 1988 (NAVD 88)",
+          "acquisitionDate": 1597449600000,
+          "publicationDate": 0
+        },
+        {
+          "title": "USGS 1 Meter 10 x57y456 CA_CarrHirzDeltaFires_2019_B19",
+          "pointCount": 90,
+          "productName": "USGS_3DEP",
+          "source": "USGS",
+          "verticalDatum": "North American Vertical Datum of 1988 (NAVD 88)",
+          "acquisitionDate": 1597449600000,
+          "publicationDate": 20210623
+        }
+      ]
+    },
+    "garmin": {
+      "primary": {
+        "status": "audited",
+        "path": "docs/data/source/garmin-section-o-80.826mi.gpx",
+        "sha256": "9073d39f82e0e6ee68f7acc050e857b235bf3ea8b527c4fa7e9110aca2d2e6e1",
+        "originalPointCount": 6916,
+        "activeCropPointCount": 4306,
+        "activeCropNativeMiles": 51.073,
+        "comparisonToRawUsgs3dep": {
+          "matchedPoints": 3345,
+          "meanAbsoluteDifferenceFeet": 45,
+          "medianAbsoluteDifferenceFeet": 40,
+          "maxAbsoluteDifferenceFeet": 188
+        }
+      },
+      "alternate": {
+        "status": "audited",
+        "path": "docs/data/source/garmin-section-o-alternate.gpx",
+        "sha256": "d03294d03195259a60623004e4e7007a9abdb02c5cee0667ba1216104e507868",
+        "originalPointCount": 6991,
+        "activeCropPointCount": 4360,
+        "activeCropNativeMiles": 51.073,
+        "comparisonToRawUsgs3dep": {
+          "matchedPoints": 3345,
+          "meanAbsoluteDifferenceFeet": 16,
+          "medianAbsoluteDifferenceFeet": 12,
+          "maxAbsoluteDifferenceFeet": 122
+        }
+      }
+    }
+  }
+}

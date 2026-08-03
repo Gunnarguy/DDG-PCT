@@ -17,7 +17,7 @@ describe("canonical trip facts", () => {
     );
 
     expect(tripFacts.route.officialMiles).toBe(51.844);
-    expect(tripFacts.route.gpsMiles).toBe(51.664);
+    expect(tripFacts.route.gpsMiles).toBeCloseTo(51.833902, 6);
     expect(itineraryMiles).toBeCloseTo(51.844, 3);
     expect(primaryItinerary.at(-1).routeMileEnd).toBe(51.844);
     expect(Math.max(...primaryItinerary.map((day) => day.distance))).toBe(12.591);
@@ -29,11 +29,19 @@ describe("canonical trip facts", () => {
     });
   });
 
-  it("keeps travel, campsite, and support verification states explicit", () => {
+  it("keeps the confirmed flights and remaining trip gates explicit", () => {
     expect(tripFacts.outboundFlight.verification).toBe(
-      "provided-by-team-needs-united-booking",
+      "team-confirmed-itinerary",
     );
     expect(tripFacts.outboundFlight.scheduledDepartureLocal).toBe("6:40 AM PDT");
+    expect(tripFacts.outboundFlight.scheduledArrivalLocal).toBe(
+      "10:45 AM PDT / 12:45 PM CDT",
+    );
+    expect(tripFacts.inboundFlight.scheduledDepartureLocal).toBe(
+      "6:03 PM PDT / 8:03 PM CDT",
+    );
+    expect(tripFacts.inboundFlight.scheduledArrivalLocal).toBe("10:36 PM PDT");
+    expect(tripFacts.inboundFlight.verification).toBe("team-confirmed-itinerary");
     expect(
       primaryItinerary.find((day) => day.day === 2)?.campStatus,
     ).toBe("gis-screened-needs-ground-check");
@@ -56,14 +64,14 @@ describe("canonical trip facts", () => {
     const day2 = primaryItinerary.find((day) => day.day === 2);
     const day8 = primaryItinerary.find((day) => day.day === 8);
 
-    expect(day2.elevation.gain).toBe(2175);
+    expect(day2.elevation.gain).toBe(2119);
     expect(day2.terrainLoad.effortRank).toBe(2);
-    expect(day8.elevation.loss).toBe(1063);
-    expect(day8.terrainLoad.descentPerMile).toBe(276);
+    expect(day8.elevation.loss).toBe(890);
+    expect(day8.terrainLoad.descentPerMile).toBe(231);
     expect(day8.terrainLoad.kneeLoad).toBe("high");
     const day7 = primaryItinerary.find((day) => day.day === 7);
-    expect(day7.elevation.loss).toBe(1786);
-    expect(day7.terrainLoad.descentPerMile).toBe(319);
+    expect(day7.elevation.loss).toBe(1920);
+    expect(day7.terrainLoad.descentPerMile).toBe(343);
     expect(day7.terrainLoad.kneeLoad).toBe("very-high");
   });
 });

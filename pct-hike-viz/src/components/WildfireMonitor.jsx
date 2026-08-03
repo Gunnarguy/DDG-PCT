@@ -1,40 +1,12 @@
-import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { getAQIInfo, assessHikingSafety } from '../services/wildfireService';
-import { fetchTrailConditions } from '../services/trailConditionsService';
 import '../styles/WildfireMonitor.css';
 
 /**
  * Unified route-condition monitor backed by a daily Supabase snapshot.
  * Open clients use a four-hour cache and can request an authenticated refresh.
  */
-function WildfireMonitor() {
-  const [conditions, setConditions] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [autoRefresh, setAutoRefresh] = useState(true);
-  const [error, setError] = useState(null);
-
-  const loadData = async (force = false) => {
-    setLoading(true);
-    setError(null);
-    try {
-      setConditions(await fetchTrailConditions({ force }));
-    } catch (error) {
-      console.error('Failed to load trail conditions:', error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadData(false);
-    
-    // Auto-refresh every 4 hours
-    if (autoRefresh) {
-      const interval = setInterval(() => loadData(false), 4 * 60 * 60 * 1000);
-      return () => clearInterval(interval);
-    }
-  }, [autoRefresh]);
+function WildfireMonitor({ conditions, loading, error, onRefresh }) {
 
   const wildfireData = conditions?.wildfire ?? { fires: [], count: 0, unavailable: true };
   const airQualityData = conditions?.airQuality ?? { readings: [] };
@@ -66,21 +38,14 @@ function WildfireMonitor() {
         <h3>🛰️ Daily Trail Conditions</h3>
         <div className="monitor-controls">
           <button 
-            onClick={() => loadData(true)}
+            onClick={onRefresh}
             disabled={loading}
             className="refresh-btn"
-            title="Refresh data"
+            title="Fetch a new shared trail-condition snapshot"
           >
             {loading ? '⟳' : '↻'}
           </button>
-          <label className="auto-refresh-toggle">
-            <input
-              type="checkbox"
-              checked={autoRefresh}
-              onChange={(e) => setAutoRefresh(e.target.checked)}
-            />
-            <span>Auto-refresh (4hr)</span>
-          </label>
+          <span className="monitor-cache-note">Shared map + chart snapshot</span>
         </div>
       </div>
 
@@ -137,25 +102,35 @@ function WildfireMonitor() {
       <div className="condition-section">
         <h4>Verification status</h4>
         <div className="source-status-grid">
-          {Object.entries(conditions?.sourceStatus ?? {}).map(([key, source]) => (
-            <a
-              className={`source-status source-status--${source.status}`}
-              href={source.url}
-              target="_blank"
-              rel="noreferrer"
-              key={key}
-            >
-              <strong>{statusLabel(key)}</strong>
-              <span>
-                {source.status === 'live'
-                  ? 'Live source read'
-                  : source.status === 'manual_required'
-                    ? 'Manual check required'
-                    : 'Source unavailable'}
-              </span>
-              {source.detail && <small>{source.detail}</small>}
-            </a>
-          ))}
+          {Object.entries(conditions?.sourceStatus ?? {}).map(([key, source]) => {
+            const content = (
+              <>
+                <strong>{statusLabel(key)}</strong>
+                <span>
+                  {source.status === 'live'
+                    ? 'Live source read'
+                    : source.status === 'manual_required'
+                      ? 'Manual check required'
+                      : 'Source unavailable'}
+                </span>
+                {source.detail && <small>{source.detail}</small>}
+              </>
+            );
+            const className = `source-status source-status--${source.status}`;
+            return source.url ? (
+              <a
+                className={className}
+                href={source.url}
+                target="_blank"
+                rel="noreferrer"
+                key={key}
+              >
+                {content}
+              </a>
+            ) : (
+              <div className={className} key={key}>{content}</div>
+            );
+          })}
         </div>
         <p className="truth-note">
           “Live source read” means the source responded; it does not certify that
@@ -363,12 +338,26 @@ function WildfireMonitor() {
           California State Parks · PCTA official links
         </p>
         <p className="monitoring-note">
-          ⏰ Supabase saves one server snapshot daily; open apps check a
-          four-hour cache and can refresh on demand
+          ⏰ Supabase saves one server snapshot daily; this shared snapshot feeds
+          the Field panel, map water markers, and elevation-chart water nodes.
         </p>
       </div>
     </div>
   );
 }
+
+WildfireMonitor.propTypes = {
+  conditions: PropTypes.object,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
+  onRefresh: PropTypes.func,
+};
+
+WildfireMonitor.defaultProps = {
+  conditions: null,
+  loading: false,
+  error: null,
+  onRefresh: () => {},
+};
 
 export default WildfireMonitor;

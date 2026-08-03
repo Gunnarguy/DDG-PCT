@@ -104,13 +104,13 @@ private struct PlanWorkspaceView: View {
 
 private struct FieldWorkspaceView: View {
     private enum Mode: String, CaseIterable, Identifiable {
-        case safety = "Safety"
+        case brief = "Brief"
         case opsLog = "Ops Log"
 
         var id: Self { self }
     }
 
-    @State private var mode: Mode = .safety
+    @State private var mode: Mode = .brief
 
     var body: some View {
         VStack(spacing: 0) {
@@ -124,7 +124,7 @@ private struct FieldWorkspaceView: View {
             .padding(.top, 8)
 
             switch mode {
-            case .safety:
+            case .brief:
                 SafetyView()
             case .opsLog:
                 OpsLogView()

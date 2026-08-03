@@ -149,11 +149,19 @@ const ElevationProfile = ({
     
     if (hikingTrail[0].length < 3) return [];
 
-    // This lightweight curve is for chart rendering. Canonical gain/loss totals
-    // come from the normalized user-supplied GPX contract in tripFacts.
-    // Step 1: Apply a short moving average so the rendered curve is legible.
+    // Canonical points are already 25m-resampled and 200m-smoothed by the
+    // terrain build. Do not smooth or re-measure those points again: doing so
+    // changes the approved profile and moves day boundaries.
+    const hasCanonicalRouteMiles =
+      hikingTrail.length > 1 &&
+      hikingTrail.every((point) => Number.isFinite(Number(point?.[3]))) &&
+      Number(hikingTrail.at(-1)?.[3]) > 0;
+
+    // Legacy/non-canonical imports still get a light display-only smoothing
+    // fallback so this component remains safe when viewing archival datasets.
     const SMOOTHING_WINDOW = 5; // Average over 5 points
     const smoothedElevations = hikingTrail.map((point, i) => {
+      if (hasCanonicalRouteMiles) return Number(point[2]);
       const start = Math.max(0, i - Math.floor(SMOOTHING_WINDOW / 2));
       const end = Math.min(hikingTrail.length, i + Math.ceil(SMOOTHING_WINDOW / 2));
       const window = hikingTrail.slice(start, end);
@@ -168,7 +176,7 @@ const ElevationProfile = ({
 
     // First point
     data.push({
-      dist: 0,
+      dist: hasCanonicalRouteMiles ? Number(hikingTrail[0][3]) : 0,
       ele: smoothedElevations[0],
       original: hikingTrail[0],
       grade: 0,
@@ -176,9 +184,9 @@ const ElevationProfile = ({
       cumulativeLoss: 0
     });
 
-    // Step 2: Build a raw cumulative curve, then scale it to the canonical
-    // 200m-smoothed, continuous 20ft-hysteresis totals below.
-    const ELEVATION_THRESHOLD = 10; // feet
+    // Canonical accumulation uses continuous 20-foot hysteresis. Keeping the
+    // exact threshold here makes hover totals agree with the same artifact.
+    const ELEVATION_THRESHOLD = hasCanonicalRouteMiles ? 20 : 10; // feet
     let lastCountedElevation = smoothedElevations[0];
 
     for (let i = 1; i < hikingTrail.length; i++) {
@@ -206,7 +214,10 @@ const ElevationProfile = ({
       const grade = distFeet > 0 ? (eleChange / distFeet) * 100 : 0;
       
       data.push({
-        dist: totalDist / MILES_TO_METERS,
+        dist:
+          hasCanonicalRouteMiles && Number.isFinite(Number(curr[3]))
+            ? Number(curr[3])
+            : totalDist / MILES_TO_METERS,
         ele: currEle,
         original: curr,
         grade,
@@ -214,6 +225,8 @@ const ElevationProfile = ({
         cumulativeLoss
       });
     }
+    if (hasCanonicalRouteMiles) return data;
+
     const gainScale = cumulativeGain > 0
       ? tripFacts.route.totalGainFeet / cumulativeGain
       : 1;
@@ -359,10 +372,10 @@ const ElevationProfile = ({
       totalGain: tripFacts.route.totalGainFeet,
       totalLoss: tripFacts.route.totalLossFeet,
       highPoint: tripFacts.route.highPointFeet,
-      lowPoint: minElevation,
+      lowPoint: tripFacts.route.lowPointFeet,
       avgGrade: avgGrade
     };
-  }, [profileData, totalDistance, minElevation]);
+  }, [profileData, totalDistance]);
 
   const startLabel = useMemo(() => (
     campPoints.find((camp) => (camp?.properties?.routeMile ?? 0) === 0)?.properties?.name
@@ -539,8 +552,12 @@ const ElevationProfile = ({
           type: typeFn(pt),
           icon: iconFn(pt),
           color: colorFn(pt),
-          notes: pt.notes || pt.report || (pt.cellCoverage ? 'Cell coverage check' : null),
+          notes: pt.notes || pt.latestReport || pt.report || (pt.cellCoverage ? 'Cell coverage check' : null),
           status: statusFn(pt),
+          observedAt: pt.observedAt ?? null,
+          ageDays: Number.isFinite(pt.ageDays) ? pt.ageDays : null,
+          reportedBy: pt.reportedBy ?? null,
+          sourceUrl: pt.liveWaterSourceUrl ?? null,
           source: pt
         });
       });
@@ -557,7 +574,8 @@ const ElevationProfile = ({
         if (condition.includes('flowing') || source.reliability?.includes('reliable')) return '#1479D1';
         return '#607D8B';
       },
-      (source) => source.condition
+      (source) => source.currentStatus
+        ?? source.condition
         ?? source.reportStatus
         ?? source.reliability
         ?? 'Current condition not verified',
@@ -720,7 +738,7 @@ const ElevationProfile = ({
       <div className="elevation-compact-bar">
         <span className="elevation-compact-title">📈 Elevation Profile</span>
         <span className="elevation-compact-stats">
-          Garmin {formatMile(stats.totalMiles)} • +{Math.round(stats.totalGain).toLocaleString()}' / -{Math.round(stats.totalLoss).toLocaleString()}'
+          PCTA / USGS {formatMile(stats.totalMiles)} • +{Math.round(stats.totalGain).toLocaleString()}' / -{Math.round(stats.totalLoss).toLocaleString()}'
         </span>
       </div>
       {/* DDG Team Header (hidden in compact mode) */}
@@ -756,7 +774,7 @@ const ElevationProfile = ({
           <span className="stat-icon">📏</span>
           <div className="stat-content">
             <span className="stat-value">{formatMile(stats.totalMiles)}</span>
-            <span className="stat-label">Cropped Garmin Distance</span>
+            <span className="stat-label">PCTA-Calibrated Distance</span>
           </div>
         </div>
         <div className="elevation-stat elevation-stat--gain">
@@ -1327,7 +1345,21 @@ const ElevationProfile = ({
             <strong>{selectedMarker.name}</strong>
             <span>{selectedMarker.type} · Mile {selectedMarker.mile.toFixed(1)} · {formatElevation(selectedMarker.elevation)}</span>
             {selectedMarker.status && <span className="profile-node-detail__status">{String(selectedMarker.status).replaceAll('-', ' ')}</span>}
+            {selectedMarker.type === 'Water' && selectedMarker.observedAt && (
+              <span>
+                Field report {selectedMarker.observedAt}
+                {selectedMarker.ageDays !== null
+                  ? ` · ${selectedMarker.ageDays} day${selectedMarker.ageDays === 1 ? '' : 's'} old`
+                  : ''}
+                {selectedMarker.reportedBy ? ` · ${selectedMarker.reportedBy}` : ''}
+              </span>
+            )}
             {(selectedMarker.notes || selectedMarker.segment) && <p>{selectedMarker.notes || selectedMarker.segment}</p>}
+            {selectedMarker.type === 'Water' && selectedMarker.sourceUrl && (
+              <a href={selectedMarker.sourceUrl} target="_blank" rel="noreferrer">
+                Open PCT Water Report ↗
+              </a>
+            )}
           </div>
           <button type="button" onClick={() => setSelectedMarker(null)} aria-label="Close marker details">×</button>
         </div>
@@ -1414,13 +1446,13 @@ const ElevationProfile = ({
           ))}
         </div>
         <div className="altitude-section-context">
-          <span className="context-badge context-badge--safe">✓ Normalized Route Peak: 6,129' (Moderate Altitude)</span>
+          <span className="context-badge context-badge--safe">✓ Normalized Route Peak: {tripFacts.route.highPointFeet.toLocaleString()}' (Moderate Altitude)</span>
           <span className="context-detail">Low AMS risk for most hikers. Stay hydrated, watch for headache/nausea. High Sierra (13,000'+) requires acclimatization.</span>
         </div>
       </div>
 
       <p className="elevation-source-note">
-        📊 Elevation from Garmin COURSE_334289912.gpx · Cross-checked with Halfmile PCT dataset · Grade difficulty: 
+        📊 Elevation from USGS 3DEP bare-earth DEM, sampled on the PCTA 2026 centerline · Garmin exports retained as comparison evidence · Grade difficulty:
         <span className="grade-key grade-easy">●Easy &lt;5%</span>
         <span className="grade-key grade-moderate">●Moderate 5-10%</span>
         <span className="grade-key grade-steep">●Steep 10-15%</span>

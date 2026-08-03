@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 2,
+  "updatedAt": "2026-08-02",
+  "status": "planned-supported-traverse-with-verification-gates",
+  "scope": "Operational facts and gates for the Burney Falls PCT access to Ash Camp trip. This file does not invent a booking, road condition, campsite approval, or closure clearance.",
+  "team": ["Dan", "Drew", "Gunnar"],
+  "tripDates": {
+    "arrival": "2026-08-28",
+    "hikingStart": "2026-08-29",
+    "hikingFinish": "2026-09-05",
+    "contingency": "2026-09-06",
+    "departure": "2026-09-07"
+  },
+  "workingFlights": {
+    "status": "team-confirmed-itinerary",
+    "confirmedAt": "2026-08-02",
+    "confirmationSource": "Team-confirmed DAN SJC UA481 - UA1317 itinerary",
+    "disclaimer": "The team has confirmed this itinerary. Airline operations can still change, so United's live status controls the travel-day delay, gate, and arrival check; an aircraft tracker is supplemental and never a boarding-pass source.",
+    "inbound": {
+      "travelers": ["Dan", "Drew"],
+      "flightNumber": "UA481",
+      "origin": "ORD",
+      "destination": "SJC",
+      "scheduledDepartureLocal": "Aug 28 · 6:03 PM PDT / 8:03 PM CDT",
+      "scheduledArrivalLocal": "Aug 28 · 10:36 PM PDT",
+      "scheduledDepartureAt": "2026-08-28T18:03:00-07:00",
+      "scheduledArrivalAt": "2026-08-28T22:36:00-07:00"
+    },
+    "outbound": {
+      "travelers": ["Dan", "Drew"],
+      "flightNumber": "UA1317",
+      "origin": "SJC",
+      "destination": "ORD",
+      "scheduledDepartureLocal": "Sep 7 · 6:40 AM PDT",
+      "scheduledArrivalLocal": "Sep 7 · 10:45 AM PDT / 12:45 PM CDT",
+      "scheduledDepartureAt": "2026-09-07T06:40:00-07:00",
+      "scheduledArrivalAt": "2026-09-07T10:45:00-07:00"
+    },
+    "flightTracking": {
+      "provider": "FlightAware AeroAPI when the server-side key is configured; United Flight Status is the authoritative travel-day check.",
+      "providerState": "official-link-ready-provider-key-pending",
+      "refreshPolicy": "Refresh every 6 hours before the 48-hour flight window, every 15 minutes inside it, and every 5 minutes on travel day while the dashboard is open.",
+      "dataBoundary": "A tracker can report an aircraft and operational estimates. It cannot prove the passengers are checked in, have cleared security, or have their bags.",
+      "officialStatusUrl": "https://www.united.com/en/us/flightstatus",
+      "flights": [
+        {
+          "flightNumber": "UA481",
+          "trackingIdent": "UAL481",
+          "travelDate": "2026-08-28",
+          "trackerUrl": "https://www.flightaware.com/live/flight/UAL481"
+        },
+        {
+          "flightNumber": "UA1317",
+          "trackingIdent": "UAL1317",
+          "travelDate": "2026-09-07",
+          "trackerUrl": "https://www.flightaware.com/live/flight/UAL1317"
+        }
+      ]
+    }
+  },
+  "arrivalPlan": {
+    "driver": "Mikaela",
+    "vehicle": "Kia Sportage",
+    "instruction": "Mikaela meets Dan and Drew at SJC after UA481 and drives the team toward the Burney Falls PCT access overnight on Aug 28–29. The 308.1-mile baseline is 6.1 hours before luggage, fuel, food, traffic, and rest. Secure a legal overnight/parking plan and do not begin Day 1 until all three hikers are rested, fed, hydrated, and the current Burney access check is complete.",
+    "driveSnapshot": {
+      "origin": "SJC",
+      "destination": "Burney Falls PCT access",
+      "distanceMiles": 308.1,
+      "durationHours": 6.1,
+      "source": "OSRM road-routing snapshot carried in the generated runtime bundle; live navigation controls on travel day."
+    }
+  },
+  "dayThreeSupport": {
+    "instruction": "This is a required support transfer, not a campsite, casual bailout, or permission to wait on private land. Hike continuously with day packs, exit promptly at the exact field pin, sleep legally off-corridor, and return to the same crossing before Day 4.",
+    "targetHikerWindow": "about 1:30–3:30 PM",
+    "driverReadyBy": "about 1:00 PM",
+    "requiredBeforeStart": [
+      "Named driver accepts both pickup and next-morning re-entry.",
+      "Driver physically verifies legal approach, gate, turnaround, vehicle clearance, and exact field pin.",
+      "Legal off-corridor overnight is booked or otherwise explicitly permitted.",
+      "All three hikers and the driver have the no-contact protocol, satellite message cadence, and exact re-entry time."
+    ],
+    "noShowRule": "Do not wait or camp on private land. Continue only to the pre-screened public-side emergency candidate while escalating by satellite; it is an emergency continuity option, not a scheduled camp."
+  },
+  "finishPlan": {
+    "driver": "Mikaela",
+    "vehicle": "Kia Sportage",
+    "primaryDate": "2026-09-05",
+    "backupDate": "2026-09-06",
+    "pickupWindow": "about 9:30 AM–12:30 PM after a 6:30–7:00 AM start",
+    "road": "FS Road 38N11 / Hawkins Creek Road is unpaved and can be rough. Do not commit the Kia Sportage unless the McCloud Ranger Station confirms current suitability 24–48 hours before pickup.",
+    "driveSnapshot": {
+      "origin": "Ash Camp",
+      "destination": "Campbell",
+      "distanceMiles": 333.3,
+      "durationHours": 6.8,
+      "source": "OSRM road-routing snapshot carried in the generated runtime bundle; live navigation controls on travel day."
+    },
+    "fallback": "A local high-clearance driver or taxi is a secondary plan only after that provider explicitly accepts the Ash Camp / FS 38N11 assignment. Trail angels are a named-and-confirmed tertiary backup, not transportation to assume."
+  },
+  "gates": [
+    {
+      "id": "united-itinerary",
+      "priority": "high",
+      "state": "confirmed",
+      "owner": "Dan + Gunnar",
+      "due": "Aug 26, then travel days",
+      "title": "Monitor the confirmed United itinerary and handoff timing",
+      "detail": "The team confirmed UA481 and UA1317: the itinerary begins Aug 28 at 6:03 PM PDT and ends Sep 7 at 10:45 AM PDT. Use United Flight Status for delay, gate, terminal, and same-night SJC handoff changes; use the optional aircraft tracker as supplemental evidence only.",
+      "blocks": "Nothing is unbooked. A material delay still changes Mikaela's airport handoff and the overnight Burney approach.",
+      "sourceIds": ["team-itinerary-confirmation", "united-flight-status", "flightaware-aeroapi"]
+    },
+    {
+      "id": "arrival-night-staging",
+      "priority": "critical",
+      "state": "open",
+      "owner": "Gunnar + Mikaela",
+      "due": "Before Aug 21",
+      "title": "Confirm legal overnight Burney staging and a driver-rest plan",
+      "detail": "UA481 is scheduled to reach SJC at 10:36 PM PDT, then the same-night SJC-to-Burney route is 308.1 miles / about 6.1 hours before baggage, fuel, food, traffic, and rest. This crosses into Aug 29. Confirm exactly where the team can lawfully sleep, park, transfer gear, and begin the Burney access approach; do not turn a predawn arrival into an automatic hiking start.",
+      "blocks": "A safe, legal, and rested Day 1 start after the confirmed same-night drive.",
+      "sourceIds": ["team-itinerary-confirmation", "parks-burney-2026"]
+    },
+    {
+      "id": "burney-day-use",
+      "priority": "critical",
+      "state": "open",
+      "owner": "Gunnar + Mikaela",
+      "due": "Before Aug 29",
+      "title": "Secure Saturday Burney Falls entry and exact PCT connector",
+      "detail": "August 29 is a Saturday. California State Parks' 2026 pilot requires an advance day-use reservation on Fridays, Saturdays, Sundays, and holidays through September 27; confirm the start-side drop-off and posted trail access too.",
+      "blocks": "Legal vehicle entry and the actual Day 1 start.",
+      "sourceIds": ["parks-burney-2026"]
+    },
+    {
+      "id": "lake-britton-crossing",
+      "priority": "critical",
+      "state": "open",
+      "owner": "Gunnar",
+      "due": "Aug 27–28",
+      "title": "Recheck the Lake Britton / Pit No. 3 Dam crossing",
+      "detail": "The live condition snapshot has carried bridge-work information near the first-day corridor. Confirm the legal PCT crossing with current PCTA, park, utility, and field sources immediately before departure.",
+      "blocks": "The intended Day 1 route if the crossing is closed or controlled.",
+      "sourceIds": ["pct-water", "pcta-closures"]
+    },
+    {
+      "id": "bartle-support",
+      "priority": "critical",
+      "state": "open",
+      "owner": "Gunnar + named driver",
+      "due": "Aug 7; recheck Aug 27",
+      "title": "Book and field-verify the Day 3 Bartle Gap support operation",
+      "detail": "The private-land rule permits continuous PCT passage but prohibits camping or extended stops. PCTA's current Bartle Gap alert also warns of dense brush and likely blowdown around miles 1448–1460.",
+      "blocks": "Starting the supported Day 3 version of this trip.",
+      "sourceIds": ["pcta-private-timberland", "pcta-bartle-gap"]
+    },
+    {
+      "id": "overnights-water",
+      "priority": "high",
+      "state": "open",
+      "owner": "Team",
+      "due": "Aug 27–28",
+      "title": "Revalidate every overnight camp and the Day 2–3 water carry",
+      "detail": "The pre-private site is GIS-screened, not ground-approved. The water plan must work without assuming collection in the private corridor, and every field report needs its age shown.",
+      "blocks": "A safe overnight and the planned Day 3 water reserve.",
+      "sourceIds": ["pct-water", "pcta-private-timberland"]
+    },
+    {
+      "id": "ash-camp-road",
+      "priority": "critical",
+      "state": "open",
+      "owner": "Mikaela + Gunnar",
+      "due": "Sep 3–4",
+      "title": "Verify FS Road 38N11 and Ash Camp pickup vehicle suitability",
+      "detail": "Ash Camp is the defined finish, not an arbitrary 52nd-mile exit. Confirm road condition, gate status, turnaround, weather, daylight, and Kia Sportage suitability with McCloud Ranger Station before driving in.",
+      "blocks": "The primary September 5 extraction.",
+      "sourceIds": ["pcta-ash-camp", "usfs-pct-access-points", "usfs-mccloud-offices"]
+    },
+    {
+      "id": "satellite-comms",
+      "priority": "high",
+      "state": "open",
+      "owner": "Team",
+      "due": "Aug 15",
+      "title": "Test satellite communicator, contact tree, and no-contact protocol",
+      "detail": "Send an actual outbound and acknowledgement test, keep the shared itinerary and emergency contacts offline, and make sure every hiker knows the Day 3 and Ash Camp message cadence.",
+      "blocks": "Reliable coordination when cell service is unavailable.",
+      "sourceIds": ["field-brief"]
+    }
+  ],
+  "sources": [
+    {
+      "id": "team-itinerary-confirmation",
+      "title": "Team-confirmed United itinerary",
+      "kind": "team evidence",
+      "checkedAt": "2026-08-02",
+      "note": "DAN SJC UA481 - UA1317 confirmed by the team. The itinerary span is Aug 28 6:03 PM PDT through Sep 7 10:45 AM PDT."
+    },
+    {
+      "id": "united-flight-status",
+      "title": "United: Flight Status",
+      "url": "https://www.united.com/en/us/flightstatus",
+      "kind": "official",
+      "checkedAt": "2026-08-02",
+      "note": "Authoritative travel-day airline status, gate, and delay check."
+    },
+    {
+      "id": "flightaware-aeroapi",
+      "title": "FlightAware AeroAPI flight status and tracking",
+      "url": "https://www.flightaware.com/commercial/aeroapi",
+      "kind": "supplemental live data",
+      "checkedAt": "2026-08-02",
+      "note": "Optional server-side provider for aircraft position and estimates; it does not replace United or prove passenger readiness."
+    },
+    {
+      "id": "parks-burney-2026",
+      "title": "California State Parks: 2026 Burney Falls day-use reservations",
+      "url": "https://www.parks.ca.gov/post/102",
+      "kind": "official",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "pcta-private-timberland",
+      "title": "PCTA: Private timberland access restrictions in Northern California",
+      "url": "https://closures.pcta.org/closure/eDTns8WfTkvDtYlimQlJ",
+      "kind": "official",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "pcta-bartle-gap",
+      "title": "PCTA: Bartle Gap brush and blowdown alert",
+      "url": "https://closures.pcta.org/closure/jR2pac6ijlObt8Z2eNGG",
+      "kind": "official",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "pcta-closures",
+      "title": "PCTA closure map",
+      "url": "https://closures.pcta.org/",
+      "kind": "official",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "pct-water",
+      "title": "PCT Water Report",
+      "url": "https://pctwater.com/",
+      "kind": "field report",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "pcta-ash-camp",
+      "title": "PCTA: Ash Camp trailhead",
+      "url": "https://explore.pcta.org/trailheads/ash-camp",
+      "kind": "official",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "usfs-pct-access-points",
+      "title": "USFS: Pacific Crest Trail access points",
+      "url": "https://www.fs.usda.gov/Internet/FSE_DOCUMENTS/fsm9_008485.pdf",
+      "kind": "official",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "usfs-mccloud-offices",
+      "title": "USFS: McCloud Ranger Station",
+      "url": "https://www.fs.usda.gov/r05/shasta-trinity/offices",
+      "kind": "official",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "shasta-emergency",
+      "title": "Shasta County: Emergencies",
+      "url": "https://www.shastacounty.gov/county-administrative-office/page/emergencies",
+      "kind": "official",
+      "checkedAt": "2026-08-02",
+      "note": "Use 911 for an emergency that threatens life or property."
+    },
+    {
+      "id": "shasta-dispatch",
+      "title": "Shasta County Sheriff: referral agencies and dispatch",
+      "url": "https://www.shastacounty.gov/sheriff/page/referral-agencies",
+      "kind": "official",
+      "checkedAt": "2026-08-02",
+      "note": "The page lists Sheriff's dispatch at (530) 245-6540 for non-emergency support."
+    },
+    {
+      "id": "poison-control",
+      "title": "Poison Control: contact a poison center",
+      "url": "https://www.poison.org/contact-us",
+      "kind": "official",
+      "checkedAt": "2026-08-02",
+      "note": "US poison-center help: 1-800-222-1222. Call 911 for collapse, seizure, trouble breathing, or inability to awaken."
+    },
+    {
+      "id": "ready-communication-plan",
+      "title": "Ready.gov: family emergency communication plan",
+      "url": "https://www.ready.gov/sites/default/files/2020-03/family-emergency-communication-planning-document.pdf",
+      "kind": "official",
+      "checkedAt": "2026-08-02",
+      "note": "Complete and distribute an emergency contact plan before departure."
+    },
+    {
+      "id": "field-brief",
+      "title": "DDG offline field brief",
+      "kind": "internal",
+      "note": "Generated in Phase 6 from the same canonical route and operations artifacts."
+    }
+  ]
+}

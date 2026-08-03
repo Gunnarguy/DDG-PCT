@@ -2,15 +2,17 @@
 
 ## Burney Falls to Ash Camp, August 28–September 7, 2026
 
-**Audit date:** July 29, 2026
+**Audit date:** August 2, 2026
 
-**Controlling route version:** PCTA January 2026 centerline and 2026 mile markers
+**Controlling terrain contract:** docs/data/canonical/burney-ash-terrain-2026.json · 2026-08-02-pcta-usgs-v1
+
+**Controlling operations contract:** docs/data/canonical/trip-operations-2026.json
 
 **Status:** Evidence-backed supported-traverse plan with explicit booking and current-condition gates
 
 **Scope:** Transportation, route geometry, daily itinerary, elevation, land access, camps, water, weather, fire, smoke, communications, equipment, pickup, emergency planning, data architecture, and source hierarchy
 
-> This document controls the website and iOS app. Any number or statement in the UI that conflicts with this document must be treated as stale until it is reconciled. This is a planning document, not a guarantee of trail, water, weather, fire, road, airline, or medical conditions.
+> The terrain and operations JSON contracts above control every generated web/iOS number and operational claim. This document is their human-readable narrative and research record. Any display that conflicts with a generated contract is stale. None of these sources guarantees trail, water, weather, fire, road, airline, or medical conditions.
 
 ---
 
@@ -29,7 +31,8 @@ The defensible current route is:
 - **Finish coordinate:** `41.1170914, -122.0606252`
 - **Finish PCT mile:** approximately **1472.50** on the January 2026 PCTA centerline
 - **Official centerline distance:** approximately **51.84 miles**
-- **Garmin cropped-track distance:** approximately **51.66 miles**
+- **Measured PCTA centerline geometry:** **51.833902 miles** (reported separately from official mileage)
+- **Garmin cropped-track comparison:** **51.073 miles** (not authoritative)
 - **Planning display distance:** **51.8 PCT miles**
 - **Direction:** northbound
 - **Primary hiking dates:** Saturday, August 29 through Saturday, September 5
@@ -85,7 +88,7 @@ describes a real-world verification gate.
 | Ash Camp is PCT mile 1472.0 | PCTA 2026 geometry places the route endpoint near **1472.50**; the PCTA public page rounds to 1472 | Secondary PCT miles need a source year and precision policy |
 | Day 1 is 8.2 miles | From the real Burney Falls trailhead to Rock Creek it is approximately **5.61 official miles** | Arrival-day effort was overstated |
 | Day 3 ends at Kosk Spring | Kosk does not map to public land in the current screening and is inside the private-land traversal | The “easy” nine-day itinerary may violate current access terms |
-| Total gain/loss is +6,709/−7,286 feet | The user-supplied Garmin GPX normalizes to **+6,524/−7,050 feet** using 25-meter resampling, a centered 200-meter smoothing window, and a continuous 20-foot hysteresis threshold | Raw and point-density-dependent totals are not field-planning numbers |
+| Total gain/loss is +6,709/−7,286 feet | The PCTA centerline sampled against USGS 3DEP normalizes to **+6,244/−6,795 feet** using 25-meter resampling, a centered 200-meter mean, and continuous 20-foot hysteresis | GPS elevation and point-density-dependent totals are comparison evidence, not field-planning numbers |
 | All section profile data describe the active trip | One profile dataset still extends nearly 29 miles beyond Ash Camp | UI can show irrelevant or misleading terrain |
 | Water source miles are canonical | Coordinates are useful, but stored miles mix Halfmile 2023, PCTA 2025, and app route miles | Water ordering and “miles to water” can be wrong |
 | Every displayed camp is verified | Camp coordinates are mapped, but land legality and current site condition are not all verified | False reassurance |
@@ -98,7 +101,7 @@ describes a real-world verification gate.
 3. ✅ Remapped every waypoint to PCTA 2026 geometry.
 4. ✅ Stored PCT mile with `PCTA_2026` source metadata.
 5. ✅ Stored route progress separately from PCT mile.
-6. ✅ Recomputed daily elevation from the cropped Garmin route.
+6. ✅ Recomputed daily elevation from PCTA centerline geometry against USGS 3DEP.
 7. ✅ Removed Kosk from the default itinerary.
 8. ✅ Separated static water locations from timestamped condition reports.
 9. ✅ Replaced the full-Section-O profile in active-trip views.
@@ -111,7 +114,7 @@ describes a real-world verification gate.
 
 ## 3. Flight truth and time-zone normalization
 
-### What the calendar evidence actually proves
+### Confirmed itinerary and time-zone interpretation
 
 The Gmail search found a Google Calendar invitation from Dan named:
 
@@ -122,7 +125,10 @@ Its stored UTC boundaries normalize to:
 - **Start:** Friday, August 28 at **6:03 p.m. PDT**
 - **End:** Monday, September 7 at **10:45 a.m. PDT**
 
-That calendar entry is one trip-spanning block. It is **not an airline confirmation** and does not independently prove the exact departure and arrival times of both legs.
+Dan has now confirmed that this is the working United itinerary. The range is
+therefore the team's source of truth for the trip envelope, while United's
+travel-day status remains authoritative for delays, gates, terminals, and any
+operational schedule change.
 
 ### Likely explanation for the apparent duplicate
 
@@ -133,38 +139,40 @@ The provided UA481 entry says:
 
 Converted to Pacific time, that is:
 
-- ORD departure represented in Pacific time: August 28 at **6:00 p.m. PDT**
+- ORD departure represented in Pacific time: August 28 at **6:03 p.m. PDT**
 - SJC arrival: August 28 at **10:36 p.m. PDT**
 
-That closely matches the calendar block beginning at 6:03 p.m. PDT. The most likely explanation is that the calendar and flight entry are the **same itinerary displayed in different time zones**, with a minor schedule change or transcription difference.
+That matches the calendar block beginning at 6:03 p.m. PDT: it is the same
+itinerary displayed in different time zones, not an early-evening SJC arrival.
 
-### Working transportation timeline
-
-Until the United booking is checked, use this as a planning assumption, not a ticket record:
+### Confirmed transportation timeline
 
 | Event | Local time at event | Pacific-normalized time | Status |
 |---|---:|---:|---|
-| UA481 ORD departure | About 8:00–8:03 p.m. CDT, Aug 28 | About 6:00–6:03 p.m. PDT, Aug 28 | Likely |
-| UA481 SJC arrival | 10:36 p.m. PDT, Aug 28 | 10:36 p.m. PDT | Likely from supplied time-zone math |
+| UA481 ORD departure | 8:03 p.m. CDT, Aug 28 | 6:03 p.m. PDT, Aug 28 | Team-confirmed itinerary |
+| UA481 SJC arrival | 10:36 p.m. PDT, Aug 28 | 10:36 p.m. PDT | Team-confirmed schedule |
 | Bags and airport exit | About 11:00–11:30 p.m. PDT | Same | Planning estimate |
-| Campbell arrival | About 11:30 p.m.–midnight | Same | Planning estimate |
-| UA1317 SJC departure | 6:40 a.m. PDT, Sep 7 | Same | Supplied, not booking-verified |
-| UA1317 ORD arrival | User entries conflict | Unknown | Must verify |
+| Same-night Burney approach begins | About 11:15–11:45 p.m. PDT | Same | Team-selected ground-transfer plan |
+| UA1317 SJC departure | 6:40 a.m. PDT, Sep 7 | Same | Team-confirmed itinerary |
+| UA1317 ORD arrival | 12:45 p.m. CDT, Sep 7 | 10:45 a.m. PDT | Team-confirmed itinerary |
 
-### Flight verification gate
+### Flight Watch rule
 
-Dan must supply one of these:
+The app now labels this itinerary **team-confirmed**. Its Flight Watch opens
+United's official Flight Status page and can add a server-side FlightAware
+AeroAPI aircraft feed after a key is configured. The aircraft feed is useful
+for an actual position, ETA, and gate estimate; it cannot prove passenger
+check-in, baggage, security clearance, or a safe driving handoff.
 
-- United confirmation email;
-- United app “Trips” screenshot showing both legs;
-- United manage-trip page showing passenger, dates, airports, flight numbers, and local times; or
-- ticket receipt/itinerary PDF.
-
-The app must not label a flight “confirmed” from a Google Calendar event.
+To activate the optional server feed, set `FLIGHTAWARE_AEROAPI_KEY` as a
+Supabase Edge Function secret. It must never be added to the website, iOS app,
+repository, or a client-side environment file. Until then, the official United
+status link and the public tracker links remain available without pretending
+that an aircraft is live.
 
 ### Return-flight operational consequence
 
-If UA1317 really departs SJC at 6:40 a.m. on September 7:
+Because UA1317 departs SJC at 6:40 a.m. on September 7:
 
 - Target airport arrival: approximately **4:40 a.m.**
 - Likely departure from Campbell: approximately **4:05–4:20 a.m.**, depending on the address, parking/drop-off, and current airport guidance
@@ -202,7 +210,7 @@ The PCTA trailhead coordinate is about 0.027 mile from the centerline. The State
 
 ### User-supplied Garmin export audit
 
-The July 29 audit parsed the supplied TCX, two GPX files, two KML files, two
+The August 2 audit parsed the supplied TCX, two GPX files, two KML files, two
 JavaScript/JSON exports, CSV, and FIT:
 
 - TCX, `-2.gpx`, both KML variants, both JavaScript variants, and CSV contain
@@ -211,7 +219,7 @@ JavaScript/JSON exports, CSV, and FIT:
 - The original GPX contains 6,991 points and a different elevation stream, but
   still measures **80.826 miles** with the same endpoints.
 - Cropping either export family to the canonical Burney/Ash pins measures
-  **51.153 miles**. This is corroborating sampled geometry, not the controlling
+  **51.073 miles**. This is corroborating sampled geometry, not the controlling
   PCTA centerline distance.
 - The FIT file is preserved by SHA-256 receipt but is not decoded by the
   repository audit script.
@@ -260,42 +268,40 @@ This plan:
 
 ### Day-by-day plan
 
-Elevation gain/loss below is derived from the user-supplied Garmin GPX after 25-meter resampling, centered 200-meter smoothing, and a continuous 20-foot hysteresis threshold. Distance is from the PCTA 2026 milebook. Field time assumes approximately 1.85 mph over effort-adjusted distance with a 12–35% stop/group allowance; Day 3 uses 2.1 mph because overnight packs are transferred. It is not a promise.
+Elevation gain/loss below is from the PCTA 2026 centerline sampled against the USGS 3DEP bare-earth DEM, using 25-meter resampling, a centered 200-meter mean, and a continuous 20-foot hysteresis threshold. Garmin tracks remain comparison evidence only. Distance is from the PCTA 2026 milebook. Field time assumes approximately 1.85 mph over effort-adjusted distance with a 12–35% stop/group allowance; Day 3 uses 2.1 mph because overnight packs are transferred. It is not a promise.
 
 | Day/date | Leg | Daily mi | Cumulative mi | End PCT mi | Gain/loss | End elev. | Planning read | Field window |
 |---|---|---:|---:|---:|---:|---:|---|---:|
-| 1 · Sat Aug 29 | Burney Falls → Rock Creek | **5.61** | 5.61 | 1426.26 | +700 / −600 ft | ~3,119 ft | Arrival-day shakedown; dam/road crossing; water at end | 3.75–4.5 hr |
-| 2 · Sun Aug 30 | Rock Creek → pre-private USFS dry camp | **8.68** | 14.29 | 1434.94 | +2,175 / −268 ft | ~5,017 ft on trail; 4,902 ft at USGS camp cell | Largest climb; carry water into dry camp; ground-check candidate | 6–7.25 hr |
-| 3 · Mon Aug 31 | USFS dry camp → Bartle Gap exact PCT crossing | **12.59** | 26.88 | 1447.53 | +1,510 / −1,388 ft | ~5,139 ft | **Day packs; continuous private-land travel; timed support extraction; no camping/lingering** | 7.25–8.75 hr |
-| 4 · Tue Sep 1 | Bartle Gap exact re-entry → high saddle near 38N10 | **5.37** | 32.25 | 1452.90 | +1,056 / −86 ft | ~6,110 ft | Re-enter at exact pin; climb to route high point; dry camp | 3.5–4.25 hr |
-| 5 · Wed Sep 2 | High saddle → Alder/Star City | **3.79** | 36.04 | 1456.69 | +159 / −764 ft | ~5,504 ft | Brush/blowdown and knee-loading descent; water uncertain | 2.5–3 hr |
-| 6 · Thu Sep 3 | Alder/Star City → Deer Creek Spring | **6.35** | 42.39 | 1463.04 | +828 / −1,095 ft | ~5,227 ft | Mixed climbing/descending; verify first dependable water | 4.25–5.25 hr |
-| 7 · Fri Sep 4 | Deer Creek Spring → Butcherknife Creek | **5.60** | 47.99 | 1468.64 | +23 / −1,786 ft | ~3,447 ft | Biggest continuous descent; knees are the limiter | 3.75–4.5 hr |
-| 8 · Sat Sep 5 | Butcherknife → Ash Camp | **3.85** | **51.84** | 1472.50 | +73 / −1,063 ft | ~2,457 ft | Short pickup day; poison-oak awareness; rough-road pickup | 2.5–3 hr |
+| 1 · Sat Aug 29 | Burney Falls → Rock Creek | **5.61** | 5.61 | 1426.26 | +612 / −522 ft | ~3,069 ft | Arrival-day shakedown; dam/road crossing; water at end | 3.75–4.5 hr |
+| 2 · Sun Aug 30 | Rock Creek → pre-private USFS dry camp | **8.68** | 14.29 | 1434.94 | +2,119 / −253 ft | ~4,935 ft | Largest climb; carry water into dry camp; ground-check candidate | 6–7.25 hr |
+| 3 · Mon Aug 31 | USFS dry camp → Bartle Gap exact PCT crossing | **12.59** | 26.88 | 1447.53 | +1,458 / −1,291 ft | ~5,071 ft | **Day packs; continuous private-land travel; timed support extraction; no camping/lingering** | 7.25–8.75 hr |
+| 4 · Tue Sep 1 | Bartle Gap exact re-entry → high saddle near 38N10 | **5.37** | 32.25 | 1452.90 | +1,118 / −112 ft | ~6,092 ft | Re-enter at exact pin; climb to route high point; dry camp | 3.5–4.25 hr |
+| 5 · Wed Sep 2 | High saddle → Alder/Star City | **3.79** | 36.04 | 1456.69 | +155 / −813 ft | ~5,417 ft | Brush/blowdown and knee-loading descent; water uncertain | 2.5–3 hr |
+| 6 · Thu Sep 3 | Alder/Star City → Deer Creek Spring | **6.35** | 42.39 | 1463.04 | +782 / −994 ft | ~5,207 ft | Mixed climbing/descending; verify first dependable water | 4.25–5.25 hr |
+| 7 · Fri Sep 4 | Deer Creek Spring → Butcherknife Creek | **5.60** | 47.99 | 1468.64 | +0 / −1,920 ft | ~3,297 ft | Biggest continuous descent; knees are the limiter | 3.75–4.5 hr |
+| 8 · Sat Sep 5 | Butcherknife → Ash Camp | **3.85** | **51.84** | 1472.50 | +0 / −890 ft | ~2,402 ft | Short pickup day; poison-oak awareness; rough-road pickup | 2.5–3 hr |
 | Buffer · Sun Sep 6 | No scheduled trail miles | — | — | — | — | — | Weather/fire/road/injury buffer and home recovery | — |
 
 ### Route totals
 
 - PCTA 2026 centerline distance: **51.84 miles**
-- Existing app geometry distance: **51.66 miles**
-- User-supplied Garmin export crop: **51.15 miles** at lower point density
-- Normalized Garmin-derived gain: **6,524 feet**
-- Normalized Garmin-derived loss: **7,050 feet**
-- Highest normalized route elevation: approximately **6,129 feet**
-- Lowest finish-area elevation:
-  - normalized Garmin profile: approximately **2,457 feet**
-  - USGS 3DEP at Ash Camp pin: approximately **2,365 feet**
+- Measured PCTA centerline geometry: **51.833902 miles**
+- User-supplied Garmin export crop: **51.073 miles** (comparison only)
+- Normalized USGS 3DEP gain: **6,244 feet**
+- Normalized USGS 3DEP loss: **6,795 feet**
+- Highest normalized route elevation: approximately **6,134 feet**
+- Lowest normalized route elevation at Ash Camp: approximately **2,402 feet**
 
 The Ash Camp elevation difference is an example of why the app must store source and method, not just a naked number.
 
 ### Difficulty ranking
 
-1. **Day 3:** 12.59 miles and 2,898 feet of combined vertical movement, plus a non-negotiable timed extraction. Day packs make this materially safer than the rejected full-pack version.
-2. **Day 2:** 2,175 feet of climbing over 8.68 miles, ending dry.
-3. **Day 6:** 1,923 feet of combined vertical movement over 6.35 miles.
-4. **Day 7:** 1,786 feet of descent in 5.6 miles; likely the hardest day on knees.
+1. **Day 3:** 12.59 miles and 2,749 feet of combined vertical movement, plus a non-negotiable timed extraction. Day packs make this materially safer than the rejected full-pack version.
+2. **Day 2:** 2,119 feet of climbing over 8.68 miles, ending dry.
+3. **Day 7:** 1,920 feet of descent in 5.6 miles; likely the hardest day on knees.
+4. **Day 6:** 1,776 feet of combined vertical movement over 6.35 miles.
 5. **Day 1:** moderate terrain, but sleep and transportation make it operationally harder than the profile suggests.
-6. **Day 4:** 1,056 feet of ascent in 5.37 miles after exact-point re-entry, ending near the high point.
+6. **Day 4:** 1,118 feet of ascent in 5.37 miles after exact-point re-entry, ending near the high point.
 7. **Day 8:** short, downhill, and pickup-focused.
 8. **Day 5:** lowest effort-mile score, but still brushy and descent-heavy.
 
@@ -616,32 +622,34 @@ The planned pickup is at Ash Camp before continuing beyond the trip. The McCloud
 
 ## 9. Start logistics
 
-### The arrival-night reality
+### The confirmed same-night drive reality
 
 If UA481 lands at approximately 10:36 p.m. PDT:
 
-- driving directly from SJC to Burney would put the group near Burney around 3:30–4:30 a.m.;
-- the group would arrive exhausted;
-- Mikaela would be doing a long night drive;
+- the same-night SJC-to-Burney route is **308.1 miles / about 6.1 hours before stops**;
+- bags, pickup, fuel, food, traffic, and any driver-rest break push the Burney
+  approach into predawn August 29;
+- this is an **overnight transfer**, even though Mikaela starts driving on
+  August 28;
 - State Park access may not be available overnight; and
-- starting an 8-mile day after that would be poor risk management.
+- starting Day 1 immediately after the road transfer would be poor risk
+  management.
 
-The corrected route makes a better plan possible.
+The team has selected the same-night drive, so the plan must make its safety
+and legality concrete rather than pretending the transfer is short.
 
-### Recommended August 28–29 sequence
+### August 28–29 operating sequence
 
-1. UA481 lands at SJC late Friday evening.
-2. Mikaela picks up Dan and Drew.
-3. Everyone returns to Campbell.
-4. Gear is already packed, weighed, charged, and staged before the flight lands.
-5. Sleep at home.
-6. Depart Campbell around **5:00–5:30 a.m.** on August 29.
-7. Allow approximately five hours plus stops and traffic.
-8. Arrive in the Burney area around **10:30–11:30 a.m.**
-9. Complete the final conditions check and drop-off.
-10. Hike approximately 5.6 miles to Rock Creek.
+1. UA481 lands at SJC at the team-confirmed 10:36 p.m. PDT schedule.
+2. Mikaela picks up Dan and Drew; bags, food, and a vehicle check happen before the northbound drive.
+3. The team makes the SJC-to-Burney approach overnight with a deliberate fuel/food/rest plan.
+4. Before August 21, name and secure the **legal overnight staging location**: where the group can sleep, park, stage gear, and safely begin the Burney access approach.
+5. On August 29, complete the final United/road/park/closure/water check.
+6. Start the 5.609-mile Day 1 only after all three hikers are rested, fed, hydrated, and the Burney access point is legally open.
 
-This is still a long transportation day for Mikaela. Driver fatigue is a real risk. Build a fuel/food/rest stop and do not make the plan depend on a perfect flight arrival.
+This is still a long transport operation for Mikaela. The plan must survive a
+delay and driver fatigue; Flight Watch does not make an overnight road transfer
+safe by itself.
 
 ### Burney entry options
 
@@ -660,7 +668,7 @@ Constraint:
 - August 29 is a Saturday.
 - Make the reservation now if using the main entrance.
 
-[California State Parks reservation announcement](https://www.parks.ca.gov/NewsRelease/1509)
+[California State Parks 2026 Burney Falls reservation notice](https://www.parks.ca.gov/post/102)
 
 #### Clark Creek Road / Burney Falls Trailhead
 
@@ -708,17 +716,17 @@ Official directions:
 2. Turn onto Hawkins Creek Road / Forest Road 38N11.
 3. Continue approximately one mile to Ash Camp.
 
-Use the [PCTA Ash Camp page](https://explore.pcta.org/trailheads/ash-camp) as
-the current public directions reference. A previously cited USFS “Pacific
-Crest Trail Access Points” PDF returned HTTP 404 during the July 28 link audit
-and is not a dependable live source.
+Use the [PCTA Ash Camp page](https://explore.pcta.org/trailheads/ash-camp) and
+the [USFS Pacific Crest Trail access-points PDF](https://www.fs.usda.gov/Internet/FSE_DOCUMENTS/fsm9_008485.pdf)
+as current public direction references. Live navigation and the McCloud Ranger
+Station remain controlling on pickup day.
 
-Current concern:
+Road-condition rule:
 
-- Hawkins Creek Road had a culvert failure in March 2026.
-- A temporary repair reportedly reopened the road.
-- A permanent repair was still planned.
-- This is not enough to assume September access.
+- A route drawn on a map or a historic road report is not proof that FS 38N11
+  is open, passable, ungated, or suitable for the Kia Sportage.
+- Treat road condition and vehicle suitability as open until the ranger station
+  and the driver confirm it 24–48 hours before pickup.
 
 Required:
 
@@ -1183,7 +1191,7 @@ Train for:
 
 - Day 2's 8.68-mile full-pack ascent and dry-camp carry;
 - Day 3's 12.59-mile day-pack distance with a firm arrival window;
-- Day 7's 1,786-foot descent;
+- Day 7's 1,920-foot descent;
 - consecutive days;
 - uneven/brushy tread; and
 - full pack weight.
@@ -1747,7 +1755,8 @@ mathematically or legally ambiguous.
 
 | Gate | Owner | Deadline | Current state |
 |---|---|---|---|
-| Verify UA481 and UA1317 booking/local times | Dan/Gunnar | Immediate | Open |
+| Monitor team-confirmed UA481 / UA1317 in United Flight Status | Dan/Gunnar | Aug 26, then travel days | Confirmed itinerary; live operational check remains |
+| Confirm legal overnight Burney staging and driver-rest plan after the same-night SJC transfer | Gunnar/Mikaela | Aug 21 | Open/critical |
 | Confirm State Park drop-off/access procedure at the canonical start | Team/Mikaela | Aug 7 | Open |
 | Reserve State Park vehicle entry if needed | Gunnar | Immediate | Open |
 | Book named Bartle support driver and backup | Gunnar | Immediate | Open/required before route go |
@@ -1769,7 +1778,7 @@ mathematically or legally ambiguous.
 
 ## 22. Final controlling statement
 
-As of July 29, 2026, the best-supported trip definition is:
+As of August 2, 2026, the best-supported trip definition is:
 
 > Dan, Drew, and Gunnar will hike northbound from the actual Burney Falls PCT
 > access near PCTA 2026 mile 1420.65 to Ash Camp near mile 1472.50. The route is

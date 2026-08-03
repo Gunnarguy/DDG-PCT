@@ -1,449 +1,376 @@
 import SwiftUI
-import SwiftData
 
+/// The Field workspace's durable, source-backed reference. Live water, smoke,
+/// closures, crossings, and road signals live one tap away in TrailConditionsView.
+/// This screen intentionally works with no network and never presents a static
+/// carrier estimate or an old field report as a clearance.
 struct SafetyView: View {
-    @Query private var waterSources: [WaterSource]
-    @State private var commsBriefing: String?
-    @State private var isGeneratingComms = false
+    private let brief = FieldBrief.bundled
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(uiColor: .systemGroupedBackground).ignoresSafeArea()
-                
-                ScrollView {
-                    VStack(spacing: 20) {
-                        // Unified daily route-condition monitor
-                        NavigationLink {
-                            TrailConditionsView()
-                        } label: {
-                            HStack {
-                                Image(systemName: "flame.fill")
-                                    .font(.system(size: 32))
-                                    .foregroundStyle(.red)
-                                    .shadow(color: .red.opacity(0.6), radius: 8)
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text("Daily Trail Conditions")
-                                        .font(.headline.bold())
-                                        .foregroundStyle(.primary)
-                                    Text("Water · closures · crossings · fire · smoke")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                                Image(systemName: "chevron.right").foregroundStyle(.secondary)
-                            }
-                            .padding()
-                            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
-                            .overlay(RoundedRectangle(cornerRadius: 16).stroke(.red.opacity(0.3), lineWidth: 1))
-                        }
-                        
-                        // Altitude Zones
-                        VStack(alignment: .leading, spacing: 16) {
-                            Text("Altitude Risk Zones")
-                                .font(.title3.bold())
-                            
-                            ForEach(altitudeZones) { zone in
-                                HStack(spacing: 16) {
-                                    Circle()
-                                        .fill(riskColor(zone.risk))
-                                        .frame(width: 16, height: 16)
-                                        .shadow(color: riskColor(zone.risk).opacity(0.6), radius: 5)
-                                    
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        HStack {
-                                            Text(zone.name)
-                                                .font(.headline)
-                                            Spacer()
-                                            Text("\(Int(zone.minFt))–\(Int(zone.maxFt)) ft")
-                                                .font(.caption.bold())
-                                                .foregroundStyle(.secondary)
-                                        }
-                                        Text(zone.description)
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                        if zone.risk != "none" {
-                                            Text(zone.mitigation)
-                                                .font(.caption2.bold())
-                                                .foregroundStyle(.orange)
-                                        }
-                                    }
-                                }
-                                .padding()
-                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
-                            }
-                        }
-                        
-                        // Connectivity
-                        VStack(alignment: .leading, spacing: 16) {
-                            HStack {
-                                Text("Comms & Connectivity")
-                                    .font(.title3.bold())
-                                Spacer()
-                                Button {
-                                    Task { await generateCommsBriefing() }
-                                } label: {
-                                    if isGeneratingComms {
-                                        ProgressView().controlSize(.small)
-                                    } else {
-                                        Image(systemName: "sparkles")
-                                            .font(.title3)
-                                            .foregroundStyle(.purple)
-                                    }
-                                }
-                                .disabled(isGeneratingComms)
-                            }
-                            
-                            if let briefing = commsBriefing {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    HStack {
-                                        Image(systemName: "sparkles")
-                                            .foregroundStyle(.purple)
-                                        Text("Siri Comms Strategy")
-                                            .font(.caption.bold())
-                                            .foregroundStyle(.purple)
-                                    }
-                                    Text(briefing)
-                                        .font(.callout)
-                                }
-                                .padding()
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(LinearGradient(colors: [.purple.opacity(0.15), .blue.opacity(0.05)], startPoint: .topLeading, endPoint: .bottomTrailing))
-                                )
-                                .overlay(RoundedRectangle(cornerRadius: 12).stroke(.purple.opacity(0.2), lineWidth: 1))
-                            }
-                            
-                            ForEach(connectivityZones) { zone in
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text(zone.name).font(.headline)
-                                    HStack(spacing: 8) {
-                                        CoverageChip(carrier: "VZW", level: zone.cellCoverage.verizon)
-                                        CoverageChip(carrier: "ATT", level: zone.cellCoverage.att)
-                                        CoverageChip(carrier: "TMO", level: zone.cellCoverage.tmobile)
-                                    }
-                                    Text(zone.notes)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
-                            }
-                        }
-                        
-                        // Sat Devices
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Satellite Uplink").font(.title3.bold())
-                            ForEach(satelliteDevices) { device in
-                                VStack(alignment: .leading, spacing: 6) {
-                                    HStack {
-                                        Image(systemName: "antenna.radiowaves.left.and.right")
-                                            .foregroundStyle(.blue)
-                                        Text(device.device).font(.headline)
-                                        Spacer()
-                                        Text(device.cost)
-                                            .font(.caption2.bold())
-                                            .padding(.horizontal, 8)
-                                            .padding(.vertical, 4)
-                                            .background(.blue.opacity(0.1), in: Capsule())
-                                            .foregroundStyle(.blue)
-                                    }
-                                    Text(device.features.joined(separator: " · "))
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                    Text(device.trailNotes)
-                                        .font(.caption2.bold())
-                                        .foregroundStyle(.orange)
-                                }
-                                .padding()
-                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
-                            }
-                        }
-                        
-                        // Emergency Contacts
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Emergency Protocol").font(.title3.bold())
-                            VStack(spacing: 12) {
-                                emergencyRow(icon: "phone.fill", color: .red, title: "911", subtitle: "When cell coverage is available")
-                                emergencyRow(icon: "star.fill", color: .yellow, title: "Shasta County SAR", subtitle: "(530) 245-6540")
-                                emergencyRow(icon: "cross.fill", color: .orange, title: "Poison Control", subtitle: "1-800-222-1222")
-                            }
-                            .padding()
-                            .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
-                        }
-                    }
-                    .padding()
-                    .padding(.bottom, 40)
-                }
-            }
-            .navigationTitle("Safety & Survival")
-        }
-    }
-    
-    private func emergencyRow(icon: String, color: Color, title: String, subtitle: String) -> some View {
-        HStack {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundStyle(color)
-                .frame(width: 32)
-            VStack(alignment: .leading) {
-                Text(title).font(.headline)
-                Text(subtitle).font(.caption).foregroundStyle(.secondary)
-            }
-            Spacer()
-            Image(systemName: "arrow.up.right.circle.fill")
-                .foregroundStyle(.tertiary)
-        }
-    }
-
-    private func generateCommsBriefing() async {
-        isGeneratingComms = true
-        defer { isGeneratingComms = false }
-
-        do {
-            commsBriefing = try await OnDeviceLLM.shared.connectivityBriefing()
-        } catch {
-            commsBriefing = "Could not generate comms briefing."
-        }
-    }
-
-    private func riskColor(_ risk: String) -> Color {
-        switch risk {
-        case "none": return .green
-        case "low": return .yellow
-        case "moderate": return .orange
-        default: return .red
-        }
-    }
-
-    private func waterColor(_ reliability: String) -> Color {
-        switch reliability.lowercased() {
-        case "excellent": return .blue
-        case "good": return .cyan
-        case "seasonal": return .orange
-        case "sketchy": return .red
-        default: return .gray
-        }
-    }
-}
-
-struct CoverageChip: View {
-    let carrier: String
-    let level: String
-
-    var body: some View {
-        HStack(spacing: 4) {
-            Text(carrier)
-                .font(.system(size: 11, weight: .bold))
-            Image(systemName: iconFor(level))
-                .font(.system(size: 10))
-                .foregroundStyle(colorFor(level))
-        }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .background(colorFor(level).opacity(0.15), in: Capsule())
-        .foregroundStyle(colorFor(level))
-    }
-
-    private func iconFor(_ level: String) -> String {
-        switch level {
-        case "excellent", "good": return "cellularbars"
-        case "fair", "spotty": return "cellularbars"
-        default: return "xmark"
-        }
-    }
-
-    private func colorFor(_ level: String) -> Color {
-        switch level {
-        case "excellent", "good": return .green
-        case "fair": return .yellow
-        case "spotty": return .orange
-        default: return .red
-        }
-    }
-}
-
-// MARK: - Wildfire Monitor (live data)
-
-struct WildfireMonitorView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var waterSources: [WaterSource]
-    @State private var fires: [WildfireService.WildfireInfo] = []
-    @State private var aqiReadings: [WildfireService.AQIReading] = []
-    @State private var isLoading = false
-    @State private var lastRefresh: Date?
-    @State private var safetyBriefing: String?
-    @State private var network = NetworkMonitor.shared
-
-    var body: some View {
-        ZStack {
-            Color(uiColor: .systemGroupedBackground).ignoresSafeArea()
-            
             ScrollView {
-                VStack(spacing: 20) {
-                    // AI Safety Briefing
-                    if let briefing = safetyBriefing {
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack {
-                                Image(systemName: "sparkles")
-                                    .foregroundStyle(.purple)
-                                Text("Siri Safety Analysis")
-                                    .font(.caption.bold())
-                                    .foregroundStyle(.purple)
-                            }
-                            Text(briefing)
-                                .font(.callout)
-                        }
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(LinearGradient(colors: [.purple.opacity(0.15), .red.opacity(0.05)], startPoint: .topLeading, endPoint: .bottomTrailing))
-                        )
-                        .overlay(RoundedRectangle(cornerRadius: 16).stroke(.purple.opacity(0.2), lineWidth: 1))
-                    }
-                    
-                    // Active Fires
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Active Fire Threats").font(.title3.bold())
-                        if fires.isEmpty && !isLoading {
-                            HStack {
-                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
-                                Text("No active fires in Section O corridor")
-                                    .font(.subheadline.bold())
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(.green.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
-                        } else {
-                            ForEach(fires, id: \.name) { fire in
-                                VStack(alignment: .leading, spacing: 8) {
-                                    HStack {
-                                        Image(systemName: "flame.fill").foregroundStyle(.red)
-                                        Text(fire.name).font(.headline)
-                                    }
-                                    HStack(spacing: 16) {
-                                        Label("\(fire.acres) acres", systemImage: "rectangle.dashed")
-                                        Label("\(fire.containment)%", systemImage: "circle.circle")
-                                    }
-                                    .font(.caption.bold())
-                                    .foregroundStyle(.secondary)
-                                    if let discovered = fire.discovered {
-                                        Text("Discovered \(discovered, style: .relative) ago")
-                                            .font(.caption2)
-                                            .foregroundStyle(.tertiary)
-                                    }
-                                }
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
-                            }
-                        }
-                    }
-                    
-                    // AQI
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Air Quality Index").font(.title3.bold())
-                        if aqiReadings.isEmpty && !isLoading {
-                            Text("No AQI data available")
-                                .foregroundStyle(.secondary)
-                        } else {
-                            ForEach(aqiReadings, id: \.location) { reading in
-                                HStack {
-                                    VStack(alignment: .leading) {
-                                        Text(reading.location).font(.headline)
-                                        if let category = reading.category {
-                                            Text(category).font(.caption).foregroundStyle(.secondary)
-                                        }
-                                    }
-                                    Spacer()
-                                    if let aqi = reading.aqi {
-                                        Text("\(aqi)")
-                                            .font(.title.bold())
-                                            .foregroundStyle(aqiColor(aqi))
-                                    } else {
-                                        Text("--").font(.title).foregroundStyle(.secondary)
-                                    }
-                                }
-                                .padding()
-                                .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
-                            }
-                        }
-                    }
-                    
-                    if let refresh = lastRefresh {
-                        Text("Last updated: \(refresh.formatted(date: .omitted, time: .shortened))")
-                            .font(.caption2)
+                VStack(alignment: .leading, spacing: 20) {
+                    currentConditionsCard
+                    routeContractCard
+                    operatingRulesSection
+                    dailyFieldCardSection
+                    verificationGatesSection
+                    emergencySection
+                    checkInSection
+                    offlineLimitsSection
+                    sourceLinksSection
+                }
+                .padding()
+                .padding(.bottom, 36)
+            }
+            .background(Color(uiColor: .systemGroupedBackground))
+            .navigationTitle("Field Brief")
+        }
+    }
+
+    private var currentConditionsCard: some View {
+        NavigationLink {
+            TrailConditionsView()
+        } label: {
+            HStack(alignment: .top, spacing: 14) {
+                Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
+                    .font(.system(size: 28))
+                    .foregroundStyle(.red)
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Open daily conditions before moving")
+                        .font(.headline.bold())
+                        .foregroundStyle(.primary)
+                    Text("Water · closures · crossings · fires · smoke · weather. A source response is not a safety clearance.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.tertiary)
+            }
+            .fieldCard(tint: .red)
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Opens the protected daily source snapshot and refresh control")
+    }
+
+    private var routeContractCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("Offline route contract", systemImage: "shield.checkered")
+                .font(.headline)
+                .foregroundStyle(.teal)
+            Text(brief.route.name)
+                .font(.title3.bold())
+            HStack(spacing: 10) {
+                FieldMetric(value: String(format: "%.3f", brief.route.officialPctaMiles), label: "PCTA miles")
+                FieldMetric(value: "+\(brief.route.totalGainFeet.formatted())", label: "ft up")
+                FieldMetric(value: "−\(brief.route.totalLossFeet.formatted())", label: "ft down")
+            }
+            Text("Measured centerline: \(brief.route.centerlineGeometryMiles, specifier: "%.3f") mi · elevation \(brief.route.minElevationFeet.formatted())–\(brief.route.maxElevationFeet.formatted()) ft")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text("\(brief.terrainContractVersion) · \(brief.terrainContractSha256.prefix(12))…")
+                .font(.caption2.monospaced())
+                .foregroundStyle(.secondary)
+        }
+        .fieldCard(tint: .teal)
+    }
+
+    private var operatingRulesSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            FieldSectionHeader(title: "Operating rules", icon: "exclamationmark.shield.fill", color: .orange)
+            ForEach(brief.operationalRules) { rule in
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(rule.title)
+                        .font(.subheadline.bold())
+                    Text(rule.detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .fieldCard(tint: .orange, compact: true)
+            }
+        }
+    }
+
+    private var dailyFieldCardSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            FieldSectionHeader(title: "Day-by-day field card", icon: "figure.hiking", color: .green)
+            Text("The terrain numbers below are the same normalized PCTA + USGS contract used by the map and elevation profile.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            ForEach(brief.daily) { day in
+                FieldDayCard(day: day)
+            }
+        }
+    }
+
+    private var verificationGatesSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            FieldSectionHeader(title: "Remaining verification gates", icon: "checklist", color: .red)
+            Text("Open is not a failure state—it means no one is allowed to pretend the fact has been verified. Record real confirmation in Field → Ops Log.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            ForEach(brief.operations.gates.filter { $0.state != "confirmed" }) { gate in
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack(alignment: .top) {
+                        Label(gate.priority.uppercased(), systemImage: gate.priority == "critical" ? "exclamationmark.triangle.fill" : "clock.badge.exclamationmark")
+                            .font(.caption2.bold())
+                            .foregroundStyle(gate.priority == "critical" ? .red : .orange)
+                        Spacer()
+                        Text(gate.due)
+                            .font(.caption2.bold())
                             .foregroundStyle(.secondary)
-                            .padding(.top)
+                    }
+                    Text(gate.title)
+                        .font(.subheadline.bold())
+                    Text("Owner: \(gate.owner) · blocks: \(gate.blocks)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .fieldCard(tint: gate.priority == "critical" ? .red : .orange, compact: true)
+            }
+        }
+    }
+
+    private var emergencySection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            FieldSectionHeader(title: "Emergency coordination", icon: "cross.case.fill", color: .red)
+            Text(brief.emergency.disclaimer)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            ForEach(Array(brief.emergency.actions.enumerated()), id: \.element.id) { index, action in
+                HStack(alignment: .top, spacing: 10) {
+                    Text("\(index + 1)")
+                        .font(.caption.bold())
+                        .foregroundStyle(.white)
+                        .frame(width: 22, height: 22)
+                        .background(.red, in: Circle())
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(action.title)
+                            .font(.subheadline.bold())
+                        Text(action.detail)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                 }
-                .padding()
+                .fieldCard(tint: .red, compact: true)
             }
-        }
-        .navigationTitle("Threat Monitor")
-        .refreshable {
-            await refreshData()
-        }
-        .task {
-            if fires.isEmpty {
-                await refreshData()
-            }
-        }
-        .overlay {
-            if isLoading && fires.isEmpty {
-                VStack {
-                    ProgressView()
-                    Text("Scanning satellite imagery...").font(.caption).foregroundStyle(.secondary)
+
+            ForEach(brief.emergency.contacts) { contact in
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(contact.title)
+                                .font(.subheadline.bold())
+                            Text(contact.when)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        if let phoneURL = phoneURL(for: contact.value) {
+                            Link(contact.value, destination: phoneURL)
+                                .font(.subheadline.bold())
+                                .foregroundStyle(.blue)
+                        } else {
+                            Text(contact.value)
+                                .font(.subheadline.bold())
+                        }
+                    }
+                    sourceLinks(for: contact.sourceIDs)
                 }
-                .padding()
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                .fieldCard(tint: .red, compact: true)
             }
         }
     }
 
-    private func refreshData() async {
-        isLoading = true
-        defer { isLoading = false }
-
-        fires = await WildfireService.shared.fetchWildfiresWithCache(modelContext: modelContext)
-
-        let epaKey = SupabaseManager.shared.config.epaApiKey
-        if !epaKey.isEmpty {
-            aqiReadings = await WildfireService.shared.fetchAQIWithCache(
-                modelContext: modelContext, apiKey: epaKey
-            )
-        }
-
-        lastRefresh = .now
-
-        do {
-            let currentZone = altitudeZones.first { $0.id == "moderate" }
-            safetyBriefing = try await OnDeviceLLM.shared.safetyBriefing(
-                fires: fires.map { ($0.name, $0.acres, $0.containment) },
-                aqi: aqiReadings.map { ($0.location, $0.aqi, $0.category, nil as Int?) },
-                waterSources: waterSources.map { ($0.name, $0.reliability, $0.notes) },
-                currentAltitudeZone: currentZone,
-                connectivityGaps: Array(connectivityZones)
-            )
-        } catch {
-            safetyBriefing = nil
+    private var checkInSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            FieldSectionHeader(title: "Comms and check-in protocol", icon: "antenna.radiowaves.left.and.right", color: .blue)
+            Text("This replaces static carrier confidence with an actual tested-device and named-cadence plan.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            ForEach(brief.emergency.checkInProtocol) { item in
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(item.title)
+                        .font(.subheadline.bold())
+                    Text(item.detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .fieldCard(tint: .blue, compact: true)
+            }
         }
     }
 
-    private func aqiColor(_ aqi: Int) -> Color {
-        switch aqi {
-        case 0...50:    return .green
-        case 51...100:  return .yellow
-        case 101...150: return .orange
-        case 151...200: return .red
-        case 201...300: return .purple
-        default:        return .brown
+    private var offlineLimitsSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            FieldSectionHeader(title: "Offline limits", icon: "wifi.slash", color: .orange)
+            ForEach(brief.offlineLimitations, id: \.self) { limitation in
+                Label(limitation, systemImage: "exclamationmark.circle")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
+        .fieldCard(tint: .orange)
+    }
+
+    private var sourceLinksSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            FieldSectionHeader(title: "Primary sources", icon: "link", color: .teal)
+            Text("These were captured into the field brief on \(brief.updatedAt). Recheck live agencies before departure.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            sourceLinks(for: brief.sourceIDs)
+        }
+        .fieldCard(tint: .teal)
+    }
+
+    @ViewBuilder
+    private func sourceLinks(for sourceIDs: [String]) -> some View {
+        let sources = sourceIDs.compactMap { brief.sourcesByID[$0] }
+        if !sources.isEmpty {
+            FlowLayout(spacing: 7) {
+                ForEach(sources) { source in
+                    if let urlString = source.url, let url = URL(string: urlString) {
+                        Link(source.title, destination: url)
+                            .font(.caption2)
+                            .lineLimit(1)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 5)
+                            .background(.teal.opacity(0.1), in: Capsule())
+                    } else {
+                        Text(source.title)
+                            .font(.caption2)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 5)
+                            .background(.secondary.opacity(0.1), in: Capsule())
+                    }
+                }
+            }
+        }
+    }
+
+    private func phoneURL(for phone: String) -> URL? {
+        let dialable = phone.filter { $0.isNumber || $0 == "+" }
+        return URL(string: "tel://\(dialable)")
+    }
+}
+
+private struct FieldMetric: View {
+    let value: String
+    let label: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(value)
+                .font(.subheadline.bold())
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct FieldPill: View {
+    let text: String
+    let color: Color
+
+    var body: some View {
+        Text(text)
+            .font(.caption2.bold())
+            .foregroundStyle(color)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(color.opacity(0.1), in: Capsule())
+    }
+}
+
+private struct FieldDayCard: View {
+    let day: FieldBrief.Day
+
+    private var tint: Color {
+        day.day == 3 ? .red : .green
+    }
+
+    var body: some View {
+        DisclosureGroup {
+            VStack(alignment: .leading, spacing: 9) {
+                Text(day.detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                HStack(spacing: 8) {
+                    FieldPill(
+                        text: String(format: "PCT %.3f–%.3f", day.pctMileStart, day.pctMileEnd),
+                        color: .secondary
+                    )
+                    if day.packMode == "day-pack-supported" {
+                        FieldPill(text: "Day pack", color: .red)
+                    }
+                    if day.stopType == "support-transfer" {
+                        FieldPill(text: "No camp", color: .red)
+                    }
+                }
+                Text("End: \(day.endName) · \(day.endElevationFeet.formatted()) ft")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.top, 6)
+        } label: {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+                    Text("Day \(day.day)")
+                        .font(.headline.bold())
+                        .foregroundStyle(tint)
+                    Spacer()
+                    Text(String(format: "%.3f mi", day.distanceMiles))
+                        .font(.subheadline.bold())
+                }
+                Text(day.title)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                HStack(spacing: 12) {
+                    Label("+\(day.gainFeet.formatted())", systemImage: "arrow.up.right")
+                        .foregroundStyle(.green)
+                    Label("−\(day.lossFeet.formatted())", systemImage: "arrow.down.right")
+                        .foregroundStyle(.red)
+                }
+                .font(.caption.bold())
+            }
+        }
+        .tint(tint)
+        .fieldCard(tint: tint, compact: true)
+    }
+}
+
+private struct FieldSectionHeader: View {
+    let title: String
+    let icon: String
+    let color: Color
+
+    var body: some View {
+        Label(title, systemImage: icon)
+            .font(.title3.bold())
+            .foregroundStyle(color)
+    }
+}
+
+private extension View {
+    func fieldCard(tint: Color, compact: Bool = false) -> some View {
+        padding(compact ? 12 : 16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: compact ? 13 : 16))
+            .overlay(
+                RoundedRectangle(cornerRadius: compact ? 13 : 16)
+                    .stroke(tint.opacity(0.22), lineWidth: 1)
+            )
     }
 }
 
 #Preview {
     SafetyView()
-        .modelContainer(for: [WildfireCache.self, AirQualityCache.self, WaterSource.self], inMemory: true)
 }

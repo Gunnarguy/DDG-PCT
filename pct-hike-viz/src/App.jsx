@@ -15,18 +15,17 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import { connectivityZones } from "./data/connectivityData";
 import {
   ddgTeam,
-  dayItinerary,
-  gearBlueprint,
   nextStepsChecklist,
   packPlanner,
   permitChecklist,
   referenceLibrary,
   resupplyPlan,
-  riskPlaybook,
-  scheduleOptions,
-  travelPlan,
 } from "./data/planContent";
 import { fetchLiveSatelliteCoverage } from "./services/liveSatelliteService";
+import {
+  fetchTrailConditions,
+  mergeWaterSourcesWithLiveConditions,
+} from "./services/trailConditionsService";
 import {
   normalizeCoordinatePoint,
   normalizeFeaturePoint,
@@ -132,6 +131,7 @@ const deriveRouteStats = (
   routeSegments = [],
   waterSources = [],
   connectivityZones = [],
+  routeProperties = {},
 ) => {
   const totalMiles = routeSegments.reduce(
     (sum, segment) => sum + (segment.distance || 0),
@@ -189,20 +189,27 @@ const deriveRouteStats = (
   }
 
   const connectivitySummary = summarizeConnectivity(connectivityZones);
+  const canonicalGain = Number(routeProperties?.total_gain_feet);
+  const canonicalLoss = Number(routeProperties?.total_loss_feet);
+  const canonicalHigh = Number(routeProperties?.max_elevation);
+  const canonicalLow = Number(routeProperties?.min_elevation);
 
   return {
     totalMiles: Number.isFinite(totalMiles) ? Number(totalMiles.toFixed(1)) : 0,
-    totalGain: Math.round(totalGain),
-    totalLoss: Math.round(totalLoss),
-    highPoint,
-    lowPoint,
+    totalGain: Number.isFinite(canonicalGain) ? canonicalGain : Math.round(totalGain),
+    totalLoss: Number.isFinite(canonicalLoss) ? canonicalLoss : Math.round(totalLoss),
+    highPoint: Number.isFinite(canonicalHigh)
+      ? { ...highPoint, elevation: canonicalHigh }
+      : highPoint,
+    lowPoint: Number.isFinite(canonicalLow)
+      ? { ...lowPoint, elevation: canonicalLow }
+      : lowPoint,
     waterSourceCount: waterSources.length,
     connectivityBlackoutMiles: connectivitySummary.blackoutMiles,
     connectivityRangeMiles: connectivitySummary.rangeMiles,
     basePlanMiles: Number.isFinite(totalMiles)
       ? Number(totalMiles.toFixed(1))
       : 0,
-    fullSectionMiles: null,
   };
 };
 
@@ -305,7 +312,6 @@ function App() {
   const [selectedStyle, setSelectedStyle] = useState("topo");
   const { syncStatus, teamRoster } = useAuth();
   const [activeTab, setActiveTab] = useState("mission");
-  const [selectedItinerary, setSelectedItinerary] = useState("express"); // "express" or "relaxed"
   // Fetch hike data from public/data at runtime
   const [hikeData, setHikeData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -340,6 +346,9 @@ function App() {
   const [liveSatelliteData, setLiveSatelliteData] = useState(null);
   const [liveSatelliteStatus, setLiveSatelliteStatus] = useState("idle");
   const [liveSatelliteError, setLiveSatelliteError] = useState(null);
+  const [trailConditions, setTrailConditions] = useState(null);
+  const [trailConditionsLoading, setTrailConditionsLoading] = useState(true);
+  const [trailConditionsError, setTrailConditionsError] = useState(null);
   const [profileHoverPoint, setProfileHoverPoint] = useState(null);
   const [sidebarWidth, setSidebarWidth] = useState(28); // percent of app width
   const [isDragging, setIsDragging] = useState(false);
@@ -401,6 +410,30 @@ function App() {
 
     loadHikeData();
   }, []);
+
+  const loadTrailConditions = useCallback(async ({ force = false } = {}) => {
+    setTrailConditionsLoading(true);
+    setTrailConditionsError(null);
+    try {
+      setTrailConditions(await fetchTrailConditions({ force }));
+    } catch (error) {
+      console.error("Failed to load shared trail conditions:", error);
+      setTrailConditionsError(error.message);
+    } finally {
+      setTrailConditionsLoading(false);
+    }
+  }, []);
+
+  // One shared condition snapshot drives the field panel, map, and elevation
+  // chart. Do not let each component independently fetch a different answer.
+  useEffect(() => {
+    void loadTrailConditions();
+    const interval = window.setInterval(
+      () => void loadTrailConditions(),
+      4 * 60 * 60 * 1000,
+    );
+    return () => window.clearInterval(interval);
+  }, [loadTrailConditions]);
 
   // Handle sidebar resizing
   const handleResizeStart = useCallback((e) => {
@@ -541,96 +574,12 @@ function App() {
 
   const campPoints = useMemo(() => {
     if (!hikeData) return [];
-
-    if (selectedItinerary === "express") {
-      const R = 6371e3; // meters
-      const rawPath =
-        hikeData.route?.path ?? hikeData.route?.geometry?.coordinates ?? [];
-      const trailPoints = rawPath.map(normalizeTrailCoordinate).filter(Boolean);
-
-      const trailPointsWithDistance = [];
-      let totalDistM = 0;
-      if (trailPoints.length) {
-        trailPointsWithDistance.push({ pt: trailPoints[0], distM: 0 });
-        for (let i = 1; i < trailPoints.length; i++) {
-          const prev = trailPoints[i - 1];
-          const curr = trailPoints[i];
-          const φ1 = (prev[1] * Math.PI) / 180;
-          const φ2 = (curr[1] * Math.PI) / 180;
-          const Δφ = ((curr[1] - prev[1]) * Math.PI) / 180;
-          const Δλ = ((curr[0] - prev[0]) * Math.PI) / 180;
-          const a =
-            Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-            Math.cos(φ1) *
-              Math.cos(φ2) *
-              Math.sin(Δλ / 2) *
-              Math.sin(Δλ / 2);
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-          const d = R * c;
-          totalDistM += d;
-          trailPointsWithDistance.push({ pt: curr, distM: totalDistM });
-        }
-      }
-
-      const getCoordsAtMile = (mile) => {
-        const targetM = mile * 1609.344;
-        if (!trailPointsWithDistance.length) return [0, 0, 0];
-        if (targetM <= 0) return trailPointsWithDistance[0].pt;
-
-        let bestPt = trailPointsWithDistance[0].pt;
-        let minDiff = Infinity;
-
-        for (const item of trailPointsWithDistance) {
-          const diff = Math.abs(item.distM - targetM);
-          if (diff < minDiff) {
-            minDiff = diff;
-            bestPt = item.pt;
-          }
-        }
-        return bestPt;
-      };
-
-      let milesAccumulated = 0;
-      const expressCamps = dayItinerary.map((dayItem) => {
-        milesAccumulated += dayItem.distance;
-        const coords = getCoordsAtMile(milesAccumulated);
-        return {
-          type: "Feature",
-          geometry: {
-            type: "Point",
-            coordinates: coords,
-          },
-          properties: {
-            name:
-              dayItem.day === 0
-                ? "Burney Falls State Park (Start)"
-                : dayItem.day === 8
-                ? "Ash Camp Pickup"
-                : dayItem.to,
-            day: dayItem.day,
-            itinerary: "express",
-            segment: dayItem.notes || dayItem.terrain,
-            mile: 1420.653 + milesAccumulated,
-            routeMile: milesAccumulated,
-            type:
-              dayItem.day === 0
-                ? "Trailhead"
-                : dayItem.day === 8
-                ? "Finish"
-                : "Camp",
-          },
-        };
-      });
-
-      return expressCamps;
-    }
-
     return [...hikeData.features]
       .filter((feature) => feature.properties.day >= 0)
       .map(normalizeFeaturePoint)
       .filter(Boolean)
       .sort((a, b) => a.properties.day - b.properties.day);
-  }, [hikeData, selectedItinerary]);
+  }, [hikeData]);
 
   const hikingTrail = useMemo(() => {
     if (!hikeData) return [];
@@ -643,25 +592,6 @@ function App() {
 
   const routeSegments = useMemo(() => {
     if (!hikeData) return [];
-
-    if (selectedItinerary === "express") {
-      const fallbackSegments = [];
-      for (let i = 1; i < campPoints.length; i += 1) {
-        const previous = campPoints[i - 1];
-        const current = campPoints[i];
-
-        fallbackSegments.push({
-          day: current.properties.day,
-          distance: current.properties.routeMile - previous.properties.routeMile,
-          start: previous.properties.name,
-          end: current.properties.name,
-          focus: current.properties.segment ?? "On-trail push",
-          gain: current.properties.gain ?? "n/a",
-          loss: current.properties.loss ?? "n/a",
-        });
-      }
-      return fallbackSegments;
-    }
 
     if (hikeData.route?.properties?.segments) {
       return hikeData.route.properties.segments;
@@ -684,7 +614,7 @@ function App() {
     }
 
     return fallbackSegments;
-  }, [hikeData, campPoints, selectedItinerary]);
+  }, [hikeData, campPoints]);
 
   const totalMiles = useMemo(
     () =>
@@ -735,10 +665,14 @@ function App() {
     },
     [hikeData],
   );
-  const waterSources = useMemo(() => {
+  const staticWaterSources = useMemo(() => {
     const rawWater = hikeData?.waterSources ?? [];
     return rawWater.map(normalizeCoordinatePoint).filter(Boolean);
   }, [hikeData]);
+  const waterSources = useMemo(
+    () => mergeWaterSourcesWithLiveConditions(staticWaterSources, trailConditions),
+    [staticWaterSources, trailConditions],
+  );
   const waterSourceMeta = useMemo(
     () => deriveWaterMeta(waterSources),
     [waterSources],
@@ -751,9 +685,10 @@ function App() {
       routeSegments,
       waterSources,
       connectivityZones,
+      hikeData?.route?.properties,
     );
     setComputedStats(stats);
-  }, [hikingTrail, routeSegments, waterSources]);
+  }, [hikingTrail, routeSegments, waterSources, hikeData]);
 
   const handleSelectPoint = (day) => {
     const target = campPoints.find((feature) => feature.properties.day === day);
@@ -808,7 +743,6 @@ function App() {
               onStyleChange={setSelectedStyle}
               totalMiles={totalMiles}
               basePlanMiles={computedStats?.basePlanMiles ?? totalMiles}
-              fullSectionMiles={computedStats?.fullSectionMiles}
               hikingTrail={hikingTrail}
               driveSegments={driveSegments}
               campPoints={campPoints}
@@ -861,18 +795,18 @@ function App() {
         campPoints={campPoints}
         waterSources={waterSources}
         waterSourceMeta={waterSourceMeta}
-        scheduleOptions={scheduleOptions}
-        travelPlan={travelPlan}
         resupplyPlan={resupplyPlan}
         permitChecklist={permitChecklist}
         referenceLibrary={referenceLibrary}
-        gearBlueprint={gearBlueprint}
         packPlanner={packPlanner}
-        riskPlaybook={riskPlaybook}
         nextStepsChecklist={nextStepsChecklist}
         liveSatelliteData={liveSatelliteData}
         liveSatelliteStatus={liveSatelliteStatus}
         liveSatelliteError={liveSatelliteError}
+        trailConditions={trailConditions}
+        trailConditionsLoading={trailConditionsLoading}
+        trailConditionsError={trailConditionsError}
+        onRefreshTrailConditions={() => loadTrailConditions({ force: true })}
         computedStats={computedStats}
         onSelectPoint={handleSelectPoint}
         setPopupInfo={setPopupInfo}
@@ -880,8 +814,6 @@ function App() {
         onUserChange={setCurrentUserId}
         theme={theme}
         onToggleTheme={toggleTheme}
-        selectedItinerary={selectedItinerary}
-        onItineraryChange={setSelectedItinerary}
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />

@@ -35,7 +35,7 @@ export const connectivityZones = [
       tmobile: 'none'
     },
     satelliteCompatible: true,
-    notes: 'Exact pickup/re-entry pin. Assume no cell service and coordinate by inReach. This is a timed transfer point—not a campsite.'
+    notes: 'Exact pickup/re-entry pin. Assume no cell service and coordinate with the tested two-way satellite communicator. This is a timed transfer point—not a campsite.'
   },
   {
     name: 'Alder / Star City camp',
@@ -71,55 +71,28 @@ export const connectivityZones = [
       tmobile: 'unknown'
     },
     satelliteCompatible: true,
-    notes: 'Remote forest-road trailhead. Use inReach for the pickup rendezvous and treat cellular service as unavailable until field-tested.'
+    notes: 'Remote forest-road trailhead. Use the tested two-way satellite communicator for the pickup rendezvous and treat cellular service as unavailable until field-tested.'
   }
 ];
 
 export const satelliteDevices = [
   {
-    device: 'iPhone 16 Pro Max',
-    features: ['Emergency SOS via satellite', 'Roadside Assistance via satellite', 'Find My via satellite'],
-    coverage: 'Global (requires iOS 18.1+)',
-    cost: 'Free for 2 years with activation',
-    notes: 'Works in open sky with clear view. Emergency services only—cannot message contacts.',
-    compatibility: 'iPhone 14 and later (including iPhone 15, 16 series)',
-    trailNotes: 'Best on exposed ridges. Limited under tree canopy. 15-30 second connection time.'
+    device: 'Compatible phone satellite features',
+    features: ['Emergency escalation', 'Possible contact messaging', 'Location sharing where supported'],
+    coverage: 'Eligibility varies by device, account, software, country, and open-sky conditions',
+    cost: 'Check current manufacturer and carrier terms',
+    notes: 'Useful personal fallback. It is not the shared team communications plan.',
+    compatibility: 'Confirm on every hiker\'s actual phone before departure',
+    trailNotes: 'Test outdoors before the trip; trees, terrain, and conditions can delay or block a connection.'
   },
   {
-    device: 'Garmin inReach Mini 2',
-    features: ['Two-way messaging', 'SOS to GEOS rescue', 'GPS tracking', 'Weather forecasts'],
-    coverage: 'Global Iridium network',
-    cost: '$14.95+/month subscription',
-    notes: 'Works under tree cover better than iPhone satellite. Proven rescue device.',
-    compatibility: 'Standalone device',
-    trailNotes: 'Industry standard for PCT thru-hikers. Reliable even in canyons.'
-  },
-  {
-    device: 'Garmin inReach Messenger',
-    features: ['Two-way messaging', 'SOS', 'GPS tracking', 'Connects to phone for easier typing'],
-    coverage: 'Global Iridium network',
-    cost: '$14.95+/month subscription',
-    notes: 'Newer lightweight model (114g). Pairs with phone via Bluetooth.',
-    compatibility: 'Standalone with phone pairing',
-    trailNotes: 'Easier messaging than Mini 2. Good for daily check-ins with family.'
-  },
-  {
-    device: 'Zoleo Satellite Communicator',
-    features: ['Two-way messaging', 'SOS', 'Email', 'Social media check-ins'],
-    coverage: 'Global Iridium network',
-    cost: '$20/month basic plan',
-    notes: 'Lower subscription cost. 200-hour battery life. No annual contract.',
-    compatibility: 'Standalone with phone pairing',
-    trailNotes: 'Budget-friendly alternative to Garmin. Good community reviews.'
-  },
-  {
-    device: 'Garmin GPSMAP 67i',
-    features: ['Full GPS maps', 'Two-way messaging', 'SOS', 'Touchscreen'],
-    coverage: 'Global Iridium network',
-    cost: '$599 device + $14.95+/month',
-    notes: 'Premium all-in-one device. Replaces phone for navigation.',
-    compatibility: 'Standalone GPS + satellite',
-    trailNotes: 'Overkill for Section O but great for long thru-hikes.'
+    device: 'Dedicated two-way satellite communicator',
+    features: ['Two-way check-ins', 'SOS', 'Location sharing', 'Weather or tracking if included in the selected service'],
+    coverage: 'Depends on the actual device, subscription, satellite network, and sky view',
+    cost: 'Choose, subscribe, and test the exact unit before departure',
+    notes: 'This is the required shared coordination path for the Day 3 transfer and Ash Camp pickup.',
+    compatibility: 'Assign a primary owner and a backup owner',
+    trailNotes: 'Send and acknowledge a real message with every team contact before the trip; save the protocol offline.'
   }
 ];
 

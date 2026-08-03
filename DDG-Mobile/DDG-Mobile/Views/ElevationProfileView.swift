@@ -116,6 +116,7 @@ struct ElevationProfileView: View {
         let latitude: Double
         let longitude: Double
         let elevationFeet: Double
+        let routeMile: Double
     }
     private struct SimpleWater: Sendable {
         let name: String
@@ -128,7 +129,14 @@ struct ElevationProfileView: View {
         guard trailPoints.count > 1 else { return }
 
         // 1. Extract data safely on MainActor
-        let simpleTPs = trailPoints.map { SimpleTrailPoint(latitude: $0.latitude, longitude: $0.longitude, elevationFeet: $0.elevationFeet) }
+        let simpleTPs = trailPoints.map {
+            SimpleTrailPoint(
+                latitude: $0.latitude,
+                longitude: $0.longitude,
+                elevationFeet: $0.elevationFeet,
+                routeMile: $0.routeMile
+            )
+        }
         let simpleWaters = waterSources.map {
             SimpleWater(
                 name: $0.name,
@@ -159,19 +167,32 @@ struct ElevationProfileView: View {
                 )
             }
 
-            // Profile data and point/day mapping.
-            var rawMiles = Array(repeating: 0.0, count: simpleTPs.count)
-            if simpleTPs.count > 1 {
+            // Profile data and point/day mapping. Canonical terrain points
+            // carry the PCTA-calibrated route mile directly. The old geometric
+            // rescale remains only as a safe fallback for damaged/legacy data.
+            let hasCanonicalRouteMiles =
+                simpleTPs.count > 1 &&
+                simpleTPs.allSatisfy { $0.routeMile.isFinite } &&
+                (simpleTPs.last?.routeMile ?? 0) > 0 &&
+                zip(simpleTPs, simpleTPs.dropFirst()).allSatisfy { pair in
+                    pair.0.routeMile <= pair.1.routeMile
+                }
+            var displayMiles: [Double]
+            if hasCanonicalRouteMiles {
+                displayMiles = simpleTPs.map(\.routeMile)
+            } else {
+                var rawMiles = Array(repeating: 0.0, count: simpleTPs.count)
                 for index in 1..<simpleTPs.count {
                     rawMiles[index] = rawMiles[index - 1] + Self.haversineMiles(
                         from: simpleTPs[index - 1],
                         to: simpleTPs[index]
                     )
                 }
+                let mileageScale = rawMiles.last.map {
+                    $0 > 0 ? officialTotalMiles / $0 : 1
+                } ?? 1
+                displayMiles = rawMiles.map { $0 * mileageScale }
             }
-            let mileageScale = rawMiles.last.map {
-                $0 > 0 ? officialTotalMiles / $0 : 1
-            } ?? 1
             let stride = max(1, simpleTPs.count / 2000)
             var sampledIndices = Array(
                 Swift.stride(from: 0, to: simpleTPs.count, by: stride)
@@ -183,7 +204,7 @@ struct ElevationProfileView: View {
 
             for i in sampledIndices {
                 let tp = simpleTPs[i]
-                let officialMile = rawMiles[i] * mileageScale
+                let officialMile = displayMiles[i]
                 
                 var ptDay = ranges.last?.day ?? 8
                 for r in ranges {

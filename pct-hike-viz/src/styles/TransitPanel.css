@@ -1,522 +1,346 @@
 .transit-panel {
-  padding: 1rem;
-  background: linear-gradient(135deg, #1a1a1a 0%, #1a1a2a 100%);
-  border-radius: 8px;
-  color: #e0e0e0;
+  color: var(--ink-900, #1e293b);
 }
 
-.panel-header {
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid #4898ff;
-}
-
-.panel-header h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.25rem;
-  color: #4898ff;
-}
-
-.panel-subtitle {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #999;
-}
-
-/* Access Summary */
-.access-summary {
+.ops-panel-header,
+.ops-section-heading,
+.ops-gate__meta,
+.ops-stage {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.summary-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(72, 152, 255, 0.3);
-  border-radius: 6px;
-  padding: 1rem;
-}
-
-.summary-card.recommended {
-  background: rgba(76, 175, 80, 0.1);
-  border-color: #4CAF50;
-}
-
-.summary-card h4 {
-  margin: 0 0 0.75rem 0;
-  color: #4898ff;
-  font-size: 1rem;
-}
-
-.summary-card.recommended h4 {
-  color: #4CAF50;
-}
-
-.summary-card p {
-  margin: 0;
-  line-height: 1.5;
-  color: #ccc;
-}
-
-.contact-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  color: #4898ff;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.contact-link:hover {
-  text-decoration: underline;
-}
-
-/* Transit Routes */
-.transit-routes-section,
-.shuttle-section,
-.rental-car-section,
-.resupply-section {
-  margin-bottom: 2rem;
-}
-
-.transit-routes-section h4,
-.shuttle-section h4,
-.rental-car-section h4,
-.resupply-section h4 {
-  color: #4898ff;
-  margin: 0 0 1rem 0;
-  font-size: 1.1rem;
-}
-
-.route-list,
-.shuttle-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.route-card,
-.shuttle-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  padding: 1rem;
-}
-
-.route-header,
-.shuttle-header {
-  display: flex;
-  align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.75rem;
 }
 
-.route-icon,
-.shuttle-icon {
-  font-size: 1.5rem;
-}
-
-.route-title {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.route-title strong {
-  color: #fff;
-  font-size: 0.95rem;
-}
-
-.route-agency {
-  font-size: 0.8rem;
-  color: #999;
-}
-
-.route-details {
-  padding-left: 2.25rem;
-}
-
-.route-info,
-.shuttle-details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-  font-size: 0.875rem;
-  color: #aaa;
-}
-
-.route-stops {
-  font-size: 0.875rem;
-  color: #ccc;
-  margin-bottom: 0.75rem;
-}
-
-.route-stops strong {
-  color: #ffb74d;
-}
-
-.route-notes,
-.shuttle-notes {
-  font-size: 0.875rem;
-  color: #bbb;
-  line-height: 1.5;
-  margin: 0.75rem 0;
-}
-
-.route-link {
-  display: inline-block;
-  margin-top: 0.5rem;
-  color: #4898ff;
-  text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.route-link:hover {
-  text-decoration: underline;
-}
-
-/* Rental Car Section */
-.airport-options,
-.parking-options {
-  margin-bottom: 1.5rem;
-}
-
-.airport-options h5,
-.parking-options h5 {
-  color: #ffb74d;
-  margin: 0 0 0.75rem 0;
-  font-size: 0.95rem;
-}
-
-.airport-card,
-.parking-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.airport-card.recommended {
-  border-color: #4CAF50;
-  background: rgba(76, 175, 80, 0.05);
-}
-
-.airport-header {
-  display: flex;
+.ops-panel-header,
+.ops-section-heading {
+  align-items: flex-start;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
 }
 
-.airport-header strong {
-  color: #fff;
-  font-size: 0.95rem;
+.ops-panel-header {
+  border-bottom: 1px solid var(--sand-300, #d8cbb8);
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.85rem;
 }
 
-.rec-badge {
-  background: #4CAF50;
-  color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: 600;
-}
-
-.airport-distance,
-.airport-agencies,
-.airport-notes,
-.parking-address,
-.parking-notes {
-  font-size: 0.875rem;
-  color: #ccc;
-  margin: 0.5rem 0;
-  line-height: 1.4;
-}
-
-.parking-card strong {
-  color: #4898ff;
-  font-size: 0.95rem;
-}
-
-.parking-details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin: 0.75rem 0;
-  font-size: 0.875rem;
-  color: #aaa;
-}
-
-/* Resupply Section */
-.resupply-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.resupply-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  padding: 1rem;
-}
-
-.resupply-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-
-.resupply-header strong {
-  color: #4898ff;
-  font-size: 0.95rem;
-}
-
-.trail-distance {
-  font-size: 0.8rem;
-  color: #999;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-}
-
-.resupply-services {
-  margin-bottom: 0.75rem;
-}
-
-.resupply-services strong {
-  color: #ffb74d;
-  font-size: 0.875rem;
-}
-
-.service-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.service-tag {
-  background: rgba(72, 152, 255, 0.2);
-  color: #4898ff;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-}
-
-.resupply-transit,
-.resupply-notes {
-  font-size: 0.875rem;
-  color: #ccc;
-  margin: 0.5rem 0;
-  line-height: 1.4;
-}
-
-/* Transit Plans */
-.transit-plans {
-  margin-bottom: 2rem;
-}
-
-.transit-plans h4 {
-  color: #4898ff;
-  margin: 0 0 1rem 0;
-  font-size: 1.1rem;
-}
-
-.plan-accordion {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  margin-bottom: 0.75rem;
-  overflow: hidden;
-}
-
-.plan-accordion summary {
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  font-weight: 600;
-  color: #fff;
-  user-select: none;
-  list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.plan-accordion summary::-webkit-details-marker {
-  display: none;
-}
-
-.plan-accordion summary::before {
-  content: '▶';
-  display: inline-block;
-  transition: transform 0.2s;
-  font-size: 0.75rem;
-  color: #4898ff;
-}
-
-.plan-accordion[open] summary::before {
-  transform: rotate(90deg);
-}
-
-.plan-accordion summary:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.plan-content {
-  padding: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.plan-stats {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
-  color: #ffb74d;
-}
-
-.plan-steps {
-  margin: 0 0 1rem 0;
-  padding-left: 1.5rem;
-}
-
-.plan-steps li {
-  margin-bottom: 0.5rem;
-  line-height: 1.5;
-  color: #ccc;
-}
-
-.plan-notes {
-  font-size: 0.875rem;
-  color: #999;
+.ops-panel-header h2,
+.ops-section-heading h3,
+.ops-stage h3,
+.ops-gate h4,
+.ops-protocols h3 {
   margin: 0;
-  padding: 0.75rem;
-  background: rgba(255, 183, 77, 0.1);
-  border-radius: 4px;
-  border-left: 3px solid #ffb74d;
 }
 
-/* Important Notes */
-.transit-notes {
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background: rgba(255, 152, 0, 0.1);
-  border: 1px solid #FF9800;
-  border-radius: 6px;
+.ops-eyebrow,
+.ops-stage__label,
+.ops-gate__meta,
+.ops-gate__owner {
+  color: var(--stone-600, #64748b);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-.transit-notes h4 {
-  margin: 0 0 1rem 0;
-  color: #FF9800;
-  font-size: 1.05rem;
+.ops-eyebrow {
+  margin: 0 0 0.25rem;
 }
 
-.transit-notes ul {
-  margin: 0;
-  padding-left: 1.5rem;
-}
-
-.transit-notes li {
-  margin-bottom: 0.75rem;
-  line-height: 1.5;
-  color: #ccc;
-}
-
-.transit-notes strong {
-  color: #fff;
-}
-
-/* Footer */
-.panel-footer {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.data-sources {
-  font-size: 0.75rem;
-  color: #666;
-  margin: 0;
+.ops-open-count {
+  background: #fff1f0;
+  border: 1px solid #f5aaa5;
+  border-radius: 999px;
+  color: #b42318;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0.55rem;
   text-align: center;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .airport-header,
-  .resupply-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .route-info,
-  .shuttle-details,
-  .parking-details {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .service-tags {
-    flex-direction: column;
-  }
+.ops-intro {
+  background: var(--sand-100, #f8f4ec);
+  border-left: 3px solid var(--pine-600, #2f6e52);
+  border-radius: 0.4rem;
+  line-height: 1.45;
+  margin: 0 0 1rem;
+  padding: 0.75rem 0.85rem;
 }
 
-/* Enhanced mobile for phones */
-@media (max-width: 479px) {
-  .transit-panel {
-    padding: 0.875rem;
+.ops-timeline {
+  display: grid;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+}
+
+.ops-stage {
+  align-items: flex-start;
+  background: var(--sand-50, #fdfbf7);
+  border: 1px solid var(--sand-300, #d8cbb8);
+  border-radius: 0.65rem;
+  padding: 0.75rem;
+}
+
+.ops-stage--support {
+  border-color: #cc8a1c;
+  box-shadow: inset 3px 0 #cc8a1c;
+}
+
+.ops-stage--finish {
+  border-color: #248a62;
+  box-shadow: inset 3px 0 #248a62;
+}
+
+.ops-stage__icon {
+  flex: 0 0 auto;
+  font-size: 1.35rem;
+  line-height: 1.35;
+}
+
+.ops-stage__label {
+  margin: 0 0 0.2rem;
+}
+
+.ops-stage h3 {
+  font-size: 0.98rem;
+}
+
+.ops-stage p,
+.ops-gate p,
+.ops-protocols p {
+  font-size: 0.86rem;
+  line-height: 1.4;
+  margin: 0.35rem 0 0;
+}
+
+.ops-stage__metric {
+  color: var(--stone-700, #475569);
+  font-size: 0.78rem !important;
+  font-weight: 600;
+}
+
+.flight-watch {
+  background: #f4f8ff;
+  border: 1px solid #9cbbe9;
+  border-left: 4px solid #2f6fd1;
+  border-radius: 0.65rem;
+  padding: 0.8rem;
+}
+
+.flight-watch__heading,
+.flight-watch__actions,
+.flight-watch__flight {
+  display: flex;
+  gap: 0.55rem;
+}
+
+.flight-watch__heading {
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.flight-watch h3 {
+  font-size: 0.98rem;
+  margin: 0;
+}
+
+.flight-watch > p {
+  font-size: 0.84rem;
+  line-height: 1.4;
+  margin: 0.42rem 0 0;
+}
+
+.flight-watch__boundary {
+  color: var(--stone-600, #64748b);
+  font-size: 0.76rem !important;
+}
+
+.flight-watch__state {
+  background: #e0eafc;
+  border-radius: 999px;
+  color: #194f9b;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.28rem 0.45rem;
+  text-transform: uppercase;
+}
+
+.flight-watch__state--live {
+  background: #daf6e7;
+  color: #17633e;
+}
+
+.flight-watch__flights {
+  display: grid;
+  gap: 0.45rem;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  margin-top: 0.75rem;
+}
+
+.flight-watch__flight {
+  align-items: flex-start;
+  background: #fff;
+  border: 1px solid #c8d7ed;
+  border-radius: 0.45rem;
+  flex-direction: column;
+  font-size: 0.78rem;
+  padding: 0.55rem;
+}
+
+.flight-watch__flight strong {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.flight-watch__flight small,
+.flight-watch__checked {
+  color: var(--stone-600, #64748b);
+}
+
+.flight-watch__flight a,
+.flight-watch__actions a,
+.flight-watch__actions button {
+  color: #174e98;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.flight-watch__actions {
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.flight-watch__actions a,
+.flight-watch__actions button {
+  background: #fff;
+  border: 1px solid #7da4da;
+  border-radius: 0.4rem;
+  padding: 0.42rem 0.55rem;
+  text-decoration: none;
+}
+
+.flight-watch__actions button {
+  cursor: pointer;
+}
+
+.flight-watch__actions button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.flight-watch__checked {
+  font-size: 0.7rem !important;
+}
+
+.ops-gates-section {
+  border-top: 1px solid var(--sand-300, #d8cbb8);
+  margin-top: 0.65rem;
+  padding-top: 1rem;
+}
+
+.ops-section-heading {
+  margin-bottom: 0.65rem;
+}
+
+.ops-section-heading > p {
+  color: var(--stone-600, #64748b);
+  font-size: 0.75rem;
+  line-height: 1.3;
+  margin: 0.2rem 0 0;
+  max-width: 12rem;
+  text-align: right;
+}
+
+.ops-gate-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.ops-gate {
+  background: #fff;
+  border: 1px solid var(--sand-300, #d8cbb8);
+  border-left: 4px solid #c47a12;
+  border-radius: 0.6rem;
+  padding: 0.75rem;
+}
+
+.ops-gate--critical {
+  background: #fffaf9;
+  border-left-color: #d92d20;
+}
+
+.ops-gate__meta {
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+}
+
+.ops-gate--critical .ops-gate__meta span:first-child {
+  color: #b42318;
+}
+
+.ops-gate__block {
+  background: rgba(217, 45, 32, 0.06);
+  border-radius: 0.35rem;
+  color: #7a271a;
+  padding: 0.45rem 0.5rem;
+}
+
+.ops-gate__owner {
+  margin-top: 0.55rem !important;
+}
+
+.ops-source-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
+.ops-source-links a,
+.ops-source-links span {
+  background: var(--blue-50, #eff6ff);
+  border: 1px solid var(--blue-200, #bfdbfe);
+  border-radius: 999px;
+  color: var(--blue-700, #1d4ed8);
+  font-size: 0.7rem;
+  line-height: 1.25;
+  padding: 0.22rem 0.45rem;
+  text-decoration: none;
+}
+
+.ops-source-links span {
+  color: var(--stone-600, #64748b);
+}
+
+.ops-source-links a:hover {
+  text-decoration: underline;
+}
+
+.ops-protocols {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  margin-top: 1rem;
+}
+
+.ops-protocols article {
+  background: var(--sand-100, #f8f4ec);
+  border-radius: 0.6rem;
+  padding: 0.75rem;
+}
+
+.ops-protocols h3 {
+  font-size: 0.92rem;
+}
+
+@media (max-width: 560px) {
+  .ops-panel-header,
+  .ops-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
-  .transit-tabs {
-    gap: 0.4rem;
-    flex-wrap: wrap;
-  }
-
-  .transit-tab {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
-    min-height: 44px;
-  }
-
-  .shuttle-card,
-  .parking-card {
-    padding: 0.875rem;
-  }
-
-  .shuttle-card h4,
-  .parking-card h4 {
-    font-size: 0.95rem;
-  }
-
-  .contact-info {
-    font-size: 0.8rem;
-  }
-
-  .service-tag {
-    font-size: 0.7rem;
-    padding: 0.25rem 0.5rem;
-  }
-
-  .airport-card {
-    padding: 0.875rem;
-  }
-
-  .flight-info {
-    font-size: 0.85rem;
-  }
-
-  .resupply-card {
-    padding: 0.875rem;
-  }
-
-  .store-hours,
-  .store-note {
-    font-size: 0.75rem;
+  .ops-section-heading > p {
+    max-width: none;
+    text-align: left;
   }
 }

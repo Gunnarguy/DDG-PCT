@@ -45,7 +45,9 @@ final class TrailConditionsService {
     }
 
     func fetch(force: Bool = false) async throws -> TrailConditionLoadResult {
-        let cached = readCache()
+        let cached = readCache().flatMap { snapshot in
+            snapshot.isCurrentTerrainContract ? snapshot : nil
+        }
         if !force,
            let cached,
            let age = cached.age,
@@ -75,6 +77,9 @@ final class TrailConditionsService {
                     "trail-conditions",
                     options: FunctionInvokeOptions(body: ["force": force])
                 )
+            guard snapshot.isCurrentTerrainContract else {
+                throw TrailConditionsError.terrainContractMismatch
+            }
             try saveCache(snapshot)
             return TrailConditionLoadResult(
                 snapshot: snapshot,
@@ -126,7 +131,11 @@ final class TrailConditionsService {
         guard let row = rows.first else {
             throw TrailConditionsError.noSnapshot
         }
-        return row.payload.merging(sourceStatus: row.sourceStatus)
+        let snapshot = row.payload.merging(sourceStatus: row.sourceStatus)
+        guard snapshot.isCurrentTerrainContract else {
+            throw TrailConditionsError.terrainContractMismatch
+        }
+        return snapshot
     }
 
     private func readCache() -> TrailConditionsSnapshot? {
@@ -151,6 +160,7 @@ final class TrailConditionsService {
 nonisolated enum TrailConditionsError: LocalizedError {
     case notConfigured
     case noSnapshot
+    case terrainContractMismatch
 
     var errorDescription: String? {
         switch self {
@@ -158,6 +168,8 @@ nonisolated enum TrailConditionsError: LocalizedError {
             "Supabase is not configured on this iPhone."
         case .noSnapshot:
             "No daily trail-condition snapshot is available."
+        case .terrainContractMismatch:
+            "The available trail-condition snapshot belongs to an older route contract. Refresh required."
         }
     }
 }

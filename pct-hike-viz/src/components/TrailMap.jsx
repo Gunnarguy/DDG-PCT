@@ -42,6 +42,24 @@ const nearestTrailIndex = (trail, coordinates, minimumIndex = 0) => {
   return nearestIndex;
 };
 
+const nearestTrailIndexByRouteMile = (trail, routeMile, minimumIndex = 0) => {
+  const target = Number(routeMile);
+  if (!Number.isFinite(target) || !trail.length) return null;
+
+  let nearestIndex = null;
+  let nearestDifference = Number.POSITIVE_INFINITY;
+  for (let index = minimumIndex; index < trail.length; index += 1) {
+    const candidate = Number(trail[index]?.[3]);
+    if (!Number.isFinite(candidate)) continue;
+    const difference = Math.abs(candidate - target);
+    if (difference < nearestDifference) {
+      nearestDifference = difference;
+      nearestIndex = index;
+    }
+  }
+  return nearestIndex;
+};
+
 const getTransportIcon = (type) => {
   switch (type) {
     case "airport":
@@ -55,13 +73,27 @@ const getTransportIcon = (type) => {
   }
 };
 
+const waterMarkerClass = (source) => {
+  const condition = String(source?.condition ?? "unknown").toLowerCase();
+  if (condition.includes("dry")) return "dry";
+  if (condition.includes("limited")) return "limited";
+  if (condition.includes("flowing")) return "flowing";
+  return "unknown";
+};
+
+const formatWaterStatus = (source) => {
+  const parts = [source?.condition, source?.freshness]
+    .filter(Boolean)
+    .map((part) => String(part).replaceAll("-", " "));
+  return parts.length ? parts.join(" · ") : "Current condition not verified";
+};
+
 function TrailMap({
   mapStyles,
   selectedStyle,
   onStyleChange,
   totalMiles,
   basePlanMiles,
-  fullSectionMiles,
   hikingTrail,
   driveSegments,
   campPoints,
@@ -79,6 +111,7 @@ function TrailMap({
     popupInfo?.geometry?.coordinates ?? popupInfo?.coordinates,
   );
   const hoverCoordinates = normalizeCoordinatePair(hoverHighlight?.coordinates);
+  const isWaterPopup = popupInfo?.type === "water" || Boolean(popupInfo?.liveWater);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -112,11 +145,15 @@ function TrailMap({
     for (let index = 1; index < stops.length; index += 1) {
       const day = stops[index].properties.day;
       if (day < 1 || day > DAY_ROUTE_COLORS.length) continue;
-      const endIndex = nearestTrailIndex(
-        flatTrail,
-        stops[index].geometry?.coordinates,
-        previousIndex,
-      );
+      const routeMile = Number(stops[index].properties?.routeMile);
+      const endIndex = Number.isFinite(routeMile)
+        ? nearestTrailIndexByRouteMile(hikingTrail, routeMile, previousIndex)
+        : nearestTrailIndex(
+            flatTrail,
+            stops[index].properties?.trailCoordinates ??
+              stops[index].geometry?.coordinates,
+            previousIndex,
+          );
       if (endIndex === null || endIndex <= previousIndex) continue;
       features.push({
         type: "Feature",
@@ -145,7 +182,7 @@ function TrailMap({
           geometry: { type: "LineString", coordinates: flatTrail },
         }],
     };
-  }, [campPoints, flatTrail]);
+  }, [campPoints, flatTrail, hikingTrail]);
 
   const driveRoutesGeoJSON = useMemo(
     () => ({
@@ -156,7 +193,8 @@ function TrailMap({
           type: "Feature",
           properties: {
             id: segment.id ?? `drive-${index}`,
-            routeRole: index === 0 ? "drive-in" : "drive-home",
+            routeRole:
+              segment.routeRole ?? (index === 0 ? "drive-in" : "drive-home"),
           },
           geometry: {
             type: "LineString",
@@ -202,10 +240,6 @@ function TrailMap({
   }, [connectivityZones]);
 
   const plannedMiles = basePlanMiles ?? totalMiles ?? 0;
-  const optionalExtension =
-    fullSectionMiles && fullSectionMiles > plannedMiles
-      ? fullSectionMiles
-      : null;
 
   // Mobile: collapsible HUD
   const [hudExpanded, setHudExpanded] = useState(false);
@@ -254,15 +288,14 @@ function TrailMap({
           </p>
           <h2>Burney Falls → Ash Camp</h2>
           <p className="route-stats">
-            <strong>{plannedMiles} mi</strong> base plan (GPS-derived) ·{" "}
-            {optionalExtension
-              ? `Optional to Dunsmuir: ~${optionalExtension} mi total`
-              : "Ash Camp pickup"}{" "}
+            <strong>{plannedMiles} mi</strong> PCTA-calibrated base plan ·{" "}
+            Ash Camp pickup{" "}
             · Shasta-Trinity NF
           </p>
           <p className="map-note">
-            Map and stats reflect the base plan only. Add the Dunsmuir extension
-            if we decide to hike the full Section O.
+            Map and stats reflect the active 51.844-mile itinerary only. The
+            historical extended Garmin exports are retained as comparison
+            evidence, not an alternate route option.
           </p>
           <div className="route-color-legend" aria-label="Route color legend">
             <span><i style={{ backgroundColor: DRIVE_IN_COLOR }} />Drive In</span>
@@ -402,8 +435,19 @@ function TrailMap({
             ? (isSJC ? "✈️" : "🚙") 
             : type === "GasStation" 
               ? "⛽" 
-              : "⛺";
-          const markerClass = type === "Transit" || type === "GasStation" ? "transport" : "camp";
+              : type === "Support Transfer"
+                ? "↔️"
+                : type === "Finish"
+                  ? "🏁"
+                  : type === "Trailhead"
+                    ? "🚩"
+                    : "⛺";
+          const markerClass =
+            type === "Transit" || type === "GasStation"
+              ? "transport"
+              : type === "Support Transfer"
+                ? "transfer"
+                : "camp";
           
           return (
             <Marker
@@ -460,7 +504,14 @@ function TrailMap({
               setPopupInfo(source);
             }}
           >
-            <div className="marker marker--water">💧</div>
+            <div
+              className={`marker marker--water marker--water-${waterMarkerClass(source)}`}
+              title={`${source.name}: ${formatWaterStatus(source)}`}
+              role="img"
+              aria-label={`${source.name}: ${formatWaterStatus(source)}`}
+            >
+              💧
+            </div>
           </Marker>
         ))}
 
@@ -516,6 +567,35 @@ function TrailMap({
               )}
               <h3>{popupInfo.properties?.name ?? popupInfo.name}</h3>
 
+              {isWaterPopup && (
+                <div className="popup-water-status">
+                  <strong>{formatWaterStatus(popupInfo)}</strong>
+                  {popupInfo.observedAt && (
+                    <span>
+                      Field report: {popupInfo.observedAt}
+                      {Number.isFinite(popupInfo.ageDays)
+                        ? ` · ${popupInfo.ageDays} day${popupInfo.ageDays === 1 ? "" : "s"} old`
+                        : ""}
+                    </span>
+                  )}
+                  {popupInfo.reportedBy && (
+                    <span>Reported by {popupInfo.reportedBy}</span>
+                  )}
+                  {popupInfo.liveMatchMethod && (
+                    <span>Matched by {popupInfo.liveMatchMethod}</span>
+                  )}
+                  {popupInfo.liveWaterSourceUrl && (
+                    <a
+                      href={popupInfo.liveWaterSourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Open PCT Water Report ↗
+                    </a>
+                  )}
+                </div>
+              )}
+
               {popupInfo.type === "connectivity" && popupInfo.cellCoverage && (
                 <div className="popup-connectivity">
                   <p className="connectivity-signals">
@@ -535,6 +615,7 @@ function TrailMap({
               <p className="note">
                 {popupInfo.properties?.notes ??
                   popupInfo.notes ??
+                  popupInfo.latestReport ??
                   popupInfo.report}
               </p>
             </div>
@@ -556,7 +637,6 @@ TrailMap.propTypes = {
   onStyleChange: PropTypes.func.isRequired,
   totalMiles: PropTypes.number.isRequired,
   basePlanMiles: PropTypes.number,
-  fullSectionMiles: PropTypes.number,
   hikingTrail: PropTypes.arrayOf(PropTypes.array).isRequired,
   driveSegments: PropTypes.arrayOf(
     PropTypes.shape({
@@ -612,7 +692,6 @@ TrailMap.defaultProps = {
   popupInfo: null,
   hoverHighlight: null,
   basePlanMiles: null,
-  fullSectionMiles: null,
 };
 
 export default TrailMap;

@@ -1,6 +1,10 @@
 import Foundation
 
 nonisolated struct TrailConditionsSnapshot: Codable, Sendable {
+    static let currentTerrainPlanVersion = "2026-08-02-pcta-usgs-v1"
+    static let currentTerrainContractHash =
+        "185e86a3863c0b2f335eaa51ad6a8220916f9fd25bbeaa30782ddc278e67b66c"
+
     var fetchedAt: String
     var planVersion: String?
     var route: String?
@@ -29,6 +33,12 @@ nonisolated struct TrailConditionsSnapshot: Codable, Sendable {
         return age > 26 * 60 * 60
     }
 
+    var isCurrentTerrainContract: Bool {
+        planVersion == Self.currentTerrainPlanVersion &&
+            routeFacts?.terrainContractVersion == Self.currentTerrainPlanVersion &&
+            routeFacts?.dataContractSha256 == Self.currentTerrainContractHash
+    }
+
     func merging(sourceStatus: [String: TrailConditionSourceState]?) -> Self {
         var copy = self
         if let sourceStatus {
@@ -41,7 +51,9 @@ nonisolated struct TrailConditionsSnapshot: Codable, Sendable {
 nonisolated struct TrailConditionRouteFacts: Codable, Sendable {
     let name: String
     let officialMiles: Double
-    let gpsMiles: Double
+    let centerlineGeometryMiles: Double?
+    let terrainContractVersion: String?
+    let dataContractSha256: String?
     let startPctMile: Double
     let finishPctMile: Double
 }

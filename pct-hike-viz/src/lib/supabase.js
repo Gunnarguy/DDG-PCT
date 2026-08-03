@@ -102,6 +102,9 @@ export const EDGE_FUNCTIONS = {
   trailConditions: supabaseReady
     ? `${SUPABASE_URL}/functions/v1/trail-conditions`
     : null,
+  flightStatus: supabaseReady
+    ? `${SUPABASE_URL}/functions/v1/flight-status`
+    : null,
 };
 
 /**

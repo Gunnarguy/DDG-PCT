@@ -5,15 +5,15 @@ import SwiftData
 ///
 /// hike_data.json structure:
 /// - `features[]` → CampSite models (GeoJSON Feature with properties)
-/// - `route.path[]` → TrailPoint models ([longitude, latitude, elevation_feet])
+/// - `route.path[]` → TrailPoint models ([longitude, latitude, elevation_feet, route_mile])
 struct HikeDataIngestor {
-    private static let dataVersion = 15
+    private static let dataVersion = 16
 
     /// Check if data has already been ingested (avoid re-parsing 48k points)
     static func needsIngest(modelContext: ModelContext) -> Bool {
         print("DEBUG [HikeDataIngestor]: Checking database state...")
         
-        let currentVersion = dataVersion // Live water identity and explicit Bartle pickup/re-entry wording.
+        let currentVersion = dataVersion // Canonical PCTA route-mile coordinates and USGS 3DEP terrain.
         let ingestedVersion = UserDefaults.standard.integer(forKey: "hikeDataIngestVersion")
         if ingestedVersion < currentVersion {
             print("DEBUG [HikeDataIngestor]: Forced re-ingestion triggered (version \(ingestedVersion) < \(currentVersion))")
@@ -70,6 +70,9 @@ struct HikeDataIngestor {
                 let lon = point[0]
                 let lat = point[1]
                 let sourceElevation = point[2]
+                let explicitRouteMile = point.count >= 4 && point[3].isFinite
+                    ? point[3]
+                    : nil
                 let elevationMeters = elevationUnit == "feet"
                     ? sourceElevation / TrailConstants.metersToFeet
                     : sourceElevation
@@ -90,7 +93,7 @@ struct HikeDataIngestor {
                 trailMiles.append((
                     lat: lat,
                     lon: lon,
-                    mile: cumulativeDistance,
+                    mile: explicitRouteMile ?? cumulativeDistance,
                     elev: elevationMeters
                 ))
                 lastLat = lat
@@ -103,7 +106,8 @@ struct HikeDataIngestor {
                     latitude: item.lat,
                     longitude: item.lon,
                     elevation: item.elev,
-                    index: index
+                    index: index,
+                    routeMile: item.mile
                 )
                 modelContext.insert(trailPoint)
                 pathCount += 1

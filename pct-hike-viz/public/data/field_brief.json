@@ -1,0 +1,638 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-02",
+  "scope": "Offline operational and emergency reference for the Burney Falls PCT access to Ash Camp route. It complements live conditions; it never converts a stale report into an all-clear.",
+  "operationalRules": [
+    {
+      "id": "terrain-contract",
+      "title": "Follow the checked-in PCTA route, not an old Garmin export",
+      "detail": "The active plan is the 51.844-mile PCTA-marker itinerary. Garmin files stay comparison evidence only. If a map, app, or person disagrees, stop treating the number as authoritative until it is reconciled."
+    },
+    {
+      "id": "conditions-not-clearance",
+      "title": "Refresh conditions, then make a human go/no-go call",
+      "detail": "Water reports, smoke, fires, crossings, campsite availability, road access, and closures have different update paths. A responding feed is not a safety certification."
+    },
+    {
+      "id": "private-corridor",
+      "title": "Day 3 is a support operation, not an overnight plan",
+      "detail": "Travel continuously through the private-timberland corridor with day packs. Do not camp, wait, or treat the Bartle Gap field pin as a casual pickup."
+    },
+    {
+      "id": "finish-not-teleport",
+      "title": "Ash Camp is the finish and vehicle extraction point",
+      "detail": "Finish at the PCTA route boundary, then use the separately verified Ash Camp / FS 38N11 field pickup plan. Do not assume the road is suitable for the Kia Sportage until it is checked 24–48 hours beforehand."
+    }
+  ],
+  "dayFocus": [
+    {
+      "day": 1,
+      "title": "Start deliberately after the long approach drive",
+      "detail": "The opening mileage is short on purpose. Verify the Burney entry, PCT connector, Lake Britton/Pit No. 3 crossing, and the current water report before moving."
+    },
+    {
+      "day": 2,
+      "title": "Protect the largest climbing day and carry through camp",
+      "detail": "This is the biggest ascent. The pre-private site is GIS-screened rather than ground-approved; inspect durable surface, hazards, capacity, and water before committing."
+    },
+    {
+      "day": 3,
+      "title": "Execute the supported private-corridor traverse",
+      "detail": "Carry day packs only, move continuously, meet the driver at the exact field pin, sleep legally off-corridor, and return to the same crossing before Day 4. Dense brush and blowdown remain an explicit field check."
+    },
+    {
+      "day": 4,
+      "title": "Re-enter exactly where Day 3 exited",
+      "detail": "Return to the same Bartle Gap crossing before climbing to the high saddle. Treat the dry camp and water plan as current-condition decisions, not reserved sites."
+    },
+    {
+      "day": 5,
+      "title": "Control the descent even though mileage is short",
+      "detail": "The day is mostly downhill. Use poles, short steps, and a deliberate pace; do not let the lower mileage disguise knee load."
+    },
+    {
+      "day": 6,
+      "title": "Budget for mixed vertical on accumulated fatigue",
+      "detail": "This is a mixed up-and-down day, not a flat recovery. Refresh water evidence and evaluate the group before leaving camp."
+    },
+    {
+      "day": 7,
+      "title": "Treat this as the knee-protection day",
+      "detail": "The route loses roughly 343 feet per mile. Slow the descent, maintain spacing, and make pole use a group default rather than an afterthought."
+    },
+    {
+      "day": 8,
+      "title": "Finish to the actual Ash Camp pickup",
+      "detail": "The final morning still descends substantially. Hit the canonical finish, then use a driver who has already confirmed FS 38N11, gates, turnaround, weather, and vehicle suitability."
+    }
+  ],
+  "emergency": {
+    "disclaimer": "This is a coordination reference, not medical treatment instruction. In an emergency, use the fastest available emergency channel.",
+    "actions": [
+      {
+        "id": "life-threatening",
+        "title": "Immediate threat to life or property",
+        "detail": "Call 911 when cellular service is available. Without service, activate the tested satellite SOS device and keep the group together unless staying creates a greater immediate danger."
+      },
+      {
+        "id": "share-facts",
+        "title": "Send the facts that rescuers need",
+        "detail": "Send the exact coordinate, PCT and route mile, condition, injuries or hazards, party count, intended movement, and battery / communication status. Do not replace facts with a vague 'help' message."
+      },
+      {
+        "id": "preserve-capability",
+        "title": "Preserve navigation and communication capability",
+        "detail": "Keep one phone and the satellite device powered, protect them from water and cold, and write down the last confirmed location if screens or batteries fail."
+      },
+      {
+        "id": "notify-contact",
+        "title": "Notify the preassigned contact only after emergency contact is underway",
+        "detail": "Use the actual team contact tree and check-in protocol after the emergency channel is engaged. The app deliberately does not invent a family contact or a rescue ETA."
+      }
+    ],
+    "contacts": [
+      {
+        "id": "emergency-911",
+        "title": "Emergency services",
+        "value": "911",
+        "when": "Life-threatening emergency when cellular service is available.",
+        "sourceIds": [
+          "shasta-emergency"
+        ]
+      },
+      {
+        "id": "shasta-dispatch",
+        "title": "Shasta County Sheriff's dispatch",
+        "value": "+1-530-245-6540",
+        "when": "Non-emergency support or coordination; do not use instead of 911 for an emergency.",
+        "sourceIds": [
+          "shasta-dispatch"
+        ]
+      },
+      {
+        "id": "poison-control",
+        "title": "Poison Control",
+        "value": "+1-800-222-1222",
+        "when": "Possible poisoning or exposure; use 911 for collapse, seizure, trouble breathing, or inability to awaken.",
+        "sourceIds": [
+          "poison-control"
+        ]
+      },
+      {
+        "id": "burney-park",
+        "title": "McArthur-Burney Falls Memorial State Park",
+        "value": "+1-530-335-2777",
+        "when": "Start-side access, reservations, and park notices; not a substitute for emergency dispatch.",
+        "sourceIds": [
+          "parks-burney-2026"
+        ]
+      },
+      {
+        "id": "mccloud-ranger",
+        "title": "McCloud Ranger Station",
+        "value": "+1-530-964-2184",
+        "when": "FS 38N11 / Ash Camp road suitability and forest access questions before pickup.",
+        "sourceIds": [
+          "usfs-mccloud-offices"
+        ]
+      }
+    ],
+    "checkInProtocol": [
+      {
+        "id": "test-before-leaving",
+        "title": "Before departure: test it, do not assume it",
+        "detail": "Send one real satellite outbound message and receive an acknowledgement. Put each hiker's phone, offline map, charging cable, and emergency contact list through the same test."
+      },
+      {
+        "id": "daily-cadence",
+        "title": "Each hiking day: use a named cadence",
+        "detail": "Agree on a start, destination, and end-of-day check-in before leaving camp. Record missed check-ins and any route/condition change in Field → Ops Log when signal returns."
+      },
+      {
+        "id": "day-three-cadence",
+        "title": "Day 3: driver and hikers share the same no-contact rule",
+        "detail": "The driver receives the field pin, target window, re-entry time, and no-show rule before the hikers enter the private corridor. No one waits or camps on private land."
+      },
+      {
+        "id": "extraction-cadence",
+        "title": "Ash Camp: confirm driver movement before the final descent",
+        "detail": "Confirm road suitability and pickup timing before Day 8. Send the finishing message from the PCTA boundary; do not promise an exact arrival time based on an unverified road."
+      }
+    ]
+  },
+  "offlineLimitations": [
+    "This bundle retains the confirmed itinerary and official sources but cannot see a same-day closure, road gate, fire order, smoke plume, water flow, campsite occupancy, passenger check-in, baggage, or live airline gate change unless Flight Watch is refreshed.",
+    "A live condition snapshot has an explicit fetched time and source status. If it is stale, missing, or marked manual-required, perform that named check before treating it as usable.",
+    "Keep a separate offline topographic/navigation map on every hiker's phone; this app is an operational companion, not the only navigation tool."
+  ],
+  "sourceIds": [
+    "pcta-private-timberland",
+    "pcta-bartle-gap",
+    "pcta-ash-camp",
+    "parks-burney-2026",
+    "usfs-pct-access-points",
+    "usfs-mccloud-offices",
+    "shasta-emergency",
+    "shasta-dispatch",
+    "poison-control",
+    "ready-communication-plan"
+  ],
+  "generatedAt": "2026-08-03T00:34:21.608Z",
+  "terrainContract": "docs/data/canonical/burney-ash-terrain-2026.json",
+  "terrainContractVersion": "2026-08-02-pcta-usgs-v1",
+  "terrainContractSha256": "185e86a3863c0b2f335eaa51ad6a8220916f9fd25bbeaa30782ddc278e67b66c",
+  "route": {
+    "name": "Burney Falls PCT access to Ash Camp",
+    "officialPctaMiles": 51.844,
+    "centerlineGeometryMiles": 51.833902,
+    "totalGainFeet": 6244,
+    "totalLossFeet": 6795,
+    "minElevationFeet": 2402,
+    "maxElevationFeet": 6134,
+    "hikingDays": 8
+  },
+  "daily": [
+    {
+      "day": 1,
+      "title": "Start deliberately after the long approach drive",
+      "detail": "The opening mileage is short on purpose. Verify the Burney entry, PCT connector, Lake Britton/Pit No. 3 crossing, and the current water report before moving.",
+      "startRouteMile": 0,
+      "endRouteMile": 5.609,
+      "startPctMile": 1420.653,
+      "endPctMile": 1426.262,
+      "distanceMiles": 5.609,
+      "startElevationFeet": 2959,
+      "endElevationFeet": 3069,
+      "highPointFeet": 3229,
+      "lowPointFeet": 2749,
+      "gainFeet": 612,
+      "lossFeet": 522,
+      "startName": "Burney Falls State Park (Start)",
+      "endName": "Rock Creek camps",
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "routeMileStart": 0,
+      "routeMileEnd": 5.609,
+      "pctMileStart": 1420.653,
+      "pctMileEnd": 1426.262
+    },
+    {
+      "day": 2,
+      "title": "Protect the largest climbing day and carry through camp",
+      "detail": "This is the biggest ascent. The pre-private site is GIS-screened rather than ground-approved; inspect durable surface, hazards, capacity, and water before committing.",
+      "startRouteMile": 5.609,
+      "endRouteMile": 14.287,
+      "startPctMile": 1426.262,
+      "endPctMile": 1434.94,
+      "distanceMiles": 8.678,
+      "startElevationFeet": 3069,
+      "endElevationFeet": 4935,
+      "highPointFeet": 5039,
+      "lowPointFeet": 3069,
+      "gainFeet": 2119,
+      "lossFeet": 253,
+      "startName": "Rock Creek camps",
+      "endName": "Pre-private USFS dry camp",
+      "stopType": "camp",
+      "campStatus": "gis-screened-needs-ground-check",
+      "packMode": "overnight-pack",
+      "routeMileStart": 5.609,
+      "routeMileEnd": 14.287,
+      "pctMileStart": 1426.262,
+      "pctMileEnd": 1434.94
+    },
+    {
+      "day": 3,
+      "title": "Execute the supported private-corridor traverse",
+      "detail": "Carry day packs only, move continuously, meet the driver at the exact field pin, sleep legally off-corridor, and return to the same crossing before Day 4. Dense brush and blowdown remain an explicit field check.",
+      "startRouteMile": 14.287,
+      "endRouteMile": 26.878,
+      "startPctMile": 1434.94,
+      "endPctMile": 1447.531,
+      "distanceMiles": 12.591,
+      "startElevationFeet": 4935,
+      "endElevationFeet": 5071,
+      "highPointFeet": 5489,
+      "lowPointFeet": 4935,
+      "gainFeet": 1458,
+      "lossFeet": 1291,
+      "startName": "Pre-private USFS dry camp",
+      "endName": "Bartle Gap planned pickup / re-entry",
+      "stopType": "support-transfer",
+      "campStatus": "support-transfer-needs-booking-road-check",
+      "packMode": "day-pack-supported",
+      "routeMileStart": 14.287,
+      "routeMileEnd": 26.878,
+      "pctMileStart": 1434.94,
+      "pctMileEnd": 1447.531
+    },
+    {
+      "day": 4,
+      "title": "Re-enter exactly where Day 3 exited",
+      "detail": "Return to the same Bartle Gap crossing before climbing to the high saddle. Treat the dry camp and water plan as current-condition decisions, not reserved sites.",
+      "startRouteMile": 26.878,
+      "endRouteMile": 32.247,
+      "startPctMile": 1447.531,
+      "endPctMile": 1452.9,
+      "distanceMiles": 5.369,
+      "startElevationFeet": 5071,
+      "endElevationFeet": 6092,
+      "highPointFeet": 6104,
+      "lowPointFeet": 5071,
+      "gainFeet": 1118,
+      "lossFeet": 112,
+      "startName": "Bartle Gap planned pickup / re-entry",
+      "endName": "High saddle camp near Road 38N10",
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "routeMileStart": 26.878,
+      "routeMileEnd": 32.247,
+      "pctMileStart": 1447.531,
+      "pctMileEnd": 1452.9
+    },
+    {
+      "day": 5,
+      "title": "Control the descent even though mileage is short",
+      "detail": "The day is mostly downhill. Use poles, short steps, and a deliberate pace; do not let the lower mileage disguise knee load.",
+      "startRouteMile": 32.247,
+      "endRouteMile": 36.036,
+      "startPctMile": 1452.9,
+      "endPctMile": 1456.689,
+      "distanceMiles": 3.789,
+      "startElevationFeet": 6092,
+      "endElevationFeet": 5417,
+      "highPointFeet": 6134,
+      "lowPointFeet": 5415,
+      "gainFeet": 155,
+      "lossFeet": 813,
+      "startName": "High saddle camp near Road 38N10",
+      "endName": "Alder / Star City Creek camp",
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "routeMileStart": 32.247,
+      "routeMileEnd": 36.036,
+      "pctMileStart": 1452.9,
+      "pctMileEnd": 1456.689
+    },
+    {
+      "day": 6,
+      "title": "Budget for mixed vertical on accumulated fatigue",
+      "detail": "This is a mixed up-and-down day, not a flat recovery. Refresh water evidence and evaluate the group before leaving camp.",
+      "startRouteMile": 36.036,
+      "endRouteMile": 42.386,
+      "startPctMile": 1456.689,
+      "endPctMile": 1463.039,
+      "distanceMiles": 6.35,
+      "startElevationFeet": 5417,
+      "endElevationFeet": 5207,
+      "highPointFeet": 5653,
+      "lowPointFeet": 5207,
+      "gainFeet": 782,
+      "lossFeet": 994,
+      "startName": "Alder / Star City Creek camp",
+      "endName": "Deer Creek Spring camp",
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "routeMileStart": 36.036,
+      "routeMileEnd": 42.386,
+      "pctMileStart": 1456.689,
+      "pctMileEnd": 1463.039
+    },
+    {
+      "day": 7,
+      "title": "Treat this as the knee-protection day",
+      "detail": "The route loses roughly 343 feet per mile. Slow the descent, maintain spacing, and make pole use a group default rather than an afterthought.",
+      "startRouteMile": 42.386,
+      "endRouteMile": 47.99,
+      "startPctMile": 1463.039,
+      "endPctMile": 1468.643,
+      "distanceMiles": 5.604,
+      "startElevationFeet": 5207,
+      "endElevationFeet": 3297,
+      "highPointFeet": 5207,
+      "lowPointFeet": 3297,
+      "gainFeet": 0,
+      "lossFeet": 1920,
+      "startName": "Deer Creek Spring camp",
+      "endName": "Butcherknife Creek camp",
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
+      "routeMileStart": 42.386,
+      "routeMileEnd": 47.99,
+      "pctMileStart": 1463.039,
+      "pctMileEnd": 1468.643
+    },
+    {
+      "day": 8,
+      "title": "Finish to the actual Ash Camp pickup",
+      "detail": "The final morning still descends substantially. Hit the canonical finish, then use a driver who has already confirmed FS 38N11, gates, turnaround, weather, and vehicle suitability.",
+      "startRouteMile": 47.99,
+      "endRouteMile": 51.844,
+      "startPctMile": 1468.643,
+      "endPctMile": 1472.497,
+      "distanceMiles": 3.854,
+      "startElevationFeet": 3297,
+      "endElevationFeet": 2402,
+      "highPointFeet": 3297,
+      "lowPointFeet": 2402,
+      "gainFeet": 0,
+      "lossFeet": 890,
+      "startName": "Butcherknife Creek camp",
+      "endName": "Ash Camp pickup",
+      "stopType": "finish",
+      "campStatus": "verified-trailhead-finish",
+      "packMode": "overnight-pack",
+      "routeMileStart": 47.99,
+      "routeMileEnd": 51.844,
+      "pctMileStart": 1468.643,
+      "pctMileEnd": 1472.497
+    }
+  ],
+  "operations": {
+    "status": "planned-supported-traverse-with-verification-gates",
+    "dayThreeSupport": {
+      "instruction": "This is a required support transfer, not a campsite, casual bailout, or permission to wait on private land. Hike continuously with day packs, exit promptly at the exact field pin, sleep legally off-corridor, and return to the same crossing before Day 4.",
+      "targetHikerWindow": "about 1:30–3:30 PM",
+      "driverReadyBy": "about 1:00 PM",
+      "requiredBeforeStart": [
+        "Named driver accepts both pickup and next-morning re-entry.",
+        "Driver physically verifies legal approach, gate, turnaround, vehicle clearance, and exact field pin.",
+        "Legal off-corridor overnight is booked or otherwise explicitly permitted.",
+        "All three hikers and the driver have the no-contact protocol, satellite message cadence, and exact re-entry time."
+      ],
+      "noShowRule": "Do not wait or camp on private land. Continue only to the pre-screened public-side emergency candidate while escalating by satellite; it is an emergency continuity option, not a scheduled camp.",
+      "routeMile": 26.878,
+      "pctMile": 1447.531,
+      "trailCoordinates": [
+        -121.818152464,
+        41.170304935
+      ],
+      "fieldCoordinates": [
+        -121.819937294,
+        41.170648914
+      ],
+      "fieldToTrailOffsetFeet": 506
+    },
+    "finishPlan": {
+      "driver": "Mikaela",
+      "vehicle": "Kia Sportage",
+      "primaryDate": "2026-09-05",
+      "backupDate": "2026-09-06",
+      "pickupWindow": "about 9:30 AM–12:30 PM after a 6:30–7:00 AM start",
+      "road": "FS Road 38N11 / Hawkins Creek Road is unpaved and can be rough. Do not commit the Kia Sportage unless the McCloud Ranger Station confirms current suitability 24–48 hours before pickup.",
+      "driveSnapshot": {
+        "origin": "Ash Camp",
+        "destination": "Campbell",
+        "distanceMiles": 333.3,
+        "durationHours": 6.8,
+        "source": "OSRM road-routing snapshot carried in the generated runtime bundle; live navigation controls on travel day."
+      },
+      "fallback": "A local high-clearance driver or taxi is a secondary plan only after that provider explicitly accepts the Ash Camp / FS 38N11 assignment. Trail angels are a named-and-confirmed tertiary backup, not transportation to assume.",
+      "routeMile": 51.844,
+      "pctMile": 1472.497,
+      "fieldCoordinates": [
+        -122.0606252,
+        41.1170914
+      ],
+      "trailCoordinates": [
+        -122.060477854,
+        41.117288505
+      ]
+    },
+    "gates": [
+      {
+        "id": "united-itinerary",
+        "priority": "high",
+        "state": "confirmed",
+        "owner": "Dan + Gunnar",
+        "due": "Aug 26, then travel days",
+        "title": "Monitor the confirmed United itinerary and handoff timing",
+        "detail": "The team confirmed UA481 and UA1317: the itinerary begins Aug 28 at 6:03 PM PDT and ends Sep 7 at 10:45 AM PDT. Use United Flight Status for delay, gate, terminal, and same-night SJC handoff changes; use the optional aircraft tracker as supplemental evidence only.",
+        "blocks": "Nothing is unbooked. A material delay still changes Mikaela's airport handoff and the overnight Burney approach.",
+        "sourceIds": [
+          "team-itinerary-confirmation",
+          "united-flight-status",
+          "flightaware-aeroapi"
+        ]
+      },
+      {
+        "id": "arrival-night-staging",
+        "priority": "critical",
+        "state": "open",
+        "owner": "Gunnar + Mikaela",
+        "due": "Before Aug 21",
+        "title": "Confirm legal overnight Burney staging and a driver-rest plan",
+        "detail": "UA481 is scheduled to reach SJC at 10:36 PM PDT, then the same-night SJC-to-Burney route is 308.1 miles / about 6.1 hours before baggage, fuel, food, traffic, and rest. This crosses into Aug 29. Confirm exactly where the team can lawfully sleep, park, transfer gear, and begin the Burney access approach; do not turn a predawn arrival into an automatic hiking start.",
+        "blocks": "A safe, legal, and rested Day 1 start after the confirmed same-night drive.",
+        "sourceIds": [
+          "team-itinerary-confirmation",
+          "parks-burney-2026"
+        ]
+      },
+      {
+        "id": "burney-day-use",
+        "priority": "critical",
+        "state": "open",
+        "owner": "Gunnar + Mikaela",
+        "due": "Before Aug 29",
+        "title": "Secure Saturday Burney Falls entry and exact PCT connector",
+        "detail": "August 29 is a Saturday. California State Parks' 2026 pilot requires an advance day-use reservation on Fridays, Saturdays, Sundays, and holidays through September 27; confirm the start-side drop-off and posted trail access too.",
+        "blocks": "Legal vehicle entry and the actual Day 1 start.",
+        "sourceIds": [
+          "parks-burney-2026"
+        ]
+      },
+      {
+        "id": "lake-britton-crossing",
+        "priority": "critical",
+        "state": "open",
+        "owner": "Gunnar",
+        "due": "Aug 27–28",
+        "title": "Recheck the Lake Britton / Pit No. 3 Dam crossing",
+        "detail": "The live condition snapshot has carried bridge-work information near the first-day corridor. Confirm the legal PCT crossing with current PCTA, park, utility, and field sources immediately before departure.",
+        "blocks": "The intended Day 1 route if the crossing is closed or controlled.",
+        "sourceIds": [
+          "pct-water",
+          "pcta-closures"
+        ]
+      },
+      {
+        "id": "bartle-support",
+        "priority": "critical",
+        "state": "open",
+        "owner": "Gunnar + named driver",
+        "due": "Aug 7; recheck Aug 27",
+        "title": "Book and field-verify the Day 3 Bartle Gap support operation",
+        "detail": "The private-land rule permits continuous PCT passage but prohibits camping or extended stops. PCTA's current Bartle Gap alert also warns of dense brush and likely blowdown around miles 1448–1460.",
+        "blocks": "Starting the supported Day 3 version of this trip.",
+        "sourceIds": [
+          "pcta-private-timberland",
+          "pcta-bartle-gap"
+        ]
+      },
+      {
+        "id": "overnights-water",
+        "priority": "high",
+        "state": "open",
+        "owner": "Team",
+        "due": "Aug 27–28",
+        "title": "Revalidate every overnight camp and the Day 2–3 water carry",
+        "detail": "The pre-private site is GIS-screened, not ground-approved. The water plan must work without assuming collection in the private corridor, and every field report needs its age shown.",
+        "blocks": "A safe overnight and the planned Day 3 water reserve.",
+        "sourceIds": [
+          "pct-water",
+          "pcta-private-timberland"
+        ]
+      },
+      {
+        "id": "ash-camp-road",
+        "priority": "critical",
+        "state": "open",
+        "owner": "Mikaela + Gunnar",
+        "due": "Sep 3–4",
+        "title": "Verify FS Road 38N11 and Ash Camp pickup vehicle suitability",
+        "detail": "Ash Camp is the defined finish, not an arbitrary 52nd-mile exit. Confirm road condition, gate status, turnaround, weather, daylight, and Kia Sportage suitability with McCloud Ranger Station before driving in.",
+        "blocks": "The primary September 5 extraction.",
+        "sourceIds": [
+          "pcta-ash-camp",
+          "usfs-pct-access-points",
+          "usfs-mccloud-offices"
+        ]
+      },
+      {
+        "id": "satellite-comms",
+        "priority": "high",
+        "state": "open",
+        "owner": "Team",
+        "due": "Aug 15",
+        "title": "Test satellite communicator, contact tree, and no-contact protocol",
+        "detail": "Send an actual outbound and acknowledgement test, keep the shared itinerary and emergency contacts offline, and make sure every hiker knows the Day 3 and Ash Camp message cadence.",
+        "blocks": "Reliable coordination when cell service is unavailable.",
+        "sourceIds": [
+          "field-brief"
+        ]
+      }
+    ]
+  },
+  "sources": [
+    {
+      "id": "parks-burney-2026",
+      "title": "California State Parks: 2026 Burney Falls day-use reservations",
+      "url": "https://www.parks.ca.gov/post/102",
+      "kind": "official",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "pcta-private-timberland",
+      "title": "PCTA: Private timberland access restrictions in Northern California",
+      "url": "https://closures.pcta.org/closure/eDTns8WfTkvDtYlimQlJ",
+      "kind": "official",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "pcta-bartle-gap",
+      "title": "PCTA: Bartle Gap brush and blowdown alert",
+      "url": "https://closures.pcta.org/closure/jR2pac6ijlObt8Z2eNGG",
+      "kind": "official",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "pcta-ash-camp",
+      "title": "PCTA: Ash Camp trailhead",
+      "url": "https://explore.pcta.org/trailheads/ash-camp",
+      "kind": "official",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "usfs-pct-access-points",
+      "title": "USFS: Pacific Crest Trail access points",
+      "url": "https://www.fs.usda.gov/Internet/FSE_DOCUMENTS/fsm9_008485.pdf",
+      "kind": "official",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "usfs-mccloud-offices",
+      "title": "USFS: McCloud Ranger Station",
+      "url": "https://www.fs.usda.gov/r05/shasta-trinity/offices",
+      "kind": "official",
+      "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "shasta-emergency",
+      "title": "Shasta County: Emergencies",
+      "url": "https://www.shastacounty.gov/county-administrative-office/page/emergencies",
+      "kind": "official",
+      "checkedAt": "2026-08-02",
+      "note": "Use 911 for an emergency that threatens life or property."
+    },
+    {
+      "id": "shasta-dispatch",
+      "title": "Shasta County Sheriff: referral agencies and dispatch",
+      "url": "https://www.shastacounty.gov/sheriff/page/referral-agencies",
+      "kind": "official",
+      "checkedAt": "2026-08-02",
+      "note": "The page lists Sheriff's dispatch at (530) 245-6540 for non-emergency support."
+    },
+    {
+      "id": "poison-control",
+      "title": "Poison Control: contact a poison center",
+      "url": "https://www.poison.org/contact-us",
+      "kind": "official",
+      "checkedAt": "2026-08-02",
+      "note": "US poison-center help: 1-800-222-1222. Call 911 for collapse, seizure, trouble breathing, or inability to awaken."
+    },
+    {
+      "id": "ready-communication-plan",
+      "title": "Ready.gov: family emergency communication plan",
+      "url": "https://www.ready.gov/sites/default/files/2020-03/family-emergency-communication-planning-document.pdf",
+      "kind": "official",
+      "checkedAt": "2026-08-02",
+      "note": "Complete and distribute an emergency contact plan before departure."
+    }
+  ]
+}

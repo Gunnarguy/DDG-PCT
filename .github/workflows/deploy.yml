@@ -39,6 +39,14 @@ jobs:
         working-directory: pct-hike-viz
         run: cp .env.example .env
 
+      - name: Verify canonical terrain and generated bundles
+        run: |
+          node scripts/validate_canonical_terrain.mjs
+          node scripts/validate_runtime_bundles.mjs
+          node scripts/validate_live_condition_contract.mjs
+          npm --prefix pct-hike-viz run test
+          npm --prefix pct-hike-viz run lint
+
       - name: Build
         working-directory: pct-hike-viz
         run: npm run build

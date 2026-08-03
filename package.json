@@ -7,7 +7,13 @@
     "setup": "node scripts/setup_repo.js",
     "dev:viz": "npm --prefix pct-hike-viz run dev -- --host 127.0.0.1 --port 4173",
     "build:viz": "npm --prefix pct-hike-viz run build",
-    "fetch:pct": "npm --prefix pct-hike-viz run fetch:pct"
+    "fetch:pct": "npm --prefix pct-hike-viz run fetch:pct",
+    "terrain:build": "node scripts/build_canonical_terrain.mjs",
+    "terrain:validate": "node scripts/validate_canonical_terrain.mjs",
+    "data:generate": "node scripts/generate_trip_bundles.mjs",
+    "data:validate": "node scripts/validate_runtime_bundles.mjs",
+    "conditions:validate": "node scripts/validate_live_condition_contract.mjs",
+    "verify:trip-data": "npm run terrain:validate && npm run data:validate && npm run conditions:validate && npm --prefix pct-hike-viz run test && npm --prefix pct-hike-viz run validate:data"
   },
   "dependencies": {
     "csv-parse": "^5.6.0",

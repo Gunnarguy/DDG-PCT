@@ -193,6 +193,8 @@ enum TrailConstants {
         struct Segment: Decodable {
             let day: Int
             let distance: Double
+            let routeMileStart: Double?
+            let routeMileEnd: Double?
             let gain: Double
             let loss: Double
             let startElevation: Double
@@ -209,14 +211,14 @@ enum TrailConstants {
     }
 
     private static let dayContext: [Int: DayContext] = [
-        1: DayContext(difficultyRank: 5, kneeLoad: .low, note: "A deliberately shorter opening day after the early drive from SJC. Rolling terrain still adds about 1,300 vertical feet."),
+        1: DayContext(difficultyRank: 6, kneeLoad: .low, note: "A deliberately shorter opening day after the early drive from SJC. It still has 612 ft up and 522 ft down, so treat it as a shakedown—not a zero-effort stroll."),
         2: DayContext(difficultyRank: 2, kneeLoad: .low, note: "The biggest climbing day, ending at the screened USFS dry camp. Protect pace and carry verified water through camp."),
         3: DayContext(difficultyRank: 1, kneeLoad: .high, note: "The longest day, completed with day packs as a continuous private-timberland traverse. Meet the driver at the exact Bartle Gap pin; do not camp or linger there."),
-        4: DayContext(difficultyRank: 6, kneeLoad: .low, note: "Return to the exact Bartle Gap crossing, then climb to the route high point and dry camp."),
+        4: DayContext(difficultyRank: 4, kneeLoad: .low, note: "Return to the exact Bartle Gap crossing, then climb 1,118 ft to the route high point and dry camp."),
         5: DayContext(difficultyRank: 8, kneeLoad: .moderate, note: "Low aerobic load, but mostly downhill. Use poles and keep the descent controlled."),
-        6: DayContext(difficultyRank: 3, kneeLoad: .high, note: "More than 1,900 vertical feet of mixed terrain on accumulated fatigue."),
-        7: DayContext(difficultyRank: 4, kneeLoad: .veryHigh, note: "The knee day: roughly 319 feet of descent per mile. Slow down, shorten stride, and use poles."),
-        8: DayContext(difficultyRank: 7, kneeLoad: .high, note: "Short extraction morning, but still about 276 feet of descent per mile before Ash Camp pickup.")
+        6: DayContext(difficultyRank: 3, kneeLoad: .high, note: "1,776 ft of mixed climbing and descending on accumulated fatigue."),
+        7: DayContext(difficultyRank: 5, kneeLoad: .veryHigh, note: "The knee day: roughly 343 feet of descent per mile. Slow down, shorten stride, and use poles."),
+        8: DayContext(difficultyRank: 7, kneeLoad: .high, note: "Short extraction morning, but still about 231 feet of descent per mile before Ash Camp pickup.")
     ]
 
     private static func loadDayProfiles() -> [TrailDayProfile] {
@@ -228,10 +230,11 @@ enum TrailConstants {
             return fallbackProfiles
         }
 
-        var routeMile = 0.0
+        var fallbackRouteMile = 0.0
         return bundleData.route.properties.segments.map { segment in
-            let startMile = routeMile
-            routeMile += segment.distance
+            let startMile = segment.routeMileStart ?? fallbackRouteMile
+            let endMile = segment.routeMileEnd ?? startMile + segment.distance
+            fallbackRouteMile = endMile
             let context = dayContext[segment.day] ?? DayContext(
                 difficultyRank: segment.day,
                 kneeLoad: .moderate,
@@ -241,7 +244,7 @@ enum TrailConstants {
                 day: segment.day,
                 miles: segment.distance,
                 routeMileStart: startMile,
-                routeMileEnd: routeMile,
+                routeMileEnd: endMile,
                 gainFeet: segment.gain,
                 lossFeet: segment.loss,
                 startFeet: segment.startElevation,
@@ -256,14 +259,14 @@ enum TrailConstants {
     }
 
     private static let fallbackProfiles: [TrailDayProfile] = [
-        TrailDayProfile(day: 1, miles: 5.609, routeMileStart: 0, routeMileEnd: 5.609, gainFeet: 700, lossFeet: 600, startFeet: 3_001, endFeet: 3_119, highPointFeet: 3_240, packMode: "overnight-pack", difficultyRank: 5, kneeLoad: .low, note: dayContext[1]!.note),
-        TrailDayProfile(day: 2, miles: 8.678, routeMileStart: 5.609, routeMileEnd: 14.287, gainFeet: 2_175, lossFeet: 268, startFeet: 3_119, endFeet: 5_017, highPointFeet: 5_101, packMode: "overnight-pack", difficultyRank: 2, kneeLoad: .low, note: dayContext[2]!.note),
-        TrailDayProfile(day: 3, miles: 12.591, routeMileStart: 14.287, routeMileEnd: 26.878, gainFeet: 1_510, lossFeet: 1_388, startFeet: 5_017, endFeet: 5_139, highPointFeet: 5_524, packMode: "day-pack-supported", difficultyRank: 1, kneeLoad: .high, note: dayContext[3]!.note),
-        TrailDayProfile(day: 4, miles: 5.369, routeMileStart: 26.878, routeMileEnd: 32.247, gainFeet: 1_056, lossFeet: 86, startFeet: 5_139, endFeet: 6_110, highPointFeet: 6_125, packMode: "overnight-pack", difficultyRank: 6, kneeLoad: .low, note: dayContext[4]!.note),
-        TrailDayProfile(day: 5, miles: 3.789, routeMileStart: 32.247, routeMileEnd: 36.036, gainFeet: 159, lossFeet: 764, startFeet: 6_110, endFeet: 5_504, highPointFeet: 6_129, packMode: "overnight-pack", difficultyRank: 8, kneeLoad: .moderate, note: dayContext[5]!.note),
-        TrailDayProfile(day: 6, miles: 6.350, routeMileStart: 36.036, routeMileEnd: 42.386, gainFeet: 828, lossFeet: 1_095, startFeet: 5_504, endFeet: 5_227, highPointFeet: 5_683, packMode: "overnight-pack", difficultyRank: 3, kneeLoad: .high, note: dayContext[6]!.note),
-        TrailDayProfile(day: 7, miles: 5.604, routeMileStart: 42.386, routeMileEnd: 47.990, gainFeet: 23, lossFeet: 1_786, startFeet: 5_227, endFeet: 3_447, highPointFeet: 5_227, packMode: "overnight-pack", difficultyRank: 4, kneeLoad: .veryHigh, note: dayContext[7]!.note),
-        TrailDayProfile(day: 8, miles: 3.854, routeMileStart: 47.990, routeMileEnd: 51.844, gainFeet: 73, lossFeet: 1_063, startFeet: 3_447, endFeet: 2_457, highPointFeet: 3_447, packMode: "overnight-pack", difficultyRank: 7, kneeLoad: .high, note: dayContext[8]!.note)
+        TrailDayProfile(day: 1, miles: 5.609, routeMileStart: 0, routeMileEnd: 5.609, gainFeet: 612, lossFeet: 522, startFeet: 2_959, endFeet: 3_069, highPointFeet: 3_229, packMode: "overnight-pack", difficultyRank: 6, kneeLoad: .low, note: dayContext[1]!.note),
+        TrailDayProfile(day: 2, miles: 8.678, routeMileStart: 5.609, routeMileEnd: 14.287, gainFeet: 2_119, lossFeet: 253, startFeet: 3_069, endFeet: 4_935, highPointFeet: 5_039, packMode: "overnight-pack", difficultyRank: 2, kneeLoad: .low, note: dayContext[2]!.note),
+        TrailDayProfile(day: 3, miles: 12.591, routeMileStart: 14.287, routeMileEnd: 26.878, gainFeet: 1_458, lossFeet: 1_291, startFeet: 4_935, endFeet: 5_071, highPointFeet: 5_489, packMode: "day-pack-supported", difficultyRank: 1, kneeLoad: .high, note: dayContext[3]!.note),
+        TrailDayProfile(day: 4, miles: 5.369, routeMileStart: 26.878, routeMileEnd: 32.247, gainFeet: 1_118, lossFeet: 112, startFeet: 5_071, endFeet: 6_092, highPointFeet: 6_104, packMode: "overnight-pack", difficultyRank: 4, kneeLoad: .low, note: dayContext[4]!.note),
+        TrailDayProfile(day: 5, miles: 3.789, routeMileStart: 32.247, routeMileEnd: 36.036, gainFeet: 155, lossFeet: 813, startFeet: 6_092, endFeet: 5_417, highPointFeet: 6_134, packMode: "overnight-pack", difficultyRank: 8, kneeLoad: .moderate, note: dayContext[5]!.note),
+        TrailDayProfile(day: 6, miles: 6.350, routeMileStart: 36.036, routeMileEnd: 42.386, gainFeet: 782, lossFeet: 994, startFeet: 5_417, endFeet: 5_207, highPointFeet: 5_653, packMode: "overnight-pack", difficultyRank: 3, kneeLoad: .high, note: dayContext[6]!.note),
+        TrailDayProfile(day: 7, miles: 5.604, routeMileStart: 42.386, routeMileEnd: 47.990, gainFeet: 0, lossFeet: 1_920, startFeet: 5_207, endFeet: 3_297, highPointFeet: 5_207, packMode: "overnight-pack", difficultyRank: 5, kneeLoad: .veryHigh, note: dayContext[7]!.note),
+        TrailDayProfile(day: 8, miles: 3.854, routeMileStart: 47.990, routeMileEnd: 51.844, gainFeet: 0, lossFeet: 890, startFeet: 3_297, endFeet: 2_402, highPointFeet: 3_297, packMode: "overnight-pack", difficultyRank: 7, kneeLoad: .high, note: dayContext[8]!.note)
     ]
 
     private static func quarterHour(_ hours: Double) -> Double {

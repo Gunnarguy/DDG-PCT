@@ -1,190 +1,174 @@
 import SwiftUI
 
+/// Personal preparation remains local; shared confirmation belongs in the Ops Log.
 struct PrepView: View {
-    private let parking = parkingLocations
-    private let resupply = resupplyTowns
-    private let transit = transitRoutes
+    @AppStorage("ddg.personal-prep") private var completedIDs: String = ""
+
+    private let operations = TripOperations.bundled
+
+    private var completed: Set<String> {
+        Set(completedIDs.split(separator: ",").map(String.init))
+    }
+
+    private var personalTasks: [PrepTask] {
+        [
+            PrepTask(id: "water-filter", title: "Water treatment tested", detail: "Backflush/filter test and carry a backup treatment method.", icon: "drop.fill"),
+            PrepTask(id: "food-carry", title: "Nine-day food carry packed", detail: "Eight hiking days plus one emergency day; no on-route resupply assumed.", icon: "fork.knife"),
+            PrepTask(id: "offline-maps", title: "Offline route and field brief saved", detail: "Every hiker stores the GPX, route map, contacts, and extraction pins offline.", icon: "arrow.down.circle.fill"),
+            PrepTask(id: "satellite-test", title: "Satellite communicator tested", detail: "Send a real outbound message and receive an acknowledgement before departure.", icon: "antenna.radiowaves.left.and.right"),
+            PrepTask(id: "knee-foot", title: "Foot and knee system trialed", detail: "Use the shoes, socks, poles, and blister plan you will actually hike with.", icon: "figure.hiking"),
+            PrepTask(id: "weather-48h", title: "48-hour forecast and restrictions reviewed", detail: "Recheck smoke, fire, water, closures, and weather immediately before leaving.", icon: "cloud.sun.bolt.fill")
+        ]
+    }
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(uiColor: .systemGroupedBackground).ignoresSafeArea()
-                
-                ScrollView {
-                    VStack(spacing: 32) {
-                        
-                        // Action Required Section
-                        VStack(alignment: .leading, spacing: 12) {
-                            SectionHeader(title: "Critical Path", icon: "exclamationmark.triangle.fill", color: .orange)
-                            PrepTaskCard(title: "Confirm Local Overnight Rules", subtitle: "This 51.844 mi trip is not eligible for the 500 mi PCTA permit", icon: "doc.plaintext.fill")
-                            PrepTaskCard(title: "Late SJC Arrival", subtitle: "Sleep near SJC Aug 28, then leave around 5:00–5:30 AM Aug 29", icon: "bed.double.fill")
-                            PrepTaskCard(title: "Campfire Permit", subtitle: "CAL FIRE — Free", icon: "flame.fill")
-                        }
-                        
-                        // Pre-Trip Checklist
-                        VStack(alignment: .leading, spacing: 12) {
-                            SectionHeader(title: "Pre-Flight Checklist", icon: "checklist", color: .blue)
-                            PrepTaskCard(title: "Water filter serviced", subtitle: "Sawyer Squeeze backflush", icon: "drop.fill")
-                            PrepTaskCard(title: "Food storage plan packed", subtitle: "Canister strongly recommended; confirm current local order", icon: "lock.shield.fill")
-                            PrepTaskCard(title: "Emergency contacts shared", subtitle: "InReach share link to family", icon: "antenna.radiowaves.left.and.right")
-                            PrepTaskCard(title: "Weather forecast checked", subtitle: "48hr before departure", icon: "cloud.sun.fill")
-                            PrepTaskCard(title: "Offline maps downloaded", subtitle: "Apple Maps or Gaia GPS", icon: "map.fill")
-                        }
-                        
-                        // Resupply Points
-                        VStack(alignment: .leading, spacing: 12) {
-                            SectionHeader(title: "Resupply Depots", icon: "shippingbox.fill", color: .green)
-                            ForEach(resupply) { town in
-                                InfoCard(
-                                    title: "\(town.town) Resupply",
-                                    subtitle: town.services.joined(separator: " · "),
-                                    notes: town.notes,
-                                    icon: "cart.fill"
-                                )
-                            }
-                        }
-                        
-                        // Logistics (Parking & Transit)
-                        VStack(alignment: .leading, spacing: 12) {
-                            SectionHeader(title: "Extraction & Insertion", icon: "car.fill", color: .purple)
-                            
-                            DriveTrackerView()
-                            
-                            ForEach(parking) { lot in
-                                InfoCard(
-                                    title: "Parking: \(lot.location)",
-                                    subtitle: "\(lot.cost) · \(lot.address)",
-                                    notes: lot.notes,
-                                    icon: "parkingsign.circle.fill"
-                                )
-                            }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 22) {
+                    PrepHeader(
+                        completeCount: personalTasks.filter { completed.contains($0.id) }.count,
+                        totalCount: personalTasks.count
+                    )
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        SectionHeader(title: "Your personal readiness", icon: "person.crop.circle.badge.checkmark", color: .blue)
+                        Text("These checkmarks are stored on this phone only. They do not claim that a group gate is cleared.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        ForEach(personalTasks) { task in
+                            PersonalPrepTaskCard(
+                                task: task,
+                                isChecked: completed.contains(task.id),
+                                toggle: { toggle(task.id) }
+                            )
                         }
                     }
-                    .padding()
-                    .padding(.bottom, 40)
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        SectionHeader(title: "Group gates still open", icon: "exclamationmark.triangle.fill", color: .orange)
+                        Text("These are intentionally read-only here. Confirm them from evidence, then record who confirmed what in Field → Ops Log.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        ForEach(operations.gates.filter { $0.priority == "critical" }) { gate in
+                            GroupGateRow(gate: gate)
+                        }
+                    }
                 }
+                .padding()
+                .padding(.bottom, 36)
             }
+            .background(Color(uiColor: .systemGroupedBackground))
             .navigationTitle("Mission Prep")
         }
     }
-}
 
-// MARK: - Section Header
+    private func toggle(_ id: String) {
+        var updated = completed
+        if updated.contains(id) {
+            updated.remove(id)
+        } else {
+            updated.insert(id)
+        }
+        completedIDs = updated.sorted().joined(separator: ",")
+    }
+}
 
 struct SectionHeader: View {
     let title: String
     let icon: String
     let color: Color
-    
+
     var body: some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundStyle(color)
-            Text(title)
-                .font(.title3.bold())
-        }
-        .padding(.bottom, 4)
+        Label(title, systemImage: icon)
+            .font(.title3.bold())
+            .foregroundStyle(color)
     }
 }
 
-// MARK: - Prep Task Card
-
-struct PrepTaskCard: View {
-    let title: String
-    let subtitle: String
-    let icon: String?
-    @State private var isChecked = false
+private struct PrepHeader: View {
+    let completeCount: Int
+    let totalCount: Int
 
     var body: some View {
-        Button {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                isChecked.toggle()
-            }
-        } label: {
-            HStack(spacing: 16) {
-                // Check circle
-                ZStack {
-                    Circle()
-                        .strokeBorder(isChecked ? .green : .gray.opacity(0.4), lineWidth: 2)
-                        .frame(width: 28, height: 28)
-                    
-                    if isChecked {
-                        Circle()
-                            .fill(.green)
-                            .frame(width: 20, height: 20)
-                        Image(systemName: "checkmark")
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(.white)
-                    }
-                }
-                
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Be ready; do not manufacture certainty.")
+                .font(.title3.bold())
+            Text("Personal gear and field readiness live here. Access, permits, crossings, private-land support, and extraction remain evidence-backed gates in Plan → Logistics.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            Text("\(completeCount) of \(totalCount) personal tasks complete")
+                .font(.caption.bold())
+                .foregroundStyle(.blue)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.blue.opacity(0.08), in: RoundedRectangle(cornerRadius: 16))
+    }
+}
+
+private struct PrepTask: Identifiable {
+    let id: String
+    let title: String
+    let detail: String
+    let icon: String
+}
+
+private struct PersonalPrepTaskCard: View {
+    let task: PrepTask
+    let isChecked: Bool
+    let toggle: () -> Void
+
+    var body: some View {
+        Button(action: toggle) {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: isChecked ? "checkmark.circle.fill" : "circle")
+                    .font(.title3)
+                    .foregroundStyle(isChecked ? .green : .secondary)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(task.title)
                         .font(.headline)
                         .strikethrough(isChecked)
-                        .foregroundStyle(isChecked ? .secondary : .primary)
-                    Text(subtitle)
+                    Text(task.detail)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                
-                Spacer()
-                
-                if let icon = icon {
-                    Image(systemName: icon)
-                        .font(.title3)
-                        .foregroundStyle(isChecked ? AnyShapeStyle(.green.opacity(0.5)) : AnyShapeStyle(.tertiary))
-                }
+                Spacer(minLength: 0)
+                Image(systemName: task.icon)
+                    .foregroundStyle(isChecked ? Color.green : Color.secondary)
             }
             .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(isChecked ? Color.green.opacity(0.05) : Color(uiColor: .secondarySystemGroupedBackground))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(isChecked ? .green.opacity(0.3) : .gray.opacity(0.2), lineWidth: 1)
-            )
-            .scaleEffect(isChecked ? 0.98 : 1.0)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(isChecked ? .green.opacity(0.07) : Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(isChecked ? .green.opacity(0.28) : .gray.opacity(0.16), lineWidth: 1))
         }
         .buttonStyle(.plain)
     }
 }
 
-// MARK: - Info Card
+private struct GroupGateRow: View {
+    let gate: TripOperations.OperationalGate
 
-struct InfoCard: View {
-    let title: String
-    let subtitle: String
-    let notes: String
-    let icon: String
-    
     var body: some View {
-        HStack(alignment: .top, spacing: 16) {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundStyle(.purple)
-                .frame(width: 28)
-                .padding(.top, 2)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.headline)
-                Text(subtitle)
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Label("OPEN", systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption.bold())
+                    .foregroundStyle(.red)
+                Spacer()
+                Text(gate.due)
                     .font(.caption.bold())
                     .foregroundStyle(.secondary)
-                if !notes.isEmpty {
-                    Text(notes)
-                        .font(.caption2)
-                        .foregroundStyle(.orange)
-                        .padding(.top, 2)
-                }
             }
+            Text(gate.title)
+                .font(.subheadline.bold())
+            Text("Owner: \(gate.owner)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(.gray.opacity(0.2), lineWidth: 1))
+        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(.red.opacity(0.2), lineWidth: 1))
     }
 }
 

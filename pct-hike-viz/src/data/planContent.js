@@ -3,9 +3,9 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 import { primaryItinerary, tripFacts } from './tripFacts';
 
-// PCTA January 2026 centerline miles control distance and PCT-mile labels.
-// The cropped Garmin geometry supplies the elevation profile and measures
-// slightly shorter because of track sampling. Excluded geometry is reference-only.
+// PCTA 2026 centerline/mile markers control distance and PCT-mile labels.
+// USGS 3DEP controls the normalized elevation profile. Garmin exports are
+// retained as comparison evidence only; they never control active trip math.
 // Region: Shasta-Trinity National Forest, NorCal
 // Best season: Late Aug - Early Sept (after snowmelt, before fall rains)
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -18,7 +18,7 @@ export const sectionOMeta = {
   pctMileEnd: tripFacts.route.finishPctMile,
   officialDistance: tripFacts.route.officialMiles,
   gpsDistance: tripFacts.route.gpsMiles,
-  sourceEstimate: '51.844 PCTA 2026 miles / 51.664 cropped Garmin miles',
+  sourceEstimate: `${tripFacts.route.officialMiles.toFixed(3)} PCTA miles / ${tripFacts.route.centerlineGeometryMiles.toFixed(3)} checked-in centerline geometry miles`,
   region: 'Shasta-Trinity National Forest',
   wilderness: 'No Castle Crags segment in the active trip',
   permitType: 'Local rules must be confirmed',
@@ -89,14 +89,14 @@ export const dataSources = {
   },
   gps: {
     id: 'gps-route',
-    name: 'Garmin Course 334289912',
-    description: 'Garmin geometry cropped at the actual Burney Falls access and official Ash Camp pickup pin',
-    type: 'gps',
+    name: 'PCTA 2026 centerline + USGS 3DEP terrain',
+    description: 'PCTA geometry is calibrated to the exact Burney Falls and Ash Camp mile markers; USGS 3DEP supplies the profile. Garmin exports are retained as corroboration.',
+    type: 'terrain',
     distance: tripFacts.route.gpsMiles,
     officialDistance: tripFacts.route.officialMiles,
     userSuppliedFullTrackDistance: 80.826,
     legacyAppFullTrackDistance: 82.898,
-    pointCount: 5917
+    pointCount: 3345
   },
   routes: [
     { id: 'wilderness-vagabond', url: 'http://wildernessvagabond.com/PCT-2017/PCT-2017.htm', name: 'Wilderness Vagabond 2017 PCT log' },
@@ -154,7 +154,9 @@ export const scheduleOptions = [
   }
 ];
 
-export const travelPlan = {
+// Historical presentation copy retained for reference only. Active travel,
+// access, and extraction facts come from the generated trip-operations bundle.
+export const archivedTravelPlan = {
   driver: "Mikaela",
   team: ["Dan", "Drew", "Gunnar"],
   sourceIds: [
@@ -164,15 +166,15 @@ export const travelPlan = {
   ],
   inbound: [
     {
-      step: "Friday, August 28: UA481 is expected at SJC around 10:36 PM PDT; verify the booking in United Manage Trip.",
+      step: "Friday, August 28: the team-confirmed UA481 itinerary begins at 6:03 PM PDT / 8:03 PM CDT and is scheduled at SJC around 10:36 PM PDT; use United Flight Status for travel-day changes.",
       sourceIds: ["doc-day-plan"],
     },
     {
-      step: "Mikaela collects the team, then everyone sleeps near SJC. Do not turn the late flight into an overnight Burney drive.",
+      step: "Mikaela collects the team and begins the selected same-night SJC-to-Burney approach. This crosses into August 29, so legal overnight staging and a driver-rest plan are mandatory.",
       sourceIds: ["doc-day-plan"],
     },
     {
-      step: "Saturday, August 29 around 5:00–5:30 AM: drive toward Burney via I-680/I-80/I-505/I-5/CA-299/CA-89.",
+      step: "Saturday, August 29: begin Day 1 only after the overnight road transfer, rest, food, water, legal staging, and the current park/closure check are complete.",
       sourceIds: ["pcta-transport"],
     },
     {
@@ -192,7 +194,7 @@ export const travelPlan = {
       "https://www.google.com/maps/search/?api=1&query=41.1171%2C-122.0606",
     coordinates: "41.1171, -122.0606",
     schedule:
-      "The primary itinerary reaches Ash Camp on Day 8, Saturday, September 5 after 51.844 official miles. The final leg is 3.854 miles from Butcherknife Creek with about 912 ft of descent.",
+      `The primary itinerary reaches Ash Camp on Day 8, Saturday, September 5 after ${tripFacts.route.officialMiles.toFixed(3)} official miles. The final leg is ${primaryItinerary.at(-1).distance.toFixed(3)} miles from Butcherknife Creek with about ${primaryItinerary.at(-1).elevation.loss.toLocaleString()} ft of descent.`,
     pickupWindow:
       "Primary September 5 rendezvous: 9:30 AM–12:30 PM after a 6:30–7:00 AM start. September 6 is the contingency pickup date. Mikaela waits at the shared Ash Camp pin; the hikers send satellite updates rather than relying on cell service.",
     road:
@@ -200,7 +202,7 @@ export const travelPlan = {
     backup:
       "Reserve Mt. Shasta Taxi at 530-859-3266 only after the dispatcher explicitly confirms an Ash Camp / FS 38N11 pickup in a suitable vehicle. A trail angel is a tertiary contingency, not the primary extraction contract.",
     comms: [
-      "T-24 hours: hikers send expected departure camp, start time, and two-hour pickup window by inReach.",
+      "T-24 hours: hikers send expected departure camp, start time, and two-hour pickup window using the tested two-way satellite communicator.",
       "Morning of exit: send STARTING FOR ASH CAMP with battery status and route mile.",
       "At Butcherknife departure and roughly two miles from Ash: send a progress check-in with ETA.",
       "At the trailhead: send ARRIVED ASH CAMP. Mikaela does not enter the trail or keep driving beyond the agreed pin.",
@@ -230,7 +232,7 @@ export const travelPlan = {
       sourceIds: ["doc-day-plan"],
     },
     {
-      step: "Working return schedule: UA1317 departs SJC at 6:40 AM PDT September 7. Verify the United booking before locking airport report time.",
+      step: "Confirmed return itinerary: UA1317 departs SJC at 6:40 AM PDT September 7 and is scheduled to end at 10:45 AM PDT / 12:45 PM CDT. Use United Flight Status for travel-day operations.",
       sourceIds: ["doc-day-plan"],
     },
   ],
@@ -274,10 +276,10 @@ export const permitChecklist = [
   },
   {
     name: 'California Campfire Permit',
-    coverage: 'All stove or open-flame use in California',
-    source: 'https://permit.pcta.org or ReadyForWildfire',
+    coverage: 'Stove or fire use where the governing land manager allows it',
+    source: 'PCTA / Ready for Wildfire / governing land manager',
     cost: 'Free (video + quiz)',
-    notes: 'Each DDG member needs their own. Carry digital + paper copies; required even for canister stoves.',
+    notes: 'Each DDG member should carry a current permit before using a stove or fire on public land where one is required. It does not independently authorize use: current restrictions control, and the private timberland corridor prohibits campfires, stoves, ignition sources, and smoking.',
     sourceIds: ['permit-pcta-campfire', 'doc-permits-overview', 'reddit-permits-ca']
   }
 ];
@@ -310,6 +312,8 @@ export const prepGuideMeta = {
   reminder: 'The controlling document is docs/2026-trip-source-of-truth.md; generated runtime data must remain consistent with it.'
 };
 
+// Historical overview retained as source material only. The interactive Gear
+// tab uses packPlanner below; do not reintroduce this duplicate surface.
 export const gearBlueprint = {
   core: [
     {
@@ -366,7 +370,7 @@ export const packPlanner = {
   baseWeightGoalLbs: 20,
   consumablesStartLbs: 10,
   summary:
-    "Comfort-first hauler for Section O—capable of carrying big water loads per Wilderness Vagabond beta.",
+    "Comfort-first eight-day loadout with food contingency, verified water-carry capacity, and shared-gear assignment.",
   modules: [
     {
       id: "shelter-sleep",
@@ -454,14 +458,14 @@ export const packPlanner = {
       volumeLiters: 10,
       readiness: "dialing in",
       focus:
-        "Water carry capacity for Hat Creek Rim stretches per Wilderness Vagabond.",
+        "Water carry capacity for the dry-camp and Day 3 support plan; current source flow controls the final liters.",
       sourceIds: ["doc-water-hat-creek", "wv-2017-log", "halfway-anywhere"],
       items: [
         {
           id: "stove",
           name: "Lightweight canister stove (threaded, wind-tolerant)",
           detail:
-            "Threaded canister stove for fast boils in breezy conditions. Target ~2–4 oz stove weight. CA Campfire Permit required (even for stoves).",
+            "Threaded canister stove for fast boils in breezy conditions. Target ~2–4 oz stove weight. Carry a current California Campfire Permit where required, but do not use it where current restrictions or private-land rules prohibit ignition sources.",
           weight: "0.2 lb",
           specs: ["Threaded canister", "Wind-tolerant", "~2–4 oz target"],
           defaultPacked: true,
@@ -635,7 +639,7 @@ export const packPlanner = {
       weightLbs: 3.0,
       volumeLiters: 6,
       readiness: "in-progress",
-      focus: "Comms and navigation redundancy for 70+ mile no-service stretch.",
+      focus: "Offline navigation and a tested two-way satellite plan for Day 3, Ash Camp, and conservative no-cell conditions.",
       sourceIds: ["doc-day-plan", "farout-pct", "onxmaps-section-n"],
       items: [
         {
@@ -1424,6 +1428,8 @@ export const packPlanner = {
   ],
 };
 
+// Historical risk notes retained for research provenance. The active Field tab
+// uses the generated Field Brief plus live condition snapshots instead.
 export const riskPlaybook = [
   {
     title: 'Wildfire smoke & closures',
@@ -1466,7 +1472,7 @@ export const riskPlaybook = [
   },
   {
     title: 'Altitude sickness (AMS) awareness',
-    detail: 'The normalized Garmin profile peaks at approximately 6,129ft (moderate altitude)—low AMS risk for most hikers. However, symptoms can occur in sensitive individuals. Monitor for headache, nausea, fatigue, or dizziness. If symptoms persist or worsen, descend and seek medical guidance.',
+    detail: `The USGS 3DEP terrain profile peaks at approximately ${tripFacts.route.highPointFeet.toLocaleString()}ft (moderate altitude)—low AMS risk for most hikers. However, symptoms can occur in sensitive individuals. Monitor for headache, nausea, fatigue, or dizziness. If symptoms persist or worsen, descend and seek medical guidance.`,
     protocol: {
       thresholds: [
         { elevation: '0–4,000ft', risk: 'None', action: 'No precautions needed' },
@@ -1487,9 +1493,9 @@ export const riskPlaybook = [
       name: 'Acetazolamide (Diamox)',
       dose: '125mg twice daily, starting 24hrs before ascent',
       notes: 'Prescription required. Consult physician. Side effects: tingling, frequent urination, carbonated drinks taste flat.',
-      forSectionO: 'Not routinely indicated for this approximately 6,129ft route. Any medication decision belongs with a clinician who knows the hiker.'
+      forSectionO: `Not routinely indicated for this approximately ${tripFacts.route.highPointFeet.toLocaleString()}ft route. Any medication decision belongs with a clinician who knows the hiker.`
     },
-    sectionOContext: 'The normalized Garmin high point is approximately 6,129ft—below the 8,000ft threshold where AMS becomes more common. The largest daily climb is approximately 2,175ft on Day 2; pace conservatively and hydrate.',
+    sectionOContext: `The USGS 3DEP high point is approximately ${tripFacts.route.highPointFeet.toLocaleString()}ft—below the 8,000ft threshold where AMS becomes more common. The largest daily climb is approximately ${Math.max(...primaryItinerary.map((day) => day.elevation.gain)).toLocaleString()}ft on Day 2; pace conservatively and hydrate.`,
     sourceIds: ['adventurehacks-guide', 'wv-2017-log']
   }
 ];
@@ -1665,6 +1671,8 @@ const dateLabel = (isoDate) =>
     timeZone: 'America/Los_Angeles'
   }).format(new Date(`${isoDate}T12:00:00-07:00`));
 
+// Historical narrative itinerary retained for provenance only. No active view
+// consumes it; the PCTA/USGS generated route bundle is the current itinerary.
 export const dayItinerary = [
   {
     day: 0,
@@ -1675,14 +1683,14 @@ export const dayItinerary = [
     distance: 0,
     type: 'drive',
     elevation: { start: 0, end: 0, gain: 0, loss: 0 },
-    terrain: 'Late airport pickup followed by sleep near SJC',
+    terrain: 'Confirmed late airport pickup followed by the selected same-night Burney approach',
     waterSources: [],
     waterCarry: 'Travel day',
     connectivity: { verizon: 'variable', att: 'variable', tmobile: 'variable', satellite: true },
-    campFeatures: ['Reserved sleep near SJC'],
-    notes: 'Working schedule: UA481 reaches SJC around 10:36 PM PDT. Mikaela collects the team; everyone sleeps near SJC before the early August 29 drive.',
-    objectives: ['Verify United flight', 'Collect luggage', 'Eat', 'Sleep before driving and hiking'],
-    timing: { start: '10:36 PM', end: 'Overnight near SJC', movingTime: '<1h local transfer', breakTime: 'Airline-dependent' },
+    campFeatures: ['Legal overnight Burney staging to be confirmed'],
+    notes: 'Confirmed itinerary: UA481 reaches SJC around 10:36 PM PDT. Mikaela collects the team and begins the same-night Burney approach; do not start Day 1 until all hikers are rested and legal staging/access is confirmed.',
+    objectives: ['Monitor United Flight Status', 'Collect luggage', 'Fuel and eat', 'Complete the driver-rest and legal-staging plan'],
+    timing: { start: '10:36 PM', end: 'Predawn August 29 staging', movingTime: '6.1h SJC-to-Burney baseline before stops', breakTime: 'Airline and driver-rest dependent' },
     sourceIds: ['doc-day-plan']
   },
   ...primaryItinerary.map((leg) => ({
@@ -1704,7 +1712,7 @@ export const dayItinerary = [
       leg.day === 3
         ? 'Continuous private-timberland traverse with day packs and timed Bartle Gap extraction'
         : leg.day === 4
-        ? 'Highest route segment; normalized Garmin profile reaches approximately 6,129 ft'
+        ? `Highest route segment; USGS 3DEP profile reaches approximately ${tripFacts.route.highPointFeet.toLocaleString()} ft`
         : leg.elevation.loss >= 1400
           ? 'Major descent day; protect knees and allow slower footing'
           : leg.elevation.gain >= 1800
@@ -1755,7 +1763,7 @@ export const dayItinerary = [
 // ═══════════════════════════════════════════════════════════════════════════════
 // MILEAGE RECONCILIATION:
 // • Active PCTA 2026 route to Ash Camp: 51.844 miles
-// • Cropped Garmin elevation track:     51.664 miles
+// • Checked-in PCTA centerline geometry: ${tripFacts.route.centerlineGeometryMiles} miles
 // • User-supplied Garmin source track:  80.826 miles (not active)
 // • Existing legacy app full crop:      82.898 miles (different crop; not active)
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1773,7 +1781,7 @@ export const tripStats = {
   targetPace: 'variable',
   paceNote: 'Eight hiking days average 6.48 miles; Day 3 is the 12.59-mile supported traverse and the final day is 3.85 miles.',
   highPoint: { elevation: tripFacts.route.highPointFeet, location: 'High saddle / active route high point', day: 4 },
-  lowPoint: { elevation: 2443, location: 'Ash Camp / McCloud River corridor', day: 8 },
+  lowPoint: { elevation: tripFacts.route.lowPointFeet, location: 'Ash Camp / McCloud River corridor', day: 8 },
   waterSourceCount: 20,
   connectivityBlackoutMiles: 35, // Approximate based on daily connectivity data
   estimatedMovingTime: '37–52 field hours',
@@ -1804,15 +1812,15 @@ export const nextStepsChecklist = [
     status: 'up next'
   },
   {
-    task: 'Confirm local overnight rules; then print any required local and campfire permits.',
+    task: 'Confirm local overnight rules; then obtain and carry every currently required permit. A campfire permit never overrides a closure or private-land restriction.',
     status: 'up next'
   },
   {
-    task: 'Call Burney Taxi at (530) 605-7950 and confirm a licensed/insured backup; use FarNorCal PCT trail angels only after the exact assignment is accepted.',
+    task: 'Name a secondary Ash Camp high-clearance provider only after it explicitly accepts the FS Road 38N11 assignment. Trail angels are a named-and-confirmed tertiary backup, not transport to assume.',
     status: 'pending'
   },
   {
-    task: 'Upload latest itinerary + contact tree into shared drive & InReach.',
+    task: 'Save the generated Field Brief and route bundle offline on every phone, then send and acknowledge a real satellite check-in with every team contact.',
     status: 'pending'
   }
 ];
