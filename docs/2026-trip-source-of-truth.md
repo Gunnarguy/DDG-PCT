@@ -159,16 +159,16 @@ itinerary displayed in different time zones, not an early-evening SJC arrival.
 ### Flight Watch rule
 
 The app now labels this itinerary **team-confirmed**. Its Flight Watch opens
-United's official Flight Status page and can add a server-side FlightAware
-AeroAPI aircraft feed after a key is configured. The aircraft feed is useful
+United's official Flight Status page and has a server-side FlightAware AeroAPI
+aircraft feed configured. The aircraft feed is useful
 for an actual position, ETA, and gate estimate; it cannot prove passenger
 check-in, baggage, security clearance, or a safe driving handoff.
 
-To activate the optional server feed, set `FLIGHTAWARE_AEROAPI_KEY` as a
-Supabase Edge Function secret. It must never be added to the website, iOS app,
-repository, or a client-side environment file. Until then, the official United
-status link and the public tracker links remain available without pretending
-that an aircraft is live.
+`FLIGHTAWARE_AEROAPI_KEY` is stored as a Supabase Edge Function secret. It is
+not present in the website, iOS app, repository, or a client-side environment
+file. The dashboard does not call the provider until 48 hours before either
+flight; until that window, the official United status link and public tracker
+links remain available without pretending that an aircraft is live.
 
 ### Return-flight operational consequence
 

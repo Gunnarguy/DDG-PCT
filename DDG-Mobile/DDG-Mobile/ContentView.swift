@@ -148,9 +148,10 @@ struct SyncIndicator: View {
                 .font(.caption2)
                 .foregroundStyle(.secondary)
             if pendingCount > 0 {
-                Text("(\(pendingCount) pending)")
+                Text("(\(pendingCount) unsynced edits)")
                     .font(.caption2)
                     .foregroundStyle(.orange)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }

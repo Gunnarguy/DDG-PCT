@@ -282,7 +282,6 @@ function GearPlanner({ data, currentUser }) {
   const [groupAssignee, setGroupAssignee] = useState(activeHikerId);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
-  const [expandedDetails, setExpandedDetails] = useState(() => new Set());
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
@@ -635,16 +634,6 @@ function GearPlanner({ data, currentUser }) {
     const matchesCat =
       categoryFilter === "All" || item.category === categoryFilter;
     return matchesTerm && matchesCat;
-  };
-
-  const isDetailExpanded = (itemId) => expandedDetails.has(itemId);
-  const toggleDetailExpanded = (itemId) => {
-    setExpandedDetails((prev) => {
-      const next = new Set(prev);
-      if (next.has(itemId)) next.delete(itemId);
-      else next.add(itemId);
-      return next;
-    });
   };
 
   const renderSpecChips = (specs = []) => {
@@ -1076,28 +1065,7 @@ function GearPlanner({ data, currentUser }) {
                           </span>
                         </div>
                         {renderSpecChips(getDisplaySpecs(item))}
-                        <span
-                          className={`item-detail ${
-                            isDetailExpanded(item.id)
-                              ? "item-detail--expanded"
-                              : "item-detail--clamped"
-                          }`}
-                        >
-                          {item.detail}
-                        </span>
-                        {item.detail && item.detail.length > 120 && (
-                          <button
-                            type="button"
-                            className="item-detail-toggle"
-                            onClick={(e) => {
-                              // Don't unequip when expanding/collapsing text.
-                              e.stopPropagation();
-                              toggleDetailExpanded(item.id);
-                            }}
-                          >
-                            {isDetailExpanded(item.id) ? "Less" : "More"}
-                          </button>
-                        )}
+                        <span className="item-detail">{item.detail}</span>
                         {renderSourceChips(item.sourceIds)}
                         <span className="item-action item-action--remove">
                           × Unequip

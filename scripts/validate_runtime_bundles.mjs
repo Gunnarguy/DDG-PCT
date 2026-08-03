@@ -433,8 +433,10 @@ function validateRuntimeOperations(operations, source, terrain, terrainHash) {
     operations.workingFlights?.outbound?.scheduledArrivalAt === "2026-09-07T10:45:00-07:00",
   "runtime operations must retain the confirmed flight timing contract");
   assert(operations.workingFlights?.flightTracking?.providerState ===
-    "official-link-ready-provider-key-pending",
+    "server-key-configured",
   "runtime operations must disclose the live-flight provider state");
+  assert(Array.isArray(operations.fieldcraftTips) && operations.fieldcraftTips.length >= 4,
+    "runtime operations must retain sourced fieldcraft tips");
   assert(Array.isArray(operations.workingFlights?.flightTracking?.flights) &&
     operations.workingFlights.flightTracking.flights.length === 2,
   "runtime operations must include both live-flight tracking identities");

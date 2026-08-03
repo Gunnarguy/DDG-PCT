@@ -1,35 +1,36 @@
 import SwiftUI
 
-/// The Field workspace's durable, source-backed reference. Live water, smoke,
-/// closures, crossings, and road signals live one tap away in TrailConditionsView.
-/// This screen intentionally works with no network and never presents a static
-/// carrier estimate or an old field report as a clearance.
+/// The field workspace is intentionally compact at rest: live conditions first,
+/// one chosen day card second, and the full offline emergency reference on demand.
+/// Operational gates live only in Plan → Logistics.
 struct SafetyView: View {
     private let brief = FieldBrief.bundled
+    @State private var selectedDay = 1
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    currentConditionsCard
-                    routeContractCard
-                    operatingRulesSection
-                    dailyFieldCardSection
-                    verificationGatesSection
-                    emergencySection
-                    checkInSection
-                    offlineLimitsSection
-                    sourceLinksSection
+                VStack(alignment: .leading, spacing: 18) {
+                    CurrentConditionsCard()
+                    OperatingRulesCard(rules: brief.operationalRules)
+                    FieldDayDeck(
+                        route: brief.route,
+                        days: brief.daily,
+                        selectedDay: $selectedDay
+                    )
+                    FieldReferenceCard(brief: brief)
                 }
                 .padding()
                 .padding(.bottom, 36)
             }
             .background(Color(uiColor: .systemGroupedBackground))
-            .navigationTitle("Field Brief")
+            .navigationTitle("Field")
         }
     }
+}
 
-    private var currentConditionsCard: some View {
+private struct CurrentConditionsCard: View {
+    var body: some View {
         NavigationLink {
             TrailConditionsView()
         } label: {
@@ -44,6 +45,7 @@ struct SafetyView: View {
                     Text("Water · closures · crossings · fires · smoke · weather. A source response is not a safety clearance.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
@@ -54,94 +56,170 @@ struct SafetyView: View {
         .buttonStyle(.plain)
         .accessibilityHint("Opens the protected daily source snapshot and refresh control")
     }
+}
 
-    private var routeContractCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label("Offline route contract", systemImage: "shield.checkered")
-                .font(.headline)
-                .foregroundStyle(.teal)
-            Text(brief.route.name)
-                .font(.title3.bold())
-            HStack(spacing: 10) {
-                FieldMetric(value: String(format: "%.3f", brief.route.officialPctaMiles), label: "PCTA miles")
-                FieldMetric(value: "+\(brief.route.totalGainFeet.formatted())", label: "ft up")
-                FieldMetric(value: "−\(brief.route.totalLossFeet.formatted())", label: "ft down")
-            }
-            Text("Measured centerline: \(brief.route.centerlineGeometryMiles, specifier: "%.3f") mi · elevation \(brief.route.minElevationFeet.formatted())–\(brief.route.maxElevationFeet.formatted()) ft")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            Text("\(brief.terrainContractVersion) · \(brief.terrainContractSha256.prefix(12))…")
-                .font(.caption2.monospaced())
-                .foregroundStyle(.secondary)
-        }
-        .fieldCard(tint: .teal)
-    }
+private struct OperatingRulesCard: View {
+    let rules: [FieldBrief.OperationalRule]
 
-    private var operatingRulesSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            FieldSectionHeader(title: "Operating rules", icon: "exclamationmark.shield.fill", color: .orange)
-            ForEach(brief.operationalRules) { rule in
-                VStack(alignment: .leading, spacing: 4) {
+    var body: some View {
+        DisclosureGroup {
+            VStack(alignment: .leading, spacing: 10) {
+            ForEach(rules) { rule in
+                VStack(alignment: .leading, spacing: 3) {
                     Text(rule.title)
                         .font(.subheadline.bold())
                     Text(rule.detail)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .fieldCard(tint: .orange, compact: true)
+                .padding(.vertical, 2)
             }
+            }
+            .padding(.top, 8)
+        } label: {
+            Label("Always-on field rules", systemImage: "exclamationmark.shield.fill")
+                .font(.headline)
+                .foregroundStyle(.orange)
         }
+        .fieldCard(tint: .orange)
+    }
+}
+
+private struct FieldDayDeck: View {
+    let route: FieldBrief.Route
+    let days: [FieldBrief.Day]
+    @Binding var selectedDay: Int
+
+    private var selected: FieldBrief.Day? {
+        days.first { $0.day == selectedDay } ?? days.first
     }
 
-    private var dailyFieldCardSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            FieldSectionHeader(title: "Day-by-day field card", icon: "figure.hiking", color: .green)
-            Text("The terrain numbers below are the same normalized PCTA + USGS contract used by the map and elevation profile.")
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            FieldSectionHeader(title: "One day at a time", icon: "figure.hiking", color: .green)
+            Text("Choose a day for the offline terrain card. This is the same normalized PCTA + USGS contract used by the map and elevation profile.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
 
-            ForEach(brief.daily) { day in
-                FieldDayCard(day: day)
-            }
-        }
-    }
-
-    private var verificationGatesSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            FieldSectionHeader(title: "Remaining verification gates", icon: "checklist", color: .red)
-            Text("Open is not a failure state—it means no one is allowed to pretend the fact has been verified. Record real confirmation in Field → Ops Log.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
-            ForEach(brief.operations.gates.filter { $0.state != "confirmed" }) { gate in
-                VStack(alignment: .leading, spacing: 5) {
-                    HStack(alignment: .top) {
-                        Label(gate.priority.uppercased(), systemImage: gate.priority == "critical" ? "exclamationmark.triangle.fill" : "clock.badge.exclamationmark")
-                            .font(.caption2.bold())
-                            .foregroundStyle(gate.priority == "critical" ? .red : .orange)
-                        Spacer()
-                        Text(gate.due)
-                            .font(.caption2.bold())
-                            .foregroundStyle(.secondary)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(days) { day in
+                        Button {
+                            selectedDay = day.day
+                        } label: {
+                            VStack(spacing: 2) {
+                                Text("Day \(day.day)")
+                                    .font(.caption.bold())
+                                Text(String(format: "%.1f mi", day.distanceMiles))
+                                    .font(.caption2)
+                            }
+                            .foregroundStyle(day.day == selectedDay ? .white : .primary)
+                            .padding(.horizontal, 11)
+                            .padding(.vertical, 8)
+                            .background(day.day == selectedDay ? Color.green : Color(uiColor: .tertiarySystemGroupedBackground), in: Capsule())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Select Day \(day.day), \(String(format: "%.1f", day.distanceMiles)) miles")
                     }
-                    Text(gate.title)
-                        .font(.subheadline.bold())
-                    Text("Owner: \(gate.owner) · blocks: \(gate.blocks)")
+                }
+            }
+
+            if let selected {
+                FieldDayCard(day: selected, route: route)
+            }
+        }
+        .fieldCard(tint: .green)
+    }
+}
+
+private struct FieldDayCard: View {
+    let day: FieldBrief.Day
+    let route: FieldBrief.Route
+
+    private var tint: Color { day.day == 3 ? .red : .green }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Day \(day.day) · \(day.title)")
+                        .font(.headline.bold())
+                        .foregroundStyle(tint)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text("\(day.startName) → \(day.endName)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .fieldCard(tint: gate.priority == "critical" ? .red : .orange, compact: true)
+                Spacer(minLength: 8)
+                Text(String(format: "%.3f mi", day.distanceMiles))
+                    .font(.subheadline.bold())
             }
-        }
-    }
 
-    private var emergencySection: some View {
+            HStack(spacing: 12) {
+                FieldMetric(value: "+\(day.gainFeet.formatted())", label: "ft up")
+                FieldMetric(value: "−\(day.lossFeet.formatted())", label: "ft down")
+                FieldMetric(value: "\(day.highPointFeet.formatted())", label: "high ft")
+            }
+            Text(day.detail)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            HStack(spacing: 7) {
+                FieldPill(text: String(format: "PCT %.3f–%.3f", day.pctMileStart, day.pctMileEnd), color: .secondary)
+                if day.packMode == "day-pack-supported" {
+                    FieldPill(text: "Day pack", color: .red)
+                }
+                if day.stopType == "support-transfer" {
+                    FieldPill(text: "No camp", color: .red)
+                }
+            }
+
+            Text("Elevation: \(day.startElevationFeet.formatted()) ft → \(day.endElevationFeet.formatted()) ft · route contract: \(String(format: "%.3f", route.officialPctaMiles)) PCTA mi")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 13))
+    }
+}
+
+private struct FieldReferenceCard: View {
+    let brief: FieldBrief
+
+    var body: some View {
+        DisclosureGroup {
+            VStack(alignment: .leading, spacing: 18) {
+                EmergencyReference(brief: brief)
+                CommsReference(items: brief.emergency.checkInProtocol)
+                OfflineReference(brief: brief)
+            }
+            .padding(.top, 8)
+        } label: {
+            Label("Emergency, comms & offline reference", systemImage: "cross.case.fill")
+                .font(.headline)
+                .foregroundStyle(.red)
+        }
+        .fieldCard(tint: .red)
+    }
+}
+
+private struct EmergencyReference: View {
+    let brief: FieldBrief
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            FieldSectionHeader(title: "Emergency coordination", icon: "cross.case.fill", color: .red)
+            Text("Emergency coordination")
+                .font(.subheadline.bold())
             Text(brief.emergency.disclaimer)
                 .font(.caption)
                 .foregroundStyle(.secondary)
-
+                .fixedSize(horizontal: false, vertical: true)
             ForEach(Array(brief.emergency.actions.enumerated()), id: \.element.id) { index, action in
                 HStack(alignment: .top, spacing: 10) {
                     Text("\(index + 1)")
@@ -155,101 +233,30 @@ struct SafetyView: View {
                         Text(action.detail)
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
-                .fieldCard(tint: .red, compact: true)
             }
-
             ForEach(brief.emergency.contacts) { contact in
-                VStack(alignment: .leading, spacing: 5) {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(contact.title)
-                                .font(.subheadline.bold())
-                            Text(contact.when)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        if let phoneURL = phoneURL(for: contact.value) {
-                            Link(contact.value, destination: phoneURL)
-                                .font(.subheadline.bold())
-                                .foregroundStyle(.blue)
-                        } else {
-                            Text(contact.value)
-                                .font(.subheadline.bold())
-                        }
-                    }
-                    sourceLinks(for: contact.sourceIDs)
-                }
-                .fieldCard(tint: .red, compact: true)
-            }
-        }
-    }
-
-    private var checkInSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            FieldSectionHeader(title: "Comms and check-in protocol", icon: "antenna.radiowaves.left.and.right", color: .blue)
-            Text("This replaces static carrier confidence with an actual tested-device and named-cadence plan.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            ForEach(brief.emergency.checkInProtocol) { item in
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(item.title)
+                    Text(contact.title)
                         .font(.subheadline.bold())
-                    Text(item.detail)
+                    Text(contact.when)
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                }
-                .fieldCard(tint: .blue, compact: true)
-            }
-        }
-    }
-
-    private var offlineLimitsSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            FieldSectionHeader(title: "Offline limits", icon: "wifi.slash", color: .orange)
-            ForEach(brief.offlineLimitations, id: \.self) { limitation in
-                Label(limitation, systemImage: "exclamationmark.circle")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .fieldCard(tint: .orange)
-    }
-
-    private var sourceLinksSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            FieldSectionHeader(title: "Primary sources", icon: "link", color: .teal)
-            Text("These were captured into the field brief on \(brief.updatedAt). Recheck live agencies before departure.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            sourceLinks(for: brief.sourceIDs)
-        }
-        .fieldCard(tint: .teal)
-    }
-
-    @ViewBuilder
-    private func sourceLinks(for sourceIDs: [String]) -> some View {
-        let sources = sourceIDs.compactMap { brief.sourcesByID[$0] }
-        if !sources.isEmpty {
-            FlowLayout(spacing: 7) {
-                ForEach(sources) { source in
-                    if let urlString = source.url, let url = URL(string: urlString) {
-                        Link(source.title, destination: url)
-                            .font(.caption2)
-                            .lineLimit(1)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 5)
-                            .background(.teal.opacity(0.1), in: Capsule())
+                        .fixedSize(horizontal: false, vertical: true)
+                    if let url = phoneURL(for: contact.value) {
+                        Link(contact.value, destination: url)
+                            .font(.subheadline.bold())
                     } else {
-                        Text(source.title)
-                            .font(.caption2)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 5)
-                            .background(.secondary.opacity(0.1), in: Capsule())
+                        Text(contact.value)
+                            .font(.subheadline.bold())
+                            .fixedSize(horizontal: false, vertical: true)
                     }
+                    FieldSourceLinks(sources: contact.sourceIDs.compactMap { brief.sourcesByID[$0] })
                 }
+                .padding(10)
+                .background(.red.opacity(0.06), in: RoundedRectangle(cornerRadius: 10))
             }
         }
     }
@@ -257,6 +264,74 @@ struct SafetyView: View {
     private func phoneURL(for phone: String) -> URL? {
         let dialable = phone.filter { $0.isNumber || $0 == "+" }
         return URL(string: "tel://\(dialable)")
+    }
+}
+
+private struct CommsReference: View {
+    let items: [FieldBrief.CheckInItem]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Comms and check-in")
+                .font(.subheadline.bold())
+            ForEach(items) { item in
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(item.title)
+                        .font(.subheadline.bold())
+                    Text(item.detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
+    }
+}
+
+private struct OfflineReference: View {
+    let brief: FieldBrief
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Offline limits & data contract")
+                .font(.subheadline.bold())
+            ForEach(brief.offlineLimitations, id: \.self) { limitation in
+                Label(limitation, systemImage: "exclamationmark.circle")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Text("\(brief.terrainContractVersion) · SHA-256 \(brief.terrainContractSha256)")
+                .font(.caption2.monospaced())
+                .foregroundStyle(.secondary)
+                .textSelection(.enabled)
+                .fixedSize(horizontal: false, vertical: true)
+            FieldSourceLinks(sources: brief.sourceIDs.compactMap { brief.sourcesByID[$0] })
+        }
+    }
+}
+
+private struct FieldSourceLinks: View {
+    let sources: [TripOperations.OperationalSource]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ForEach(sources) { source in
+                if let url = URL(string: source.url ?? "") {
+                    Link(destination: url) {
+                        Label(source.title, systemImage: "arrow.up.right.square")
+                            .font(.caption2)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                } else {
+                    Text(source.title)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
     }
 }
 
@@ -287,63 +362,7 @@ private struct FieldPill: View {
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
             .background(color.opacity(0.1), in: Capsule())
-    }
-}
-
-private struct FieldDayCard: View {
-    let day: FieldBrief.Day
-
-    private var tint: Color {
-        day.day == 3 ? .red : .green
-    }
-
-    var body: some View {
-        DisclosureGroup {
-            VStack(alignment: .leading, spacing: 9) {
-                Text(day.detail)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                HStack(spacing: 8) {
-                    FieldPill(
-                        text: String(format: "PCT %.3f–%.3f", day.pctMileStart, day.pctMileEnd),
-                        color: .secondary
-                    )
-                    if day.packMode == "day-pack-supported" {
-                        FieldPill(text: "Day pack", color: .red)
-                    }
-                    if day.stopType == "support-transfer" {
-                        FieldPill(text: "No camp", color: .red)
-                    }
-                }
-                Text("End: \(day.endName) · \(day.endElevationFeet.formatted()) ft")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.top, 6)
-        } label: {
-            VStack(alignment: .leading, spacing: 6) {
-                HStack {
-                    Text("Day \(day.day)")
-                        .font(.headline.bold())
-                        .foregroundStyle(tint)
-                    Spacer()
-                    Text(String(format: "%.3f mi", day.distanceMiles))
-                        .font(.subheadline.bold())
-                }
-                Text(day.title)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                HStack(spacing: 12) {
-                    Label("+\(day.gainFeet.formatted())", systemImage: "arrow.up.right")
-                        .foregroundStyle(.green)
-                    Label("−\(day.lossFeet.formatted())", systemImage: "arrow.down.right")
-                        .foregroundStyle(.red)
-                }
-                .font(.caption.bold())
-            }
-        }
-        .tint(tint)
-        .fieldCard(tint: tint, compact: true)
+            .fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -360,14 +379,11 @@ private struct FieldSectionHeader: View {
 }
 
 private extension View {
-    func fieldCard(tint: Color, compact: Bool = false) -> some View {
-        padding(compact ? 12 : 16)
+    func fieldCard(tint: Color) -> some View {
+        padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: compact ? 13 : 16))
-            .overlay(
-                RoundedRectangle(cornerRadius: compact ? 13 : 16)
-                    .stroke(tint.opacity(0.22), lineWidth: 1)
-            )
+            .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(tint.opacity(0.22), lineWidth: 1))
     }
 }
 

@@ -65,6 +65,30 @@ function GateCard({ gate }) {
   );
 }
 
+function FieldcraftTips({ tips = [] }) {
+  if (!tips.length) return null;
+
+  return (
+    <details className="ops-fieldcraft">
+      <summary>Practical trail lessons &amp; caveats</summary>
+      <p>
+        These are historical fieldcraft lessons, deliberately separated from
+        live access, water, smoke, and closure status.
+      </p>
+      <div className="ops-fieldcraft__list">
+        {tips.map((tip) => (
+          <article key={tip.id}>
+            <h4>{tip.title}</h4>
+            <p>{tip.detail}</p>
+            <small>{tip.kind}</small>
+            <OperationSources sourceIds={tip.sourceIds} />
+          </article>
+        ))}
+      </div>
+    </details>
+  );
+}
+
 function FlightWatch({ tracking }) {
   const [snapshot, setSnapshot] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -169,6 +193,7 @@ function TransitPanel() {
     dayThreeSupport,
     finishPlan,
     gates,
+    fieldcraftTips,
     updatedAt,
     workingFlights,
   } = tripOperations;
@@ -274,6 +299,8 @@ function TransitPanel() {
           </p>
         </article>
       </section>
+
+      <FieldcraftTips tips={fieldcraftTips} />
     </section>
   );
 }

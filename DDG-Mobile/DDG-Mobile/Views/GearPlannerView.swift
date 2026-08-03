@@ -624,7 +624,7 @@ private struct GearCategorySection: View {
                     Text("\(module.readiness.uppercased()) · \(module.focus)")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
-                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
         }
@@ -750,11 +750,11 @@ private struct GearItemRow: View {
                                 if let urlString = source.url, let url = URL(string: urlString) {
                                     Link(source.title, destination: url)
                                         .font(.system(size: 10, weight: .semibold))
-                                        .lineLimit(1)
+                                        .fixedSize(horizontal: false, vertical: true)
                                 } else {
                                     Text(source.title)
                                         .font(.system(size: 10, weight: .semibold))
-                                        .lineLimit(1)
+                                        .fixedSize(horizontal: false, vertical: true)
                                 }
                             }
                         }

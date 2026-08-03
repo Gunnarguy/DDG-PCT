@@ -239,7 +239,7 @@ struct TrailConditionsView: View {
                                     .foregroundStyle(.secondary)
                                 Text(source.name)
                                     .font(.subheadline.bold())
-                                    .lineLimit(2)
+                                    .fixedSize(horizontal: false, vertical: true)
                             }
                             Spacer()
                             ConditionPill(

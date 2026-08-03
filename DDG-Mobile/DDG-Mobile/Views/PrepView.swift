@@ -4,8 +4,6 @@ import SwiftUI
 struct PrepView: View {
     @AppStorage("ddg.personal-prep") private var completedIDs: String = ""
 
-    private let operations = TripOperations.bundled
-
     private var completed: Set<String> {
         Set(completedIDs.split(separator: ",").map(String.init))
     }
@@ -44,15 +42,10 @@ struct PrepView: View {
                         }
                     }
 
-                    VStack(alignment: .leading, spacing: 10) {
-                        SectionHeader(title: "Group gates still open", icon: "exclamationmark.triangle.fill", color: .orange)
-                        Text("These are intentionally read-only here. Confirm them from evidence, then record who confirmed what in Field → Ops Log.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        ForEach(operations.gates.filter { $0.priority == "critical" }) { gate in
-                            GroupGateRow(gate: gate)
-                        }
-                    }
+                    Text("Group access, support, permits, and extraction decisions live once in Plan → Logistics. Use Field → Ops Log only to record real confirmations.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding()
                 .padding(.bottom, 36)
@@ -93,7 +86,7 @@ private struct PrepHeader: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Be ready; do not manufacture certainty.")
                 .font(.title3.bold())
-            Text("Personal gear and field readiness live here. Access, permits, crossings, private-land support, and extraction remain evidence-backed gates in Plan → Logistics.")
+            Text("This screen is only for your personal readiness. Access, permits, crossings, private-land support, and extraction live once in Plan → Logistics.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             Text("\(completeCount) of \(totalCount) personal tasks complete")
@@ -142,33 +135,6 @@ private struct PersonalPrepTaskCard: View {
             .overlay(RoundedRectangle(cornerRadius: 16).stroke(isChecked ? .green.opacity(0.28) : .gray.opacity(0.16), lineWidth: 1))
         }
         .buttonStyle(.plain)
-    }
-}
-
-private struct GroupGateRow: View {
-    let gate: TripOperations.OperationalGate
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Label("OPEN", systemImage: "exclamationmark.triangle.fill")
-                    .font(.caption.bold())
-                    .foregroundStyle(.red)
-                Spacer()
-                Text(gate.due)
-                    .font(.caption.bold())
-                    .foregroundStyle(.secondary)
-            }
-            Text(gate.title)
-                .font(.subheadline.bold())
-            Text("Owner: \(gate.owner)")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(.red.opacity(0.2), lineWidth: 1))
     }
 }
 

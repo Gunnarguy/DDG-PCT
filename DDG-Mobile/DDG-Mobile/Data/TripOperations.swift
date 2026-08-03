@@ -17,6 +17,7 @@ struct TripOperations: Decodable, Sendable {
     let dayThreeSupport: DayThreeSupport
     let finishPlan: FinishPlan
     let gates: [OperationalGate]
+    let fieldcraftTips: [FieldcraftTip]
     let sources: [OperationalSource]
     let canonicalRoute: CanonicalRoute
 
@@ -154,6 +155,22 @@ extension TripOperations {
         }
     }
 
+    struct FieldcraftTip: Decodable, Identifiable, Sendable {
+        let id: String
+        let title: String
+        let detail: String
+        let kind: String
+        let sourceIDs: [String]
+
+        private enum CodingKeys: String, CodingKey {
+            case id
+            case title
+            case detail
+            case kind
+            case sourceIDs = "sourceIds"
+        }
+    }
+
     struct OperationalSource: Decodable, Identifiable, Sendable {
         let id: String
         let title: String
@@ -235,6 +252,7 @@ extension TripOperations {
             trailCoordinates: []
         ),
         gates: [],
+        fieldcraftTips: [],
         sources: [],
         canonicalRoute: CanonicalRoute(
             name: "Route unavailable",

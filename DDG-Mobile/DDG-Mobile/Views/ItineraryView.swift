@@ -56,18 +56,18 @@ struct ItineraryView: View {
 
     private var inboundTravelDetails: String {
         let flight = operations.workingFlights.inbound
-        return "✈️ \(flight.flightNumber) · \(flight.origin) → \(flight.destination)\nScheduled arrival: \(flight.scheduledArrivalLocal).\n🚙 \(operations.arrivalPlan.driver) drives the \(operations.arrivalPlan.vehicle).\n🛏️ \(operations.arrivalPlan.instruction)\n⚠️ \(operations.workingFlights.disclaimer)"
+        return "✈️ \(flight.flightNumber) · \(flight.origin) → \(flight.destination)\nSJC arrival: \(flight.scheduledArrivalLocal).\nThe full overnight staging, Burney entry, and Flight Watch plan lives once in Plan → Logistics."
     }
 
     private var finishTravelDetails: String {
         let route = operations.canonicalRoute
         let finish = operations.finishPlan
-        return "Complete the \(String(format: "%.3f", route.officialPctaMiles))-mile route to \(route.finish.name).\n🚙 \(finish.driver) pickup window: \(finish.pickupWindow).\n🛣️ \(finish.road)\nSep 6 remains the contingency day."
+        return "Complete the \(String(format: "%.3f", route.officialPctaMiles))-mile route to \(route.finish.name).\nPrimary pickup: \(finish.primaryDate) · backup: \(finish.backupDate).\nThe road, vehicle check, and fallback plan live once in Plan → Logistics."
     }
 
     private var outboundTravelDetails: String {
         let flight = operations.workingFlights.outbound
-        return "✈️ \(flight.flightNumber) · \(flight.origin) → \(flight.destination)\nScheduled departure: \(flight.scheduledDepartureLocal). Arrival: \(flight.scheduledArrivalLocal).\n⚠️ \(operations.workingFlights.disclaimer)"
+        return "✈️ \(flight.flightNumber) · \(flight.origin) → \(flight.destination)\nScheduled departure: \(flight.scheduledDepartureLocal). Arrival: \(flight.scheduledArrivalLocal).\nCheck live airline status in Plan → Logistics before leaving for SJC."
     }
 
     private func calendarDate(from isoDate: String) -> Date {
@@ -207,6 +207,7 @@ struct ItineraryView: View {
                             .foregroundStyle(.orange)
                         Text(travelDetails)
                             .font(.subheadline.bold())
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -259,6 +260,7 @@ struct ItineraryView: View {
             }
             Text(text)
                 .font(.callout)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding()
         .background(
@@ -396,6 +398,7 @@ private struct DayStatsRow: View {
 
                 Text(profile.note)
                     .font(.caption)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .padding()
@@ -524,7 +527,6 @@ private struct ComparableHikerContextView: View {
 private struct CampRow: View {
     let camp: CampSite
     let color: Color
-    @State private var showFullSegment = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -533,13 +535,13 @@ private struct CampRow: View {
                 Text(camp.segment)
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                    .lineLimit(showFullSegment ? nil : 2)
-                    .onTapGesture { withAnimation { showFullSegment.toggle() } }
+                    .fixedSize(horizontal: false, vertical: true)
             }
             if !camp.notes.isEmpty {
                 Text(camp.notes)
                     .font(.caption2)
                     .foregroundStyle(.orange)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             Divider().padding(.vertical, 2)
             elevations

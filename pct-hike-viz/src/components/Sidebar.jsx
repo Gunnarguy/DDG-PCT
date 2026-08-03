@@ -387,10 +387,6 @@ function Sidebar({
     const sourcesByID = new Map(
       fieldBrief.sources.map((source) => [source.id, source]),
     );
-    const criticalGates = fieldBrief.operations.gates.filter(
-      (gate) => gate.priority === "critical" && gate.state !== "confirmed",
-    );
-    const dayThree = fieldBrief.daily.find((day) => day.day === 3);
 
     return (
       <>
@@ -423,7 +419,7 @@ function Sidebar({
           </div>
           <p className="note">
             Terrain {fieldBrief.terrainContractVersion} · SHA{" "}
-            <code>{fieldBrief.terrainContractSha256.slice(0, 12)}…</code>
+            <code className="contract-hash">{fieldBrief.terrainContractSha256}</code>
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
             <a
@@ -442,52 +438,6 @@ function Sidebar({
             </a>
           </div>
         </section>
-
-        <section className="sidebar-card sidebar-card--full">
-          <div className="section-header">
-            <h2>Open gates — do not self-clear</h2>
-            <span className="section-subtitle">
-              Confirm from evidence, then log it for the team
-            </span>
-          </div>
-          <div className="alerts-list">
-            {criticalGates.map((gate) => (
-              <div className="alert-item alert-warning" key={gate.id}>
-                <span className="alert-icon">!</span>
-                <div className="alert-content">
-                  <span className="alert-title">{gate.title}</span>
-                  <span className="alert-desc">
-                    Owner: {gate.owner} · due {gate.due} · blocks: {gate.blocks}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {dayThree && (
-          <section className="sidebar-card sidebar-card--full">
-            <div className="section-header">
-              <h2>Day 3: supported traverse</h2>
-              <span className="section-subtitle">Not a campsite</span>
-            </div>
-            <p className="lede">
-              {dayThree.distanceMiles.toFixed(3)} mi · +
-              {dayThree.gainFeet.toLocaleString()} / −
-              {dayThree.lossFeet.toLocaleString()} ft · day packs only
-            </p>
-            <p className="note">{dayThree.detail}</p>
-            <p className="note">
-              Exact trail boundary: route mi {fieldBrief.operations.dayThreeSupport.routeMile.toFixed(3)}
-              {" · "}PCT {fieldBrief.operations.dayThreeSupport.pctMile.toFixed(3)}
-              {" · "}{fieldBrief.operations.dayThreeSupport.fieldToTrailOffsetFeet.toFixed(0)}
-              ft to the field pin.
-            </p>
-            <p className="error-text">
-              No-show rule: {fieldBrief.operations.dayThreeSupport.noShowRule}
-            </p>
-          </section>
-        )}
 
         <section className="sidebar-card sidebar-card--full">
           <div className="section-header">
@@ -682,7 +632,7 @@ function Sidebar({
           </div>
         </div>
         <p className="note">
-          Emergency actions, official contacts, and the {fieldBrief.operations.gates.filter((gate) => gate.state !== "confirmed").length} remaining gates live in the Field Brief—so this screen does not duplicate stale numbers or unconfirmed vendors.
+          Emergency actions and official contacts live in the Field Brief. Route access, Day 3 support, and extraction gates live once in Route → Access &amp; Extraction.
         </p>
         <div className="quick-ref-dates">
           <span className="date-badge">

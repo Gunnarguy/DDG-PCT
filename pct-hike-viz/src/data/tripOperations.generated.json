@@ -47,8 +47,8 @@
       "scheduledArrivalAt": "2026-09-07T10:45:00-07:00"
     },
     "flightTracking": {
-      "provider": "FlightAware AeroAPI when the server-side key is configured; United Flight Status is the authoritative travel-day check.",
-      "providerState": "official-link-ready-provider-key-pending",
+      "provider": "FlightAware AeroAPI is configured server-side; United Flight Status remains the authoritative travel-day check.",
+      "providerState": "server-key-configured",
       "refreshPolicy": "Refresh every 6 hours before the 48-hour flight window, every 15 minutes inside it, and every 5 minutes on travel day while the dashboard is open.",
       "dataBoundary": "A tracker can report an aircraft and operational estimates. It cannot prove the passengers are checked in, have cleared security, or have their bags.",
       "officialStatusUrl": "https://www.united.com/en/us/flightstatus",
@@ -243,6 +243,47 @@
       ]
     }
   ],
+  "fieldcraftTips": [
+    {
+      "id": "gps-sanity-check",
+      "title": "Use route mile + offline map, not a device odometer alone",
+      "detail": "A historical Bartle Gap-to-Ash Camp hiker recorded about a mile of GPS over-report after long forest canopy. Keep the canonical offline track, cross-check route mile against known features, and reacquire position if the track starts behaving strangely. This is a navigation habit, not a substitute for the route contract.",
+      "kind": "historical fieldcraft",
+      "sourceIds": [
+        "trailhiker-bartle-ash"
+      ]
+    },
+    {
+      "id": "daylight-road-recon",
+      "title": "Recon unfamiliar road approaches in daylight",
+      "detail": "A Section O hiker deliberately found unfamiliar trailheads in daylight before committing to the hike. That is particularly relevant to the Day 3 support point and Ash Camp road: verify gates, turnarounds, and the exact pin before a time-sensitive handoff—not by improvising in the dark.",
+      "kind": "historical fieldcraft",
+      "sourceIds": [
+        "trailhiker-burney-peavine",
+        "usfs-mccloud-offices"
+      ]
+    },
+    {
+      "id": "water-is-a-live-condition",
+      "title": "A blue line or famous waterfall is not a current water guarantee",
+      "detail": "A historic Burney report found the PCT's Burney Creek crossing dry even while the falls were flowing lower in the park. Fill only from a currently confirmed source, treat it, and keep the planned carry buffer; use Daily Conditions and PCT Water for current reports rather than old trip journals.",
+      "kind": "historical fieldcraft with live-source requirement",
+      "sourceIds": [
+        "longstride-burney-dry-creek",
+        "pct-water"
+      ]
+    },
+    {
+      "id": "no-private-land-workaround",
+      "title": "There is no legal private-land camping workaround",
+      "detail": "The good workaround is logistical, not geographical: hike the PCT continuously with day packs and use a named, field-verified support transfer. Do not turn old campsite icons, a road, or a gate into implied permission to stop, cook, or camp on private timberland.",
+      "kind": "current rule",
+      "sourceIds": [
+        "pcta-private-timberland",
+        "pcta-bartle-gap"
+      ]
+    }
+  ],
   "sources": [
     {
       "id": "team-itinerary-confirmation",
@@ -280,6 +321,30 @@
       "url": "https://closures.pcta.org/closure/eDTns8WfTkvDtYlimQlJ",
       "kind": "official",
       "checkedAt": "2026-08-02"
+    },
+    {
+      "id": "trailhiker-burney-peavine",
+      "title": "Historical Section O hike: Burney Falls to Peavine Creek",
+      "url": "https://trailhiker.wordpress.com/2017/11/12/pct-section-o-burney-falls-to-peavine-creek/",
+      "kind": "historical trip report",
+      "checkedAt": "2026-08-02",
+      "note": "Useful for approach and road-recon fieldcraft only; it is not a current water, access, camping, or closure source."
+    },
+    {
+      "id": "trailhiker-bartle-ash",
+      "title": "Historical Section O hike: Bartle Gap to Ash Camp",
+      "url": "https://trailhiker.wordpress.com/2018/06/27/pct-section-o-bartle-gap-to-ash-camp/",
+      "kind": "historical trip report",
+      "checkedAt": "2026-08-02",
+      "note": "Useful for GPS/canopy and effort context only; it is not a current access or condition source."
+    },
+    {
+      "id": "longstride-burney-dry-creek",
+      "title": "Historical Burney Creek report: creek dry on the PCT",
+      "url": "https://longstride.net/pacific-crest-trail/2018/07/13/campsite-1424-7-day-115-burney-falls-even-when-the-creek-is-dry",
+      "kind": "historical trip report",
+      "checkedAt": "2026-08-02",
+      "note": "Demonstrates why a mapped creek or waterfall cannot substitute for current water reports."
     },
     {
       "id": "pcta-bartle-gap",
