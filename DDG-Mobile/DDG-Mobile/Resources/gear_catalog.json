@@ -2006,16 +2006,16 @@
         },
         {
           "id": "food-bear-storage",
-          "name": "Bear-resistant food storage (confirm canister rule)",
-          "detail": "UNRESOLVED — confirm before you go. Published guidance places the hard canister requirement in the Trinity Alps Wilderness (Canyon Creek and Swift Creek drainages), with a bear-proof system of some kind required elsewhere in the Trinity Alps. The Burney Falls to Ash Camp corridor does not enter the Trinity Alps Wilderness, so a hard canister is probably not mandated here — but 'probably' is not a plan, and a canister is roughly 2 lb you either carry or do not. Ask the McCloud Ranger Station (530-964-2184) when you call about FS Road 38N11; it is the same phone call. Regardless of the rule, food gets stored bear-resistant every night.",
+          "name": "Bear-resistant food storage (no canister required)",
+          "detail": "ANSWERED 2026-08-05. No bear canister is required on this route. BearVault's California requirement list names Kings Canyon, Sequoia, Yosemite, Lassen Volcanic, Redwood, Desolation Wilderness, Sierra NF, and Inyo NF — Shasta-Trinity is absent — and the Shasta-Trinity alerts page carries no forest-wide canister order. The one canister rule in this forest covers the Trinity Alps Wilderness (Canyon Creek and Swift Creek drainages), which this route does not enter. So carry a bear-resistant bag and hang or store it properly; you are not obligated to haul two pounds of hard canister. This is a published-source answer, not a ranger's word, so it costs nothing to confirm during the McCloud Ranger Station call already scheduled for FS Road 38N11. Rodents remain the likelier raider at established camps regardless.",
           "weightOunces": 6,
           "weightDisplay": "6 oz",
           "weightBucket": "consumable",
           "quantity": 1,
           "specs": [
-            "Verify with McCloud Ranger Station",
-            "Bundle with the 38N11 road call",
-            "Canister ≈ 2 lb if required"
+            "No canister required on this route",
+            "Trinity Alps rule does not apply here",
+            "Confirm on the 38N11 call"
           ],
           "defaultPacked": true,
           "sourceIds": [
@@ -2044,16 +2044,17 @@
         },
         {
           "id": "food-fuel-math",
-          "name": "Fuel sized for 8 days (not one canister by default)",
-          "detail": "A 100 g isobutane canister boils roughly 10–12 litres, which is about 2 minutes of burn per boil. Two hot meals and a morning coffee per person per day across three people for eight days will outrun a single small canister. Either carry a 230 g canister plus a 100 g reserve for the group, or decide deliberately to cold-soak and carry no stove at all. Do the arithmetic before the trip, not at the Day 3 dry camp — and note you cannot use a stove at all inside the private-timberland corridor.",
+          "name": "Fuel for 8 days — and a California Campfire Permit",
+          "detail": "READ THIS BEFORE PACKING A STOVE. Shasta-Trinity Forest Order 14-26-07 took effect July 1, 2026 and is active for your trip. It prohibits building, maintaining, or attending any fire, campfire, or stove fire across the forest, with exceptions that do not include your corridor. Portable gas, propane, or pressurized-fuel stoves with a shut-off valve remain legal ONLY for someone holding a valid California Campfire Permit, and only when the stove sits at least five feet from anything flammable. The permit is free. All three of you need one, carried. On quantity: a 100 g isobutane canister boils roughly 10-12 litres, so three hikers taking two hot meals a day for eight days will outrun one small canister — carry a 230 g plus a 100 g reserve for the group. And no stove of any kind inside the twelve-mile private-timberland corridor, permit or not.",
           "weightOunces": 7,
           "weightDisplay": "7 oz",
           "weightBucket": "consumable",
           "quantity": 1,
           "specs": [
-            "100 g ≈ 10–12 L boiled",
-            "Three hikers, eight days",
-            "No stoves in the private corridor"
+            "Order 14-26-07 active since Jul 1 2026",
+            "Canister stove legal WITH free CA Campfire Permit",
+            "5 ft clearance from anything flammable",
+            "No ignition in the private corridor"
           ],
           "defaultPacked": true,
           "sourceIds": [
@@ -2064,16 +2065,16 @@
         },
         {
           "id": "food-cold-soak-jar",
-          "name": "Cold-soak jar (stove-free option)",
-          "detail": "A screw-top plastic jar that rehydrates couscous, ramen, or instant potatoes in cold water over an hour or two while you walk. Worth serious consideration on this route for one reason that has nothing to do with weight: ignition sources are prohibited across the 12-mile private-timberland corridor, and late-summer NorCal fire restrictions can ban stoves outright with little notice. A cold-soak option means a stove ban does not become a food problem.",
+          "name": "Cold-soak jar (now a stronger recommendation)",
+          "detail": "This moved from nice-to-have to genuinely worth carrying. Fire restrictions are already active forest-wide under Order 14-26-07, stove use currently depends on every hiker holding a valid California Campfire Permit, and restrictions tighten rather than relax as September approaches. A screw-top jar rehydrates couscous, ramen, or instant potatoes in cold water over an hour or two while you walk. It also solves the corridor problem outright: no ignition is permitted anywhere across the twelve private miles, so a cold lunch there is not optional. Carrying one means a tightened restriction, a lost permit, or a failed stove never becomes a food problem.",
           "weightOunces": 1.5,
           "weightDisplay": "1.5 oz",
           "weightBucket": "consumable",
           "quantity": 1,
           "specs": [
-            "No fuel, no flame",
-            "Survives a fire-restriction stove ban",
-            "1–2 hr soak while walking"
+            "Fire restrictions already active",
+            "Required behaviour in the private corridor",
+            "1-2 hr soak while walking"
           ],
           "defaultPacked": false,
           "sourceIds": [

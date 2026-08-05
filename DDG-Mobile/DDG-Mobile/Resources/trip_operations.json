@@ -241,6 +241,21 @@
       "sourceIds": [
         "field-brief"
       ]
+    },
+    {
+      "id": "fire-restrictions",
+      "priority": "high",
+      "state": "open",
+      "owner": "All three hikers",
+      "due": "Before Aug 21, then recheck the week of departure",
+      "title": "Get a California Campfire Permit each — fire restrictions are already active",
+      "detail": "ANSWERED AND ACTIONABLE. Shasta-Trinity Forest Order 14-26-07 took effect July 1, 2026 and covers the whole forest, including this route. It prohibits building, maintaining, or attending any fire, campfire, or stove fire; the listed exceptions (Shasta/Trinity/Iron Canyon lakeshores and the Yolla Bolla-Middle Eel, Chanchelulla, Castle Crags, and Trinity Alps Wilderness areas) do not cover the Burney Falls to Ash Camp corridor. A portable gas, propane, or pressurized-fuel stove with a shut-off valve is still legal, but ONLY for a hiker holding a valid California Campfire Permit, and only with at least five feet of clearance from anything flammable. The permit is free and issued online. All three hikers need one, carried, not left at home. Campfires are simply out. Smoking is prohibited except inside a vehicle or while stopped in a cleared area at least three feet across, which is stricter than most people assume and matches the private-timberland rule anyway. Restrictions tighten as September approaches rather than easing, so recheck the order in the departure week and carry a cold-soak option so a further tightening never becomes a food problem.",
+      "blocks": "Any hot food on the route. Without a permit each, the stove is dead weight and using it is a violation.",
+      "sourceIds": [
+        "permit-pcta-campfire",
+        "usfs-castle-crags",
+        "doc-day-plan"
+      ]
     }
   ],
   "fieldcraftTips": [

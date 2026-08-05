@@ -28,6 +28,7 @@
 | Rebuild the Day 2–3 water carry around a dry Clark Spring, and revalidate every overnight camp | Team | Aug 27–28 | A survivable Day 2 dry camp and the Day 3 water reserve. This gate is no longer just verification: the carry itself needs rebuilding. |
 | Verify FS Road 38N11 and Ash Camp pickup vehicle suitability | Mikaela + Gunnar | Sep 3–4 | The primary September 5 extraction. |
 | Test satellite communicator, contact tree, and no-contact protocol | Team | Aug 15 | Reliable coordination when cell service is unavailable. |
+| Get a California Campfire Permit each — fire restrictions are already active | All three hikers | Before Aug 21, then recheck the week of departure | Any hot food on the route. Without a permit each, the stove is dead weight and using it is a violation. |
 
 ## Day-by-day field card
 
