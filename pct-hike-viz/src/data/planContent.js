@@ -726,11 +726,11 @@ export const packPlanner = {
       items: [
         {
           id: "backpack",
-          name: "Fitted backpack (50–65L)",
+          name: "Packs: Gregory 75L ×2 (Dan, Drew) + Traverse 60L (Gunnar)",
           detail:
-            "Every hiker needs their own properly fitted pack. Confirm torso length, hip-belt fit, and comfort with the expected loaded weight.",
+            "The team's actual packs, not a generic recommendation. Dan and Drew carry Gregory 75L; Gunnar carries a Traverse 60L. WEIGH ALL THREE EMPTY before finalising anything — large-volume packs in this class commonly run 4.5-5.5 lb, and if that is right the pack alone is a quarter of the 20 lb base-weight goal. Two minutes on a bathroom scale replaces the guess. Do not try to cut weight by switching Dan to a smaller pack: at a peak load near 57 lb the suspension is what makes the load carryable, and a well-fitted 75L with a properly loaded hipbelt transfers weight to the hips far better than a lighter pack with a thinner belt. Heavy-but-supportive beats light-but-floppy at this weight. Confirm torso length and hipbelt fit for all three under real load, not empty.",
           weight: "3.0 lb",
-          specs: ["One per person", "Fitted before trip", "Practice fully loaded"],
+          specs: ["Gregory 75L ×2, Traverse 60L ×1", "Weigh all three empty", "Suspension beats grams at 57 lb"],
           defaultPacked: true,
           sourceIds: ["doc-day-plan", "reddit-gear-recs"],
         },
@@ -1561,6 +1561,17 @@ export const packPlanner = {
           specs: ["Water transfers, food does not", "Agree the split before Peavine", "Rebalance after the dry camp"],
           defaultPacked: true,
           sourceIds: ["doc-day-plan", "halfway-anywhere"],
+        },
+              {
+          id: "so-pack-volume-split",
+          name: "Load split by density: 60L takes weight, 75L takes bulk",
+          detail:
+            "The three packs are different sizes, and that fact quietly solves two problems at once if you pack to it. Day 3 is the volume peak as well as the weight peak: roughly 10-11 L of water plus about seven days of remaining food. In a 60L pack that lands near 55-57 L used, which works but leaves no slack — put the hard bottles in the side pockets so they never eat main-body volume, and compress deliberately. Now the useful part. Dense items are heavy and small; bulky items are light and large. Send the DENSE load to Gunnar's 60L — water, food, fuel — because it costs little volume and he is the youngest carrying it. Send the BULKY load to the two 75L packs — quilts, puffies, tent body, spare clothing — because it fills space cheaply without adding much weight. That single rule simultaneously fits Gunnar's smaller pack and takes pounds off the 75-year-old, which is the pace-protecting move. Rebalance at the Day 2 camp once dinner water is gone.",
+          weight: "0 oz",
+          quantity: 1,
+          specs: ["Dense → 60L, bulky → 75L", "Hard bottles ride in side pockets", "Rebalance after the dry camp"],
+          defaultPacked: true,
+          sourceIds: ["doc-day-plan", "reddit-gear-recs", "halfway-anywhere"],
         },
       ],
     },
