@@ -365,7 +365,11 @@ struct TrailMapView: View {
     }
     
     private func calculateCampbellToSJCRoute() {
-        let campbell = CLLocation(latitude: 37.2625, longitude: -121.9331)
+        // Geocoded from the street address via the US Census geocoder
+        // (Public_AR_Current). The previous 37.2625, -121.9331 was 0.69 mi
+        // southeast of the house and plotted in the Camden Park shopping
+        // center.
+        let campbell = CLLocation(latitude: 37.271044, longitude: -121.939501)
         let sjc = CLLocation(latitude: 37.3639, longitude: -121.9289)
         
         let request = MKDirections.Request()
