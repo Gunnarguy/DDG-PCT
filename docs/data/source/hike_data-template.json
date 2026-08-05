@@ -47672,7 +47672,7 @@
         -121.65325761772692,
         41.01110969670117
       ],
-      "notes": "Mikaela's same-night SJC-to-Burney approach crosses into August 29. Secure legal overnight/parking and do not start hiking until the team is rested and current Burney access is checked."
+      "notes": "The team sleeps near SJC on August 28 and drives north at about 5:00–5:30 AM on August 29, reaching this access point in the early afternoon. Confirm the drop-off and connector before arrival, and do not start hiking until the team is fed, hydrated, and current Burney access is checked."
     },
     {
       "name": "Bartle Gap Supported Transfer",
@@ -50104,7 +50104,33 @@
       "reliability": "facility-dependent",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-09",
+        "observer": "Lana",
+        "note": "water spigot at the park entrance is working. Second spigot is easier to fill bottles from.",
+        "status": "reported-flowing",
+        "reportMile": 1420.6,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-09",
+          "observer": "Lana",
+          "note": "water spigot at the park entrance is working. Second spigot is easier to fill bottles from."
+        },
+        {
+          "observedOn": "2022-06-05",
+          "observer": "Ultra & Old Yeller",
+          "note": "Water spouts on. In campground, showers open and a general store 9-6"
+        },
+        {
+          "observedOn": "2021-08-08",
+          "observer": "Mike",
+          "note": "tap on"
+        }
+      ]
     },
     {
       "mile": 1426.04,
@@ -50120,7 +50146,48 @@
       "reliability": "reliable-creek",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-14",
+        "observer": "Mobber",
+        "note": "lots of water, strong flow",
+        "status": "reported-flowing",
+        "reportMile": 1426,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-14",
+          "observer": "Mobber",
+          "note": "lots of water, strong flow"
+        },
+        {
+          "observedOn": "2026-07-10",
+          "observer": "Lana",
+          "note": "great flow"
+        },
+        {
+          "observedOn": "2026-07-04",
+          "observer": "Metrick",
+          "note": "Large creek, excellent flow. Raging waterfall just downstream."
+        },
+        {
+          "observedOn": "2022-07-15",
+          "observer": "Burglar",
+          "note": "Lots of water flowing"
+        },
+        {
+          "observedOn": "2022-06-05",
+          "observer": "Ultra & Old Yeller",
+          "note": "Raging Stream, Great Shade Under Bridge"
+        },
+        {
+          "observedOn": "2021-08-08",
+          "observer": "Mike",
+          "note": "great"
+        }
+      ]
     },
     {
       "mile": 1429.28,
@@ -50136,7 +50203,28 @@
       "reliability": "limited-off-trail",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-10",
+        "observer": "Lana",
+        "note": "Water flow is shallow and lots of bees around",
+        "status": "reported-marginal",
+        "reportMile": 1429.4,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-10",
+          "observer": "Lana",
+          "note": "Water flow is shallow and lots of bees around"
+        },
+        {
+          "observedOn": "2021-07-20",
+          "observer": "Roadwalk",
+          "note": "flowing .5 L min"
+        }
+      ]
     },
     {
       "mile": 1430.17,
@@ -50152,7 +50240,33 @@
       "reliability": "seasonal-off-trail",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-04",
+        "observer": "Metrick",
+        "note": "Flowing with a large pool.",
+        "status": "reported-flowing",
+        "reportMile": 1430.2,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-04",
+          "observer": "Metrick",
+          "note": "Flowing with a large pool."
+        },
+        {
+          "observedOn": "2021-08-09",
+          "observer": "Mike",
+          "note": "small, but good"
+        },
+        {
+          "observedOn": "2021-07-22",
+          "observer": "Workshard",
+          "note": "flowing well"
+        }
+      ]
     },
     {
       "mile": 1434.22,
@@ -50168,7 +50282,43 @@
       "reliability": "seasonal-alternate-access",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-15",
+        "observer": "Mobber",
+        "note": "good flow, as you head nobo water located in the bushes to the right just off second road crossing",
+        "status": "reported-flowing",
+        "reportMile": 1434.2,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-15",
+          "observer": "Mobber",
+          "note": "good flow, as you head nobo water located in the bushes to the right just off second road crossing"
+        },
+        {
+          "observedOn": "2026-07-10",
+          "observer": "Lana",
+          "note": "absolutely dry where trail crosses the creek. But there is water access here and it's flowing 41.06012 -121.78501"
+        },
+        {
+          "observedOn": "2022-07-16",
+          "observer": "Burglar",
+          "note": "Flowing water"
+        },
+        {
+          "observedOn": "2022-06-06",
+          "observer": "Old Yeller",
+          "note": "Creek is good, use the pond next to the trail. (Ultra & Old Yeller): Great water."
+        },
+        {
+          "observedOn": "2021-07-22",
+          "observer": "Workshard",
+          "note": "This is a large pool of cold clear water. Can't see it flowing, but it must be. No sign of stagnation or algae."
+        }
+      ]
     },
     {
       "mile": 1438.43,
@@ -50184,7 +50334,38 @@
       "reliability": "seasonal-private-land-context",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-10",
+        "observer": "Lana",
+        "note": "dry",
+        "status": "reported-dry",
+        "reportMile": 1438.4,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-10",
+          "observer": "Lana",
+          "note": "dry"
+        },
+        {
+          "observedOn": "2026-06-21",
+          "observer": "Leda",
+          "note": "Nice flow, deep pool to collect from."
+        },
+        {
+          "observedOn": "2022-06-06",
+          "observer": "Old Yeller",
+          "note": "Spring has water. (Ultra & Old Yeller): good flow visible from trail. Did not hike to source"
+        },
+        {
+          "observedOn": "2021-07-20",
+          "observer": "Roadwalk",
+          "note": "flowing 4L/min"
+        }
+      ]
     },
     {
       "mile": 1440.47,
@@ -50200,7 +50381,28 @@
       "reliability": "private-land-context",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-06-17",
+        "observer": "Shakespeare",
+        "note": "Good water source",
+        "status": "reported-flowing",
+        "reportMile": 1440.4,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-06-17",
+          "observer": "Shakespeare",
+          "note": "Good water source"
+        },
+        {
+          "observedOn": "2022-07-16",
+          "observer": "Burglar",
+          "note": "Water is 0.1 east on unpaved road"
+        }
+      ]
     },
     {
       "mile": 1442.01,
@@ -50216,7 +50418,43 @@
       "reliability": "water-only-no-camp-assumption",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-15",
+        "observer": "Mobber",
+        "note": "good flow, fast collection",
+        "status": "reported-flowing",
+        "reportMile": 1442,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-15",
+          "observer": "Mobber",
+          "note": "good flow, fast collection"
+        },
+        {
+          "observedOn": "2026-07-10",
+          "observer": "Lana",
+          "note": "flowing"
+        },
+        {
+          "observedOn": "2026-07-04",
+          "observer": "Metrick",
+          "note": "Flowing well, cold and clear."
+        },
+        {
+          "observedOn": "2022-06-06",
+          "observer": "Ultra & Old Yeller",
+          "note": "Great Flow Excellent Water. Logging Operations Occurring mm1440 ~ mm1443, at time trail is obscured. Look for flagging or when in doubt go straight."
+        },
+        {
+          "observedOn": "2021-08-09",
+          "observer": "Mike",
+          "note": "Small but Great! Filled bottles from small rivulet, 1 liter in 6 sec. Nice and cold!"
+        }
+      ]
     },
     {
       "mile": 1448.82,
@@ -50232,7 +50470,43 @@
       "reliability": "reliable-but-brushy",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-11",
+        "observer": "Lana",
+        "note": "very good flow but overgrown",
+        "status": "reported-flowing",
+        "reportMile": 1448.8,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-11",
+          "observer": "Lana",
+          "note": "very good flow but overgrown"
+        },
+        {
+          "observedOn": "2026-06-11",
+          "observer": "Frozengogo",
+          "note": "Flowing nicely"
+        },
+        {
+          "observedOn": "2022-06-06",
+          "observer": "Ultra & Old Yeller",
+          "note": "path to stream overgrown w/ lots of deadfall. Stream is running."
+        },
+        {
+          "observedOn": "2021-08-09",
+          "observer": "Mike",
+          "note": "Cold, deep enough to dunk a bottle."
+        },
+        {
+          "observedOn": "2021-07-18",
+          "observer": "Scout",
+          "note": "Dry at trail crossing - could hear water below"
+        }
+      ]
     },
     {
       "mile": 1449.23,
@@ -50248,7 +50522,48 @@
       "reliability": "limited-alternate",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-16",
+        "observer": "Mobber",
+        "note": "a little more than a strong trickle flowing from a leaf spout, about one liter per 30 seconds",
+        "status": "reported-marginal",
+        "reportMile": 1449.2,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-16",
+          "observer": "Mobber",
+          "note": "a little more than a strong trickle flowing from a leaf spout, about one liter per 30 seconds"
+        },
+        {
+          "observedOn": "2026-07-11",
+          "observer": "Lana",
+          "note": "shallow flow right across the trail"
+        },
+        {
+          "observedOn": "2026-07-05",
+          "observer": "Metrick",
+          "note": "Flowing, easy collection, directly on the trail."
+        },
+        {
+          "observedOn": "2022-07-16",
+          "observer": "Burglar",
+          "note": "Water flowing well at trail"
+        },
+        {
+          "observedOn": "2022-06-06",
+          "observer": "Ultra & Old Yeller",
+          "note": "stream crossed trail. Running well."
+        },
+        {
+          "observedOn": "2021-08-09",
+          "observer": "Mike",
+          "note": "Dry"
+        }
+      ]
     },
     {
       "mile": 1456.26,
@@ -50264,7 +50579,23 @@
       "reliability": "seasonal-parser-date-incomplete",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-06-15",
+        "observer": "Memento",
+        "note": "a clear pool of water and flowing clear water. 2 Liters per minute",
+        "status": "reported-flowing",
+        "reportMile": 1456.3,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-06-15",
+          "observer": "Memento",
+          "note": "a clear pool of water and flowing clear water. 2 Liters per minute"
+        }
+      ]
     },
     {
       "mile": 1463.04,
@@ -50280,7 +50611,43 @@
       "reliability": "spring",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-13",
+        "observer": "Lana",
+        "note": "I hear from the trail that water is running",
+        "status": "reported-flowing",
+        "reportMile": 1463.1,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-13",
+          "observer": "Lana",
+          "note": "I hear from the trail that water is running"
+        },
+        {
+          "observedOn": "2026-07-04",
+          "observer": "Rob N",
+          "note": "Still good"
+        },
+        {
+          "observedOn": "2022-07-17",
+          "observer": "Burglar",
+          "note": "Flowing"
+        },
+        {
+          "observedOn": "2022-06-07",
+          "observer": "Ultra & Old Yeller",
+          "note": "Flowing"
+        },
+        {
+          "observedOn": "2021-08-10",
+          "observer": "Mike",
+          "note": "Flowing nicely."
+        }
+      ]
     },
     {
       "mile": 1464.13,
@@ -50296,7 +50663,48 @@
       "reliability": "creek",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-16",
+        "observer": "Mobber",
+        "note": "flowing, plenty of water",
+        "status": "reported-flowing",
+        "reportMile": 1464.1,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-16",
+          "observer": "Mobber",
+          "note": "flowing, plenty of water"
+        },
+        {
+          "observedOn": "2026-07-13",
+          "observer": "Lana",
+          "note": "yes! Good flow!"
+        },
+        {
+          "observedOn": "2026-07-05",
+          "observer": "Metrick",
+          "note": "Flowing well, large pool."
+        },
+        {
+          "observedOn": "2022-07-17",
+          "observer": "Burglar",
+          "note": "Flowing water"
+        },
+        {
+          "observedOn": "2022-06-07",
+          "observer": "Ultra & Old Yeller",
+          "note": "Wonderful Flowing Water"
+        },
+        {
+          "observedOn": "2021-08-10",
+          "observer": "Mike",
+          "note": "Dry"
+        }
+      ]
     },
     {
       "mile": 1465.26,
@@ -50312,7 +50720,43 @@
       "reliability": "creek",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-16",
+        "observer": "Mobber",
+        "note": "plenty of water",
+        "status": "reported-flowing",
+        "reportMile": 1465.2,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-16",
+          "observer": "Mobber",
+          "note": "plenty of water"
+        },
+        {
+          "observedOn": "2026-07-12",
+          "observer": "Lana",
+          "note": "flowing"
+        },
+        {
+          "observedOn": "2022-07-17",
+          "observer": "Burglar",
+          "note": "Lots of water flowing"
+        },
+        {
+          "observedOn": "2022-06-07",
+          "observer": "Ultra & Old Yeller",
+          "note": "Large Flow."
+        },
+        {
+          "observedOn": "2021-08-10",
+          "observer": "Mike",
+          "note": "great!"
+        }
+      ]
     },
     {
       "mile": 1468.31,
@@ -50328,7 +50772,43 @@
       "reliability": "creek",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-12",
+        "observer": "Lana",
+        "note": "flowing well",
+        "status": "reported-flowing",
+        "reportMile": 1468.3,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-12",
+          "observer": "Lana",
+          "note": "flowing well"
+        },
+        {
+          "observedOn": "2026-07-05",
+          "observer": "Metrick",
+          "note": "flowing"
+        },
+        {
+          "observedOn": "2022-07-17",
+          "observer": "Burglar",
+          "note": "Flowing"
+        },
+        {
+          "observedOn": "2022-06-07",
+          "observer": "Ultra & Old Yeller",
+          "note": "calming stream flowing 2-3 L per min"
+        },
+        {
+          "observedOn": "2021-08-10",
+          "observer": "Mike",
+          "note": "flowing well. And another just past it."
+        }
+      ]
     },
     {
       "mile": 1468.66,
@@ -50344,7 +50824,43 @@
       "reliability": "creek",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-17",
+        "observer": "Mobber",
+        "note": "flowing",
+        "status": "reported-flowing",
+        "reportMile": 1468.6,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-17",
+          "observer": "Mobber",
+          "note": "flowing"
+        },
+        {
+          "observedOn": "2026-07-12",
+          "observer": "Lana",
+          "note": "good flow"
+        },
+        {
+          "observedOn": "2026-06-20",
+          "observer": "HoneyB",
+          "note": "Amazingly strong flow!"
+        },
+        {
+          "observedOn": "2022-07-17",
+          "observer": "Burglar",
+          "note": "Strong flow"
+        },
+        {
+          "observedOn": "2021-08-10",
+          "observer": "Mike",
+          "note": "great!"
+        }
+      ]
     },
     {
       "mile": 1468.84,
@@ -50360,7 +50876,28 @@
       "reliability": "seasonal",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-17",
+        "observer": "Mobber",
+        "note": "flowing",
+        "status": "reported-flowing",
+        "reportMile": 1468.8,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-17",
+          "observer": "Mobber",
+          "note": "flowing"
+        },
+        {
+          "observedOn": "2026-07-12",
+          "observer": "Lana",
+          "note": "flowing"
+        }
+      ]
     },
     {
       "mile": 1469.02,
@@ -50376,7 +50913,38 @@
       "reliability": "seasonal",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-17",
+        "observer": "Mobber",
+        "note": "flowing",
+        "status": "reported-flowing",
+        "reportMile": 1469,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-17",
+          "observer": "Mobber",
+          "note": "flowing"
+        },
+        {
+          "observedOn": "2026-07-12",
+          "observer": "Lana",
+          "note": "flowing"
+        },
+        {
+          "observedOn": "2022-07-17",
+          "observer": "Burglar",
+          "note": "Small flow"
+        },
+        {
+          "observedOn": "2022-06-07",
+          "observer": "Ultra & Old Yeller",
+          "note": "Gentle flowing stream about 2L per min"
+        }
+      ]
     },
     {
       "mile": 1469.38,
@@ -50392,7 +50960,33 @@
       "reliability": "seasonal",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-12",
+        "observer": "Lana",
+        "note": "flowing",
+        "status": "reported-flowing",
+        "reportMile": 1469.3,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-12",
+          "observer": "Lana",
+          "note": "flowing"
+        },
+        {
+          "observedOn": "2022-07-17",
+          "observer": "Burglar",
+          "note": "Flowing"
+        },
+        {
+          "observedOn": "2022-06-07",
+          "observer": "Ultra & Old Yeller",
+          "note": "Flowing about 3 L per min"
+        }
+      ]
     },
     {
       "mile": 1472.497,
@@ -50408,7 +51002,38 @@
       "reliability": "major-drainage",
       "reportStatus": "current-condition-check-required",
       "locationSource": "PCTA 2026 mile remap with legacy waypoint coordinates",
-      "type": "water"
+      "type": "water",
+      "latestObservation": {
+        "observedOn": "2026-07-17",
+        "observer": "Mobber",
+        "note": "lots of water",
+        "status": "reported-flowing",
+        "reportMile": 1472.5,
+        "snapshotDate": "2026-08-02",
+        "source": "PCT Water Report (pctwater.com), NorCal sheet"
+      },
+      "observationHistory": [
+        {
+          "observedOn": "2026-07-17",
+          "observer": "Mobber",
+          "note": "lots of water"
+        },
+        {
+          "observedOn": "2026-07-12",
+          "observer": "Lana",
+          "note": "flowing very well"
+        },
+        {
+          "observedOn": "2026-06-21",
+          "observer": "Rayork",
+          "note": "Good flow"
+        },
+        {
+          "observedOn": "2022-06-07",
+          "observer": "Ultra & Old Yeller",
+          "note": "Raging Spring River"
+        }
+      ]
     }
   ],
   "activePlan": {

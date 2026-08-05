@@ -152,7 +152,10 @@ itinerary displayed in different time zones, not an early-evening SJC arrival.
 | UA481 ORD departure | 8:03 p.m. CDT, Aug 28 | 6:03 p.m. PDT, Aug 28 | Team-confirmed itinerary |
 | UA481 SJC arrival | 10:36 p.m. PDT, Aug 28 | 10:36 p.m. PDT | Team-confirmed schedule |
 | Bags and airport exit | About 11:00–11:30 p.m. PDT | Same | Planning estimate |
-| Same-night Burney approach begins | About 11:15–11:45 p.m. PDT | Same | Team-selected ground-transfer plan |
+| Team reaches the SJC-area overnight stop | About 11:30 p.m.–12:15 a.m. PDT | Same | Team-selected ground-transfer plan |
+| Northbound departure for Burney | About 5:00–5:30 a.m. PDT, Aug 29 | Same | Team-selected ground-transfer plan |
+| Burney Falls PCT access reached | About 12:00–1:00 p.m. PDT, Aug 29 | Same | Planning estimate (6.1 h driving + stops) |
+| Day 1 boots moving | By about 2:00 p.m. PDT, Aug 29 | Same | Planning estimate |
 | UA1317 SJC departure | 6:40 a.m. PDT, Sep 7 | Same | Team-confirmed itinerary |
 | UA1317 ORD arrival | 12:45 p.m. CDT, Sep 7 | 10:45 a.m. PDT | Team-confirmed itinerary |
 
@@ -269,6 +272,20 @@ This plan:
 ### Day-by-day plan
 
 Elevation gain/loss below is from the PCTA 2026 centerline sampled against the USGS 3DEP bare-earth DEM, using 25-meter resampling, a centered 200-meter mean, and a continuous 20-foot hysteresis threshold. Garmin tracks remain comparison evidence only. Distance is from the PCTA 2026 milebook. Field time assumes approximately 1.85 mph over effort-adjusted distance with a 12–35% stop/group allowance; Day 3 uses 2.1 mph because overnight packs are transferred. It is not a promise.
+
+**Days 7 and 8 report +0 ft of gain. That is a real value, not missing data.**
+Both are sustained descents, and the check was run against the unsmoothed USGS
+samples: Day 7 contains only about **+120 ft** of raw uphill spread across 35 of
+362 samples, and Day 8 about **+399 ft** raw, which falls to roughly +47 ft once
+the 200-meter mean is applied. No individual rise clears the 20-foot threshold,
+so the accumulator correctly records zero. Do not "correct" these to non-zero
+values from a GPX track; that would be re-importing DEM noise.
+
+For scale, the same route measured raw and unsmoothed yields **+8,650 ft**
+against the canonical **+6,244 ft**. The sensitivity table in the terrain
+contract spans 6,244–6,829 ft across every parameter pair tested, so the
+canonical figure sits at the **conservative end** of a defensible range. Treat
+6,244 ft as a lower-bound-leaning model output, not a precise measurement.
 
 | Day/date | Leg | Daily mi | Cumulative mi | End PCT mi | Gain/loss | End elev. | Planning read | Field window |
 |---|---|---:|---:|---:|---:|---:|---|---:|
@@ -393,8 +410,10 @@ must be made on foot before the team relies on the pin.
 | Pre-private dry camp | USFS parcel plus setback/slope screen passed | Baseline candidate; ground-check required |
 | Clark/Deadman/Kosk/old mile 1444 | Current county parcels are private | Passage only; no baseline camping |
 | Bartle Gap | Sierra Pacific parcel | Support transfer only; no camping/extended stop |
-| High saddle near 38N10 | USFS/open-access mapping | Acceptable as a dry-camp candidate |
-| Alder/Star City | USFS/open-access mapping | Acceptable pending site/water check |
+| High saddle near 38N10 | Shasta County parcel screen: UNITED STATES FOREST SERVICE, APN 015130003000 | Acceptable as a dry-camp candidate |
+| Alder/Star City **camp** | Shasta County parcel screen: UNITED STATES OF AMERICA, APN 015100003000 | Camp is on public land; acceptable pending site check |
+| Alder/Star City **water** (1456.312) | Shasta County parcel screen: **WYNTOON TIMBERLANDS LLC**, APN 015080013000 | **Private timberland.** The camp is legal; the water it is named after is not a legal collection stop. Carry from Deer Creek or confirm a public-side alternative |
+| Deer Creek Spring camp | Shasta County parcel screen: UNITED STATES FOREST SERVICE, APN 015090008000 | Acceptable pending site check |
 | Deer Creek Spring | USFS/open-access mapping | Acceptable pending site/water check |
 | Butcherknife Creek | USFS/open-access mapping | Acceptable pending site/water check |
 | Ash Camp | USFS/open-access mapping | Trailhead/pickup; current road check required |
@@ -484,7 +503,26 @@ Primary sources:
 
 Route mile begins at the real Burney Falls trailhead.
 
-| Route mi | PCT 2026 mi | Source | Latest live-snapshot evidence on Jul 28 | Planning interpretation |
+**Snapshot provenance.** The evidence column below was refreshed on 2026-08-04
+from the PCT Water Report NorCal sheet, header-stamped `Updated 08/02/2026`,
+archived in the repo at `docs/data/source/pct-water-norcal-2026-08-02.csv`. As
+of that refresh this table is no longer the only place the data lives: all 20
+canonical sources now carry a machine-readable `latestObservation` (date,
+observer, verbatim note, conservative status) plus the full dated
+`observationHistory`, so the apps and this document read from the same
+evidence. The previous snapshot in the repo was four years stale — its newest
+field report was from 2022 — while this table had already been updated by hand.
+That split is what is now closed.
+
+Run `node scripts/validate_water_sources.mjs` to re-check mileage alignment,
+undocumented omissions, observation age, and any planned source reported dry.
+It exits non-zero while Clark Spring remains dry, which is intentional.
+
+**The newest sightings are from July 2026 and hiking starts August 29.** Every
+reading below is six to seven weeks ahead of trip conditions in a drying
+season. Read marginal as worse, never better, and re-pull in the final week.
+
+| Route mi | PCT 2026 mi | Source | Latest live-snapshot evidence (2026-08-02 snapshot) | Planning interpretation |
 |---:|---:|---|---|---|
 | Start | ~1420.65 | Burney Falls facilities/tap | Jul 9: entrance spigot working; second spigot easier | Strong start source, but verify park operation |
 | 5.39 | 1426.04 | Rock Creek | Jul 14: lots of water/strong flow | Strong July evidence; recheck |
@@ -519,8 +557,28 @@ Route mile begins at the real Burney Falls trailhead.
 - Upper Jake and Screwdriver are possible intermediate sources.
 - The selected camp is dry. Peavine is seasonal and cannot be the sole plan
   without a recent report and legal collection interpretation.
+- **Peavine is a walk-past hazard.** It is "absolutely dry where trail crosses
+  the creek" (Lana, 2026-07-10); the flowing water sits off-trail at
+  **41.06012, -121.78501**, "in the bushes to the right just off second road
+  crossing" (Mobber, 2026-07-15). Two independent 2026 reports agree. Brief all
+  three hikers on that offset before Day 2, or someone crosses a dry bed and
+  keeps walking.
 - Leave the last confirmed legal source with enough water for the remaining
   Day 2 miles, dinner, overnight, breakfast, and the Day 3 departure reserve.
+- **Size the carry against a dry Clark Spring — and against a private corridor.**
+  Clark (1438.43) is the intermediate this plan used to lean on, and it is
+  reported dry as of 2026-07-10 having still flowed on 2026-06-21. It dries
+  mid-summer and will very likely still be dry on Aug 31.
+- Flow is the smaller half of the problem. Clark and Deadman (1440.47) are on
+  Hearst Forests and Kosk (1442.01) is on Pondosa Forest LLC, so under the
+  active PCTA rule none of them is a plannable collection stop regardless of
+  whether water is present. **Passage through is allowed; stopping to collect
+  is not.** Kosk additionally sits 2/10 mile off-trail.
+- The real span is **Peavine (1434.22) to the driver's staged water at Bartle
+  Gap (1447.53): about 13.3 trail miles with no legal collection point**, and
+  it has to cover a dry overnight, dinner, and breakfast for three. If the Day 3
+  driver does not appear, the span extends to Moosehead Creek (1448.81, USFS,
+  public again) at about 14.6 miles. Size capacity against the 14.6.
 
 #### Day 3
 
@@ -540,6 +598,14 @@ Route mile begins at the real Burney Falls trailhead.
 - High saddle is a dry camp.
 - Alder/Star City had a positive June 15 report, but the parser lost its date
   metadata and it still needs a pre-trip confirmation.
+- **The Day 5 camp is legal; the water it is named after is not.** The camp at
+  1456.689 is on public land (UNITED STATES OF AMERICA, APN 015100003000), but
+  the Alder/Star City water at 1456.312 sits on **Wyntoon Timberlands LLC**
+  (APN 015080013000) — Hearst-family timberland. Under the PCTA alert that
+  makes it a pass-through, not a collection stop. Either carry into the Day 5
+  camp from the last public-land source, or confirm a public-side access point
+  before relying on it. This corrects an earlier coarse "USFS/open-access
+  mapping" screen; run `node scripts/audit_camp_ownership.mjs` to re-verify.
 - Day 4 starts with driver-staged water at Bartle Gap. Carry enough through the
   high-saddle dry camp until a currently verified source.
 - Gold Creek must not be treated as a routine fallback; historical notes describe private-property/no-trespassing concerns on the access.
@@ -622,34 +688,79 @@ The planned pickup is at Ash Camp before continuing beyond the trip. The McCloud
 
 ## 9. Start logistics
 
-### The confirmed same-night drive reality
+### The rest-then-drive decision (supersedes the same-night drive)
 
-If UA481 lands at approximately 10:36 p.m. PDT:
+An earlier revision of this document recorded a **same-night** SJC-to-Burney
+transfer: pick up at roughly 11:15 p.m. PDT and drive through the night into a
+predawn August 29 arrival. **That plan has been retired.** It is preserved here
+because the reasoning matters, not because it is still operative.
 
-- the same-night SJC-to-Burney route is **308.1 miles / about 6.1 hours before stops**;
-- bags, pickup, fuel, food, traffic, and any driver-rest break push the Burney
-  approach into predawn August 29;
-- this is an **overnight transfer**, even though Mikaela starts driving on
-  August 28;
-- State Park access may not be available overnight; and
-- starting Day 1 immediately after the road transfer would be poor risk
-  management.
+The same-night drive failed on two counts. It put Mikaela behind the wheel for
+308.1 miles after she had already been awake all day, and it delivered the team
+to Burney in the dark with no realistic way to start hiking until well after
+sunrise anyway — nobody was going to begin Day 1 at 2 a.m. The overnight drive
+therefore bought no hiking time and spent real safety margin to do it.
 
-The team has selected the same-night drive, so the plan must make its safety
-and legality concrete rather than pretending the transfer is short.
+The active plan is:
+
+- UA481 lands at approximately 10:36 p.m. PDT on August 28;
+- the team sleeps near SJC that night;
+- the group departs at about **5:00–5:30 a.m. on Saturday, August 29**;
+- the 308.1-mile route is **6.1 hours of driving before stops**, so plan
+  roughly **7–7.5 hours door to trailhead** with luggage, fuel, food, and rest;
+- the team reaches the Burney Falls PCT access in the **early afternoon**; and
+- Day 1 is a deliberately short 5.609 miles precisely so an afternoon start
+  still works.
+
+The cost of this choice is an afternoon Day 1 in late-August heat instead of a
+full morning. The benefit is a rested driver and a rested team. The trade is
+accepted.
 
 ### August 28–29 operating sequence
 
 1. UA481 lands at SJC at the team-confirmed 10:36 p.m. PDT schedule.
-2. Mikaela picks up Dan and Drew; bags, food, and a vehicle check happen before the northbound drive.
-3. The team makes the SJC-to-Burney approach overnight with a deliberate fuel/food/rest plan.
-4. Before August 21, name and secure the **legal overnight staging location**: where the group can sleep, park, stage gear, and safely begin the Burney access approach.
-5. On August 29, complete the final United/road/park/closure/water check.
-6. Start the 5.609-mile Day 1 only after all three hikers are rested, fed, hydrated, and the Burney access point is legally open.
+2. Mikaela picks up Dan and Drew; bags and food happen on the way to the
+   overnight stop, not at 5 a.m. the next morning.
+3. The team sleeps near SJC. Before August 21, **name that location** — this is
+   a booking, not an intention.
+4. Depart at 5:00–5:30 a.m. August 29. Load the vehicle the night before.
+   Every 30 minutes lost here lands directly on the Day 1 daylight margin.
+5. Complete the final United/road/park/closure/water check before leaving.
+6. Reach the Burney Falls PCT access in the early afternoon; confirm the
+   drop-off point and PCT connector on arrival.
+7. Start the 5.609-mile Day 1 only after all three hikers are fed, hydrated,
+   and the Burney access point is confirmed open.
 
-This is still a long transport operation for Mikaela. The plan must survive a
-delay and driver fatigue; Flight Watch does not make an overnight road transfer
-safe by itself.
+Day 1 timing, using this trip's own effort model (1.85 mph over
+effort-adjusted miles, 12–35% stop allowance) rather than a guess:
+
+| Boots moving | Rock Creek arrival | Margin before ~7:37 p.m. sunset |
+|---|---|---|
+| 1:00 p.m. | 4:45–5:30 p.m. | 2.1–2.6 h |
+| 1:30 p.m. | 5:15–6:00 p.m. | 1.6–2.1 h |
+| 2:00 p.m. | 5:45–6:30 p.m. | 1.1–1.6 h |
+| 2:30 p.m. | 6:15–7:00 p.m. | 0.6–1.1 h — headlamp risk |
+
+Aim for 1:00–1:30 p.m. Treat 2:30 p.m. as the cutoff. Sunset is computed
+astronomically for 41.02°N, 121.65°W on August 29, 2026; it is arithmetic, not
+a field condition, but confirm local dusk against terrain shading — a west-side
+canyon goes dark well before official sunset.
+
+### Mikaela's return leg is an open safety question
+
+The rest-then-drive plan solves the hikers' fatigue problem and creates a new
+one for the driver. Under the active plan Mikaela drives about 6.1 hours north,
+performs the drop-off, and then faces a 6.1-hour return — roughly **12–13 hours
+of driving in a single day for one person**, on the back of a late airport
+pickup the night before.
+
+This must be decided before August 21, not on the day:
+
+- either Mikaela rests near Burney or Redding before turning around, or
+- she commits to the same-day return with a concrete stop/rest plan.
+
+Do not treat the return leg as somebody else's problem because the hikers are
+already on trail by then.
 
 ### Burney entry options
 
@@ -1756,7 +1867,7 @@ mathematically or legally ambiguous.
 | Gate | Owner | Deadline | Current state |
 |---|---|---|---|
 | Monitor team-confirmed UA481 / UA1317 in United Flight Status | Dan/Gunnar | Aug 26, then travel days | Confirmed itinerary; live operational check remains |
-| Confirm legal overnight Burney staging and driver-rest plan after the same-night SJC transfer | Gunnar/Mikaela | Aug 21 | Open/critical |
+| Name the Aug 28 SJC-area overnight stop, lock the 5:00–5:30 a.m. Aug 29 departure, and decide Mikaela's return-leg rest plan | Gunnar/Mikaela | Aug 21 | Open/critical |
 | Confirm State Park drop-off/access procedure at the canonical start | Team/Mikaela | Aug 7 | Open |
 | Reserve State Park vehicle entry if needed | Gunnar | Immediate | Open |
 | Book named Bartle support driver and backup | Gunnar | Immediate | Open/required before route go |

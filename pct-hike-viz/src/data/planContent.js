@@ -170,11 +170,15 @@ export const archivedTravelPlan = {
       sourceIds: ["doc-day-plan"],
     },
     {
-      step: "Mikaela collects the team and begins the selected same-night SJC-to-Burney approach. This crosses into August 29, so legal overnight staging and a driver-rest plan are mandatory.",
+      step: "Mikaela collects the team at SJC and drives to the pre-named overnight stop near the airport. There is no overnight drive: everyone sleeps before the northbound leg.",
       sourceIds: ["doc-day-plan"],
     },
     {
-      step: "Saturday, August 29: begin Day 1 only after the overnight road transfer, rest, food, water, legal staging, and the current park/closure check are complete.",
+      step: "Saturday, August 29: depart at about 5:00–5:30 AM. Allow roughly 7–7.5 hours door to trailhead (6.1 driving hours plus fuel, food, and rest) and expect Burney in the early afternoon.",
+      sourceIds: ["doc-day-plan"],
+    },
+    {
+      step: "Begin Day 1 only after food, water, and the current park/closure/connector check are complete. Boots should be moving by about 2:00 PM to reach Rock Creek with daylight margin.",
       sourceIds: ["pcta-transport"],
     },
     {
@@ -1683,14 +1687,14 @@ export const dayItinerary = [
     distance: 0,
     type: 'drive',
     elevation: { start: 0, end: 0, gain: 0, loss: 0 },
-    terrain: 'Confirmed late airport pickup followed by the selected same-night Burney approach',
+    terrain: 'Confirmed late airport pickup, then sleep near SJC — the northbound drive happens Saturday morning',
     waterSources: [],
     waterCarry: 'Travel day',
     connectivity: { verizon: 'variable', att: 'variable', tmobile: 'variable', satellite: true },
-    campFeatures: ['Legal overnight Burney staging to be confirmed'],
-    notes: 'Confirmed itinerary: UA481 reaches SJC around 10:36 PM PDT. Mikaela collects the team and begins the same-night Burney approach; do not start Day 1 until all hikers are rested and legal staging/access is confirmed.',
-    objectives: ['Monitor United Flight Status', 'Collect luggage', 'Fuel and eat', 'Complete the driver-rest and legal-staging plan'],
-    timing: { start: '10:36 PM', end: 'Predawn August 29 staging', movingTime: '6.1h SJC-to-Burney baseline before stops', breakTime: 'Airline and driver-rest dependent' },
+    campFeatures: ['Named SJC-area overnight stop to be confirmed'],
+    notes: 'Confirmed itinerary: UA481 reaches SJC around 10:36 PM PDT. Mikaela collects the team and drives to the pre-named overnight stop near the airport. The same-night drive to Burney has been retired: nobody was going to start hiking at 2 AM, so it spent driver safety margin and bought no hiking time. The northbound leg runs Saturday morning instead.',
+    objectives: ['Monitor United Flight Status', 'Collect luggage', 'Eat', 'Load the vehicle tonight so the 5:00–5:30 AM departure is real'],
+    timing: { start: '10:36 PM', end: 'Overnight stop near SJC', movingTime: 'Short airport transfer only', breakTime: 'Sleep before the Saturday drive' },
     sourceIds: ['doc-day-plan']
   },
   ...primaryItinerary.map((leg) => ({
@@ -1751,7 +1755,23 @@ export const dayItinerary = [
           ? 'Execute timed pickup and exact-point re-entry'
           : 'Verify legal low-impact campsite'
     ],
-    timing: { start: '6:30 AM', end: '3:30 PM', movingTime: '5–7h', breakTime: '1.5–2.5h' },
+    // Per-day, derived from the canonical distance/gain/loss via the shared
+    // effort model in tripFacts.js. Never hardcode one range for every day:
+    // Day 5 is 3.789 mi and Day 3 is 12.591 mi, so a single "5–7h" string is
+    // wrong for both. Start windows are planning intent, not measurements.
+    timing: {
+      start:
+        leg.day === 1
+          ? 'Early afternoon, after the Aug 29 drive from SJC'
+          : leg.day === 8
+            ? '6:30–7:00 AM to hold the Ash Camp pickup window'
+            : '6:30–7:30 AM',
+      end: `About ${leg.timeEstimate.lowHours}–${leg.timeEstimate.highHours}h after the start`,
+      movingTime: `${leg.timeEstimate.movingHours.toFixed(1)}h moving at ${
+        leg.packMode === 'day-pack-supported' ? '2.1' : '1.85'
+      } mph over ${leg.terrainLoad.effortMiles} effort-adjusted miles`,
+      breakTime: `${leg.timeEstimate.lowHours}–${leg.timeEstimate.highHours}h door to door with a 12–35% stop, water, and group-pacing allowance`
+    },
     gradient: leg.terrainLoad.effortRank <= 3 ? 'steep' : 'moderate',
     terrainLoad: leg.terrainLoad,
     verification: leg.campStatus,

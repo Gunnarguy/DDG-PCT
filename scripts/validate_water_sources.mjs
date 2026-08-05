@@ -1,202 +1,224 @@
 #!/usr/bin/env node
 /**
- * Cross-checks the planContent.js waterSources list against the official
- * "PCT Water Report -- Northern California" CSV. Highlights entries that
- * drift on mileage or have no nearby counterpart so we can fix the itinerary.
+ * Cross-checks the canonical water sources carried in the generated runtime
+ * bundle against the official "PCT Water Report -- Northern California" CSV.
+ *
+ * This reads the generated bundle directly rather than importing planContent.js.
+ * The previous version imported the legacy six-day narrative shape, could not
+ * resolve under plain Node ESM, and — once it did run — compared a generic
+ * placeholder string against the report and reported eight false "missing"
+ * rows every time. A validator that always fails teaches people to ignore it.
+ *
+ * Three separate things are reported, because they are not the same question:
+ *
+ *   1. Do our canonical sources line up with the report's mileage?
+ *   2. Which report sources are NOT in our plan? Some exclusions are
+ *      deliberate and documented in docs/2026-trip-source-of-truth.md
+ *      (Strider Creek was nearly dry; Gold Creek has access/trespass
+ *      concerns). Those are listed so the decision stays visible, not silent.
+ *   3. How old is the newest field observation? "Mapped" is not "flowing",
+ *      and a source last seen in 2022 is not evidence about 2026.
  */
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { parse } from 'csv-parse/sync';
-import { dayItinerary, sectionOMeta } from '../pct-hike-viz/src/data/planContent.js';
+import fs from "node:fs";
+import path from "node:path";
+import process from "node:process";
+import { fileURLToPath } from "node:url";
+import { parse } from "csv-parse/sync";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const csvPath = path.resolve(__dirname, '..', 'PCT Water5_ NorCal - Northern CA.csv');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(__dirname, "..");
+const CSV_PATH = path.join(
+  ROOT,
+  "docs",
+  "data",
+  "source",
+  "pct-water-norcal-2026-08-02.csv",
+);
+const BUNDLE_PATH = path.join(
+  ROOT,
+  "pct-hike-viz",
+  "public",
+  "data",
+  "hike_data.json",
+);
 
-// Generic nouns we strip before token comparisons so we match on distinct names.
-const STOPWORDS = new Set([
-  'creek', 'spring', 'camp', 'campground', 'crossing', 'bridge', 'trail', 'junction',
-  'seasonal', 'small', 'lake', 'river', 'water', 'source', 'sources', 'outlet',
-  'campground', 'campground', 'park', 'vista', 'camp', 'upper', 'lower', 'fork',
-  'camp', 'campgrounds', 'jct'
+/** Sources intentionally left out of the plan, with the reason on record. */
+const DOCUMENTED_EXCLUSIONS = new Map([
+  [1422.4, "Lake Britton Dam is a crossing/gate, not a planned water source. 2026-07-09: level too low on the east shore, water dirty with pollen."],
+  [1437.2, "Unnamed seasonal spring: reported DRY 2026-07-10. Not carryable."],
+  [1445.4, "Unnamed seasonal stream: reported DRY 2026-07-11. Not carryable."],
+  [1459.7, "Gold Creek: flowing 2026-07-04, but access has documented private-property concerns, so it stays out of the plan."],
+  [1461.1, "Unnamed seasonal stream: only trickling 2026-07-16; too marginal to plan a carry against."],
+  [1465.5, "Unnamed seasonal stream: flowing 2026-07-17, but it sits between two strong Deer Creek sources and adds nothing to the plan."],
+  [1470.3, "Strider Creek: 'very slowly trickling, basically dry' 2026-07-12. Not a dependable carry point."],
+  [1470.9, "Ash Camp Campground: the plan uses the McCloud River at 1472.497."],
 ]);
 
-const normalize = (value) => value
-  .toLowerCase()
-  .replace(/\(.*?\)/g, ' ')
-  .replace(/[^a-z0-9\s]/g, ' ')
-  .replace(/\s+/g, ' ')
-  .trim();
+const MATCH_TOLERANCE_MILES = 0.2;
 
-const tokenize = (value) => {
-  if (!value) return [];
-  return normalize(value).split(' ').filter(Boolean);
-};
-
-const essentialTokens = (tokens) => {
-  const filtered = tokens.filter(token => !STOPWORDS.has(token));
-  return filtered.length ? filtered : tokens;
-};
-
-const relativeMile = (raw) => {
-  if (!raw) return null;
-  const match = raw.match(/(\d+(?:\.\d+)?)\s*mi/i);
-  return match ? parseFloat(match[1]) : null;
-};
-
-const lines = (await fs.readFile(csvPath, 'utf8')).split(/\r?\n/);
-const headerIndex = lines.findIndex(line => line.startsWith('Map,'));
-if (headerIndex === -1) {
-  throw new Error('Unable to find CSV header row ("Map,Mile,...").');
+const bundle = JSON.parse(fs.readFileSync(BUNDLE_PATH, "utf8"));
+const canonical = bundle.waterSources ?? [];
+if (canonical.length === 0) {
+  console.error("✗ No canonical water sources found in the runtime bundle.");
+  process.exit(1);
 }
-const csvBody = lines.slice(headerIndex).join('\n');
-const records = parse(csvBody, { columns: true, skip_empty_lines: true });
 
-const csvSources = records
-  .map((row, idx) => ({
-    idx,
-    mile: row.Mile ? parseFloat(row.Mile) : null,
-    location: (row.Location || '').trim(),
-    tokens: essentialTokens(tokenize(row.Location || ''))
-  }))
-  .filter(row => row.mile && row.mile >= sectionOMeta.pctMileStart - 10 && row.mile <= sectionOMeta.pctMileEnd + 10);
+const startMile = Math.min(...canonical.map((s) => s.pctMile));
+const endMile = Math.max(...canonical.map((s) => s.pctMile));
 
-let currentMile = sectionOMeta.pctMileStart;
-const planEntries = [];
-
-dayItinerary
-  .filter(day => day.type === 'hike')
-  .forEach(day => {
-    const dayStart = currentMile;
-    (day.waterSources || []).forEach(source => {
-      const rel = relativeMile(source);
-      const approxMile = typeof rel === 'number' ? Number((dayStart + rel).toFixed(2)) : null;
-      const tokens = essentialTokens(tokenize(source.split('(')[0]));
-      planEntries.push({
-        day: day.label,
-        raw: source,
-        approxMile,
-        relMile: rel,
-        tokens
-      });
-    });
-    currentMile += day.distance;
-  });
-
-const overlapScore = (planTokens, csvTokens) => {
-  if (!planTokens.length || !csvTokens.length) {
-    return { overlap: 0, coverage: 0 };
-  }
-  const overlap = planTokens.filter(token => csvTokens.includes(token)).length;
-  return { overlap, coverage: overlap / planTokens.length };
-};
-
-const matchedCsv = new Set();
-const results = planEntries.map(entry => {
-  let bestMatch = null;
-  let bestScore = -Infinity;
-
-  csvSources.forEach(source => {
-    const { overlap, coverage } = overlapScore(entry.tokens, source.tokens);
-    let tokenScore = 0;
-    if (coverage === 1) tokenScore = 2;
-    else if (coverage >= 0.5) tokenScore = 1;
-
-    let mileScore = 0;
-    let delta = null;
-    if (typeof entry.approxMile === 'number' && typeof source.mile === 'number') {
-      delta = Math.abs(entry.approxMile - source.mile);
-      if (delta <= 0.3) mileScore = 2;
-      else if (delta <= 0.75) mileScore = 1;
-    }
-
-    const totalScore = tokenScore + mileScore + (coverage >= 0.5 ? 0.25 : 0);
-    if (totalScore > bestScore) {
-      bestScore = totalScore;
-      bestMatch = {
-        ...source,
-        overlap,
-        coverage,
-        mileScore,
-        tokenScore,
-        delta
-      };
-    }
-  });
-
-  let status = 'missing';
-  if (bestMatch) {
-    if (bestMatch.tokenScore === 2 && bestMatch.mileScore >= 1) {
-      status = 'match';
-    } else if (bestMatch.tokenScore >= 1 || bestMatch.mileScore >= 1) {
-      status = 'review';
-    }
-
-    if (status !== 'missing') {
-      matchedCsv.add(bestMatch.idx);
-    }
-  }
-
-  return {
-    ...entry,
-    bestMatch,
-    status
-  };
+const rows = parse(fs.readFileSync(CSV_PATH, "utf8"), {
+  relax_column_count: true,
+  skip_empty_lines: true,
 });
 
-const missing = results.filter(r => r.status === 'missing');
-const review = results.filter(r => r.status === 'review');
-const matches = results.filter(r => r.status === 'match');
+const headerText = rows.slice(0, 3).flat().join(" ");
+const snapshotLabel =
+  headerText.match(/Updated\s+([0-9/]+)/i)?.[1] ?? "unknown";
 
-console.log('══════════════════════════════════════════════════════════');
-console.log('DDG Section O Water Source Validation');
-console.log('══════════════════════════════════════════════════════════');
-console.log(`CSV Report: ${path.basename(csvPath)}`);
-console.log(`Plan Coverage: PCT miles ${sectionOMeta.pctMileStart} – ${sectionOMeta.pctMileEnd}`);
-console.log('----------------------------------------------------------');
+// Columns: 0 section, 1 mile, 2 PCTA id, 3 description, 4 reports, 5 last date.
+const reportSources = rows
+  .map((row) => ({
+    mile: Number.parseFloat(row[1]),
+    description: (row[3] ?? "").replace(/\s+/g, " ").trim(),
+    lastReport: (row[5] ?? "").trim(),
+  }))
+  .filter(
+    (row) =>
+      Number.isFinite(row.mile) &&
+      row.mile >= startMile - 0.1 &&
+      row.mile <= endMile + 0.1,
+  );
 
-const tableRows = results.map(result => ({
-  Day: result.day,
-  Source: result.raw,
-  'Plan Mile': result.approxMile?.toFixed?.(2) ?? 'n/a',
-  'Report Mile': result.bestMatch?.mile?.toFixed?.(2) ?? 'n/a',
-  'Δmile': result.bestMatch?.delta?.toFixed?.(2) ?? '—',
-  Status: result.status
-}));
+const nearest = (mile, list, key) =>
+  list.reduce((best, candidate) => {
+    const delta = Math.abs(candidate[key] - mile);
+    return best === null || delta < Math.abs(best[key] - mile) ? candidate : best;
+  }, null);
 
-console.table(tableRows);
+console.log("═".repeat(66));
+console.log("DDG Section O — canonical water sources vs PCT Water Report");
+console.log("═".repeat(66));
+console.log(`Report snapshot : ${path.basename(CSV_PATH)} (header: ${snapshotLabel})`);
+console.log(`Plan coverage   : PCT miles ${startMile} – ${endMile}`);
+console.log(`Canonical       : ${canonical.length} sources`);
+console.log(`Report in range : ${reportSources.length} sources`);
 
-console.log('Summary:');
-console.log(`  ✓ Matches:     ${matches.length}`);
-console.log(`  ~ Review:      ${review.length}`);
-console.log(`  ✗ Missing:     ${missing.length}`);
-
-if (review.length) {
-  console.log('\nNeeds review (token or mile mismatch):');
-  review.forEach(item => {
-    console.log(`- ${item.day}: ${item.raw} → CSV: ${item.bestMatch?.location || 'n/a'} @ mile ${item.bestMatch?.mile ?? 'n/a'} (Δ ${item.bestMatch?.delta?.toFixed?.(2) ?? '—'} mi, coverage ${(item.bestMatch?.coverage * 100).toFixed(0)}%)`);
-  });
+// 1. Mileage alignment.
+const drift = [];
+const unmatchedCanonical = [];
+for (const source of canonical) {
+  const match = nearest(source.pctMile, reportSources, "mile");
+  const delta = match ? Math.abs(match.mile - source.pctMile) : Infinity;
+  if (delta > MATCH_TOLERANCE_MILES) {
+    unmatchedCanonical.push(source);
+  } else if (delta > 0.05) {
+    drift.push({ source, match, delta });
+  }
 }
 
-if (missing.length) {
-  console.log('\nMissing (no close match found in report):');
-  missing.forEach(item => {
-    console.log(`- ${item.day}: ${item.raw}`);
-  });
+console.log("\n── 1. Mileage alignment ──");
+if (drift.length === 0 && unmatchedCanonical.length === 0) {
+  console.log(`✓ All ${canonical.length} canonical sources match the report within 0.05 mi.`);
+} else {
+  drift.forEach(({ source, match, delta }) =>
+    console.log(
+      `~ ${source.name}: plan ${source.pctMile} vs report ${match.mile} (Δ ${delta.toFixed(2)} mi)`,
+    ),
+  );
+  unmatchedCanonical.forEach((source) =>
+    console.log(`✗ ${source.name} @ ${source.pctMile}: no report source within ${MATCH_TOLERANCE_MILES} mi`),
+  );
 }
 
-const unusedCsv = csvSources
-  .filter(source => !matchedCsv.has(source.idx) && source.mile >= sectionOMeta.pctMileStart && source.mile <= sectionOMeta.pctMileEnd)
-  .slice(0, 10);
-
-if (unusedCsv.length) {
-  console.log('\nReport sources in range not referenced in plan (first 10):');
-  unusedCsv.forEach(source => {
-    console.log(`- Mile ${source.mile.toFixed(1)}: ${source.location}`);
-  });
+// 2. Report sources absent from the plan.
+console.log("\n── 2. Report sources not carried in the plan ──");
+let undocumented = 0;
+for (const row of reportSources) {
+  const match = nearest(row.mile, canonical, "pctMile");
+  if (match && Math.abs(match.pctMile - row.mile) <= MATCH_TOLERANCE_MILES) continue;
+  const reason = DOCUMENTED_EXCLUSIONS.get(row.mile);
+  if (reason) {
+    console.log(`  (deliberate) ${row.mile}: ${row.description || "—"}\n               ${reason}`);
+  } else {
+    undocumented += 1;
+    console.log(`? ${row.mile}: ${row.description || "—"} — no exclusion reason on record`);
+  }
+}
+if (undocumented === 0) {
+  console.log("✓ Every omitted report source has a documented reason.");
 }
 
-if (missing.length > 0 || review.length > 0) {
-  process.exitCode = 1;
+// 3. Observation age — the part that actually decides whether to trust it.
+console.log("\n── 3. Field-observation age ──");
+const years = new Map();
+for (const row of reportSources) {
+  const year = row.lastReport.match(/(\d{2})$/)?.[1];
+  const label = year ? `20${year}` : "no date";
+  years.set(label, (years.get(label) ?? 0) + 1);
 }
+[...years.entries()]
+  .sort((a, b) => String(b[0]).localeCompare(String(a[0])))
+  .forEach(([year, count]) => console.log(`  ${year}: ${count} source${count === 1 ? "" : "s"}`));
+
+const newestYear = Math.max(
+  ...[...years.keys()].map((y) => Number.parseInt(y, 10)).filter(Number.isFinite),
+);
+const TRIP_YEAR = 2026;
+const TRIP_START = "2026-08-29";
+if (Number.isFinite(newestYear) && TRIP_YEAR - newestYear >= 2) {
+  console.log(
+    `\n⚠ Newest field observation in this snapshot is ${newestYear} — ${TRIP_YEAR - newestYear} years before the trip.`,
+  );
+  console.log("  This snapshot documents WHERE water is mapped, not whether it flows in 2026.");
+  console.log("  Refresh https://pctwater.com/ and current FarOut comments before the carry plan is final.");
+}
+
+// 4. Current status of the sources we actually plan to use. This is the part
+//    that changes the packing list, so it prints last and loudest.
+console.log("\n── 4. Planned-source status (from the snapshot) ──");
+const dry = [];
+const marginal = [];
+let oldestPlanned = null;
+for (const source of canonical) {
+  const observation = source.latestObservation;
+  if (!observation) continue;
+  if (observation.status === "reported-dry") dry.push(source);
+  else if (observation.status === "reported-marginal") marginal.push(source);
+  if (!oldestPlanned || observation.observedOn < oldestPlanned.latestObservation.observedOn) {
+    oldestPlanned = source;
+  }
+}
+if (dry.length === 0 && marginal.length === 0) {
+  console.log("✓ No planned source is reported dry or marginal in this snapshot.");
+}
+for (const source of dry) {
+  console.log(
+    `✗ DRY  ${source.name} @ ${source.pctMile} — "${source.latestObservation.note}" (${source.latestObservation.observer}, ${source.latestObservation.observedOn})`,
+  );
+}
+for (const source of marginal) {
+  console.log(
+    `~ THIN ${source.name} @ ${source.pctMile} — "${source.latestObservation.note}" (${source.latestObservation.observer}, ${source.latestObservation.observedOn})`,
+  );
+}
+if (oldestPlanned) {
+  console.log(
+    `\nWeakest evidence among planned sources: ${oldestPlanned.name} @ ${oldestPlanned.pctMile}, last seen ${oldestPlanned.latestObservation.observedOn}.`,
+  );
+}
+console.log(
+  `\nSeasonal caveat: hiking starts ${TRIP_START}. Any reading from June or July is\nweeks ahead of trip conditions in a drying season — read marginal as worse, never better.`,
+);
+
+console.log("\n" + "═".repeat(66));
+if (unmatchedCanonical.length > 0 || undocumented > 0) {
+  console.log("Result: review required — see flagged rows above.");
+  process.exit(1);
+}
+if (dry.length > 0) {
+  console.log(
+    `Result: reconciled, but ${dry.length} planned source(s) reported DRY — the carry plan must not depend on them.`,
+  );
+  process.exit(1);
+}
+console.log("Result: canonical water sources reconcile with the report snapshot.");

@@ -239,8 +239,8 @@ function TransitPanel() {
         <article className="ops-stage">
           <span className="ops-stage__icon" aria-hidden="true">🚙</span>
           <div>
-            <p className="ops-stage__label">Same-night insertion · Aug 28–29</p>
-            <h3>{arrivalPlan.driver} drives the team toward Burney</h3>
+            <p className="ops-stage__label">Rest near SJC, then dawn departure · Aug 29</p>
+            <h3>{arrivalPlan.driver} drives the team to Burney on Saturday morning</h3>
             <p>{arrivalPlan.instruction}</p>
             <p className="ops-stage__metric">
               SJC → Burney snapshot: {arrivalPlan.driveSnapshot.distanceMiles.toFixed(1)} mi · {arrivalPlan.driveSnapshot.durationHours.toFixed(1)} hr before stops

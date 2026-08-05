@@ -245,6 +245,32 @@ function TrailMap({
   const [hudExpanded, setHudExpanded] = useState(false);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
+  // Land ownership overlay. Loaded from a baked GeoJSON rather than queried
+  // live so it still renders with no signal, which is where it matters most.
+  const [showOwnership, setShowOwnership] = useState(false);
+  const [ownership, setOwnership] = useState(null);
+  const [ownershipError, setOwnershipError] = useState(null);
+  const [parcelInfo, setParcelInfo] = useState(null);
+
+  useEffect(() => {
+    if (!showOwnership || ownership || ownershipError) return;
+    let cancelled = false;
+    fetch(`${import.meta.env.BASE_URL}data/land_ownership.geojson`)
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        if (!cancelled) setOwnership(data);
+      })
+      .catch((error) => {
+        if (!cancelled) setOwnershipError(error.message);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [showOwnership, ownership, ownershipError]);
+
   // Listen for offline status
   useEffect(() => {
     const handleOffline = () => setIsOffline(true);
@@ -304,6 +330,52 @@ function TrailMap({
             ))}
             <span><i style={{ backgroundColor: DRIVE_HOME_COLOR }} />Drive Home</span>
           </div>
+
+          <div className="ownership-control">
+            <label className="ownership-toggle">
+              <input
+                type="checkbox"
+                checked={showOwnership}
+                onChange={(event) => setShowOwnership(event.target.checked)}
+              />
+              <span>Show land ownership</span>
+            </label>
+
+            {showOwnership && ownershipError && (
+              <p className="ownership-error">
+                Could not load the ownership overlay ({ownershipError}). The
+                parcel data is bundled offline, so this usually means the app
+                cache needs a refresh. Do not read a blank map as public land.
+              </p>
+            )}
+
+            {showOwnership && !ownership && !ownershipError && (
+              <p className="ownership-note">Loading parcels…</p>
+            )}
+
+            {showOwnership && ownership && (
+              <>
+                <div className="ownership-legend" aria-label="Land ownership legend">
+                  <span><i style={{ backgroundColor: "#16a34a" }} />Public — camping allowed</span>
+                  <span><i style={{ backgroundColor: "#dc2626" }} />Private timberland — pass through only</span>
+                  <span><i style={{ backgroundColor: "#b45309" }} />Other private</span>
+                  <span><i style={{ backgroundColor: "#7c3aed" }} />Tribal land</span>
+                </div>
+                <p className="ownership-note">
+                  On the red parcels the active PCTA alert allows PCT passage
+                  but prohibits camping, campfires, stoves and any ignition
+                  source, smoking, and extended stops. Keep moving. Tap a
+                  parcel for its owner and APN.
+                </p>
+                <p className="ownership-note">
+                  {ownership.features.length} parcels from the{" "}
+                  {ownership.source}, generated {ownership.generatedAt}. This is
+                  a planning screen, not a title report or a surveyed boundary.
+                  Posted signage and fence lines win on the ground.
+                </p>
+              </>
+            )}
+          </div>
         </div>
         <div
           className="style-switcher"
@@ -332,6 +404,19 @@ function TrailMap({
           zoom: 8,
         }}
         mapStyle={mapStyles[selectedStyle].url}
+        interactiveLayerIds={
+          showOwnership && ownership ? ["land-ownership-fill"] : []
+        }
+        onClick={(event) => {
+          const parcel = event.features?.find(
+            (feature) => feature.layer?.id === "land-ownership-fill",
+          );
+          if (!parcel) return;
+          setParcelInfo({
+            ...parcel.properties,
+            lngLat: [event.lngLat.lng, event.lngLat.lat],
+          });
+        }}
         style={{
           position: "absolute",
           top: 0,
@@ -341,6 +426,51 @@ function TrailMap({
         }}
         attributionControl
       >
+        {/* Ownership sits under every other layer so the route, camps, and
+            water markers stay readable on top of it. */}
+        {showOwnership && ownership && (
+          <Source id="land-ownership-source" type="geojson" data={ownership}>
+            <Layer
+              id="land-ownership-fill"
+              type="fill"
+              paint={{
+                "fill-color": [
+                  "match",
+                  ["get", "ownership"],
+                  "public", "#16a34a",
+                  "private-timberland", "#dc2626",
+                  "private", "#b45309",
+                  "tribal", "#7c3aed",
+                  "#6b7280",
+                ],
+                "fill-opacity": [
+                  "match",
+                  ["get", "ownership"],
+                  "public", 0.16,
+                  0.36,
+                ],
+              }}
+            />
+            <Layer
+              id="land-ownership-outline"
+              type="line"
+              paint={{
+                "line-color": [
+                  "match",
+                  ["get", "ownership"],
+                  "public", "#15803d",
+                  "private-timberland", "#991b1b",
+                  "private", "#92400e",
+                  "tribal", "#5b21b6",
+                  "#4b5563",
+                ],
+                "line-width": 1,
+                "line-opacity": 0.7,
+              }}
+            />
+          </Source>
+        )}
+
         {flatTrail.length > 1 && (
           <Source id="hiking-route-source" type="geojson" data={hikingRouteGeoJSON}>
             <Layer
@@ -617,6 +747,64 @@ function TrailMap({
                   popupInfo.notes ??
                   popupInfo.latestReport ??
                   popupInfo.report}
+              </p>
+            </div>
+          </Popup>
+        )}
+
+        {parcelInfo && (
+          <Popup
+            longitude={parcelInfo.lngLat[0]}
+            latitude={parcelInfo.lngLat[1]}
+            anchor="bottom"
+            onClose={() => setParcelInfo(null)}
+            closeOnClick={false}
+            maxWidth="320px"
+          >
+            <div className="map-popup">
+              <p className="day-pill">
+                {parcelInfo.ownership === "public"
+                  ? "Public land"
+                  : parcelInfo.ownership === "private-timberland"
+                    ? "Private timberland"
+                    : parcelInfo.ownership === "tribal"
+                      ? "Tribal land"
+                      : "Private land"}
+              </p>
+              <h3>{parcelInfo.assessee || "Unknown owner"}</h3>
+              <p>APN {parcelInfo.apn}</p>
+              {parcelInfo.acres != null && (
+                <p>{Number(parcelInfo.acres).toFixed(1)} acres (GIS)</p>
+              )}
+              {parcelInfo.ownership === "private-timberland" && (
+                <p>
+                  PCT passage is allowed here. Camping, campfires, stoves and
+                  any ignition source, smoking, and extended stops are not.
+                  Travel carefully and continuously.
+                </p>
+              )}
+              {parcelInfo.ownership === "private" && (
+                <p>
+                  Private property outside the PCTA timberland alert. No camping
+                  and no assumed right of entry off the trail corridor.
+                </p>
+              )}
+              {parcelInfo.ownership === "tribal" && (
+                <p>
+                  Tribal land. Do not treat this as public access or as ordinary
+                  private timberland; entry and use are governed by the tribe.
+                </p>
+              )}
+              {parcelInfo.ownership === "public" && (
+                <p>
+                  Public land. Dispersed camping is generally allowed subject to
+                  current fire restrictions and agency rules, which still need a
+                  same-week check.
+                </p>
+              )}
+              <p>
+                County assessor screen, not a title report or surveyed boundary.
+                Posted signage and fence lines win on the ground.
               </p>
             </div>
           </Popup>

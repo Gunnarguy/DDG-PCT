@@ -94,11 +94,11 @@ private struct StartLogisticsCard: View {
         VStack(alignment: .leading, spacing: 14) {
             LogisticsStepHeader(
                 step: "1",
-                title: "Start: SJC → safe Burney staging",
+                title: "Start: SJC → sleep → Saturday drive to Burney",
                 subtitle: "Do not confuse the Pacific-time departure stamp with an SJC arrival."
             )
 
-            Text("UA481 is due at SJC at \(flights.inbound.scheduledArrivalLocal). Mikaela’s overnight drive begins only after the actual airline handoff; no one starts Day 1 until the team has slept, eaten, hydrated, and cleared current Burney access.")
+            Text("UA481 is due at SJC at \(flights.inbound.scheduledArrivalLocal). The team sleeps near SJC and drives north at about 5:00–5:30 AM on Aug 29 — no overnight drive. Expect to reach Burney in the early afternoon; no one starts Day 1 until the team has eaten, hydrated, and cleared current Burney access.")
                 .font(.subheadline)
                 .fixedSize(horizontal: false, vertical: true)
 

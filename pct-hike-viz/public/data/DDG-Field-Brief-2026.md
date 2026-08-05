@@ -20,12 +20,12 @@
 
 | Gate | Owner | Due | Blocks |
 | --- | --- | --- | --- |
-| Monitor the confirmed United itinerary and handoff timing | Dan + Gunnar | Aug 26, then travel days | Nothing is unbooked. A material delay still changes Mikaela's airport handoff and the overnight Burney approach. |
-| Confirm legal overnight Burney staging and a driver-rest plan | Gunnar + Mikaela | Before Aug 21 | A safe, legal, and rested Day 1 start after the confirmed same-night drive. |
+| Monitor the confirmed United itinerary and handoff timing | Dan + Gunnar | Aug 26, then travel days | Nothing is unbooked. A material delay still changes Mikaela's airport handoff, how much sleep the team gets before the Aug 29 dawn departure, and how late Day 1 starts. |
+| Aug 28 rest stop CONFIRMED at Gunnar's place in Campbell — still decide Mikaela's return leg | Gunnar + Mikaela | Before Aug 21 | A rested Day 1 start with daylight margin, and a safe return leg for the only driver. |
 | Secure Saturday Burney Falls entry and exact PCT connector | Gunnar + Mikaela | Before Aug 29 | Legal vehicle entry and the actual Day 1 start. |
-| Recheck the Lake Britton / Pit No. 3 Dam crossing | Gunnar | Aug 27–28 | The intended Day 1 route if the crossing is closed or controlled. |
+| Recheck the Lake Britton / Pit No. 3 Dam crossing | Gunnar | Aug 27–28 | The intended Day 1 route if the crossing is closed or escorted. No longer blocked by the retired 2022 notice. |
 | Book and field-verify the Day 3 Bartle Gap support operation | Gunnar + named driver | Aug 7; recheck Aug 27 | Starting the supported Day 3 version of this trip. |
-| Revalidate every overnight camp and the Day 2–3 water carry | Team | Aug 27–28 | A safe overnight and the planned Day 3 water reserve. |
+| Rebuild the Day 2–3 water carry around a dry Clark Spring, and revalidate every overnight camp | Team | Aug 27–28 | A survivable Day 2 dry camp and the Day 3 water reserve. This gate is no longer just verification: the carry itself needs rebuilding. |
 | Verify FS Road 38N11 and Ash Camp pickup vehicle suitability | Mikaela + Gunnar | Sep 3–4 | The primary September 5 extraction. |
 | Test satellite communicator, contact tree, and no-contact protocol | Team | Aug 15 | Reliable coordination when cell service is unavailable. |
 
@@ -47,7 +47,7 @@
 - **Exact PCTA boundary:** route mile 26.878 / PCT mile 1447.531
 - **Field pickup pin offset:** 506 ft from the trail boundary; it is not a campsite.
 - **Target hiker window:** about 1:30–3:30 PM; driver ready about 1:00 PM.
-- **No-show rule:** Do not wait or camp on private land. Continue only to the pre-screened public-side emergency candidate while escalating by satellite; it is an emergency continuity option, not a scheduled camp.
+- **No-show rule:** Do not wait or camp on private land. Continue only to the pre-screened public-side emergency candidate while escalating by satellite; it is an emergency continuity option, not a scheduled camp. Two distances matter here and they are not the same. Sierra Pacific ground ENDS and USFS ground BEGINS at PCT 1447.738 — only 0.207 mile (about 365 yards) north of the Bartle Gap crossing at 1447.531 — so you stop being on private land after a few minutes of walking. That is where trespass ends, not where a campsite is. The pre-screened emergency site is farther, near route mile 27.791 at 41.177527, -121.827003 (USFS APN 015-140-002, about 474 ft off trail), because it was chosen for durable campable ground rather than for the parcel line alone. Neither point has water: the nearest source past the corridor is Moosehead Creek at 1448.873, about 1.14 miles beyond the boundary.
 
 ## Emergency coordination
 

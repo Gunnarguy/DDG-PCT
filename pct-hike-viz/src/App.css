@@ -351,6 +351,72 @@ body.is-resizing-profile {
   border-radius: 999px;
 }
 
+/* Land ownership overlay controls. Text wraps rather than clipping: an
+   operational rule that is half-visible is worse than one that is absent. */
+.ownership-control {
+  margin-top: 0.75rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--sand-200);
+}
+
+.ownership-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink-600);
+  cursor: pointer;
+}
+
+.ownership-toggle input {
+  width: 0.9rem;
+  height: 0.9rem;
+  cursor: pointer;
+}
+
+.ownership-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.55rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--ink-600);
+}
+
+.ownership-legend span {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  overflow-wrap: anywhere;
+}
+
+.ownership-legend i {
+  flex: 0 0 auto;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-top: 0.1rem;
+  border-radius: 0.15rem;
+}
+
+.ownership-note {
+  margin-top: 0.5rem;
+  font-size: 0.68rem;
+  line-height: 1.45;
+  color: var(--ink-500, var(--ink-600));
+  overflow-wrap: anywhere;
+}
+
+.ownership-error {
+  margin-top: 0.5rem;
+  font-size: 0.68rem;
+  line-height: 1.45;
+  font-weight: 700;
+  color: var(--orange-500, #c2410c);
+  overflow-wrap: anywhere;
+}
+
 .style-switcher {
   display: grid;
   gap: 0.5rem;

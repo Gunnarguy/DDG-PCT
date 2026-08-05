@@ -72,7 +72,7 @@ export default {
   "arrivalPlan": {
     "driver": "Mikaela",
     "vehicle": "Kia Sportage",
-    "instruction": "Mikaela meets Dan and Drew at SJC after UA481 and drives the team toward the Burney Falls PCT access overnight on Aug 28–29. The 308.1-mile baseline is 6.1 hours before luggage, fuel, food, traffic, and rest. Secure a legal overnight/parking plan and do not begin Day 1 until all three hikers are rested, fed, hydrated, and the current Burney access check is complete.",
+    "instruction": "Mikaela meets Dan and Drew at SJC after UA481 (scheduled 10:36 PM PDT Aug 28) and the group sleeps near SJC that night. The team departs about 5:00–5:30 AM on Saturday Aug 29. The 308.1-mile route is 6.1 driving hours before luggage, fuel, food, traffic, and rest, so plan roughly 7–7.5 hours door to trailhead and expect to reach the Burney Falls PCT access in the early afternoon. This replaces the earlier same-night drive: nobody starts hiking at 2 AM, and a rested driver is worth accepting an afternoon Day 1 start. Day 1 is 5.609 miles and 3.75–4.5 hours with overnight packs under this trip's own pace model, and sunset at the trailhead on Aug 29 is about 7:37 PM PDT. Aim to have boots moving by 1:00–1:30 PM; treat 2:30 PM as the hard cutoff past which Rock Creek becomes a headlamp finish. Do not begin Day 1 until all three hikers are fed, hydrated, and the current Burney access, parking, and connector check is complete.",
     "driveSnapshot": {
       "origin": "SJC",
       "destination": "Burney Falls PCT access",
@@ -91,7 +91,7 @@ export default {
       "Legal off-corridor overnight is booked or otherwise explicitly permitted.",
       "All three hikers and the driver have the no-contact protocol, satellite message cadence, and exact re-entry time."
     ],
-    "noShowRule": "Do not wait or camp on private land. Continue only to the pre-screened public-side emergency candidate while escalating by satellite; it is an emergency continuity option, not a scheduled camp.",
+    "noShowRule": "Do not wait or camp on private land. Continue only to the pre-screened public-side emergency candidate while escalating by satellite; it is an emergency continuity option, not a scheduled camp. Two distances matter here and they are not the same. Sierra Pacific ground ENDS and USFS ground BEGINS at PCT 1447.738 — only 0.207 mile (about 365 yards) north of the Bartle Gap crossing at 1447.531 — so you stop being on private land after a few minutes of walking. That is where trespass ends, not where a campsite is. The pre-screened emergency site is farther, near route mile 27.791 at 41.177527, -121.827003 (USFS APN 015-140-002, about 474 ft off trail), because it was chosen for durable campable ground rather than for the parcel line alone. Neither point has water: the nearest source past the corridor is Moosehead Creek at 1448.873, about 1.14 miles beyond the boundary.",
     "routeMile": 26.878,
     "pctMile": 1447.531,
     "trailCoordinates": [
@@ -138,8 +138,8 @@ export default {
       "owner": "Dan + Gunnar",
       "due": "Aug 26, then travel days",
       "title": "Monitor the confirmed United itinerary and handoff timing",
-      "detail": "The team confirmed UA481 and UA1317: the itinerary begins Aug 28 at 6:03 PM PDT and ends Sep 7 at 10:45 AM PDT. Use United Flight Status for delay, gate, terminal, and same-night SJC handoff changes; use the optional aircraft tracker as supplemental evidence only.",
-      "blocks": "Nothing is unbooked. A material delay still changes Mikaela's airport handoff and the overnight Burney approach.",
+      "detail": "The team confirmed UA481 and UA1317: the itinerary begins Aug 28 at 6:03 PM PDT and ends Sep 7 at 10:45 AM PDT. Use United Flight Status for delay, gate, terminal, and Aug 28 SJC handoff changes; use the optional aircraft tracker as supplemental evidence only.",
+      "blocks": "Nothing is unbooked. A material delay still changes Mikaela's airport handoff, how much sleep the team gets before the Aug 29 dawn departure, and how late Day 1 starts.",
       "sourceIds": [
         "team-itinerary-confirmation",
         "united-flight-status",
@@ -152,9 +152,9 @@ export default {
       "state": "open",
       "owner": "Gunnar + Mikaela",
       "due": "Before Aug 21",
-      "title": "Confirm legal overnight Burney staging and a driver-rest plan",
-      "detail": "UA481 is scheduled to reach SJC at 10:36 PM PDT, then the same-night SJC-to-Burney route is 308.1 miles / about 6.1 hours before baggage, fuel, food, traffic, and rest. This crosses into Aug 29. Confirm exactly where the team can lawfully sleep, park, transfer gear, and begin the Burney access approach; do not turn a predawn arrival into an automatic hiking start.",
-      "blocks": "A safe, legal, and rested Day 1 start after the confirmed same-night drive.",
+      "title": "Aug 28 rest stop CONFIRMED at Gunnar's place in Campbell — still decide Mikaela's return leg",
+      "detail": "RESOLVED 2026-08-04: the team sleeps at Gunnar's home in Campbell on Aug 28. No booking is required and no hotel fallback is needed. UA481 reaches SJC at 10:36 PM PDT, Campbell is about 15 minutes from the airport, and the group drives north at about 5:00–5:30 AM Aug 29 rather than driving through the night. Load the vehicle on Aug 28 before the airport run so the 5:00 AM departure is real: every 30 minutes lost here pushes the Day 1 start later into a hot Saturday afternoon and eats the daylight margin at Rock Creek. WHAT REMAINS OPEN is only Mikaela's return leg. About 6.1 hours north, the drop-off, then a 6.1-hour return is roughly 12–13 hours of driving for a single driver, on the back of a near-midnight airport pickup. Decide before Aug 21 whether she rests near Burney or Redding before turning around or commits to the same-day return, and treat that as a safety decision with the same weight as the hikers' plan.",
+      "blocks": "A rested Day 1 start with daylight margin, and a safe return leg for the only driver.",
       "sourceIds": [
         "team-itinerary-confirmation",
         "parks-burney-2026"
@@ -180,8 +180,8 @@ export default {
       "owner": "Gunnar",
       "due": "Aug 27–28",
       "title": "Recheck the Lake Britton / Pit No. 3 Dam crossing",
-      "detail": "The live condition snapshot has carried bridge-work information near the first-day corridor. Confirm the legal PCT crossing with current PCTA, park, utility, and field sources immediately before departure.",
-      "blocks": "The intended Day 1 route if the crossing is closed or controlled.",
+      "detail": "CORRECTED 2026-08-04: the bridge-work notice that drove this gate was a 2022 item, not a live one. It read 'Bridge Over Lake Britton Dam to Close April 18–Sept. 2 While PG&E Contractor Improves Bridge Deck' and was dated 05/16/22 — the closure window was April–September 2022, four years ago. The 2026-08-02 water report snapshot no longer carries it at all; the only current entry for mile 1422.4 is 2026-07-09 (Lana) describing poor water access: the lake level is too low to collect from the eastern shore, there is a steep trail to water on the western shore, and the water is dirty with pollen, so fill at the park spigots instead. So the alarming part of this gate was stale and is now retired. The gate itself stays OPEN for a narrower and real reason: PG&E performs recurring maintenance on this dam crossing, the water report is not an authority on bridge status, and a 2022 closure in the same calendar window is evidence that such work recurs in exactly this season. Confirm the crossing is open and unescorted with PG&E, the park, and current PCTA closures in the final week — do not treat the absence of a notice in a water report as confirmation that it is open.",
+      "blocks": "The intended Day 1 route if the crossing is closed or escorted. No longer blocked by the retired 2022 notice.",
       "sourceIds": [
         "pct-water",
         "pcta-closures"
@@ -207,9 +207,9 @@ export default {
       "state": "open",
       "owner": "Team",
       "due": "Aug 27–28",
-      "title": "Revalidate every overnight camp and the Day 2–3 water carry",
-      "detail": "The pre-private site is GIS-screened, not ground-approved. The water plan must work without assuming collection in the private corridor, and every field report needs its age shown.",
-      "blocks": "A safe overnight and the planned Day 3 water reserve.",
+      "title": "Rebuild the Day 2–3 water carry around a dry Clark Spring, and revalidate every overnight camp",
+      "detail": "The 2026-08-02 PCT Water Report changes this materially. CLARK SPRING (PCT 1438.462) IS REPORTED DRY as of 2026-07-10 — it still had 'nice flow, deep pool' on 2026-06-21, so it dries mid-summer and will very likely still be dry on Aug 31. Do not plan a top-up there. But flow is the smaller half of this problem, because EVERY REMAINING SOURCE ON DAY 3 SITS ON PRIVATE TIMBERLAND. The Shasta County assessor screen places Clark Spring (1438.43) and Deadman Creek (1440.47) on Hearst Forests, and Kosk Spring (1442.01) on Pondosa Forest LLC; Kosk also requires a 2/10-mile off-trail walk to reach. The active PCTA alert allows passage on these lands but prohibits camping, fires, stoves, smoking, and extended stops, and requires continuous travel — so none of the three is a plannable collection point, and a mapped spring icon is not permission. The continuously private corridor runs from about trip mile 14.923 to 26.953 (roughly PCT 1435.6 to 1447.6), about 12.03 miles, and the first public water after it is Moosehead Creek (1448.873, USFS). The real planning span is therefore Peavine (1434.236) to the driver's staged water at Bartle Gap (1447.531): about 13.3 trail miles with no legal collection stop, and that span must also cover a dry overnight, dinner, and breakfast for three. If the Day 3 driver fails to appear, the span becomes Peavine to Moosehead at about 14.6 miles. The driver must therefore carry a full reserve for all three hikers even if every middle source is usable, because usable and legal are different questions here. A separate weak point sits on Day 5: Alder Creek / Star City Creek (1456.312) is the water the Day 5 camp is named for, and its only 2026 sighting is 2026-06-15 ('a clear pool of water and flowing clear water, 2 liters per minute') — the oldest evidence behind any planned source, roughly eleven weeks before the team arrives on Sep 2. Verify it in the final-week pull and carry a contingency from Deer Creek if it cannot be confirmed. Clark was the last intermediate on the public-land side of that question and it is now gone. SEPARATELY, PEAVINE IS A WALK-PAST HAZARD: it is 'absolutely dry where trail crosses the creek' (Lana, 2026-07-10) and the flowing water sits off-trail at 41.06012, -121.78501 — 'in the bushes to the right just off second road crossing' (Mobber, 2026-07-15). Two independent 2026 reports agree. Brief all three hikers on that offset before Day 2 or someone will cross a dry bed and keep walking. Every observation above is from JULY 2026 and the trip is Aug 29–Sep 5, six to seven weeks deeper into the dry season, so treat marginal sources as worse, never better. Re-pull pctwater.com and FarOut in the final week. The pre-private site remains GIS-screened, not ground-approved, and the water plan must still work without assuming any collection inside the private corridor.",
+      "blocks": "A survivable Day 2 dry camp and the Day 3 water reserve. This gate is no longer just verification: the carry itself needs rebuilding.",
       "sourceIds": [
         "pct-water",
         "pcta-private-timberland"
@@ -366,7 +366,8 @@ export default {
       "title": "PCT Water Report",
       "url": "https://pctwater.com/",
       "kind": "field report",
-      "checkedAt": "2026-08-02"
+      "checkedAt": "2026-08-04",
+      "note": "Refreshed 2026-08-04. The snapshot in docs/data/source/pct-water-norcal-2026-08-02.csv carries an 'Updated 08/02/2026' header, and all 20 canonical sources now hold a dated latestObservation plus full observationHistory pulled from it. This replaced a stale snapshot whose newest field report was from 2022. Note what freshness does and does not buy: the newest on-trail sightings are from JULY 2026, and the trip runs Aug 29 – Sep 5, so every reading is six to seven weeks optimistic relative to trip conditions. checkedAt is when the source was last pulled, never proof that a creek flows on the day you reach it. Re-pull in the final week and run scripts/validate_water_sources.mjs to re-check mileage alignment, undocumented omissions, and observation age."
     },
     {
       "id": "pcta-ash-camp",
