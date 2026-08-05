@@ -95,17 +95,44 @@ extension TripOperations {
         let driveSnapshot: DriveSnapshot
     }
 
+    /// Day 3's plan, which has taken two shapes. Until 2026-08-05 it was a
+    /// supported transfer with a driver, pickup window, and no-show rule; it is
+    /// now an unsupported power-through with a distance, a pace reality, and a
+    /// self-supported water carry.
+    ///
+    /// Every field specific to one shape is optional so that flipping the
+    /// decision cannot crash the app on launch. Only `instruction` and
+    /// `requiredBeforeStart` are required, because Day 3 must always say what
+    /// the plan is and what has to be true before it starts.
     struct DayThreeSupport: Decodable, Sendable {
         let instruction: String
-        let targetHikerWindow: String
-        let driverReadyBy: String
         let requiredBeforeStart: [String]
-        let noShowRule: String
         let routeMile: Double
         let pctMile: Double
-        let trailCoordinates: [Double]
-        let fieldCoordinates: [Double]
         let fieldToTrailOffsetFeet: Double
+
+        // Supported-transfer shape (retired 2026-08-05).
+        let targetHikerWindow: String?
+        let driverReadyBy: String?
+        let noShowRule: String?
+        let trailCoordinates: [Double]?
+        let fieldCoordinates: [Double]?
+
+        // Power-through shape (active).
+        let distanceMiles: Double?
+        let gainFeet: Double?
+        let lossFeet: Double?
+        let estimatedHours: String?
+        let packMode: String?
+        let finishCamp: String?
+        let cost: String?
+        let waterRule: String?
+        let bailoutRule: String?
+        let groupPaceReality: String?
+        let recommendedStart: String?
+
+        /// True when Day 3 no longer depends on a driver.
+        var isUnsupported: Bool { (distanceMiles ?? 0) > 0 && noShowRule == nil }
     }
 
     struct FinishPlan: Decodable, Sendable {
@@ -227,15 +254,26 @@ extension TripOperations {
         ),
         dayThreeSupport: DayThreeSupport(
             instruction: "Day 3 plan unavailable.",
-            targetHikerWindow: "",
-            driverReadyBy: "",
             requiredBeforeStart: [],
-            noShowRule: "",
             routeMile: 0,
             pctMile: 0,
-            trailCoordinates: [],
-            fieldCoordinates: [],
-            fieldToTrailOffsetFeet: 0
+            fieldToTrailOffsetFeet: 0,
+            targetHikerWindow: nil,
+            driverReadyBy: nil,
+            noShowRule: nil,
+            trailCoordinates: nil,
+            fieldCoordinates: nil,
+            distanceMiles: nil,
+            gainFeet: nil,
+            lossFeet: nil,
+            estimatedHours: nil,
+            packMode: nil,
+            finishCamp: nil,
+            cost: nil,
+            waterRule: nil,
+            bailoutRule: nil,
+            groupPaceReality: nil,
+            recommendedStart: nil
         ),
         finishPlan: FinishPlan(
             driver: "—",

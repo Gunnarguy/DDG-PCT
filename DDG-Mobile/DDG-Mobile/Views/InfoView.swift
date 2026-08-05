@@ -123,16 +123,58 @@ private struct DayThreeLogisticsCard: View {
         VStack(alignment: .leading, spacing: 14) {
             LogisticsStepHeader(
                 step: "2",
-                title: "Day 3: support transfer, not a campsite",
-                subtitle: "The solution to the private corridor is logistics—not a loophole."
+                title: support.isUnsupported
+                    ? "Day 3: power through, no driver"
+                    : "Day 3: support transfer, not a campsite",
+                subtitle: support.isUnsupported
+                    ? "Twelve miles of private timberland with nowhere legal to stop. The answer is to keep walking."
+                    : "The solution to the private corridor is logistics—not a loophole."
             )
             Text(support.instruction)
                 .font(.subheadline)
                 .fixedSize(horizontal: false, vertical: true)
 
-            HStack(spacing: 12) {
-                LogisticsMetric(label: "Hiker window", value: support.targetHikerWindow)
-                LogisticsMetric(label: "Driver ready", value: support.driverReadyBy)
+            if support.isUnsupported {
+                HStack(spacing: 12) {
+                    if let miles = support.distanceMiles {
+                        LogisticsMetric(label: "Distance", value: String(format: "%.2f mi", miles))
+                    }
+                    if let hours = support.estimatedHours {
+                        LogisticsMetric(label: "Estimate", value: hours)
+                    }
+                }
+                if let finish = support.finishCamp {
+                    LogisticsMetric(label: "Finishes at", value: finish)
+                }
+            } else {
+                HStack(spacing: 12) {
+                    LogisticsMetric(label: "Hiker window", value: support.targetHikerWindow ?? "—")
+                    LogisticsMetric(label: "Driver ready", value: support.driverReadyBy ?? "—")
+                }
+            }
+
+            // The cost of the unsupported plan is stated where the plan is,
+            // not buried in a document nobody opens on trail.
+            if let cost = support.cost {
+                Text(cost)
+                    .font(.caption)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(10)
+                    .background(.orange.opacity(0.10), in: RoundedRectangle(cornerRadius: 10))
+            }
+            if let water = support.waterRule {
+                Text(water)
+                    .font(.caption)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(10)
+                    .background(.blue.opacity(0.10), in: RoundedRectangle(cornerRadius: 10))
+            }
+            if let pace = support.groupPaceReality {
+                Text(pace)
+                    .font(.caption)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(10)
+                    .background(.orange.opacity(0.10), in: RoundedRectangle(cornerRadius: 10))
             }
             Text("Field pin: PCT \(support.pctMile, specifier: "%.3f") · route mile \(support.routeMile, specifier: "%.3f") · \(support.fieldToTrailOffsetFeet, specifier: "%.0f") ft from trail centerline")
                 .font(.caption)
@@ -150,12 +192,22 @@ private struct DayThreeLogisticsCard: View {
                 }
             }
 
-            Text("No-show rule: \(support.noShowRule)")
-                .font(.caption)
-                .foregroundStyle(.red)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(10)
-                .background(.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+            if let noShow = support.noShowRule {
+                Text("No-show rule: \(noShow)")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(10)
+                    .background(.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+            }
+            if let bailout = support.bailoutRule {
+                Text("If someone cannot continue: \(bailout)")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(10)
+                    .background(.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+            }
 
             GateChecklist(
                 title: "Support-day actions",
