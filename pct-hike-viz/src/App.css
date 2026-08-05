@@ -423,6 +423,113 @@ body.is-resizing-profile {
   overflow-wrap: anywhere;
 }
 
+/* Group load balance. Text wraps; nothing here is clipped, because a gear gap
+   you cannot read is a gear gap you will discover at the trailhead. */
+.group-load-balance {
+  margin: 0.75rem 0 1rem;
+  padding: 0.85rem;
+  border: 1px solid var(--sand-200);
+  border-radius: 0.75rem;
+  background: var(--sand-50, #fbfaf7);
+}
+
+.glb-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.glb-header h4 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.glb-header button {
+  border: 1px solid var(--sand-200);
+  background: transparent;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--ink-600);
+}
+
+.glb-hikers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.6rem;
+  margin-top: 0.7rem;
+}
+
+.glb-hiker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.6rem;
+  border-radius: 0.5rem;
+  border-left: 4px solid var(--hiker-color, var(--pine-600));
+  background: #fff;
+}
+
+.glb-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.glb-pack,
+.glb-base {
+  font-size: 0.72rem;
+  color: var(--ink-600);
+}
+
+.glb-day3 {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--orange-500, #c2410c);
+}
+
+.glb-note {
+  margin-top: 0.6rem;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--ink-500, var(--ink-600));
+  overflow-wrap: anywhere;
+}
+
+.glb-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.9rem;
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--sand-200);
+}
+
+.glb-detail-block h5 {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+}
+
+.glb-detail-block ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.glb-detail-block li {
+  overflow-wrap: anywhere;
+}
+
+.glb-ok {
+  font-size: 0.75rem;
+  color: var(--pine-600);
+  margin: 0;
+}
+
 .style-switcher {
   display: grid;
   gap: 0.5rem;

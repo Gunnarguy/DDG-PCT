@@ -121,11 +121,14 @@ const HIKERS = [
     emoji: ddgTeam[0].emoji, // 🧔
     role: ddgTeam[0].role, // Trail Boss
     color: ddgTeam[0].color, // #2E7D32
-    pack: "Pack TBD",
-    capacity: 60,
+    pack: "Gregory 75L",
+    capacity: 75,
     baseWeightGoal: 0,
+    // Age 75. Biggest pack, and deliberately so: at a Day 3 peak near 57 lb
+    // the hipbelt is what makes the load carryable. Take weight off him by
+    // moving dense items elsewhere, not by shrinking his suspension.
     packNotes:
-      "Comfort-focused hauler for group gear. Carries shared shelter if needed.",
+      "Gregory 75L. Take BULK, not weight — quilts, puffies, tent body. Dense items (water, food, fuel) belong in the smaller packs. Group pace is set by the heaviest-loaded hiker.",
   },
   {
     id: ddgTeam[1].id, // drew
@@ -133,11 +136,11 @@ const HIKERS = [
     emoji: ddgTeam[1].emoji, // 🏔️
     role: ddgTeam[1].role, // Navigator
     color: ddgTeam[1].color, // #1565C0
-    pack: "Pack TBD",
-    capacity: 50,
+    pack: "Gregory 75L",
+    capacity: 75,
     baseWeightGoal: 0,
     packNotes:
-      "Battle-tested from April detox trip. Carries nav gear + weather kit.",
+      "Gregory 75L. Age 36. Split the difference: takes bulk like Dan's pack, but can absorb dense weight too. The natural place to shift litres off Dan on Day 3.",
   },
   {
     id: ddgTeam[2].id, // gunnar
@@ -145,10 +148,13 @@ const HIKERS = [
     emoji: ddgTeam[2].emoji, // ⚡
     role: ddgTeam[2].role, // Pace Setter
     color: ddgTeam[2].color, // #F57C00
-    pack: "Pack TBD",
-    capacity: 50,
+    pack: "Traverse 60L",
+    capacity: 60,
     baseWeightGoal: 0,
-    packNotes: "Ultralight-ish build. Carries tech + comms + first aid.",
+    // Smallest pack and youngest hiker. Dense-and-small is exactly what a
+    // 60L wants: water and food cost weight but little volume.
+    packNotes:
+      "Traverse 60L. Age 34. Takes DENSE weight — water, food, fuel — because it costs little volume and he can carry it. Hard bottles ride in side pockets so they never eat main-body space. Day 3 lands near 55–57 L used: no slack.",
   },
 ];
 
@@ -225,6 +231,148 @@ const normalizeCustomItem = (row) => ({
   isCustom: true,
   sourceIds: row.source_ids || [],
 });
+
+/**
+ * Day 3 is the load peak, so the projection uses that day rather than a
+ * trailhead figure. Food is ~7.5 days remaining at 2 lb/day by then; water is
+ * the self-supported Peavine-to-Moosehead carry.
+ */
+const DAY3_FOOD_LBS = 15;
+const DAY3_WATER_LBS_PER_LITRE = 2.2046;
+const DAY3_WATER_LITRES = 10.5;
+
+function GroupLoadBalance({ hikers, loadouts, inventoryMap, getWeightBucket }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const summary = useMemo(() => {
+    const carriedBy = new Map(); // itemId -> [hikerId]
+    const perHiker = hikers.map((hiker) => {
+      const loadout = loadouts[hiker.id] || new Set();
+      let base = 0;
+      loadout.forEach((id) => {
+        const item = inventoryMap.get(id);
+        if (!item) return;
+        if (getWeightBucket(item) === "carried") base += item.weightVal || 0;
+        carriedBy.set(id, [...(carriedBy.get(id) || []), hiker.id]);
+      });
+      return { hiker, base, count: loadout.size };
+    });
+
+    // Anything the catalog defaults to packed that no one has claimed. These
+    // are the genuine gaps — gear that will simply not be on the trail.
+    const unclaimed = [];
+    inventoryMap.forEach((item, id) => {
+      if (item.defaultPacked && !carriedBy.has(id)) unclaimed.push(item);
+    });
+
+    // Carried by more than one person. Sometimes correct (socks), sometimes
+    // three tents. Surfaced rather than judged.
+    const duplicated = [];
+    carriedBy.forEach((who, id) => {
+      if (who.length > 1) {
+        const item = inventoryMap.get(id);
+        if (item) duplicated.push({ item, who });
+      }
+    });
+
+    return { perHiker, unclaimed, duplicated };
+  }, [hikers, loadouts, inventoryMap, getWeightBucket]);
+
+  const water = DAY3_WATER_LITRES * DAY3_WATER_LBS_PER_LITRE;
+
+  return (
+    <section className="group-load-balance">
+      <div className="glb-header">
+        <h4>Group load balance</h4>
+        <button type="button" onClick={() => setExpanded((value) => !value)}>
+          {expanded ? "Hide details" : "Show gaps & duplicates"}
+        </button>
+      </div>
+
+      <div className="glb-hikers">
+        {summary.perHiker.map(({ hiker, base, count }) => {
+          const day3 = base + DAY3_FOOD_LBS + water;
+          return (
+            <div
+              key={hiker.id}
+              className="glb-hiker"
+              style={{ "--hiker-color": hiker.color }}
+            >
+              <span className="glb-name">
+                {hiker.emoji} {hiker.name}
+              </span>
+              <span className="glb-pack">{hiker.pack}</span>
+              <span className="glb-base">{base.toFixed(1)} lb base · {count} items</span>
+              <span className="glb-day3">
+                ~{day3.toFixed(0)} lb on Day 3
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="glb-note">
+        Day 3 figures add {DAY3_FOOD_LBS} lb of remaining food and{" "}
+        {DAY3_WATER_LITRES} L ({water.toFixed(0)} lb) of water per person — the
+        self-supported Peavine-to-Moosehead carry. Water is the only heavy thing
+        that transfers freely between packs, so it is the lever for protecting
+        the group pace.
+      </p>
+
+      {expanded && (
+        <div className="glb-details">
+          <div className="glb-detail-block">
+            <h5>
+              Nobody is carrying these ({summary.unclaimed.length})
+            </h5>
+            {summary.unclaimed.length === 0 ? (
+              <p className="glb-ok">Every default item is assigned to someone.</p>
+            ) : (
+              <ul>
+                {summary.unclaimed.map((item) => (
+                  <li key={item.id}>
+                    {item.name}
+                    {item.weightVal ? ` — ${item.weightVal.toFixed(1)} lb` : ""}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="glb-detail-block">
+            <h5>Carried by more than one ({summary.duplicated.length})</h5>
+            {summary.duplicated.length === 0 ? (
+              <p className="glb-ok">No item is doubled up.</p>
+            ) : (
+              <ul>
+                {summary.duplicated.map(({ item, who }) => (
+                  <li key={item.id}>
+                    {item.name} — {who.join(", ")}
+                    {item.weightVal
+                      ? ` (${(item.weightVal * who.length).toFixed(1)} lb total)`
+                      : ""}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="glb-note">
+              Some duplication is correct — everyone needs their own socks and
+              filter. Three tents is not. This lists them rather than guessing
+              which is which.
+            </p>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+GroupLoadBalance.propTypes = {
+  hikers: PropTypes.array.isRequired,
+  loadouts: PropTypes.object.isRequired,
+  inventoryMap: PropTypes.object.isRequired,
+  getWeightBucket: PropTypes.func.isRequired,
+};
 
 function GearPlanner({ data, currentUser }) {
   // 1. Initialize Master Inventory from the provided data
@@ -850,6 +998,17 @@ function GearPlanner({ data, currentUser }) {
           })}
         </div>
       </header>
+
+      {/* Group load balance. The per-hiker tabs answer "what am I carrying";
+          this answers the two questions they cannot: what has nobody picked
+          up, and what are we carrying three of. Both are invisible when you
+          can only see one pack at a time. */}
+      <GroupLoadBalance
+        hikers={HIKERS}
+        loadouts={loadouts}
+        inventoryMap={inventoryMap}
+        getWeightBucket={getWeightBucket}
+      />
 
       {isSyncing && (
         <p className="note" aria-live="polite">
