@@ -509,6 +509,85 @@
     ],
     "reading": "Elevation drives this trip's temperature more than the calendar does. The low ends are the hot ends: Ash Camp at 2,402 ft normally hits 90F and has reached 104F, and Rock Creek at 3,069 ft averages 88F — so Day 1 and Day 8, the shortest days, are the hottest. The high camps are markedly cooler: the 6,092 ft saddle averages 77F/51F and has dropped to 40F. Diurnal swings run 26–32F everywhere, so every day is a summer afternoon and a cold night. Two consequences. A 20F-rated bag is correct rather than excessive, because a 40F night at 6,092 ft with wind is inside the record. And Day 3, the 13.9-mile power-through, sits at 4,900–5,300 ft where normals are 79–80F, not the 90F of the low ends — hot, but not the worst of it. An earlier note in this plan quoted 89.8F for the Day 2 dry camp; that came from an early-August same-day reading, and the correct trip-window normal for that camp is 80F with a 93F record."
   },
+  "canopyCover": {
+    "method": "LANDFIRE 2025 Forest Canopy Cover (LF2025_CC_CONUS), 30 m raster, sampled at all 3,345 canonical route points via the USGS LFPS ImageServer on 2026-08-05. Percent of ground covered by tree crown.",
+    "wholeRoute": {
+      "meanPercent": 49.1,
+      "closed60PlusMiles": 13.6,
+      "moderate40to60Miles": 26.2,
+      "light25to40Miles": 9.8,
+      "openUnder25Miles": 2.3,
+      "longestContinuousOpenFeet": 1306,
+      "longestContinuousOpenAtRouteMile": 16.39
+    },
+    "byDay": [
+      {
+        "day": 1,
+        "miles": 5.609,
+        "meanPercent": 39,
+        "closed60PlusPercent": 7,
+        "openUnder25Percent": 16,
+        "exposedMiles": 0.9
+      },
+      {
+        "day": 2,
+        "miles": 8.678,
+        "meanPercent": 56,
+        "closed60PlusPercent": 42,
+        "openUnder25Percent": 1,
+        "exposedMiles": 0.09
+      },
+      {
+        "day": 3,
+        "miles": 13.933,
+        "meanPercent": 41,
+        "closed60PlusPercent": 7,
+        "openUnder25Percent": 7,
+        "exposedMiles": 0.96
+      },
+      {
+        "day": 4,
+        "miles": 4.027,
+        "meanPercent": 46,
+        "closed60PlusPercent": 6,
+        "openUnder25Percent": 0,
+        "exposedMiles": 0.02
+      },
+      {
+        "day": 5,
+        "miles": 3.789,
+        "meanPercent": 44,
+        "closed60PlusPercent": 5,
+        "openUnder25Percent": 0,
+        "exposedMiles": 0
+      },
+      {
+        "day": 6,
+        "miles": 6.35,
+        "meanPercent": 46,
+        "closed60PlusPercent": 9,
+        "openUnder25Percent": 4,
+        "exposedMiles": 0.26
+      },
+      {
+        "day": 7,
+        "miles": 5.604,
+        "meanPercent": 65,
+        "closed60PlusPercent": 80,
+        "openUnder25Percent": 0,
+        "exposedMiles": 0.02
+      },
+      {
+        "day": 8,
+        "miles": 3.854,
+        "meanPercent": 67,
+        "closed60PlusPercent": 81,
+        "openUnder25Percent": 1,
+        "exposedMiles": 0.03
+      }
+    ],
+    "reading": "This is a well-shaded route. Mean canopy is 49% and about 96% of the trail carries at least 25% cover, leaving only ~2.3 miles genuinely open across all 51.844. The longest unbroken open stretch anywhere is 1,306 feet — roughly eight minutes of walking — so there is no long exposed traverse to plan around. Shade lands where it is most needed: Days 7 and 8 are 80-81% closed canopy and are also the hottest by elevation, with Ash Camp averaging 90F. Day 1 is the genuinely exposed one at 39% mean cover and 16% open, about 0.90 mile without real shade, and it is also an 88F average and an afternoon start after the drive — treat Day 1 sun as a real factor even though it is short. Day 3, the 13.9-mile power-through, is 41% mean cover with only 0.96 mile open, which is better than assumed: most of that long day is under trees, which meaningfully reduces water demand relative to an exposed traverse. CAVEAT: canopy cover is not the same as shade at a given hour. Cover is measured vertically, so a 40% stand still passes a lot of low-angle morning and evening sun, and this dataset predates any 2026 fire activity. It also says nothing about blowdown or brushiness underfoot."
+  },
   "generatedAt": "2026-08-05T17:59:17.460Z",
   "terrainContract": "docs/data/canonical/burney-ash-terrain-2026.json",
   "terrainContractSha256": "5c5cf629fc8f1bf8a3013cbe25fb8c325235fa53c32ccbc3c67302bd3798760d",

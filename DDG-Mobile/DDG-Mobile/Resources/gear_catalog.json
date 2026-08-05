@@ -1800,16 +1800,16 @@
         },
         {
           "id": "so-trekking-umbrella",
-          "name": "Reflective trekking umbrella",
-          "detail": "Open-Meteo showed 89.8°F at the Day 2 dry-camp elevation in early August, and this route has long exposed stretches with little canopy. A silver umbrella is portable shade: it drops perceived temperature substantially, and shade is the cheapest way to cut how much water you drink on a route where water is the binding constraint. Clips to a shoulder strap so it runs hands-free with poles. Skip it if the forecast turns windy — it becomes a sail.",
+          "name": "Reflective trekking umbrella (optional — route is well shaded)",
+          "detail": "DOWNGRADED 2026-08-05 on measured data. I originally pitched this as a near-essential on the assumption of long exposed stretches. LANDFIRE 2025 canopy sampling at all 3,345 route points says otherwise: mean cover is 49%, about 96% of the trail carries at least 25% cover, and the longest unbroken open stretch anywhere is 1,306 feet — roughly eight minutes of walking. There is no long exposed traverse to shelter from. It still earns its 8 oz for one specific hiker: whoever runs hottest on Day 1, which is the genuinely exposed day at 39% mean cover, 16% open, an 88F average, and an afternoon start after the drive. Days 7 and 8 are 80-81% closed canopy despite being the hottest by elevation, so shade is already where it is most needed. Treat this as a personal comfort choice, not a group requirement, and skip it in wind.",
           "weightOunces": 8,
           "weightDisplay": "8 oz",
           "weightBucket": "carried",
           "quantity": 1,
           "specs": [
-            "Reflective canopy",
-            "Hands-free clip to pack strap",
-            "Wind is its limit"
+            "Route is 49% mean canopy — no long exposed traverse",
+            "Day 1 is the exposed day: 16% open, 88F average",
+            "Personal preference, not group kit"
           ],
           "defaultPacked": false,
           "sourceIds": [
