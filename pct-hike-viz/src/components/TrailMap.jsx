@@ -330,8 +330,14 @@ function TrailMap({
             ))}
             <span><i style={{ backgroundColor: DRIVE_HOME_COLOR }} />Drive Home</span>
           </div>
+        </div>
 
-          <div className="ownership-control">
+        {/* Deliberately outside .hud-content. That block is display:none while
+            the HUD is collapsed, which is its default state on mobile, so a
+            toggle placed inside it is invisible until you happen to expand a
+            panel. Knowing whether you may legally sleep where you are standing
+            is not a detail to bury behind a disclosure. */}
+        <div className="ownership-control">
             <label className="ownership-toggle">
               <input
                 type="checkbox"
@@ -375,7 +381,6 @@ function TrailMap({
                 </p>
               </>
             )}
-          </div>
         </div>
         <div
           className="style-switcher"
