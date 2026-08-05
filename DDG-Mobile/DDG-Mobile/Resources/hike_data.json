@@ -193,37 +193,37 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -121.819937294,
-          41.170648914
+          -121.831289614,
+          41.17650301
         ]
       },
       "properties": {
-        "name": "Bartle Gap planned pickup / re-entry",
+        "name": "Moosehead Creek camp (public land)",
         "day": 3,
         "itinerary": "express",
-        "mile": 1447.531,
-        "pctMile": 1447.531,
-        "routeMile": 26.878,
-        "type": "Support Transfer",
-        "stopType": "support-transfer",
-        "campStatus": "support-transfer-needs-booking-road-check",
-        "packMode": "day-pack-supported",
+        "mile": 1448.873,
+        "pctMile": 1448.873,
+        "routeMile": 28.22,
+        "type": "Camp",
+        "stopType": "camp",
+        "campStatus": "documented-needs-current-verification",
+        "packMode": "overnight-pack",
         "trailCoordinates": [
-          -121.818152464,
-          41.170304935
+          -121.831284489,
+          41.176508663
         ],
         "fieldCoordinates": [
-          -121.819937294,
-          41.170648914
+          -121.831289614,
+          41.17650301
         ],
-        "fieldToTrailOffsetFeet": 506,
+        "fieldToTrailOffsetFeet": 2,
         "startElevation": "4,935 ft",
-        "endElevation": "5,071 ft",
-        "gainFeet": 1458,
+        "endElevation": "5,305 ft",
+        "gainFeet": 1675,
         "lossFeet": 1291,
         "highPointFeet": 5489,
         "lowPointFeet": 4935,
-        "segment": "12.6 mi day-pack-supported continuous traverse; extract at the agreed field pin and return to the exact PCTA crossing before Day 4.",
+        "segment": "13.9 mi · +1,675 ft / −1,291 ft",
         "notes": "This is a required itinerary handoff, not a campsite or a casual bailout: immediate Day 3 pickup, legal off-corridor overnight, then Day 4 return to this exact pin. The driver, vehicle route, gate status, pickup window, and no-contact fallback must be confirmed before the trip."
       }
     },
@@ -256,13 +256,13 @@
           41.1767853
         ],
         "fieldToTrailOffsetFeet": 157,
-        "startElevation": "5,071 ft",
+        "startElevation": "5,305 ft",
         "endElevation": "6,092 ft",
-        "gainFeet": 1118,
+        "gainFeet": 901,
         "lossFeet": 112,
         "highPointFeet": 6104,
-        "lowPointFeet": 5071,
-        "segment": "5.4 mi · +1,118 ft / −112 ft",
+        "lowPointFeet": 5305,
+        "segment": "4.0 mi · +901 ft / −112 ft",
         "notes": ""
       }
     },
@@ -10792,55 +10792,49 @@
       [
         -121.817146788,
         41.170620064,
-        5074.67,
+        5075.25,
         26.820232
       ],
       [
         -121.817425806,
         41.170553627,
-        5073.24,
+        5073.67,
         26.835692
       ],
       [
         -121.817669458,
         41.170424125,
-        5072.06,
+        5072.35,
         26.851185
       ],
       [
         -121.817946584,
         41.170342939,
-        5071.04,
+        5071.22,
         26.866766
-      ],
-      [
-        -121.818152464,
-        41.170304935,
-        5071,
-        26.878
       ],
       [
         -121.818231354,
         41.170285023,
-        5071.15,
+        5071.34,
         26.882347
       ],
       [
         -121.818509307,
         41.170204047,
-        5071.35,
+        5071.56,
         26.897928
       ],
       [
         -121.818794974,
         41.170141237,
-        5071.89,
+        5072.16,
         26.913509
       ],
       [
         -121.819089329,
         41.170103247,
-        5073.03,
+        5073.44,
         26.92909
       ],
       [
@@ -11314,49 +11308,55 @@
       [
         -121.830509663,
         41.177118738,
-        5299.43,
+        5299.77,
         28.158528
       ],
       [
         -121.830758987,
         41.1769973,
-        5301.02,
+        5301.21,
         28.174014
       ],
       [
         -121.831012732,
         41.176890743,
-        5302.43,
+        5302.47,
         28.1895
       ],
       [
         -121.831125878,
         41.17668854,
-        5304.45,
+        5304.29,
         28.204986
+      ],
+      [
+        -121.831284489,
+        41.176508663,
+        5305.17,
+        28.22
       ],
       [
         -121.831289614,
         41.17650301,
-        5307.35,
+        5306.9,
         28.220471
       ],
       [
         -121.831497473,
         41.176349851,
-        5310.42,
+        5309.66,
         28.235957
       ],
       [
         -121.831742184,
         41.176226934,
-        5313.63,
+        5312.56,
         28.251443
       ],
       [
         -121.831976398,
         41.176088307,
-        5317.39,
+        5315.94,
         28.266929
       ],
       [
@@ -20521,8 +20521,8 @@
       "simplified_step": "25m fixed physical sampling",
       "simplified_points": 3345,
       "data_contract": "docs/data/canonical/burney-ash-terrain-2026.json",
-      "data_contract_sha256": "185e86a3863c0b2f335eaa51ad6a8220916f9fd25bbeaa30782ddc278e67b66c",
-      "generated_at": "2026-08-03T00:34:21.608Z",
+      "data_contract_sha256": "5c5cf629fc8f1bf8a3013cbe25fb8c325235fa53c32ccbc3c67302bd3798760d",
+      "generated_at": "2026-08-05T17:59:17.460Z",
       "elevation_display_model": "USGS 3DEP, 25m resampling, centered 200m mean; normalized values are the rendered profile",
       "elevation_accumulation_method": "25m resampling, centered 200m moving mean, continuous 20ft hysteresis carried across day boundaries",
       "start_field_coordinate": [
@@ -20537,7 +20537,7 @@
       "active_points": 3345,
       "active_distance_miles": 51.844,
       "active_centerline_geometry_miles": 51.833902,
-      "terrain_usgs_3dep_fetched_at": "2026-08-03T00:34:21.620Z",
+      "terrain_usgs_3dep_fetched_at": "2026-08-05T17:59:17.471Z",
       "terrain_usgs_3dep_tiles": [
         "USGS 1 Meter 10 x61y455 CA_NorthernCA_B22",
         "USGS 1 Meter 10 x60y455 CA_NorthernCA_B22",
@@ -20621,47 +20621,47 @@
         },
         {
           "day": 3,
-          "distance": 12.591,
+          "distance": 13.933,
           "routeMileStart": 14.287,
-          "routeMileEnd": 26.878,
+          "routeMileEnd": 28.22,
           "pctMileStart": 1434.94,
-          "pctMileEnd": 1447.531,
+          "pctMileEnd": 1448.873,
           "start": "Pre-private USFS dry camp",
-          "end": "Bartle Gap planned pickup / re-entry",
-          "gain": 1458,
+          "end": "Moosehead Creek camp (public land)",
+          "gain": 1675,
           "loss": 1291,
           "startElevation": 4935,
-          "endElevation": 5071,
+          "endElevation": 5305,
           "highPoint": 5489,
           "lowPoint": 4935,
-          "stopType": "support-transfer",
-          "campStatus": "support-transfer-needs-booking-road-check",
-          "packMode": "day-pack-supported",
+          "stopType": "camp",
+          "campStatus": "documented-needs-current-verification",
+          "packMode": "overnight-pack",
           "trailEndCoordinates": [
-            -121.818152464,
-            41.170304935
+            -121.831284489,
+            41.176508663
           ],
           "fieldEndCoordinates": [
-            -121.819937294,
-            41.170648914
+            -121.831289614,
+            41.17650301
           ],
-          "fieldToTrailOffsetFeet": 506
+          "fieldToTrailOffsetFeet": 2
         },
         {
           "day": 4,
-          "distance": 5.369,
-          "routeMileStart": 26.878,
+          "distance": 4.027,
+          "routeMileStart": 28.22,
           "routeMileEnd": 32.247,
-          "pctMileStart": 1447.531,
+          "pctMileStart": 1448.873,
           "pctMileEnd": 1452.9,
-          "start": "Bartle Gap planned pickup / re-entry",
+          "start": "Moosehead Creek camp (public land)",
           "end": "High saddle camp near Road 38N10",
-          "gain": 1118,
+          "gain": 901,
           "loss": 112,
-          "startElevation": 5071,
+          "startElevation": 5305,
           "endElevation": 6092,
           "highPoint": 6104,
-          "lowPoint": 5071,
+          "lowPoint": 5305,
           "stopType": "camp",
           "campStatus": "documented-needs-current-verification",
           "packMode": "overnight-pack",
@@ -38457,15 +38457,15 @@
       "name": "Bartle Gap Supported Transfer",
       "type": "support-transfer",
       "coordinates": [
-        -121.819937294,
-        41.170648914
+        -121.831289614,
+        41.17650301
       ],
       "notes": "August 31 exact PCT pickup and September 1 exact-point re-entry. This is not a campsite. Confirm high-clearance road access, gate status, driver, pickup window, pack transfer, staged water, and no-contact fallback.",
       "trailCoordinates": [
-        -121.818152464,
-        41.170304935
+        -121.831284489,
+        41.176508663
       ],
-      "fieldToTrailOffsetFeet": 506
+      "fieldToTrailOffsetFeet": 2
     },
     {
       "name": "Ash Camp Pickup",
@@ -41341,10 +41341,10 @@
         }
       ],
       "trailCoordinates": [
-        -121.831289614,
-        41.17650301
+        -121.831284489,
+        41.176508663
       ],
-      "trailOffsetFeet": 272
+      "trailOffsetFeet": 271
     },
     {
       "mile": 1449.259,
@@ -41950,7 +41950,7 @@
       "status": "route-resolved-booking-and-road-check-required"
     },
     "centerlineGeometryMiles": 51.833902,
-    "terrainContractSha256": "185e86a3863c0b2f335eaa51ad6a8220916f9fd25bbeaa30782ddc278e67b66c",
+    "terrainContractSha256": "5c5cf629fc8f1bf8a3013cbe25fb8c325235fa53c32ccbc3c67302bd3798760d",
     "elevation": {
       "gainFeet": 6244,
       "lossFeet": 6795,
@@ -41962,11 +41962,11 @@
   "dataContract": {
     "schemaVersion": 1,
     "terrainContract": "docs/data/canonical/burney-ash-terrain-2026.json",
-    "terrainContractSha256": "185e86a3863c0b2f335eaa51ad6a8220916f9fd25bbeaa30782ddc278e67b66c",
-    "generatedAt": "2026-08-03T00:34:21.608Z",
+    "terrainContractSha256": "5c5cf629fc8f1bf8a3013cbe25fb8c325235fa53c32ccbc3c67302bd3798760d",
+    "generatedAt": "2026-08-05T17:59:17.460Z",
     "sourceReceipts": {
       "pctaCropSha256": "c1cf6064e0c0145b6f9e93c507bf63e38ffe452832f5ff978763a8412d85ed9a",
-      "usgs3depFetchedAt": "2026-08-03T00:34:21.620Z",
+      "usgs3depFetchedAt": "2026-08-05T17:59:17.471Z",
       "garminPrimarySha256": "9073d39f82e0e6ee68f7acc050e857b235bf3ea8b527c4fa7e9110aca2d2e6e1",
       "garminAlternateSha256": "d03294d03195259a60623004e4e7007a9abdb02c5cee0667ba1216104e507868"
     }

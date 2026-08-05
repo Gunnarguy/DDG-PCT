@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "contractVersion": "2026-08-02-pcta-usgs-v1",
-  "generatedAt": "2026-08-03T00:34:21.608Z",
+  "generatedAt": "2026-08-05T17:59:17.460Z",
   "purpose": "Canonical terrain contract for the active PCTA Burney Falls PCT access to Ash Camp itinerary.",
   "route": {
     "name": "Burney Falls PCT access to Ash Camp",
@@ -44,7 +44,7 @@
     },
     "usgs3dep": {
       "endpoint": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/getSamples",
-      "fetchedAt": "2026-08-03T00:34:21.620Z",
+      "fetchedAt": "2026-08-05T17:59:17.471Z",
       "sourceTiles": [
         {
           "title": "USGS 1 Meter 10 x61y455 CA_NorthernCA_B22",
@@ -202,21 +202,21 @@
     },
     {
       "day": 3,
-      "name": "Bartle Gap planned pickup / re-entry",
-      "routeMile": 26.878,
-      "pctMile": 1447.531,
+      "name": "Moosehead Creek camp (public land)",
+      "routeMile": 28.22,
+      "pctMile": 1448.873,
       "trailCoordinates": [
-        -121.818152464,
-        41.170304935
+        -121.831284489,
+        41.176508663
       ],
       "fieldCoordinates": [
-        -121.819937294,
-        41.170648914
+        -121.831289614,
+        41.17650301
       ],
-      "fieldToTrailOffsetFeet": 506,
-      "stopType": "support-transfer",
-      "campStatus": "support-transfer-needs-booking-road-check",
-      "packMode": "day-pack-supported",
+      "fieldToTrailOffsetFeet": 2,
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
       "notes": "This is a required itinerary handoff, not a campsite or a casual bailout: immediate Day 3 pickup, legal off-corridor overnight, then Day 4 return to this exact pin. The driver, vehicle route, gate status, pickup window, and no-contact fallback must be confirmed before the trip."
     },
     {
@@ -360,29 +360,29 @@
       {
         "day": 3,
         "startRouteMile": 14.287,
-        "endRouteMile": 26.878,
+        "endRouteMile": 28.22,
         "startPctMile": 1434.94,
-        "endPctMile": 1447.531,
-        "distanceMiles": 12.591,
+        "endPctMile": 1448.873,
+        "distanceMiles": 13.933,
         "startElevationFeet": 4935,
-        "endElevationFeet": 5071,
+        "endElevationFeet": 5305,
         "highPointFeet": 5489,
         "lowPointFeet": 4935,
-        "gainFeet": 1458,
+        "gainFeet": 1675,
         "lossFeet": 1291
       },
       {
         "day": 4,
-        "startRouteMile": 26.878,
+        "startRouteMile": 28.22,
         "endRouteMile": 32.247,
-        "startPctMile": 1447.531,
+        "startPctMile": 1448.873,
         "endPctMile": 1452.9,
-        "distanceMiles": 5.369,
-        "startElevationFeet": 5071,
+        "distanceMiles": 4.027,
+        "startElevationFeet": 5305,
         "endElevationFeet": 6092,
         "highPointFeet": 6104,
-        "lowPointFeet": 5071,
-        "gainFeet": 1118,
+        "lowPointFeet": 5305,
+        "gainFeet": 901,
         "lossFeet": 112
       },
       {
@@ -447,8 +447,8 @@
     {
       "smoothingMeters": 100,
       "thresholdFeet": 10,
-      "totalGainFeet": 6829,
-      "totalLossFeet": 7383
+      "totalGainFeet": 6830,
+      "totalLossFeet": 7384
     },
     {
       "smoothingMeters": 150,
@@ -459,7 +459,7 @@
     {
       "smoothingMeters": 200,
       "thresholdFeet": 10,
-      "totalGainFeet": 6515,
+      "totalGainFeet": 6514,
       "totalLossFeet": 7065
     },
     {
@@ -472,7 +472,7 @@
       "smoothingMeters": 150,
       "thresholdFeet": 20,
       "totalGainFeet": 6396,
-      "totalLossFeet": 6955
+      "totalLossFeet": 6954
     },
     {
       "smoothingMeters": 200,
@@ -21215,7 +21215,7 @@
       "pctMile": 1447.473232,
       "stationMeters": 43125,
       "usgsElevationFeet": 5074.72,
-      "normalizedElevationFeet": 5074.67,
+      "normalizedElevationFeet": 5075.25,
       "boundaryDay": null
     },
     {
@@ -21227,7 +21227,7 @@
       "pctMile": 1447.488692,
       "stationMeters": 43150,
       "usgsElevationFeet": 5076.99,
-      "normalizedElevationFeet": 5073.24,
+      "normalizedElevationFeet": 5073.67,
       "boundaryDay": null
     },
     {
@@ -21239,7 +21239,7 @@
       "pctMile": 1447.504185,
       "stationMeters": 43175,
       "usgsElevationFeet": 5075.87,
-      "normalizedElevationFeet": 5072.06,
+      "normalizedElevationFeet": 5072.35,
       "boundaryDay": null
     },
     {
@@ -21251,20 +21251,8 @@
       "pctMile": 1447.519766,
       "stationMeters": 43200,
       "usgsElevationFeet": 5073.89,
-      "normalizedElevationFeet": 5071.04,
+      "normalizedElevationFeet": 5071.22,
       "boundaryDay": null
-    },
-    {
-      "coordinates": [
-        -121.818152464,
-        41.170304935
-      ],
-      "routeMile": 26.878,
-      "pctMile": 1447.531,
-      "stationMeters": 43218.026,
-      "usgsElevationFeet": 5069.42,
-      "normalizedElevationFeet": 5071,
-      "boundaryDay": 3
     },
     {
       "coordinates": [
@@ -21275,7 +21263,7 @@
       "pctMile": 1447.535347,
       "stationMeters": 43225,
       "usgsElevationFeet": 5067.78,
-      "normalizedElevationFeet": 5071.15,
+      "normalizedElevationFeet": 5071.34,
       "boundaryDay": null
     },
     {
@@ -21287,7 +21275,7 @@
       "pctMile": 1447.550928,
       "stationMeters": 43250,
       "usgsElevationFeet": 5066.94,
-      "normalizedElevationFeet": 5071.35,
+      "normalizedElevationFeet": 5071.56,
       "boundaryDay": null
     },
     {
@@ -21299,7 +21287,7 @@
       "pctMile": 1447.566509,
       "stationMeters": 43275,
       "usgsElevationFeet": 5065.74,
-      "normalizedElevationFeet": 5071.89,
+      "normalizedElevationFeet": 5072.16,
       "boundaryDay": null
     },
     {
@@ -21311,7 +21299,7 @@
       "pctMile": 1447.58209,
       "stationMeters": 43300,
       "usgsElevationFeet": 5067.69,
-      "normalizedElevationFeet": 5073.03,
+      "normalizedElevationFeet": 5073.44,
       "boundaryDay": null
     },
     {
@@ -22259,7 +22247,7 @@
       "pctMile": 1448.811528,
       "stationMeters": 45275,
       "usgsElevationFeet": 5300.67,
-      "normalizedElevationFeet": 5299.43,
+      "normalizedElevationFeet": 5299.77,
       "boundaryDay": null
     },
     {
@@ -22271,7 +22259,7 @@
       "pctMile": 1448.827014,
       "stationMeters": 45300,
       "usgsElevationFeet": 5303.93,
-      "normalizedElevationFeet": 5301.02,
+      "normalizedElevationFeet": 5301.21,
       "boundaryDay": null
     },
     {
@@ -22283,7 +22271,7 @@
       "pctMile": 1448.8425,
       "stationMeters": 45325,
       "usgsElevationFeet": 5307.52,
-      "normalizedElevationFeet": 5302.43,
+      "normalizedElevationFeet": 5302.47,
       "boundaryDay": null
     },
     {
@@ -22295,8 +22283,20 @@
       "pctMile": 1448.857986,
       "stationMeters": 45350,
       "usgsElevationFeet": 5307.17,
-      "normalizedElevationFeet": 5304.45,
+      "normalizedElevationFeet": 5304.29,
       "boundaryDay": null
+    },
+    {
+      "coordinates": [
+        -121.831284489,
+        41.176508663
+      ],
+      "routeMile": 28.22,
+      "pctMile": 1448.873,
+      "stationMeters": 45374.239,
+      "usgsElevationFeet": 5302.86,
+      "normalizedElevationFeet": 5305.17,
+      "boundaryDay": 3
     },
     {
       "coordinates": [
@@ -22307,7 +22307,7 @@
       "pctMile": 1448.873471,
       "stationMeters": 45375,
       "usgsElevationFeet": 5302.53,
-      "normalizedElevationFeet": 5307.35,
+      "normalizedElevationFeet": 5306.9,
       "boundaryDay": null
     },
     {
@@ -22319,7 +22319,7 @@
       "pctMile": 1448.888957,
       "stationMeters": 45400,
       "usgsElevationFeet": 5301.67,
-      "normalizedElevationFeet": 5310.42,
+      "normalizedElevationFeet": 5309.66,
       "boundaryDay": null
     },
     {
@@ -22331,7 +22331,7 @@
       "pctMile": 1448.904443,
       "stationMeters": 45425,
       "usgsElevationFeet": 5305.75,
-      "normalizedElevationFeet": 5313.63,
+      "normalizedElevationFeet": 5312.56,
       "boundaryDay": null
     },
     {
@@ -22343,7 +22343,7 @@
       "pctMile": 1448.919929,
       "stationMeters": 45450,
       "usgsElevationFeet": 5314.47,
-      "normalizedElevationFeet": 5317.39,
+      "normalizedElevationFeet": 5315.94,
       "boundaryDay": null
     },
     {

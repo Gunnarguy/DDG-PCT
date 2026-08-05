@@ -19,7 +19,7 @@ const ROUTE = {
 // evidence only and must never leak back into a live safety payload.
 const TERRAIN_CONTRACT = {
   version: "2026-08-02-pcta-usgs-v1",
-  dataContractSha256: "185e86a3863c0b2f335eaa51ad6a8220916f9fd25bbeaa30782ddc278e67b66c",
+  dataContractSha256: "5c5cf629fc8f1bf8a3013cbe25fb8c325235fa53c32ccbc3c67302bd3798760d",
   officialMiles: 51.844,
   centerlineGeometryMiles: 51.833902,
   startPctMile: 1420.653,

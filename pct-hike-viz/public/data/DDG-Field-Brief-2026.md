@@ -1,13 +1,13 @@
 # DDG Field Brief — Burney Falls PCT access → Ash Camp
 
-> Generated from the canonical terrain and operations artifacts on 2026-08-03T00:34:21.608Z. Do not hand-edit this file; edit its source JSON and run `npm run data:generate`.
+> Generated from the canonical terrain and operations artifacts on 2026-08-05T17:59:17.460Z. Do not hand-edit this file; edit its source JSON and run `npm run data:generate`.
 
 ## Route contract
 
 - **Official distance:** 51.844 PCTA miles (51.834 mi measured geometry)
 - **Terrain:** +6,244 ft / −6,795 ft; 2,402–6,134 ft
 - **Finish:** Ash Camp pickup at route mile 51.844 / PCT mile 1472.497
-- **Contract:** 2026-08-02-pcta-usgs-v1 · SHA-256 `185e86a3863c0b2f335eaa51ad6a8220916f9fd25bbeaa30782ddc278e67b66c`
+- **Contract:** 2026-08-02-pcta-usgs-v1 · SHA-256 `5c5cf629fc8f1bf8a3013cbe25fb8c325235fa53c32ccbc3c67302bd3798760d`
 
 ## Non-negotiable operating rules
 
@@ -20,11 +20,11 @@
 
 | Gate | Owner | Due | Blocks |
 | --- | --- | --- | --- |
-| Monitor the confirmed United itinerary and handoff timing | Dan + Gunnar | Aug 26, then travel days | Nothing is unbooked. A material delay still changes Mikaela's airport handoff, how much sleep the team gets before the Aug 29 dawn departure, and how late Day 1 starts. |
+| CONFIRMED — United itinerary verified against the booking | Dan + Gunnar | Aug 26, then travel days | Nothing. The itinerary is booked and verified. |
 | Aug 28 rest stop CONFIRMED at Gunnar's place in Campbell — still decide Mikaela's return leg | Gunnar + Mikaela | Before Aug 21 | A rested Day 1 start with daylight margin, and a safe return leg for the only driver. |
 | Secure Saturday Burney Falls entry and exact PCT connector | Gunnar + Mikaela | Before Aug 29 | Legal vehicle entry and the actual Day 1 start. |
 | Recheck the Lake Britton / Pit No. 3 Dam crossing | Gunnar | Aug 27–28 | The intended Day 1 route if the crossing is closed or escorted. No longer blocked by the retired 2022 notice. |
-| Book and field-verify the Day 3 Bartle Gap support operation | Gunnar + named driver | Aug 7; recheck Aug 27 | Starting the supported Day 3 version of this trip. |
+| RESOLVED — Day 3 support retired in favour of powering through | Gunnar + named driver | Aug 7; recheck Aug 27 | Nothing. This gate no longer blocks the route. |
 | Rebuild the Day 2–3 water carry around a dry Clark Spring, and revalidate every overnight camp | Team | Aug 27–28 | A survivable Day 2 dry camp and the Day 3 water reserve. This gate is no longer just verification: the carry itself needs rebuilding. |
 | Verify FS Road 38N11 and Ash Camp pickup vehicle suitability | Mikaela + Gunnar | Sep 3–4 | The primary September 5 extraction. |
 | Test satellite communicator, contact tree, and no-contact protocol | Team | Aug 15 | Reliable coordination when cell service is unavailable. |
@@ -36,8 +36,8 @@
 | --- | ---: | ---: | --- | --- |
 | 1 | 5.609 | +612 / −522 ft | Rock Creek camps | The opening mileage is short on purpose. Verify the Burney entry, PCT connector, Lake Britton/Pit No. 3 crossing, and the current water report before moving. |
 | 2 | 8.678 | +2,119 / −253 ft | Pre-private USFS dry camp | This is the biggest ascent. The pre-private site is GIS-screened rather than ground-approved; inspect durable surface, hazards, capacity, and water before committing. |
-| 3 | 12.591 | +1,458 / −1,291 ft | Bartle Gap planned pickup / re-entry | Carry day packs only, move continuously, meet the driver at the exact field pin, sleep legally off-corridor, and return to the same crossing before Day 4. Dense brush and blowdown remain an explicit field check. |
-| 4 | 5.369 | +1,118 / −112 ft | High saddle camp near Road 38N10 | Return to the same Bartle Gap crossing before climbing to the high saddle. Treat the dry camp and water plan as current-condition decisions, not reserved sites. |
+| 3 | 13.933 | +1,675 / −1,291 ft | Moosehead Creek camp (public land) | Carry day packs only, move continuously, meet the driver at the exact field pin, sleep legally off-corridor, and return to the same crossing before Day 4. Dense brush and blowdown remain an explicit field check. |
+| 4 | 4.027 | +901 / −112 ft | High saddle camp near Road 38N10 | Return to the same Bartle Gap crossing before climbing to the high saddle. Treat the dry camp and water plan as current-condition decisions, not reserved sites. |
 | 5 | 3.789 | +155 / −813 ft | Alder / Star City Creek camp | The day is mostly downhill. Use poles, short steps, and a deliberate pace; do not let the lower mileage disguise knee load. |
 | 6 | 6.350 | +782 / −994 ft | Deer Creek Spring camp | This is a mixed up-and-down day, not a flat recovery. Refresh water evidence and evaluate the group before leaving camp. |
 | 7 | 5.604 | +0 / −1,920 ft | Butcherknife Creek camp | The route loses roughly 343 feet per mile. Slow the descent, maintain spacing, and make pole use a group default rather than an afterthought. |
@@ -45,10 +45,10 @@
 
 ## Day 3 supported traverse
 
-- **Exact PCTA boundary:** route mile 26.878 / PCT mile 1447.531
-- **Field pickup pin offset:** 506 ft from the trail boundary; it is not a campsite.
-- **Target hiker window:** about 1:30–3:30 PM; driver ready about 1:00 PM.
-- **No-show rule:** Do not wait or camp on private land. Continue only to the pre-screened public-side emergency candidate while escalating by satellite; it is an emergency continuity option, not a scheduled camp. Two distances matter here and they are not the same. Sierra Pacific ground ENDS and USFS ground BEGINS at PCT 1447.738 — only 0.207 mile (about 365 yards) north of the Bartle Gap crossing at 1447.531 — so you stop being on private land after a few minutes of walking. That is where trespass ends, not where a campsite is. The pre-screened emergency site is farther, near route mile 27.791 at 41.177527, -121.827003 (USFS APN 015-140-002, about 474 ft off trail), because it was chosen for durable campable ground rather than for the parcel line alone. Neither point has water: the nearest source past the corridor is Moosehead Creek at 1448.873, about 1.14 miles beyond the boundary.
+- **Exact PCTA boundary:** route mile 28.220 / PCT mile 1448.873
+- **Field pickup pin offset:** 2 ft from the trail boundary; it is not a campsite.
+- **Target hiker window:** ; driver ready .
+- **No-show rule:** 
 
 ## Emergency coordination
 

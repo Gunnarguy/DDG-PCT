@@ -146,22 +146,32 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -121.81993729434907,
-          41.17064891383052
+          -121.831289614,
+          41.17650301
         ]
       },
       "properties": {
-        "name": "Bartle Gap planned pickup / re-entry",
+        "name": "Moosehead Creek camp (public land)",
         "day": 3,
         "itinerary": "express",
         "segment": "12.6 mi supported day-pack traverse; extract immediately and return to this exact crossing on Day 4",
-        "mile": 1447.531,
-        "routeMile": 26.878,
-        "type": "Support Transfer",
-        "stopType": "support-transfer",
-        "campStatus": "support-transfer-needs-booking-road-check",
-        "packMode": "day-pack-supported",
-        "notes": "This is a required itinerary handoff, not a campsite or a casual bailout: immediate Day 3 pickup, legal off-corridor overnight, then Day 4 return to this exact pin. The driver, vehicle route, gate status, pickup window, and no-contact fallback must be confirmed before the trip."
+        "mile": 1448.873,
+        "routeMile": 28.22,
+        "type": "Camp",
+        "stopType": "camp",
+        "campStatus": "documented-needs-current-verification",
+        "packMode": "overnight-pack",
+        "notes": "Day 3 is now an unsupported power-through of the private corridor: 13.933 miles with full packs, no driver, no pickup, no re-entry. Sierra Pacific ground ends and USFS begins at PCT 1447.738, only 0.207 mile past the old Bartle Gap pin, so the first legal ground arrives well before this camp. Moosehead Creek is public (USFS APN 015-140-001) and was reported 'very good flow but overgrown' on 2026-07-11; access may be brushy. Ground-verify the site and confirm water in the final-week pull.",
+        "pctMile": 1448.873,
+        "trailCoordinates": [
+          -121.831289614,
+          41.17650301
+        ],
+        "fieldCoordinates": [
+          -121.831289614,
+          41.17650301
+        ],
+        "fieldToTrailOffsetFeet": 0
       }
     },
     {

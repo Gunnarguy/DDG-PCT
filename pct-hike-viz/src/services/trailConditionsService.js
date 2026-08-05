@@ -6,7 +6,7 @@ import { fetchAirQuality, fetchWildfires } from "./wildfireService";
 // fall back to an older Garmin-derived itinerary.
 export const CURRENT_TERRAIN_PLAN_VERSION = "2026-08-02-pcta-usgs-v1";
 export const CURRENT_TERRAIN_CONTRACT_SHA256 =
-  "185e86a3863c0b2f335eaa51ad6a8220916f9fd25bbeaa30782ddc278e67b66c";
+  "5c5cf629fc8f1bf8a3013cbe25fb8c325235fa53c32ccbc3c67302bd3798760d";
 const CACHE_KEY = "ddg-pct::trail-conditions::terrain-v2";
 const CACHE_MS = 4 * 60 * 60 * 1000;
 

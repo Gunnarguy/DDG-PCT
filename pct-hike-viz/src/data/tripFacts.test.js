@@ -20,13 +20,21 @@ describe("canonical trip facts", () => {
     expect(tripFacts.route.gpsMiles).toBeCloseTo(51.833902, 6);
     expect(itineraryMiles).toBeCloseTo(51.844, 3);
     expect(primaryItinerary.at(-1).routeMileEnd).toBe(51.844);
-    expect(Math.max(...primaryItinerary.map((day) => day.distance))).toBe(12.591);
+    // Day 3 became an unsupported power-through on 2026-08-05. It is still the
+    // longest day by a wide margin — that is the cost of retiring the driver,
+    // and the test pins it so the number cannot drift back down unnoticed.
+    expect(Math.max(...primaryItinerary.map((day) => day.distance))).toBe(13.933);
     expect(primaryItinerary.find((day) => day.day === 3)).toMatchObject({
-      to: "Bartle Gap planned pickup / re-entry",
-      packMode: "day-pack-supported",
-      stopType: "support-transfer",
-      campStatus: "support-transfer-needs-booking-road-check",
+      to: "Moosehead Creek camp (public land)",
+      packMode: "overnight-pack",
+      stopType: "camp",
+      campStatus: "documented-needs-current-verification",
     });
+    // The whole point of the power-through: finish past where the private
+    // timberland corridor ends at PCT 1447.738.
+    expect(
+      primaryItinerary.find((day) => day.day === 3)?.pctMileEnd,
+    ).toBeGreaterThan(1447.738);
   });
 
   it("keeps the confirmed flights and remaining trip gates explicit", () => {
@@ -45,9 +53,7 @@ describe("canonical trip facts", () => {
     expect(
       primaryItinerary.find((day) => day.day === 2)?.campStatus,
     ).toBe("gis-screened-needs-ground-check");
-    expect(primaryItinerary.find((day) => day.day === 3)?.stopType).toBe(
-      "support-transfer",
-    );
+    expect(primaryItinerary.find((day) => day.day === 3)?.stopType).toBe("camp");
   });
 
   it("uses the real Ash Camp exit rather than arbitrary route mile 52", () => {

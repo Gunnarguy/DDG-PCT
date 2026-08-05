@@ -81,27 +81,33 @@
     }
   },
   "dayThreeSupport": {
-    "instruction": "This is a required support transfer, not a campsite, casual bailout, or permission to wait on private land. Hike continuously with day packs, exit promptly at the exact field pin, sleep legally off-corridor, and return to the same crossing before Day 4.",
-    "targetHikerWindow": "about 1:30–3:30 PM",
-    "driverReadyBy": "about 1:00 PM",
+    "instruction": "DECISION 2026-08-05: Day 3 is now an unsupported power-through. No driver, no pack transfer, no off-corridor lodging, no exact-pin pickup, no next-morning re-entry. The team walks the private corridor continuously with full packs and camps on public land at Moosehead Creek. This reverses the earlier supported-traverse plan, which was itself adopted to replace an unsupported leg — the decision is back where it started, but now with measured numbers rather than assumptions. What made it defensible: the driver only ever bought 1.34 miles and the ability to carry day packs, because Sierra Pacific ground ENDS at PCT 1447.738, just 0.207 mile (about 365 yards) past the old Bartle Gap pin. Legal ground was always a five-minute walk beyond the pickup point.",
+    "distanceMiles": 13.933,
+    "gainFeet": 1675,
+    "lossFeet": 1291,
+    "estimatedHours": "9.25–11 hours with full packs at 1.85 mph over effort-adjusted distance",
+    "packMode": "overnight-pack",
+    "finishCamp": "Moosehead Creek, PCT 1448.873, USFS public land",
+    "cost": "This is now the hardest day of the trip by a wide margin: 13.933 miles and 9.25–11 hours carrying full overnight packs, against 6–7.25 hours on the next hardest day. Start at first light. There is no bailout in the middle because there is nowhere legal to stop.",
+    "waterRule": "Fully self-supported. There is no legal collection anywhere between Peavine (1434.236) and Moosehead (1448.873) — Clark, Deadman, and Kosk all sit on private timberland. That is a 14.6-mile carry that must also cover the Day 2 dry camp, dinner, and breakfast: roughly 10–11 L per person at peak load leaving Peavine. Two extra collapsible reservoirs are not optional under this plan.",
     "requiredBeforeStart": [
-      "Named driver accepts both pickup and next-morning re-entry.",
-      "Driver physically verifies legal approach, gate, turnaround, vehicle clearance, and exact field pin.",
-      "Legal off-corridor overnight is booked or otherwise explicitly permitted.",
-      "All three hikers and the driver have the no-contact protocol, satellite message cadence, and exact re-entry time."
+      "Every hiker carries the full Peavine-to-Moosehead water load; nobody is bringing more.",
+      "All three agree to a first-light start, because 11 hours from a 7:00 AM start finishes at 6:00 PM.",
+      "Moosehead Creek is ground-verified for a legal, durable three-person site and confirmed flowing in the final-week water pull.",
+      "Everyone knows the Peavine off-trail water offset at 41.06012, -121.78501 before Day 2."
     ],
-    "noShowRule": "Do not wait or camp on private land. Continue only to the pre-screened public-side emergency candidate while escalating by satellite; it is an emergency continuity option, not a scheduled camp. Two distances matter here and they are not the same. Sierra Pacific ground ENDS and USFS ground BEGINS at PCT 1447.738 — only 0.207 mile (about 365 yards) north of the Bartle Gap crossing at 1447.531 — so you stop being on private land after a few minutes of walking. That is where trespass ends, not where a campsite is. The pre-screened emergency site is farther, near route mile 27.791 at 41.177527, -121.827003 (USFS APN 015-140-002, about 474 ft off trail), because it was chosen for durable campable ground rather than for the parcel line alone. Neither point has water: the nearest source past the corridor is Moosehead Creek at 1448.873, about 1.14 miles beyond the boundary.",
-    "routeMile": 26.878,
-    "pctMile": 1447.531,
+    "bailoutRule": "There is no legal stopping point inside the corridor, so the plan is simply to keep walking. If someone cannot continue, the nearest legal ground is USFS land beginning at PCT 1447.738 — reachable from anywhere in the second half of the day — and the pre-screened emergency site sits near route mile 27.791 at 41.177527, -121.827003. Escalate by satellite before improvising.",
+    "routeMile": 28.22,
+    "pctMile": 1448.873,
+    "fieldToTrailOffsetFeet": 2,
     "trailCoordinates": [
-      -121.818152464,
-      41.170304935
+      -121.831284489,
+      41.176508663
     ],
     "fieldCoordinates": [
-      -121.819937294,
-      41.170648914
-    ],
-    "fieldToTrailOffsetFeet": 506
+      -121.831289614,
+      41.17650301
+    ]
   },
   "finishPlan": {
     "driver": "Mikaela",
@@ -136,9 +142,9 @@
       "state": "confirmed",
       "owner": "Dan + Gunnar",
       "due": "Aug 26, then travel days",
-      "title": "Monitor the confirmed United itinerary and handoff timing",
-      "detail": "The team confirmed UA481 and UA1317: the itinerary begins Aug 28 at 6:03 PM PDT and ends Sep 7 at 10:45 AM PDT. Use United Flight Status for delay, gate, terminal, and Aug 28 SJC handoff changes; use the optional aircraft tracker as supplemental evidence only.",
-      "blocks": "Nothing is unbooked. A material delay still changes Mikaela's airport handoff, how much sleep the team gets before the Aug 29 dawn departure, and how late Day 1 starts.",
+      "title": "CONFIRMED — United itinerary verified against the booking",
+      "detail": "VERIFIED 2026-08-05 against the team's own United record: DAN SJC UA481 - UA1317, scheduled Aug 28 2026 6:03 PM PDT through Sep 7 2026 10:45 AM PDT. That matches the times carried in this file exactly, so no correction is needed anywhere. Nothing further is required before travel day beyond the ordinary live check: use United Flight Status on Aug 28 for delay, gate, and terminal changes, since a material delay still shifts Mikaela's airport pickup and how much sleep the team gets before the 5:00 AM departure.",
+      "blocks": "Nothing. The itinerary is booked and verified.",
       "sourceIds": [
         "team-itinerary-confirmation",
         "united-flight-status",
@@ -188,13 +194,13 @@
     },
     {
       "id": "bartle-support",
-      "priority": "critical",
-      "state": "open",
+      "priority": "high",
+      "state": "resolved",
       "owner": "Gunnar + named driver",
       "due": "Aug 7; recheck Aug 27",
-      "title": "Book and field-verify the Day 3 Bartle Gap support operation",
-      "detail": "The private-land rule permits continuous PCT passage but prohibits camping or extended stops. PCTA's current Bartle Gap alert also warns of dense brush and likely blowdown around miles 1448–1460.",
-      "blocks": "Starting the supported Day 3 version of this trip.",
+      "title": "RESOLVED — Day 3 support retired in favour of powering through",
+      "detail": "CLOSED 2026-08-05 by decision, not by booking. No driver is needed and none will be arranged. Day 3 becomes a 13.933-mile unsupported traverse with full packs, finishing on public land at Moosehead Creek. The reasoning: the assessor screen showed Sierra Pacific ground ends at PCT 1447.738, only 0.207 mile past the Bartle Gap pin, so the entire support operation was buying 1.34 miles and day packs — not, as the plan had implied, the only legal way to finish the day. The cost of this choice is real and is recorded in dayThreeSupport: Day 3 is now the hardest day of the trip at 9.25–11 hours under load, and the water carry becomes fully self-supported at roughly 10–11 L per person. What it removes is an entire dependency chain — a named driver, a booked off-corridor overnight, road and gate verification, an exact field pin, a timed pickup window, a no-contact protocol, and a next-morning re-entry — every link of which could have failed on the day.",
+      "blocks": "Nothing. This gate no longer blocks the route.",
       "sourceIds": [
         "pcta-private-timberland",
         "pcta-bartle-gap"
@@ -443,15 +449,15 @@
       "note": "Generated in Phase 6 from the same canonical route and operations artifacts."
     }
   ],
-  "generatedAt": "2026-08-03T00:34:21.608Z",
+  "generatedAt": "2026-08-05T17:59:17.460Z",
   "terrainContract": "docs/data/canonical/burney-ash-terrain-2026.json",
-  "terrainContractSha256": "185e86a3863c0b2f335eaa51ad6a8220916f9fd25bbeaa30782ddc278e67b66c",
+  "terrainContractSha256": "5c5cf629fc8f1bf8a3013cbe25fb8c325235fa53c32ccbc3c67302bd3798760d",
   "canonicalRoute": {
     "name": "Burney Falls PCT access to Ash Camp",
     "officialPctaMiles": 51.844,
     "centerlineGeometryMiles": 51.833902,
     "terrainContractVersion": "2026-08-02-pcta-usgs-v1",
-    "dataContractSha256": "185e86a3863c0b2f335eaa51ad6a8220916f9fd25bbeaa30782ddc278e67b66c",
+    "dataContractSha256": "5c5cf629fc8f1bf8a3013cbe25fb8c325235fa53c32ccbc3c67302bd3798760d",
     "start": {
       "name": "Burney Falls State Park (Start)",
       "routeMile": 0,

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-03T00:34:21.608Z",
-  "terrainContractSha256": "185e86a3863c0b2f335eaa51ad6a8220916f9fd25bbeaa30782ddc278e67b66c",
+  "generatedAt": "2026-08-05T17:59:17.460Z",
+  "terrainContractSha256": "5c5cf629fc8f1bf8a3013cbe25fb8c325235fa53c32ccbc3c67302bd3798760d",
   "route": {
     "officialPctaMiles": 51.844,
     "extractedCenterlineMiles": 51.833902,
@@ -76,21 +76,21 @@
     },
     {
       "day": 3,
-      "name": "Bartle Gap planned pickup / re-entry",
-      "routeMile": 26.878,
-      "pctMile": 1447.531,
+      "name": "Moosehead Creek camp (public land)",
+      "routeMile": 28.22,
+      "pctMile": 1448.873,
       "trailCoordinates": [
-        -121.818152464,
-        41.170304935
+        -121.831284489,
+        41.176508663
       ],
       "fieldCoordinates": [
-        -121.819937294,
-        41.170648914
+        -121.831289614,
+        41.17650301
       ],
-      "fieldToTrailOffsetFeet": 506,
-      "stopType": "support-transfer",
-      "campStatus": "support-transfer-needs-booking-road-check",
-      "packMode": "day-pack-supported",
+      "fieldToTrailOffsetFeet": 2,
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
       "notes": "This is a required itinerary handoff, not a campsite or a casual bailout: immediate Day 3 pickup, legal off-corridor overnight, then Day 4 return to this exact pin. The driver, vehicle route, gate status, pickup window, and no-contact fallback must be confirmed before the trip."
     },
     {
@@ -249,45 +249,45 @@
     {
       "day": 3,
       "startRouteMile": 14.287,
-      "endRouteMile": 26.878,
+      "endRouteMile": 28.22,
       "startPctMile": 1434.94,
-      "endPctMile": 1447.531,
-      "distanceMiles": 12.591,
+      "endPctMile": 1448.873,
+      "distanceMiles": 13.933,
       "startElevationFeet": 4935,
-      "endElevationFeet": 5071,
+      "endElevationFeet": 5305,
       "highPointFeet": 5489,
       "lowPointFeet": 4935,
-      "gainFeet": 1458,
+      "gainFeet": 1675,
       "lossFeet": 1291,
       "from": "Pre-private USFS dry camp",
-      "to": "Bartle Gap planned pickup / re-entry",
-      "stopType": "support-transfer",
-      "campStatus": "support-transfer-needs-booking-road-check",
-      "packMode": "day-pack-supported",
+      "to": "Moosehead Creek camp (public land)",
+      "stopType": "camp",
+      "campStatus": "documented-needs-current-verification",
+      "packMode": "overnight-pack",
       "trailEndCoordinates": [
-        -121.818152464,
-        41.170304935
+        -121.831284489,
+        41.176508663
       ],
       "fieldEndCoordinates": [
-        -121.819937294,
-        41.170648914
+        -121.831289614,
+        41.17650301
       ],
-      "fieldToTrailOffsetFeet": 506
+      "fieldToTrailOffsetFeet": 2
     },
     {
       "day": 4,
-      "startRouteMile": 26.878,
+      "startRouteMile": 28.22,
       "endRouteMile": 32.247,
-      "startPctMile": 1447.531,
+      "startPctMile": 1448.873,
       "endPctMile": 1452.9,
-      "distanceMiles": 5.369,
-      "startElevationFeet": 5071,
+      "distanceMiles": 4.027,
+      "startElevationFeet": 5305,
       "endElevationFeet": 6092,
       "highPointFeet": 6104,
-      "lowPointFeet": 5071,
-      "gainFeet": 1118,
+      "lowPointFeet": 5305,
+      "gainFeet": 901,
       "lossFeet": 112,
-      "from": "Bartle Gap planned pickup / re-entry",
+      "from": "Moosehead Creek camp (public land)",
       "to": "High saddle camp near Road 38N10",
       "stopType": "camp",
       "campStatus": "documented-needs-current-verification",
@@ -419,8 +419,8 @@
     {
       "smoothingMeters": 100,
       "thresholdFeet": 10,
-      "totalGainFeet": 6829,
-      "totalLossFeet": 7383
+      "totalGainFeet": 6830,
+      "totalLossFeet": 7384
     },
     {
       "smoothingMeters": 150,
@@ -431,7 +431,7 @@
     {
       "smoothingMeters": 200,
       "thresholdFeet": 10,
-      "totalGainFeet": 6515,
+      "totalGainFeet": 6514,
       "totalLossFeet": 7065
     },
     {
@@ -444,7 +444,7 @@
       "smoothingMeters": 150,
       "thresholdFeet": 20,
       "totalGainFeet": 6396,
-      "totalLossFeet": 6955
+      "totalLossFeet": 6954
     },
     {
       "smoothingMeters": 200,
@@ -539,7 +539,7 @@
       },
       {
         "day": 3,
-        "windowCount": 203,
+        "windowCount": 225,
         "maxUphillPercent": 10.6,
         "maxDownhillPercent": 11.3,
         "maxAbsolutePercent": 11.3,
@@ -547,18 +547,18 @@
         "mix": {
           "easy": {
             "label": "0–5% gentle",
-            "meters": 11563.7,
-            "percent": 57.1
+            "meters": 13119.9,
+            "percent": 58.5
           },
           "moderate": {
             "label": "5–10% moderate",
-            "meters": 8300,
-            "percent": 41
+            "meters": 8900,
+            "percent": 39.7
           },
           "steep": {
             "label": "10–15% steep",
             "meters": 400,
-            "percent": 2
+            "percent": 1.8
           },
           "verySteep": {
             "label": "15%+ very steep",
@@ -566,25 +566,25 @@
             "percent": 0
           }
         },
-        "stopType": "support-transfer"
+        "stopType": "camp"
       },
       {
         "day": 4,
-        "windowCount": 87,
-        "maxUphillPercent": 9.8,
-        "maxDownhillPercent": 8.6,
-        "maxAbsolutePercent": 9.8,
-        "maxAbsoluteAngleDegrees": 5.6,
+        "windowCount": 65,
+        "maxUphillPercent": 10,
+        "maxDownhillPercent": 8,
+        "maxAbsolutePercent": 10,
+        "maxAbsoluteAngleDegrees": 5.7,
         "mix": {
           "easy": {
             "label": "0–5% gentle",
-            "meters": 5131.1,
-            "percent": 59.4
+            "meters": 3400,
+            "percent": 52.5
           },
           "moderate": {
             "label": "5–10% moderate",
-            "meters": 3500,
-            "percent": 40.6
+            "meters": 3074.9,
+            "percent": 47.5
           },
           "steep": {
             "label": "10–15% steep",
@@ -754,7 +754,7 @@
     },
     "usgs3dep": {
       "endpoint": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/getSamples",
-      "fetchedAt": "2026-08-03T00:34:21.620Z",
+      "fetchedAt": "2026-08-05T17:59:17.471Z",
       "sourceTiles": [
         {
           "title": "USGS 1 Meter 10 x61y455 CA_NorthernCA_B22",

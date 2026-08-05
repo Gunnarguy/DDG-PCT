@@ -66,7 +66,7 @@ That decision is driven by four real constraints:
 | Is Ash Camp the pickup? | Yes | High | Road closure, fire closure, or deliberate pickup change |
 | Is September 5 the preferred finish? | Yes | Recommended | Team pace or itinerary choice |
 | Is September 6 available as a buffer? | Yes | High | A flight change or trip extension |
-| Is Day 3 still a 14.53-mile full-pack leg? | No | Confirmed | It is replaced by the 12.59-mile supported Bartle traverse |
+| Is Day 3 a supported day-pack traverse? | **No — retired 2026-08-05** | Decided | Day 3 is now a 13.933-mile unsupported full-pack power-through to Moosehead Creek. No driver. See "The Day 3 decision" below |
 | Is a support driver already booked? | No evidence yet | Operational gate | Confirmed driver, vehicle, route, gate, overnight, pickup, and re-entry |
 | Is the pre-private dry camp fully field-verified? | No | Desktop screen passed | On-foot vegetation, hazard, durable-surface, and three-person-capacity check |
 | Are listed water sources flowing now? | Unknown | Low | Current FarOut/PCT Water/ranger reports |
@@ -106,7 +106,7 @@ describes a real-world verification gate.
 8. ✅ Separated static water locations from timestamped condition reports.
 9. ✅ Replaced the full-Section-O profile in active-trip views.
 10. ✅ Made September 5 the planned finish and September 6 the visible contingency day.
-11. ✅ Replaced the 14.53-mile Peavine-to-Moosehead full-pack leg with a 12.59-mile supported day-pack traverse to Bartle Gap.
+11. ⟲ **Superseded 2026-08-05.** The 12.59-mile supported day-pack traverse to Bartle Gap that once replaced the long full-pack leg has itself been retired. Day 3 is now a 13.933-mile unsupported power-through to Moosehead Creek with full packs. The plan has effectively returned to where it started, but on measured evidence rather than assumption: a county parcel screen showed the private corridor ends at PCT 1447.738, only 0.207 mile past the Bartle Gap pin, so the entire support operation was buying 1.34 miles and day packs — not, as previously believed, the only lawful way to finish the day.
 12. ✅ Screened the pre-private dry camp against current county parcels, USFS MVUM roads, USFS dispersed-camping setbacks, and USGS 3DEP slope/elevation.
 13. ✅ Labeled Bartle Gap as a support transfer rather than a campsite.
 
@@ -745,6 +745,48 @@ Aim for 1:00–1:30 p.m. Treat 2:30 p.m. as the cutoff. Sunset is computed
 astronomically for 41.02°N, 121.65°W on August 29, 2026; it is arithmetic, not
 a field condition, but confirm local dusk against terrain shading — a west-side
 canyon goes dark well before official sunset.
+
+### The Day 3 decision (2026-08-05): power through, no driver
+
+Day 3 is now a **13.933-mile unsupported traverse with full packs**, finishing
+at **Moosehead Creek (PCT 1448.873)** on USFS public land. There is no driver,
+no pack transfer, no off-corridor lodging, no exact-pin pickup, and no
+next-morning re-entry. The Bartle Gap support operation is retired.
+
+**What made it defensible.** The Shasta County parcel screen showed Sierra
+Pacific ground *ends* at **PCT 1447.738 — only 0.207 mile, about 365 yards,
+past the old Bartle Gap pin**. Legal ground was always a five-minute walk beyond
+the pickup point. So the driver was never the difference between a lawful and
+unlawful day; it bought **1.34 extra miles and the ability to carry day packs**.
+Framing it as the only way to finish Day 3 overstated it.
+
+**What it costs.** This is now the hardest day of the trip by a wide margin:
+
+| | Supported (retired) | Power-through (active) |
+|---|---:|---:|
+| Distance | 12.591 mi | **13.933 mi** |
+| Gain / loss | +1,438 / −1,291 ft | **+1,675 / −1,291 ft** |
+| Packs | day packs | **full overnight packs** |
+| Realistic time | 7.25–8.75 h | **9.25–11 h** |
+
+Day 4 gets easier in exchange, dropping from 5.369 to **4.027 miles**. Total
+route gain and loss are unchanged at +6,244 / −6,795 ft.
+
+**The water consequence is the real one.** The carry is now fully
+self-supported. There is no legal collection anywhere between Peavine
+(1434.236) and Moosehead (1448.873) — Clark, Deadman, and Kosk all sit on
+private timberland — so that is a **14.6-mile span that must also cover the Day
+2 dry camp, dinner, and breakfast**: roughly **10–11 L per person** at peak load
+leaving Peavine. The extra collapsible reservoirs stop being optional.
+
+**What it removes.** An entire dependency chain, every link of which could have
+failed on the day: a named driver, a booked legal overnight off-corridor, road
+and gate verification, an exact field pin, a timed pickup window, a no-contact
+protocol, and a next-morning re-entry.
+
+**Consequence worth stating plainly:** every one of the nine stops in this
+itinerary now sits on public land. No part of the plan depends on stopping
+where stopping is not allowed.
 
 ### Mikaela's return leg is an open safety question
 

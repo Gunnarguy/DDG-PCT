@@ -291,14 +291,29 @@ function validateRuntime(runtime, terrain, terrainHash) {
     );
   });
 
+  // Day 3 was a 506-ft-offset supported transfer until 2026-08-05, when the
+  // driver was retired in favour of an unsupported power-through. Both shapes
+  // are legitimate; what must never happen is Day 3 silently becoming an
+  // ordinary mid-length day, because the private corridor makes it neither.
   const day3 = activeFeatures.find((feature) => feature.properties.day === 3);
-  assert(
-    day3?.properties?.stopType === "support-transfer" &&
+  if (day3?.properties?.stopType === "support-transfer") {
+    assert(
       day3?.properties?.packMode === "day-pack-supported" &&
-      day3?.properties?.type === "Support Transfer" &&
-      Number(day3.properties.fieldToTrailOffsetFeet) === 506,
-    "Day 3 must remain an explicit 506-ft-offset supported transfer, not a campsite",
-  );
+        day3?.properties?.type === "Support Transfer" &&
+        Number(day3.properties.fieldToTrailOffsetFeet) === 506,
+      "a supported Day 3 must keep its 506-ft field/trail offset and day-pack mode",
+    );
+  } else {
+    assert(
+      day3?.properties?.stopType === "camp" &&
+        day3?.properties?.packMode === "overnight-pack",
+      "an unsupported Day 3 must be an explicit overnight-pack camp",
+    );
+    assert(
+      Number(day3.properties.pctMile) > 1447.738,
+      "an unsupported Day 3 must finish past PCT 1447.738, where private timberland ends",
+    );
+  }
   assert(
     activeFeatures.at(-1)?.properties?.name === "Ash Camp pickup" &&
       activeFeatures.at(-1)?.properties?.type === "Finish",
@@ -422,9 +437,35 @@ function validateRuntimeOperations(operations, source, terrain, terrainHash) {
   ["united-itinerary", "arrival-night-staging", "burney-day-use", "lake-britton-crossing", "bartle-support", "ash-camp-road", "satellite-comms"].forEach((id) => {
     assert(gates.has(id), `runtime operations is missing the ${id} gate`);
   });
-  assert(gates.get("bartle-support")?.state === "open" &&
-    gates.get("bartle-support")?.priority === "critical",
-  "Bartle support must remain a visible critical open gate");
+  // The Bartle Gap support operation was retired on 2026-08-05 in favour of an
+  // unsupported power-through, so this no longer guards "still open". What it
+  // guards now is that Day 3 never quietly becomes an ordinary day: whichever
+  // way the decision goes, the gate has to keep explaining the private corridor
+  // and the plan has to keep carrying the real cost of crossing it.
+  const bartleGate = gates.get("bartle-support");
+  assert(
+    bartleGate?.state === "resolved" || bartleGate?.state === "open",
+    "Bartle gate must stay visible as either an open booking or a recorded decision",
+  );
+  assert(
+    /private|corridor|driver|power/i.test(bartleGate?.detail ?? ""),
+    "Bartle gate must keep explaining why the private corridor constrains Day 3",
+  );
+  const dayThreePlan = operations.dayThreeSupport ?? {};
+  assert(
+    typeof dayThreePlan.instruction === "string" && dayThreePlan.instruction.length > 0,
+    "Day 3 must retain an explicit plan, supported or not",
+  );
+  if (bartleGate?.state === "resolved") {
+    assert(
+      Number(dayThreePlan.distanceMiles) > 13 && /overnight/.test(dayThreePlan.packMode ?? ""),
+      "an unsupported Day 3 must record the full-pack distance it actually costs",
+    );
+    assert(
+      /no legal collection|self-supported/i.test(dayThreePlan.waterRule ?? ""),
+      "an unsupported Day 3 must state that the corridor has no legal water stop",
+    );
+  }
   assert(gates.get("burney-day-use")?.detail.includes("Saturday"),
     "Burney Saturday reservation constraint must remain explicit");
   assert(operations.workingFlights?.status === "team-confirmed-itinerary",
@@ -482,8 +523,18 @@ function validateRuntimeFieldBrief(brief, source, operations, terrain, terrainHa
     });
   });
 
-  assert(brief.operations?.dayThreeSupport?.fieldToTrailOffsetFeet === 506,
-    "field brief must keep Day 3's 506-ft field/trail distinction");
+  // Under the supported plan this guarded the 506-ft pickup offset. With the
+  // driver retired, what the brief must still carry is Day 3's plan and the
+  // fact that the corridor has no legal water stop.
+  assert(
+    typeof brief.operations?.dayThreeSupport?.instruction === "string" &&
+      brief.operations.dayThreeSupport.instruction.length > 0,
+    "field brief must keep an explicit Day 3 plan",
+  );
+  assert(
+    Number.isFinite(Number(brief.operations?.dayThreeSupport?.fieldToTrailOffsetFeet)),
+    "field brief must keep Day 3's field/trail offset",
+  );
   assert(brief.operations?.finishPlan?.routeMile === terrain.route.officialPctaMiles,
     "field brief finish must remain Ash Camp at the official trip mile");
   assert(Array.isArray(brief.operations?.gates) && brief.operations.gates.length === operations.gates.length,
