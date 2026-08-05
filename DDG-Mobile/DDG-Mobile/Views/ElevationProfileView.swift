@@ -87,6 +87,24 @@ struct ElevationProfileView: View {
         }
     }
 
+    /// Maps a touch location to a trail mile and moves the shared cursor.
+    ///
+    /// The x position is clamped to the plot rather than ignored when it falls
+    /// outside: dragging off the end of the chart should pin the cursor to the
+    /// first or last mile, not drop it, so a finger that slips past the axis
+    /// does not blank the map pin mid-scrub.
+    private func scrub(to location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy) {
+        guard let plotFrame = proxy.plotFrame else { return }
+        let frame = geometry[plotFrame]
+        guard frame.width > 0 else { return }
+        let plotX = min(max(location.x - frame.minX, 0), frame.width)
+        guard let mile: Double = proxy.value(atX: plotX) else { return }
+        let clamped = min(max(mile, chartXDomain.lowerBound), chartXDomain.upperBound)
+        if selectedMile != clamped {
+            selectedMile = clamped
+        }
+    }
+
     private func findClosestPoint(to mile: Double) -> HoverPoint? {
         guard !profileData.isEmpty else { return nil }
         
@@ -485,6 +503,24 @@ struct ElevationProfileView: View {
                 Rectangle()
                     .fill(.clear)
                     .contentShape(Rectangle())
+                    // Touch-and-scrub. `chartXSelection` alone does not survive
+                    // this overlay — the clear hit-testable rectangle above the
+                    // plot swallows the drag before the chart's own selection
+                    // gesture sees it — so the cursor is driven explicitly here.
+                    // minimumDistance 0 means a plain touch also places the
+                    // cursor, without waiting for movement.
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { value in
+                                scrub(to: value.location, proxy: proxy, geometry: geometry)
+                            }
+                            .onEnded { value in
+                                // Leave the cursor where the finger lifted so the
+                                // mile, elevation, and map pin stay readable
+                                // instead of vanishing on release.
+                                scrub(to: value.location, proxy: proxy, geometry: geometry)
+                            }
+                    )
                     .simultaneousGesture(
                         SpatialTapGesture()
                             .onEnded { value in
