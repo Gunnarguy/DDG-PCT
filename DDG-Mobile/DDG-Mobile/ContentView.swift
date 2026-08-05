@@ -19,6 +19,7 @@ struct ContentView: View {
 
     @State private var selectedTab: AppTab = .mission
     @State private var network = NetworkMonitor.shared
+    @State private var showPendingSync = false
     @Environment(AuthManager.self) private var auth
     @Environment(\.modelContext) private var modelContext
     @Query private var allOpsEntries: [OpsLogEntry]
@@ -50,16 +51,25 @@ struct ContentView: View {
             }
         }
         .overlay(alignment: .topTrailing) {
-            // Global Status Indicator (does not block touches)
+            // Global status indicator. Only the unsynced-edits chip is
+            // interactive; the rest stays hit-test transparent so it never
+            // swallows taps meant for the view underneath.
             HStack(spacing: 8) {
                 if let user = auth.currentUser {
                     Text(user.emoji)
                         .font(.caption)
+                        .allowsHitTesting(false)
                 }
-                SyncIndicator(isConnected: network.isConnected, pendingCount: pendingSyncCount)
+                SyncIndicator(
+                    isConnected: network.isConnected,
+                    pendingCount: pendingSyncCount,
+                    onTapPending: { showPendingSync = true }
+                )
             }
             .padding(.trailing, 16)
-            .allowsHitTesting(false)
+        }
+        .sheet(isPresented: $showPendingSync) {
+            PendingSyncView()
         }
         .task {
             await SyncEngine.shared.pullRemoteChanges(modelContext: modelContext)
@@ -138,6 +148,7 @@ private struct FieldWorkspaceView: View {
 struct SyncIndicator: View {
     let isConnected: Bool
     let pendingCount: Int
+    var onTapPending: (() -> Void)?
 
     var body: some View {
         HStack(spacing: 4) {
@@ -147,13 +158,36 @@ struct SyncIndicator: View {
             Text(isConnected ? "Online" : "Offline")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
+
             if pendingCount > 0 {
-                Text("(\(pendingCount) unsynced edits)")
+                Button {
+                    onTapPending?()
+                } label: {
+                    HStack(spacing: 3) {
+                        Text("\(pendingCount) unsynced")
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 8, weight: .semibold))
+                    }
                     .font(.caption2)
                     .foregroundStyle(.orange)
+                    // Padding is the tap target: the label alone is far too
+                    // small to hit reliably with cold hands.
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 4)
+                    .background(
+                        Capsule().fill(.orange.opacity(0.16))
+                    )
+                    .overlay(
+                        Capsule().stroke(.orange.opacity(0.5), lineWidth: 1)
+                    )
                     .fixedSize(horizontal: false, vertical: true)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(pendingCount) unsynced edits. Open to review and retry.")
             }
         }
+        // Only the button above accepts touches; the dot and label do not.
+        .allowsHitTesting(pendingCount > 0)
     }
 }
 
