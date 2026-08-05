@@ -27,6 +27,9 @@ struct TrailMapView: View {
     @State private var mapStyle: MapStyle = .standard(elevation: .realistic)
     @State private var showWater = true
     @State private var showConnectivity = true
+    @State private var showOwnership = false
+    @State private var selectedParcel: LandOwnership.Parcel?
+    @StateObject private var locationAuthorizer = LocationAuthorizer()
     @State private var mapScope: MapScope = .circuit
     @State private var position: MapCameraPosition = .region(
         MKCoordinateRegion(
@@ -43,6 +46,11 @@ struct TrailMapView: View {
     var body: some View {
         ZStack {
             Map(position: $position, selection: $selectedCamp) {
+                // Where you actually are. GPS is satellite-based and keeps
+                // working with no cell service, so this dot stays live for the
+                // whole trip even where the basemap tiles do not load.
+                UserAnnotation()
+
                 // Live hover cursor
                 if let hoverPoint {
                     Annotation("Active Cursor", coordinate: hoverPoint.coordinate) {
@@ -53,6 +61,18 @@ struct TrailMapView: View {
                             .shadow(radius: 4)
                     }
                 }
+                    // Land ownership sits beneath the route so the trail,
+                    // camps, and water stay legible on top of the fills.
+                    if showOwnership {
+                        ForEach(LandOwnership.parcels) { parcel in
+                            ForEach(Array(parcel.polygons.enumerated()), id: \.offset) { _, ring in
+                                MapPolygon(coordinates: ring)
+                                    .foregroundStyle(ownershipFill(for: parcel.category))
+                                    .stroke(ownershipStroke(for: parcel.category), lineWidth: 1)
+                            }
+                        }
+                    }
+
                     // Trail route colored by day
                     ForEach(computedSegments, id: \.day) { segment in
                         MapPolyline(coordinates: segment.coordinates)
@@ -163,6 +183,16 @@ struct TrailMapView: View {
                     }
                 }
                 .mapStyle(mapStyle)
+                .mapControls {
+                    // Standard "center on me" control. It renders only once
+                    // location authorization exists, which is why the view
+                    // requests it on appear.
+                    MapUserLocationButton()
+                    MapCompass()
+                }
+                .onAppear {
+                    locationAuthorizer.requestIfNeeded()
+                }
                 .onChange(of: selectedDay) { _, newDay in
                     if let newDay {
                         mapScope = .trail
@@ -183,6 +213,19 @@ struct TrailMapView: View {
                             mapStylePicker
                             waterToggle
                             connectivityToggle
+                            ownershipToggle
+                            if showOwnership {
+                                ownershipLegend
+                            }
+                            if let reason = locationAuthorizer.unavailableReason {
+                                Text(reason)
+                                    .font(.caption2)
+                                    .foregroundStyle(.orange)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .padding(8)
+                                    .frame(maxWidth: 260, alignment: .leading)
+                                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+                            }
                         }
                     }
 
@@ -575,8 +618,93 @@ struct TrailMapView: View {
         }
     }
 
+    // MARK: - Land Ownership
+
+    private var ownershipToggle: some View {
+        Button {
+            showOwnership.toggle()
+            if !showOwnership { selectedParcel = nil }
+        } label: {
+            Image(systemName: showOwnership ? "map.fill" : "map")
+                .padding(10)
+                .background(.regularMaterial, in: Circle())
+                .foregroundStyle(showOwnership ? .red : .secondary)
+        }
+        .accessibilityLabel(showOwnership ? "Hide land ownership" : "Show land ownership")
+    }
+
+    private func ownershipFill(for category: LandOwnership.Category) -> Color {
+        switch category {
+        case .publicLand: return Color.green.opacity(0.16)
+        case .privateTimberland: return Color.red.opacity(0.34)
+        case .privateOther: return Color.orange.opacity(0.34)
+        case .tribal: return Color.purple.opacity(0.34)
+        case .unknown: return Color.gray.opacity(0.34)
+        }
+    }
+
+    private func ownershipStroke(for category: LandOwnership.Category) -> Color {
+        switch category {
+        case .publicLand: return Color.green.opacity(0.7)
+        case .privateTimberland: return Color.red.opacity(0.8)
+        case .privateOther: return Color.orange.opacity(0.8)
+        case .tribal: return Color.purple.opacity(0.8)
+        case .unknown: return Color.gray.opacity(0.8)
+        }
+    }
+
+    /// Legend plus the rule that governs the red parcels. Shown only while the
+    /// layer is on so it never competes with the route legend.
+    private var ownershipLegend: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Land ownership")
+                .font(.caption.bold())
+            ForEach(
+                [
+                    (LandOwnership.Category.publicLand, "Public — camping allowed"),
+                    (.privateTimberland, "Private timberland — pass through only"),
+                    (.privateOther, "Other private"),
+                    (.tribal, "Tribal land"),
+                ],
+                id: \.0
+            ) { category, caption in
+                HStack(alignment: .top, spacing: 6) {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(ownershipFill(for: category))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 2)
+                                .stroke(ownershipStroke(for: category), lineWidth: 1)
+                        )
+                        .frame(width: 12, height: 12)
+                    Text(caption)
+                        .font(.caption2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            Text("On red parcels the PCTA alert allows passage but prohibits camping, fires, stoves, smoking, and extended stops. Keep moving.")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            if let generatedAt = LandOwnership.generatedAt {
+                Text("Shasta County assessor screen, generated \(generatedAt). Not a title report or a surveyed boundary — posted signage and fence lines win on the ground.")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            if LandOwnership.parcels.isEmpty {
+                Text("Parcel data failed to load. Do not read a blank map as public land.")
+                    .font(.caption2.bold())
+                    .foregroundStyle(.orange)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(10)
+        .frame(maxWidth: 260, alignment: .leading)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
+    }
+
     // MARK: - Connectivity Toggle
-    
+
     private var connectivityToggle: some View {
         Button {
             showConnectivity.toggle()
