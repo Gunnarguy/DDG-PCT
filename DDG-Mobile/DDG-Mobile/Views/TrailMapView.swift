@@ -28,6 +28,7 @@ struct TrailMapView: View {
     @State private var showWater = true
     @State private var showConnectivity = true
     @State private var showOwnership = false
+    @State private var showOwnershipDetail = false
     @State private var selectedParcel: LandOwnership.Parcel?
     @StateObject private var locationAuthorizer = LocationAuthorizer()
     @State private var mapScope: MapScope = .circuit
@@ -192,6 +193,9 @@ struct TrailMapView: View {
                 }
                 .onAppear {
                     locationAuthorizer.requestIfNeeded()
+                }
+                .sheet(isPresented: $showOwnershipDetail) {
+                    ownershipDetailSheet
                 }
                 .onChange(of: selectedDay) { _, newDay in
                     if let newDay {
@@ -657,54 +661,114 @@ struct TrailMapView: View {
         }
     }
 
-    /// Legend plus the rule that governs the red parcels. Shown only while the
-    /// layer is on so it never competes with the route legend.
+    /// Compact by default so it does not bury the map. The rule text and
+    /// provenance stay one tap away rather than being cut — a caveat you
+    /// cannot reach is a caveat that does not exist.
     private var ownershipLegend: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Land ownership")
-                .font(.caption.bold())
+        VStack(alignment: .leading, spacing: 5) {
             ForEach(
                 [
-                    (LandOwnership.Category.publicLand, "Public — camping allowed"),
-                    (.privateTimberland, "Private timberland — pass through only"),
+                    (LandOwnership.Category.publicLand, "Public — camp OK"),
+                    (.privateTimberland, "Timberland — no stopping"),
                     (.privateOther, "Other private"),
-                    (.tribal, "Tribal land"),
+                    (.tribal, "Tribal"),
                 ],
                 id: \.0
             ) { category, caption in
-                HStack(alignment: .top, spacing: 6) {
+                HStack(spacing: 5) {
                     RoundedRectangle(cornerRadius: 2)
                         .fill(ownershipFill(for: category))
                         .overlay(
                             RoundedRectangle(cornerRadius: 2)
                                 .stroke(ownershipStroke(for: category), lineWidth: 1)
                         )
-                        .frame(width: 12, height: 12)
+                        .frame(width: 10, height: 10)
                     Text(caption)
                         .font(.caption2)
-                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            Text("On red parcels the PCTA alert allows passage but prohibits camping, fires, stoves, smoking, and extended stops. Keep moving.")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-            if let generatedAt = LandOwnership.generatedAt {
-                Text("Shasta County assessor screen, generated \(generatedAt). Not a title report or a surveyed boundary — posted signage and fence lines win on the ground.")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+
             if LandOwnership.parcels.isEmpty {
-                Text("Parcel data failed to load. Do not read a blank map as public land.")
+                Text("Parcel data failed to load — a blank map is not public land.")
                     .font(.caption2.bold())
                     .foregroundStyle(.orange)
                     .fixedSize(horizontal: false, vertical: true)
             }
+
+            Button {
+                showOwnershipDetail = true
+            } label: {
+                Label("Rules & source", systemImage: "info.circle")
+                    .font(.caption2)
+            }
+            .padding(.top, 1)
         }
-        .padding(10)
-        .frame(maxWidth: 260, alignment: .leading)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
+        .padding(8)
+        .frame(maxWidth: 170, alignment: .leading)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 9))
+    }
+
+    /// Full, unabridged rule and provenance text.
+    private var ownershipDetailSheet: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    ForEach(
+                        [
+                            LandOwnership.Category.publicLand,
+                            .privateTimberland,
+                            .privateOther,
+                            .tribal,
+                        ],
+                        id: \.self
+                    ) { category in
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack(spacing: 8) {
+                                RoundedRectangle(cornerRadius: 3)
+                                    .fill(ownershipFill(for: category))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 3)
+                                            .stroke(ownershipStroke(for: category), lineWidth: 1)
+                                    )
+                                    .frame(width: 16, height: 16)
+                                Text(category.label)
+                                    .font(.subheadline.bold())
+                            }
+                            Text(category.rule)
+                                .font(.footnote)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+
+                    Divider()
+
+                    if let source = LandOwnership.sourceDescription {
+                        Text(source)
+                            .font(.footnote)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    if let generatedAt = LandOwnership.generatedAt {
+                        Text("Generated \(generatedAt) · \(LandOwnership.parcels.count) parcels")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    if let caveat = LandOwnership.caveat {
+                        Text(caveat)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle("Land ownership")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { showOwnershipDetail = false }
+                }
+            }
+        }
     }
 
     // MARK: - Connectivity Toggle

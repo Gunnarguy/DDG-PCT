@@ -35,8 +35,11 @@ struct MapContainerView: View {
                     .padding(.bottom, 50)
                     .background(Color(uiColor: .systemBackground))
             }
-            .navigationTitle("Trail Map")
+            // The tab bar already says "Map" and the scope picker sits at the
+            // top-left of the map itself, so a nav title here only collided
+            // with those controls.
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(.hidden, for: .navigationBar)
             .onAppear {
                 print("DEBUG [MapContainerView]: Mounted on screen.")
             }
