@@ -212,7 +212,14 @@ struct TrailMapView: View {
 
                         Spacer()
 
-                        VStack(spacing: 8) {
+                        // Trailing alignment, not the default centre. The
+                        // legend and the location warning are far wider than
+                        // the 44pt buttons, so a centred stack re-centres every
+                        // button the moment either appears and the whole column
+                        // visibly jumps sideways. Pinning to the trailing edge
+                        // keeps the buttons still and lets the wide panels
+                        // extend leftward instead.
+                        VStack(alignment: .trailing, spacing: 8) {
                             locateMeButton
                             mapStylePicker
                             waterToggle
@@ -220,6 +227,7 @@ struct TrailMapView: View {
                             ownershipToggle
                             if showOwnership {
                                 ownershipLegend
+                                    .transition(.opacity.combined(with: .scale(scale: 0.95, anchor: .topTrailing)))
                             }
                             if let reason = locationAuthorizer.unavailableReason {
                                 Text(reason)
@@ -661,7 +669,9 @@ struct TrailMapView: View {
 
     private var ownershipToggle: some View {
         Button {
-            showOwnership.toggle()
+            withAnimation(.easeOut(duration: 0.18)) {
+                showOwnership.toggle()
+            }
             if !showOwnership { selectedParcel = nil }
         } label: {
             Image(systemName: showOwnership ? "map.fill" : "map")
