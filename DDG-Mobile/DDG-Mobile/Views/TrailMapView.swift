@@ -64,7 +64,12 @@ struct TrailMapView: View {
                 }
                     // Land ownership sits beneath the route so the trail,
                     // camps, and water stay legible on top of the fills.
-                    if showOwnership {
+                    //
+                    // Culled at Full Circuit scope: that view spans the whole
+                    // California drive, where 127 parcel polygons are both
+                    // invisible and pure render cost. They only carry meaning
+                    // at trail zoom, where "may I stop here" is a real question.
+                    if showOwnership, mapScope == .trail {
                         ForEach(LandOwnership.parcels) { parcel in
                             ForEach(Array(parcel.polygons.enumerated()), id: \.offset) { _, ring in
                                 MapPolygon(coordinates: ring)
@@ -707,6 +712,24 @@ struct TrailMapView: View {
     /// cannot reach is a caveat that does not exist.
     private var ownershipLegend: some View {
         VStack(alignment: .leading, spacing: 5) {
+            // Never let the layer read as "no private land here" simply
+            // because it is not being drawn at this zoom.
+            if mapScope != .trail {
+                Button {
+                    withAnimation { mapScope = .trail }
+                } label: {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Hidden at Full Circuit")
+                            .font(.caption2.bold())
+                        Text("Tap to switch to Trail Detail")
+                            .font(.caption2)
+                    }
+                    .foregroundStyle(.orange)
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(.bottom, 2)
+            }
+
             ForEach(
                 [
                     (LandOwnership.Category.publicLand, "Public — camp OK"),
