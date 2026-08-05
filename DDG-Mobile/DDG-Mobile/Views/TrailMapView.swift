@@ -184,13 +184,12 @@ struct TrailMapView: View {
                     }
                 }
                 .mapStyle(mapStyle)
-                .mapControls {
-                    // Standard "center on me" control. It renders only once
-                    // location authorization exists, which is why the view
-                    // requests it on appear.
-                    MapUserLocationButton()
-                    MapCompass()
-                }
+                // No .mapControls here on purpose. MapKit places them in the
+                // top-trailing corner, which is exactly where the custom
+                // toggle stack lives, so the location button landed on top of
+                // the basemap button and was awkward to hit. It is rendered
+                // inside that stack instead, where it gets the same tap target
+                // as every other control.
                 .onAppear {
                     locationAuthorizer.requestIfNeeded()
                 }
@@ -214,6 +213,7 @@ struct TrailMapView: View {
                         Spacer()
 
                         VStack(spacing: 8) {
+                            locateMeButton
                             mapStylePicker
                             waterToggle
                             connectivityToggle
@@ -624,6 +624,37 @@ struct TrailMapView: View {
                 .background(.regularMaterial, in: Circle())
                 .foregroundStyle(showWater ? .blue : .secondary)
         }
+    }
+
+    // MARK: - Locate Me
+
+    /// Centres on the current GPS fix. Same 44pt-class tap target and material
+    /// backing as the other controls, so it reads as part of the stack rather
+    /// than a floating MapKit control with a different hit area.
+    private var locateMeButton: some View {
+        Button {
+            guard locationAuthorizer.isAuthorized else {
+                locationAuthorizer.requestIfNeeded()
+                return
+            }
+            guard let fix = locationAuthorizer.lastFix else { return }
+            withAnimation {
+                position = .region(
+                    MKCoordinateRegion(
+                        center: fix.coordinate,
+                        span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
+                    )
+                )
+            }
+        } label: {
+            Image(systemName: locationAuthorizer.isAuthorized
+                  ? "location.fill"
+                  : "location.slash")
+                .padding(10)
+                .background(.regularMaterial, in: Circle())
+                .foregroundStyle(locationAuthorizer.isAuthorized ? .teal : .secondary)
+        }
+        .accessibilityLabel("Center on my location")
     }
 
     // MARK: - Land Ownership

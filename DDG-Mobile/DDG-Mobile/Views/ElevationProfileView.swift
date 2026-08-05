@@ -554,15 +554,26 @@ struct ElevationProfileView: View {
                 Button(action: {
                     withAnimation { selectedDay = nil }
                 }) {
+                    // Unselected pills sit over the map, where a 15%-opacity
+                    // tint plus same-colour text was effectively invisible.
+                    // An opaque material and a coloured ring keep the day
+                    // colour readable against any basemap.
                     Text("All Days")
                         .font(.subheadline.bold())
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(selectedDay == nil ? Color.blue : Color.gray.opacity(0.15))
+                        .background {
+                            if selectedDay == nil {
+                                Capsule().fill(Color.blue)
+                            } else {
+                                Capsule().fill(.regularMaterial)
+                                    .overlay(Capsule().stroke(Color.secondary.opacity(0.55), lineWidth: 1))
+                            }
+                        }
                         .foregroundStyle(selectedDay == nil ? .white : .primary)
                         .clipShape(Capsule())
                 }
-                
+
                 ForEach(dayMileRanges, id: \.day) { range in
                     Button(action: {
                         withAnimation { selectedDay = range.day }
@@ -571,7 +582,14 @@ struct ElevationProfileView: View {
                             .font(.subheadline.bold())
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
-                            .background(selectedDay == range.day ? range.color : range.color.opacity(0.15))
+                            .background {
+                                if selectedDay == range.day {
+                                    Capsule().fill(range.color)
+                                } else {
+                                    Capsule().fill(.regularMaterial)
+                                        .overlay(Capsule().stroke(range.color.opacity(0.85), lineWidth: 1.5))
+                                }
+                            }
                             .foregroundStyle(selectedDay == range.day ? .white : range.color)
                             .clipShape(Capsule())
                     }
