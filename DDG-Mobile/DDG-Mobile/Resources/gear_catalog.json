@@ -1745,6 +1745,210 @@
           ]
         }
       ]
+    },
+    {
+      "id": "section-o-force-multipliers",
+      "label": "Section O force multipliers",
+      "readiness": "review",
+      "focus": "Small items that specifically solve this route's measured problems: a 13-14 mile dry carry with no legal collection, 89°F exposed days against 57°F nights, verified poison oak at the finish, and a Day 3 traverse where stopping is not an option.",
+      "targetWeightPounds": 2.5,
+      "targetVolumeLiters": 3,
+      "sourceIds": [
+        "doc-day-plan",
+        "doc-water-hat-creek",
+        "farout-pct",
+        "reddit-norcal-tips"
+      ],
+      "items": [
+        {
+          "id": "so-extra-reservoir-2l",
+          "name": "Extra 2L collapsible reservoir (carry two)",
+          "detail": "The single most important item on this list. The Day 2 camp is dry and there is no legal water between Peavine (PCT 1434.236) and Bartle Gap (1447.531) — every source in between sits on private timberland. That is roughly 13.3 miles, and 14.6 if the Day 3 driver does not appear and you continue to Moosehead. That span has to cover dinner, a dry overnight, breakfast, and a 12.59-mile day. Peak load leaving Peavine is about 10-11 L per person; the rest of this kit only holds about 5 L. Two extra reservoirs close the gap for 6 oz. They pack flat and weigh nothing when empty.",
+          "weightOunces": 3,
+          "weightDisplay": "3 oz",
+          "weightBucket": "carried",
+          "quantity": 2,
+          "specs": [
+            "2 L each",
+            "Packs flat when empty",
+            "Closes the dry-carry gap"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "doc-water-hat-creek",
+            "farout-pct"
+          ]
+        },
+        {
+          "id": "so-water-scoop",
+          "name": "Wide-mouth scoop / cut-down bottle",
+          "detail": "Several sources on this route are shallow or barely moving, and a squeeze filter cannot draw from a puddle. The 2026 reports describe Upper Jake Spring as 'shallow flow', the Moosehead alternate as 'a strong trickle from a leaf spout, about one liter per 30 seconds', and multiple seasonal streams as trickling. A cut-down bottle or a small rigid scoop turns a twenty-minute fill into a two-minute one, three times a day, for half an ounce.",
+          "weightOunces": 0.5,
+          "weightDisplay": "0.5 oz",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "Cut a smartwater bottle in half",
+            "For shallow and trickle sources"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-water-hat-creek",
+            "farout-pct"
+          ]
+        },
+        {
+          "id": "so-trekking-umbrella",
+          "name": "Reflective trekking umbrella",
+          "detail": "Open-Meteo showed 89.8°F at the Day 2 dry-camp elevation in early August, and this route has long exposed stretches with little canopy. A silver umbrella is portable shade: it drops perceived temperature substantially, and shade is the cheapest way to cut how much water you drink on a route where water is the binding constraint. Clips to a shoulder strap so it runs hands-free with poles. Skip it if the forecast turns windy — it becomes a sail.",
+          "weightOunces": 8,
+          "weightDisplay": "8 oz",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "Reflective canopy",
+            "Hands-free clip to pack strap",
+            "Wind is its limit"
+          ],
+          "defaultPacked": false,
+          "sourceIds": [
+            "doc-day-plan",
+            "reddit-norcal-tips",
+            "halfway-anywhere"
+          ]
+        },
+        {
+          "id": "so-poison-oak-wash",
+          "name": "Poison oak wash + pre-exposure barrier",
+          "detail": "Not optional on this route. The PCT Water Report entry for the McCloud River at 1472.5 — your finish — carries an explicit 'Watch for Poison Oak' warning, and it is common at the lower elevations at both ends of this section. A barrier lotion before you walk and a wash after exposure is the difference between a normal week and eight days of misery you cannot escape. Wash within a couple of hours of contact for it to work.",
+          "weightOunces": 2,
+          "weightDisplay": "2 oz",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "Apply barrier before, wash after",
+            "Verified hazard at Ash Camp"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-water-hat-creek",
+            "trailhiker-section-o",
+            "usfs-castle-crags"
+          ]
+        },
+        {
+          "id": "so-packable-daypack",
+          "name": "Packable daypack for Day 3",
+          "detail": "Specific to this itinerary and easy to forget. On Day 3 you hand your overnight pack to the driver at Bartle Gap and cover 12.591 miles with day packs only — that is the whole reason Day 3 works. If your pack has no removable lid or daypack mode, you need something to carry water, food, layers, and first aid for a long day. Confirm before the trip which of the three of you actually has this covered.",
+          "weightOunces": 3,
+          "weightDisplay": "3 oz",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "Day 3 supported traverse",
+            "Or use a removable pack lid",
+            "Confirm per hiker"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "so-smoke-mask",
+          "name": "N95 respirator (smoke)",
+          "detail": "Early September is NorCal fire season, and the air-quality reading for the corridor was already US AQI 72-88 (moderate) in early August with no active fire nearby. Smoke can arrive from a fire a hundred miles away without any closure applying to you. Two N95s weigh an ounce total and are the difference between hiking out through haze and having a genuinely bad time. Check the AQI forecast the morning you leave Campbell.",
+          "weightOunces": 1,
+          "weightDisplay": "1 oz",
+          "weightBucket": "carried",
+          "quantity": 2,
+          "specs": [
+            "Two per hiker",
+            "For drifting smoke, not proximity to fire"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "reddit-norcal-tips"
+          ]
+        },
+        {
+          "id": "so-power-budget",
+          "name": "Second power bank or 20,000mAh upgrade",
+          "detail": "Eight days with no resupply and no charging anywhere on route. A single 10,000mAh bank is roughly two phone charges — thin once you add GPS position tracking on the map, a satellite messenger topping up, headlamp recharges, and cold nights draining batteries faster. Decide as a group: either everyone upgrades, or one person carries a second bank as the shared reserve. Navigation dying on Day 6 is a real failure, not an inconvenience.",
+          "weightOunces": 12,
+          "weightDisplay": "12 oz",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "No charging on route",
+            "Group decision, not per-hiker default"
+          ],
+          "defaultPacked": false,
+          "sourceIds": [
+            "doc-day-plan",
+            "reddit-gear-recs"
+          ]
+        },
+        {
+          "id": "so-sleep-warmth-check",
+          "name": "Warm hat + long sleep bottoms",
+          "detail": "The daily temperature swing here is large: the same forecast that showed 89.8°F highs showed 57.6°F lows, and your camps sit between 3,069 and 6,092 ft, so the high camps run colder still. Days feel like summer and nights do not. A warm hat and dedicated dry sleep bottoms weigh almost nothing and are what actually determines whether you sleep, which determines how the next day goes.",
+          "weightOunces": 5,
+          "weightDisplay": "5 oz",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "32°F+ diurnal swing",
+            "Camps to 6,092 ft",
+            "Never hike in sleep layers"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "wv-2017-log"
+          ]
+        },
+        {
+          "id": "so-electrolyte-scaleup",
+          "name": "Electrolytes sized for heat (3 per person per day)",
+          "detail": "The base kit lists 6-10 packets. On a hot, exposed, water-limited route that is roughly a third of what you want. At 3 per person per day across eight days you need about 24 each. They weigh almost nothing, they make marginal-tasting backcountry water drinkable, and cramping on the Day 3 traverse — where stopping is not legal and the driver is on a clock — is the worst possible place to learn you under-packed them.",
+          "weightOunces": 6,
+          "weightDisplay": "6 oz",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "About 24 per hiker",
+            "Also masks off-taste from silty sources"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "reddit-gear-recs",
+            "halfway-anywhere"
+          ]
+        },
+        {
+          "id": "so-offline-maps-check",
+          "name": "Downloaded offline maps (pre-trip task)",
+          "detail": "Weighs nothing and is the most common preventable failure. GPS is satellite-based and works the entire route with no cell service, so your position dot is always live — but the basemap underneath it needs tiles that were cached while you had signal. Download the Apple Maps offline region covering Burney Falls to Ash Camp before leaving Campbell. The app's own trail line, camps, water, and ownership parcels are bundled and render offline regardless.",
+          "weightOunces": 0,
+          "weightDisplay": "0 oz",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "Do it before leaving Campbell",
+            "GPS works without cell; tiles do not"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "farout-pct"
+          ]
+        }
+      ]
     }
   ]
 }
