@@ -451,6 +451,64 @@
       "note": "Generated in Phase 6 from the same canonical route and operations artifacts."
     }
   ],
+  "climateNormals": {
+    "method": "Open-Meteo historical reanalysis (archive-api), sampled at each camp coordinate for Aug 29 – Sep 5 across 2021–2025 and averaged. This is climatology, not a forecast: it says what that window normally does at that elevation, which is the only honest answer more than two weeks out.",
+    "builtAt": "2026-08-05",
+    "forecastAvailability": "No weather forecast covers Aug 29 – Sep 5 yet. Useful model skill runs about 10–14 days, so the trip window enters real forecast range around Aug 19–22. Check then, and again the morning you leave Campbell. Until then these normals are the planning basis.",
+    "camps": [
+      {
+        "day": 1,
+        "name": "Rock Creek",
+        "elevationFeet": 3069,
+        "avgHighF": 88,
+        "avgLowF": 57,
+        "recordHighF": 101,
+        "recordLowF": 47,
+        "swingF": 31
+      },
+      {
+        "day": 2,
+        "name": "Pre-private dry camp",
+        "elevationFeet": 4902,
+        "avgHighF": 80,
+        "avgLowF": 54,
+        "recordHighF": 93,
+        "recordLowF": 43,
+        "swingF": 27
+      },
+      {
+        "day": 3,
+        "name": "Moosehead Creek",
+        "elevationFeet": 5302,
+        "avgHighF": 79,
+        "avgLowF": 53,
+        "recordHighF": 92,
+        "recordLowF": 43,
+        "swingF": 26
+      },
+      {
+        "day": 4,
+        "name": "High saddle near 38N10",
+        "elevationFeet": 6092,
+        "avgHighF": 77,
+        "avgLowF": 51,
+        "recordHighF": 89,
+        "recordLowF": 40,
+        "swingF": 26
+      },
+      {
+        "day": 8,
+        "name": "Ash Camp",
+        "elevationFeet": 2402,
+        "avgHighF": 90,
+        "avgLowF": 59,
+        "recordHighF": 104,
+        "recordLowF": 50,
+        "swingF": 32
+      }
+    ],
+    "reading": "Elevation drives this trip's temperature more than the calendar does. The low ends are the hot ends: Ash Camp at 2,402 ft normally hits 90F and has reached 104F, and Rock Creek at 3,069 ft averages 88F — so Day 1 and Day 8, the shortest days, are the hottest. The high camps are markedly cooler: the 6,092 ft saddle averages 77F/51F and has dropped to 40F. Diurnal swings run 26–32F everywhere, so every day is a summer afternoon and a cold night. Two consequences. A 20F-rated bag is correct rather than excessive, because a 40F night at 6,092 ft with wind is inside the record. And Day 3, the 13.9-mile power-through, sits at 4,900–5,300 ft where normals are 79–80F, not the 90F of the low ends — hot, but not the worst of it. An earlier note in this plan quoted 89.8F for the Day 2 dry camp; that came from an early-August same-day reading, and the correct trip-window normal for that camp is 80F with a 93F record."
+  },
   "generatedAt": "2026-08-05T17:59:17.460Z",
   "terrainContract": "docs/data/canonical/burney-ash-terrain-2026.json",
   "terrainContractSha256": "5c5cf629fc8f1bf8a3013cbe25fb8c325235fa53c32ccbc3c67302bd3798760d",

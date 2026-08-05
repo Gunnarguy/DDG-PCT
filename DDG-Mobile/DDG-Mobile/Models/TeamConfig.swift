@@ -12,12 +12,24 @@ enum DDGTeam {
         let emoji: String
         let role: String
         let color: String       // hex
+        let pack: String
+        let capacityLitres: Int
+        /// What this pack should preferentially carry. Dense items are heavy
+        /// and small, bulky items are light and large, so pack size and who
+        /// should be spared weight can be satisfied by the same rule.
+        let loadRole: String
     }
 
     static let roster: [Member] = [
-        Member(id: "dan",    name: "Dan",    emoji: "🧔", role: "Trail Boss",  color: "#2E7D32"),
-        Member(id: "drew",   name: "Drew",   emoji: "🏔️", role: "Navigator",  color: "#1565C0"),
-        Member(id: "gunnar", name: "Gunnar", emoji: "⚡", role: "Pace Setter", color: "#F57C00"),
+        Member(id: "dan", name: "Dan", emoji: "🧔", role: "Trail Boss", color: "#2E7D32",
+               pack: "Gregory 75L", capacityLitres: 75,
+               loadRole: "Takes BULK — quilts, puffies, tent body. Dense weight belongs elsewhere; group pace is set by the heaviest-loaded hiker."),
+        Member(id: "drew", name: "Drew", emoji: "🏔️", role: "Navigator", color: "#1565C0",
+               pack: "Gregory 75L", capacityLitres: 75,
+               loadRole: "Takes bulk, and can absorb dense weight too. The natural place to shift litres off Dan on Day 3."),
+        Member(id: "gunnar", name: "Gunnar", emoji: "⚡", role: "Pace Setter", color: "#F57C00",
+               pack: "Traverse 60L", capacityLitres: 60,
+               loadRole: "Takes DENSE weight — water, food, fuel — which costs little volume. Hard bottles in side pockets; Day 3 lands near 55–57 L used, so no slack."),
     ]
 
 }

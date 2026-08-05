@@ -108,6 +108,9 @@ struct GearPlannerView: View {
             ScrollView {
                 LazyVStack(spacing: 16) {
                     hikerPicker
+                    // All three packs at once. The picker above can only ever
+                    // show one, which hides gaps and duplicates entirely.
+                    GroupLoadBalanceView(loadouts: loadouts, allItems: visibleItems)
                     TeamGearSetupPanel(
                         selectedHiker: selectedHiker,
                         loadouts: loadouts,
