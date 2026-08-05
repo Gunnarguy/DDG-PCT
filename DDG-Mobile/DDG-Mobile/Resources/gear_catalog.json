@@ -1947,6 +1947,84 @@
             "doc-day-plan",
             "farout-pct"
           ]
+        },
+        {
+          "id": "so-capacity-per-hiker",
+          "name": "Water capacity: 10–11 L per hiker (verify before packing)",
+          "detail": "This is a capacity check, not a purchase. Day 3 is now self-supported, so peak load leaving Peavine is about 10–11 L per person. A workable kit: two 1 L hard bottles for clean water, one 2 L CNOC-style bag with a wide bottom opening for dirty collection, and two 3 L collapsibles that pack flat when empty. That is roughly 10 L for about 7 oz of containers. The wide-bottom bag matters specifically here — 2026 reports describe several sources as shallow or trickling, and a narrow bottle cannot scoop from a puddle. Lay out every container the three of you own, fill them, and confirm the number before you buy anything.",
+          "weightOunces": 7,
+          "weightDisplay": "7 oz",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "10–11 L per hiker",
+            "2×1 L hard + 1×2 L wide-mouth + 2×3 L collapsible",
+            "Wide bottom opening for shallow sources"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-water-hat-creek",
+            "reddit-gear-recs",
+            "halfway-anywhere"
+          ]
+        },
+        {
+          "id": "so-gravity-filter",
+          "name": "Gravity filter conversion (2 ft hose + hang loop)",
+          "detail": "The single biggest quality-of-life item for this trip and almost nobody plans for it. At Peavine you are filtering roughly 30 litres for three people in one sitting. Hand-squeezing that through a Sawyer takes well over an hour of grip work and is genuinely miserable at the end of a long day. A short hose and a hang loop convert the same filter into a gravity system: hang the dirty bag in a tree, walk away, come back to clean water. Costs two ounces and turns the hardest chore of the trip into something that happens while you set up camp.",
+          "weightOunces": 2,
+          "weightDisplay": "2 oz",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "~30 L group fill at Peavine",
+            "Hang and walk away",
+            "Same filter, no new purchase"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-gear-recs",
+            "halfway-anywhere",
+            "doc-water-hat-creek"
+          ]
+        },
+        {
+          "id": "so-second-filter",
+          "name": "Second filter carried by a different hiker",
+          "detail": "Three people now depend entirely on carried water across a 14.6-mile stretch with no legal collection. One filter for the group is a single point of failure at exactly the wrong moment: a clogged or frozen filter on the morning of Day 3 does not delay the trip, it strips the margin out of it. Carry two, held by two different people, plus the chemical tablets already on the list as a third layer. Backflush both at Peavine before the big fill.",
+          "weightOunces": 3,
+          "weightDisplay": "3 oz",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "Held by two different hikers",
+            "Tablets are the third layer",
+            "Backflush before the Peavine fill"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "reddit-gear-recs",
+            "doc-water-hat-creek"
+          ]
+        },
+        {
+          "id": "so-load-distribution",
+          "name": "Water load distribution plan (three hikers, mixed ages)",
+          "detail": "Water is the only heavy thing on this trip that transfers freely between people — food is personal, shelter is assigned, but a litre is a litre in anyone's pack. That matters here because the group spans 34, 36, and 75, and an even split is not automatically the right split. At an even 10.5 L each the peak pack is about 57 lb per person; shifting a few litres from the 75-year-old to the two younger hikers costs them about 4–5 lb each and takes roughly the same off him. Agree the split before Peavine, out loud, and rebalance again at the Day 2 camp once dinner water is used. The group moves at its slowest member's pace, so the load that protects that pace is the load that protects the day.",
+          "weightOunces": 0,
+          "weightDisplay": "0 oz",
+          "weightBucket": "carried",
+          "quantity": 1,
+          "specs": [
+            "Water transfers, food does not",
+            "Agree the split before Peavine",
+            "Rebalance after the dry camp"
+          ],
+          "defaultPacked": true,
+          "sourceIds": [
+            "doc-day-plan",
+            "halfway-anywhere"
+          ]
         }
       ]
     },

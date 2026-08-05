@@ -415,6 +415,8 @@
       "routeMile": 28.22,
       "pctMile": 1448.873,
       "fieldToTrailOffsetFeet": 2,
+      "groupPaceReality": "THE ESTIMATE ASSUMES A PACE THIS GROUP MAY NOT HOLD. The 9.25-11 hour figure comes from 1.85 mph over 15.09 effort-adjusted miles, which is a reasonable loaded pace for a fit adult carrying a normal pack. On Day 3 nobody is carrying a normal pack: peak load leaving Peavine is roughly 57 lb per person (about 20 lb base, 15 lb food, 22 lb water). The group also spans ages 34, 36, and 75, and a group moves at its slowest member. Recompute honestly: at 1.7 mph Day 3 runs 10-12 h and a 6:00 AM start finishes 4:00-6:00 PM. At 1.6 mph it is 10.5-12.75 h, finishing 4:30-6:45 PM. At 1.5 mph it is 11.25-13.5 h, finishing 5:15-7:30 PM against a 7:33 PM sunset — no margin at all. At 1.4 mph the day ends after dark. A 57 lb pack plausibly puts a 75-year-old at or below 1.5 mph, and that is load physics rather than a comment about fitness. Consequences: start at first light, not 6:00 AM; every hiker carries a working headlamp within reach rather than buried; and shifting water off the heaviest-loaded hiker protects the group pace more than any other single decision. If a shakedown hike before the trip shows the group at 1.5 mph or slower under load, the honest reading is that unsupported Day 3 has no daylight margin and the supported plan deserves a second look.",
+      "recommendedStart": "First light, about 6:15-6:30 AM civil twilight on Aug 31, rather than a nominal 6:00 AM clock start",
       "trailCoordinates": [
         -121.831284489,
         41.176508663
