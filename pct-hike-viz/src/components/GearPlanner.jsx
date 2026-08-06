@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { ddgTeam } from "../data/planContent";
 import { resourcesById } from "../data/resourcesIndex";
 import supabase, { supabaseReady } from "../lib/supabase";
+import { OUTBOX_KINDS, enqueueOutbox } from "../lib/outbox";
 
 // Weight helpers
 // - Built-in gear data is currently expressed as strings (e.g. "0.3 lb").
@@ -600,11 +601,36 @@ function GearPlanner({ data, currentUser }) {
     };
   }, [initialInventory.length, isOnline]);
   // Actions
-  const persistLoadout = async (nextSet, hikerId, previousSet) => {
-    if (!supabaseReady) {
+  const persistLoadout = async (nextSet, hikerId) => {
+    const itemIds = Array.from(nextSet);
+
+    /**
+     * Hold the change on this device instead of undoing it.
+     *
+     * This used to roll the checkbox back when the write failed, which on a
+     * ten-second timeout meant a box you ticked silently un-ticked itself
+     * fifteen seconds later — indistinguishable from never having tapped it.
+     * The user's intent is the truth here; the server just has not heard about
+     * it yet. Deduped per hiker, so nine toggles in a dead zone queue one final
+     * pack rather than nine stale ones.
+     */
+    const queueLocally = (reason) => {
+      enqueueOutbox({
+        kind: OUTBOX_KINDS.gearLoadout,
+        payload: { hiker_id: hikerId, item_ids: itemIds },
+        title: `Pack contents for ${hikerId}`,
+        subtitle: `${itemIds.length} item${itemIds.length === 1 ? "" : "s"}`,
+        dedupeKey: `${OUTBOX_KINDS.gearLoadout}:${hikerId}`,
+      });
       setSyncError(
-        new Error("Supabase not configured; changes are local only.")
+        new Error(
+          `${reason} The change is saved on this device and will upload on the next successful sync.`
+        )
       );
+    };
+
+    if (!supabaseReady) {
+      queueLocally("Supabase is not configured in this build.");
       return;
     }
 
@@ -620,7 +646,7 @@ function GearPlanner({ data, currentUser }) {
       const { error } = await Promise.race([
         supabase.from("gear_loadouts").upsert({
           hiker_id: hikerId,
-          item_ids: Array.from(nextSet),
+          item_ids: itemIds,
           updated_at: new Date().toISOString(),
         }),
         timeoutPromise,
@@ -628,23 +654,20 @@ function GearPlanner({ data, currentUser }) {
 
       if (error) {
         console.error(`Gear save error for ${hikerId}:`, error);
-        setSyncError(error);
-        // rollback
-        setLoadouts((prev) => ({ ...prev, [hikerId]: new Set(previousSet) }));
+        // supabase-js reports a dead network as an error object as well, so
+        // this stays neutral about whose fault it was.
+        queueLocally(`The write did not go through: ${error.message}.`);
       } else {
         setSyncError(null);
       }
     } catch (err) {
       console.error(`Gear save exception for ${hikerId}:`, err);
-      setSyncError(err);
-      // rollback
-      setLoadouts((prev) => ({ ...prev, [hikerId]: new Set(previousSet) }));
+      queueLocally(`Could not reach the server: ${err.message}.`);
     }
   };
 
   const toggleItem = async (itemId) => {
     const previous = loadouts[activeHikerId] || new Set();
-    const previousSnapshot = new Set(previous);
     const updatedSet = new Set(previous);
     if (updatedSet.has(itemId)) {
       updatedSet.delete(itemId);
@@ -653,7 +676,7 @@ function GearPlanner({ data, currentUser }) {
     }
 
     setLoadouts((prev) => ({ ...prev, [activeHikerId]: updatedSet }));
-    await persistLoadout(updatedSet, activeHikerId, previousSnapshot);
+    await persistLoadout(updatedSet, activeHikerId);
   };
 
   const handleAddItem = async (e) => {
@@ -678,63 +701,102 @@ function GearPlanner({ data, currentUser }) {
       groupAssignee: isGroupGear ? groupAssignee : null,
     };
 
-    if (!supabaseReady || !isOnline) {
+    const serverRow = {
+      name: baseItem.name,
+      detail: baseItem.detail,
+      weight_val: weightVal,
+      weight_label: baseItem.weight,
+      category: baseItem.category,
+      module_id: baseItem.moduleId,
+      created_by: currentUser,
+      source_ids: baseItem.sourceIds,
+    };
+
+    /**
+     * Keeps the item usable straight away and queues the real insert.
+     *
+     * The placeholder id lets it go into a pack immediately; the queue swaps in
+     * the server's id once the insert lands, so the pack it was added to still
+     * points at the right item. Without that swap a gear item created in a dead
+     * zone would sync as a row nobody's loadout referenced.
+     */
+    const queueLocally = (reason) => {
       const localItem = { ...baseItem, id: `custom-local-${Date.now()}` };
+      const targetHiker = isGroupGear ? groupAssignee : activeHikerId;
+
       setInventory((prev) => {
         const newInv = [...prev, localItem];
         try { localStorage.setItem('pct-gear-inventory', JSON.stringify(newInv)); } catch { /* ignore */ }
         return newInv;
       });
-      setLoadouts((prev) => {
-        const targetHiker = isGroupGear ? groupAssignee : activeHikerId;
-        const currentLoadout = new Set(prev[targetHiker] || []);
-        currentLoadout.add(localItem.id);
-        return { ...prev, [targetHiker]: currentLoadout };
+
+      const nextLoadout = new Set(loadouts[targetHiker] || []);
+      nextLoadout.add(localItem.id);
+      setLoadouts((prev) => ({ ...prev, [targetHiker]: nextLoadout }));
+
+      enqueueOutbox({
+        kind: OUTBOX_KINDS.customItem,
+        payload: serverRow,
+        title: baseItem.name,
+        subtitle: [baseItem.category, baseItem.weight]
+          .filter(Boolean)
+          .join(" · "),
+        meta: { localId: localItem.id },
       });
+      // Queue the pack too, so the item does not arrive on the server
+      // unassigned. The id inside is remapped before this is sent.
+      enqueueOutbox({
+        kind: OUTBOX_KINDS.gearLoadout,
+        payload: {
+          hiker_id: targetHiker,
+          item_ids: Array.from(nextLoadout),
+        },
+        title: `Pack contents for ${targetHiker}`,
+        subtitle: `${nextLoadout.size} item${nextLoadout.size === 1 ? "" : "s"}`,
+        dedupeKey: `${OUTBOX_KINDS.gearLoadout}:${targetHiker}`,
+      });
+
+      setSyncError(
+        new Error(
+          `${reason} "${baseItem.name}" is saved on this device and will upload on the next successful sync.`
+        )
+      );
       setNewItemName("");
       setNewItemWeight("");
       setIsGroupGear(false);
+    };
+
+    if (!supabaseReady || !isOnline) {
+      queueLocally(
+        supabaseReady
+          ? "You are offline."
+          : "Supabase is not configured in this build."
+      );
       return;
     }
 
     const { data, error } = await supabase
       .from("custom_items")
-      .insert([
-        {
-          name: baseItem.name,
-          detail: baseItem.detail,
-          weight_val: weightVal,
-          weight_label: baseItem.weight,
-          category: baseItem.category,
-          module_id: baseItem.moduleId,
-          created_by: currentUser,
-          source_ids: baseItem.sourceIds,
-        },
-      ])
+      .insert([serverRow])
       .select()
       .single();
 
     if (error) {
-      setSyncError(error);
-      // fallback local
-      const localItem = { ...baseItem, id: `custom-local-${Date.now()}` };
-      setInventory((prev) => [...prev, localItem]);
-      setLoadouts((prev) => {
-        const targetHiker = isGroupGear ? groupAssignee : activeHikerId;
-        const currentLoadout = new Set(prev[targetHiker] || []);
-        currentLoadout.add(localItem.id);
-        return { ...prev, [targetHiker]: currentLoadout };
-      });
-    } else if (data) {
+      queueLocally(`The write did not go through: ${error.message}.`);
+      return;
+    }
+
+    if (data) {
       const saved = normalizeCustomItem(data);
+      const targetHiker = isGroupGear ? groupAssignee : activeHikerId;
+      const nextLoadout = new Set(loadouts[targetHiker] || []);
+      nextLoadout.add(saved.id);
+
       setInventory((prev) => [...prev, saved]);
-      setLoadouts((prev) => {
-        const targetHiker = isGroupGear ? groupAssignee : activeHikerId;
-        const currentLoadout = new Set(prev[targetHiker] || []);
-        currentLoadout.add(saved.id);
-        persistLoadout(currentLoadout, targetHiker, new Set(prev[targetHiker] || []));
-        return { ...prev, [targetHiker]: currentLoadout };
-      });
+      setLoadouts((prev) => ({ ...prev, [targetHiker]: nextLoadout }));
+      // Outside the state updater: persisting is a side effect, and running it
+      // inside setLoadouts made it fire twice under StrictMode's double render.
+      persistLoadout(nextLoadout, targetHiker);
       setSyncError(null);
     }
 

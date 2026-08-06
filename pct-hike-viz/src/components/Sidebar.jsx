@@ -16,6 +16,7 @@ import {
 import fieldBrief from "../data/fieldBrief.generated.json";
 import GearPlanner from "./GearPlanner";
 import OpsLog from "./OpsLog";
+import PendingSync from "./PendingSync";
 import SourceChips from "./SourceChips";
 import TerrainAnalysis from "./TerrainAnalysis";
 import TransitPanel from "./TransitPanel";
@@ -1501,6 +1502,12 @@ function Sidebar({
       </div>
 
       {presenceRow}
+
+      {/* Directly under the sync dot, because that dot is what people look at
+          to answer "did my edit save?" and on its own it cannot answer it. */}
+      <div style={{ margin: "0 16px" }}>
+        <PendingSync userName={activeUserName} />
+      </div>
 
       <div className="itinerary-toggle-container" style={{ margin: "0 16px 16px 16px" }}>
         <div className="itinerary-toggle-btn is-active">

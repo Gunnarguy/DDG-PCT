@@ -1,0 +1,132 @@
+/* Unsynced-edits inspector. Nothing here clips: a queued ops-log note or a
+   server error you can only read half of is worse than none at all. */
+.pending-sync {
+  margin-top: 0.5rem;
+  font-size: 0.78rem;
+}
+
+.pending-sync--clear {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ink-400, #94a3b8);
+  font-size: 0.7rem;
+}
+
+.pending-sync-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--orange-500, #c2410c);
+  border-radius: 0.5rem;
+  background: rgba(194, 65, 12, 0.08);
+  color: var(--orange-500, #c2410c);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+}
+
+.pending-sync-chevron {
+  margin-left: auto;
+}
+
+.pending-sync-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--orange-500, #c2410c);
+}
+
+.pending-sync-dot--clear {
+  background: var(--pine-600, #346855);
+}
+
+.pending-sync-body {
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  border: 1px solid var(--sand-200);
+  border-radius: 0.5rem;
+}
+
+.pending-sync-section {
+  padding-bottom: 0.55rem;
+  margin-bottom: 0.55rem;
+  border-bottom: 1px solid var(--sand-200);
+}
+
+.pending-sync-section:last-of-type {
+  border-bottom: none;
+}
+
+.pending-sync-section h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-500, var(--ink-600));
+}
+
+.pending-sync-row {
+  padding: 0.35rem 0;
+  border-top: 1px dashed var(--sand-200);
+}
+
+.pending-sync-row:first-of-type {
+  border-top: none;
+}
+
+.pending-sync-title {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--ink-800);
+  overflow-wrap: anywhere;
+}
+
+.pending-sync-note {
+  margin: 0.2rem 0 0;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--ink-600);
+  overflow-wrap: anywhere;
+}
+
+.pending-sync-meta {
+  margin: 0.2rem 0 0;
+  font-size: 0.66rem;
+  line-height: 1.45;
+  color: var(--ink-400, #94a3b8);
+  overflow-wrap: anywhere;
+}
+
+.pending-sync-warning {
+  margin: 0.2rem 0 0;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  font-weight: 700;
+  color: var(--orange-500, #c2410c);
+  overflow-wrap: anywhere;
+}
+
+.pending-sync-actions {
+  margin: 0.5rem 0;
+}
+
+.pending-sync-retry {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--pine-600, #346855);
+  border-radius: 999px;
+  background: var(--pine-600, #346855);
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pending-sync-retry:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

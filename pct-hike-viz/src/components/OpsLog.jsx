@@ -1,6 +1,18 @@
 import PropTypes from "prop-types";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import supabase, { supabaseReady } from "../lib/supabase";
+import {
+  OUTBOX_KINDS,
+  enqueueOutbox,
+  getOutboxSnapshot,
+  subscribeToOutbox,
+} from "../lib/outbox";
 import "./OpsLog.css";
 
 const normalizeEntry = (entry) => ({
@@ -23,6 +35,26 @@ function OpsLog({ contextId = "general", userName }) {
     () =>
       [...logs].sort((a, b) => new Date(a.created_at) - new Date(b.created_at)),
     [logs]
+  );
+
+  // Notes that have not reached the server yet. Shown in the stream rather than
+  // reduced to a count: a log entry you cannot see is one you cannot verify you
+  // wrote, and re-typing it because you were not sure is the failure this is
+  // meant to prevent.
+  const outboxEntries = useSyncExternalStore(
+    subscribeToOutbox,
+    getOutboxSnapshot,
+    getOutboxSnapshot
+  );
+
+  const pendingEntries = useMemo(
+    () =>
+      outboxEntries.filter(
+        (entry) =>
+          entry.kind === OUTBOX_KINDS.opsLog &&
+          entry.payload?.context_id === contextId
+      ),
+    [outboxEntries, contextId]
   );
 
   const classifyEntry = (value) => {
@@ -125,18 +157,43 @@ function OpsLog({ contextId = "general", userName }) {
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [sortedLogs]);
+  }, [sortedLogs, pendingEntries]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const trimmed = input.trim();
     if (!trimmed) return;
-    if (!supabaseReady) {
-      setLogError(new Error("Supabase not configured; cannot send."));
-      return;
-    }
 
     const classification = classifyEntry(trimmed);
+    const row = {
+      context_id: contextId,
+      user_name: userName,
+      content: trimmed,
+      type: classification.type,
+      status: classification.status,
+    };
+
+    // Hold the note on this device rather than losing it. Everything below is
+    // an attempt to send; if any of it fails the entry is already safe.
+    const queueLocally = (reason) => {
+      enqueueOutbox({
+        kind: OUTBOX_KINDS.opsLog,
+        payload: row,
+        title: trimmed,
+        subtitle: `${classification.type} · ${userName} · ${contextId}`,
+      });
+      setInput("");
+      setLogError(
+        new Error(
+          `${reason} The note is saved on this device and will upload on the next successful sync.`,
+        ),
+      );
+    };
+
+    if (!supabaseReady) {
+      queueLocally("Supabase is not configured in this build.");
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -149,29 +206,20 @@ function OpsLog({ contextId = "general", userName }) {
       });
 
       const { data, error } = await Promise.race([
-        supabase
-          .from("ops_logs")
-          .insert([
-            {
-              context_id: contextId,
-              user_name: userName,
-              content: trimmed,
-              type: classification.type,
-              status: classification.status,
-            },
-          ])
-          .select()
-          .single(),
+        supabase.from("ops_logs").insert([row]).select().single(),
         timeoutPromise,
       ]);
 
       if (error) {
         console.error("OpsLog insert error:", error);
-        setLogError(error);
+        // Deliberately not "the server rejected this": supabase-js reports a
+        // dead network as an error object too, and blaming the server for a
+        // dropped connection sends you looking in the wrong place.
+        queueLocally(`The write did not go through: ${error.message}.`);
       } else if (data) {
         const normalized = normalizeEntry(data);
         setLogs((prev) =>
-          prev.some((row) => row.id === normalized.id)
+          prev.some((existing) => existing.id === normalized.id)
             ? prev
             : [...prev, normalized]
         );
@@ -179,8 +227,10 @@ function OpsLog({ contextId = "general", userName }) {
         setLogError(null);
       }
     } catch (err) {
+      // A timeout or a dead network lands here. This is the dead-zone case the
+      // queue exists for, so the note goes to the device, not to the floor.
       console.error("OpsLog submit exception:", err);
-      setLogError(err);
+      queueLocally(`Could not reach the server: ${err.message}.`);
     } finally {
       setIsSubmitting(false);
     }
@@ -272,18 +322,38 @@ function OpsLog({ contextId = "general", userName }) {
       {isLoading && <div className="ops-loading">Loading history…</div>}
       <div className="ops-stream" role="log" aria-live="polite">
         {sortedLogs.map(renderEntry)}
+        {pendingEntries.map((entry) => (
+          <div key={entry.id} className="ops-entry ops-entry--pending own">
+            <div className="ops-meta">
+              <span className="ops-user">{entry.payload.user_name}</span>
+              <span className="ops-time">
+                {new Date(entry.createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            </div>
+            <div className="ops-content">{entry.payload.content}</div>
+            <div className="ops-pending-note">
+              On this device only — not yet uploaded
+              {entry.lastError ? ` · ${entry.lastError}` : ""}
+            </div>
+          </div>
+        ))}
         <div ref={endRef} />
       </div>
+      {/* No longer disabled when Supabase is unreachable. Writing the note is
+          the point; whether it uploads now or at the next bar of signal is the
+          queue's problem, not the user's. */}
       <form className="ops-input-deck" onSubmit={handleSubmit}>
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Transmit log or /task..."
           aria-label="Transmit operational log entry"
-          disabled={!supabaseReady}
         />
-        <button type="submit" disabled={isSubmitting || !supabaseReady}>
-          {isSubmitting ? "Sending…" : supabaseReady ? "Send" : "Offline"}
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Sending…" : supabaseReady ? "Send" : "Save offline"}
         </button>
       </form>
     </div>

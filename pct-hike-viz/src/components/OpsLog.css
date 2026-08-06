@@ -140,3 +140,21 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+/* Notes held on this device because a write could not reach the server. Dashed
+   and dimmed so they read as "not yet real" at a glance, but never hidden — an
+   entry you cannot see is one you will re-type because you are not sure it
+   landed. */
+.ops-entry--pending {
+  border: 1px dashed #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.ops-pending-note {
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.45;
+  font-weight: 700;
+  color: #f59e0b;
+  overflow-wrap: anywhere;
+}
