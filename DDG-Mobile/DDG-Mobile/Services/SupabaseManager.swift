@@ -94,6 +94,14 @@ final class SupabaseManager {
         let updated_at: String
     }
 
+    /// Update payload restricted to the columns `authenticated` may write.
+    /// The security migration grants `update (item_ids, updated_at)` only, so
+    /// including hiker_id here would be rejected at the table level.
+    struct GearLoadoutUpdateRow: Codable, Sendable {
+        let item_ids: [String]
+        let updated_at: String
+    }
+
     struct CustomItemRow: Codable, Sendable {
         let name: String
         let detail: String?

@@ -147,10 +147,37 @@ final class SyncEngine {
             )
 
             do {
-                try await client
+                // Deliberately NOT an upsert. The security migration grants
+                // authenticated only `update (item_ids, updated_at)` on this
+                // table, so a hiker cannot reassign a loadout to someone else.
+                // PostgREST builds an upsert's DO UPDATE SET from every column
+                // in the payload — including hiker_id — which Postgres refuses
+                // with "permission denied for table gear_loadouts" even though
+                // the user is properly signed in.
+                //
+                // Update the granted columns first, and fall back to insert
+                // when no row matched. This matches how ops_logs and
+                // custom_items already sync, and respects the column grants
+                // rather than widening them.
+                let updated: [GearLoadoutIdentifier] = try await client
                     .from(SupabaseManager.Table.gearLoadouts)
-                    .upsert(row, onConflict: "hiker_id")
+                    .update(
+                        SupabaseManager.GearLoadoutUpdateRow(
+                            item_ids: loadout.itemIds,
+                            updated_at: SupabaseManager.iso8601.string(from: loadout.updatedAt)
+                        )
+                    )
+                    .eq("hiker_id", value: loadout.hikerId)
+                    .select("hiker_id")
                     .execute()
+                    .value
+
+                if updated.isEmpty {
+                    try await client
+                        .from(SupabaseManager.Table.gearLoadouts)
+                        .insert(row)
+                        .execute()
+                }
                 loadout.syncStatus = .synced
             } catch {
                 loadout.syncStatus = .local
@@ -220,6 +247,12 @@ final class SyncEngine {
 
     private nonisolated struct RemoteIdentifier: Decodable, Sendable {
         let id: Int64
+    }
+
+    /// Returned rows from a gear-loadout update, used only to tell "row
+    /// existed and was updated" from "nothing matched, insert instead".
+    private nonisolated struct GearLoadoutIdentifier: Decodable, Sendable {
+        let hiker_id: String
     }
 
     private nonisolated struct RemoteOpsLog: Decodable, Sendable {
