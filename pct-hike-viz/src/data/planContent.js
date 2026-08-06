@@ -1085,6 +1085,28 @@ export const packPlanner = {
           defaultPacked: false,
           sourceIds: [],
         },
+              {
+          id: "comfort-hammock",
+          name: "Lightweight hammock + tree straps",
+          detail:
+            "Hangable at every camp on this route. LANDFIRE canopy sampled at each of the nine stops reads 35–75% cover: Butcherknife 75%, Rock Creek and Deer Creek 65%, Burney/dry camp/Alder 55%, Moosehead and Ash Camp 45%, and the high saddle at 6,092 ft is the thinnest at 35% — likely fine but the one worth eyeing on arrival. Trees are not the constraint here; weight is. Treat this as a lounger rather than a sleep system unless someone commits fully: nights run 51–59F on average and the high camps have recorded 40F, and a hammock loses heat underneath, so sleeping in one needs an underquilt or pad plus a tarp — call it 2+ lb, not 11 oz. As an after-camp chair that also gets you off the ground it is excellent value, and it is genuinely the nicest thing in camp at the end of a long day.",
+          weight: "11 oz",
+          quantity: 1,
+          specs: ["All 9 camps have 35–75% canopy", "Lounger, not a sleep system, at this weight", "Sleeping in one needs bottom insulation + tarp"],
+          defaultPacked: false,
+          sourceIds: ["doc-day-plan", "reddit-gear-recs"],
+        },
+        {
+          id: "comfort-camp-chair",
+          name: "Ultralight camp chair (strongest case for Dan)",
+          detail:
+            "The most defensible luxury item on this trip, and the argument is specific rather than general. Over eight days you sit down and stand up from the ground dozens of times — cooking, filtering, packing, resting — and at 75 that repeated up-and-down costs real energy that a 34-year-old does not spend. A chair buys some of it back every evening, which shows up as pace the next morning. Roughly 1 lb for a standalone ultralight frame chair; a chair kit that turns the inflatable sleeping pad into a seat runs about 7 oz and is the better trade if weight is tight, since it reuses gear already carried. The 1.6 oz foam sit pad already on the list is the minimalist version and is genuinely fine for the two younger hikers. Worth noting the tension honestly: Day 3 peaks near 57 lb, so if only one chair goes it should go to whoever benefits most, and it should ride in one of the 75L packs.",
+          weight: "1.1 lb",
+          quantity: 1,
+          specs: ["Strongest case for the 75-year-old", "Pad-based chair kit ~7 oz beats a 1 lb frame", "Foam sit pad remains the minimalist option"],
+          defaultPacked: false,
+          sourceIds: ["doc-day-plan", "reddit-gear-recs", "halfway-anywhere"],
+        },
       ],
     },
     {
