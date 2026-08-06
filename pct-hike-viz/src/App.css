@@ -351,6 +351,115 @@ body.is-resizing-profile {
   border-radius: 999px;
 }
 
+/* Live GPS position. Stays visible when the HUD is collapsed — on trail this
+   is the primary readout, not a detail. Text wraps rather than clipping; a
+   truncated route mile is a useless route mile. */
+.position-control {
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--sand-200);
+}
+
+.position-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.position-btn {
+  border: 1px solid var(--sand-200);
+  background: var(--surface, #fff);
+  color: var(--ink-700);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.position-btn:hover:not(:disabled) {
+  border-color: var(--pine-600);
+}
+
+.position-btn.is-active {
+  background: var(--pine-600, #346855);
+  border-color: var(--pine-600, #346855);
+  color: #fff;
+}
+
+.position-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.position-readout {
+  margin-top: 0.55rem;
+}
+
+.position-mile {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ink-800);
+  overflow-wrap: anywhere;
+}
+
+.position-mile strong {
+  color: var(--pine-600);
+}
+
+.position-detail {
+  margin: 0.2rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--ink-600);
+  overflow-wrap: anywhere;
+}
+
+.position-meta {
+  margin: 0.3rem 0 0;
+  font-size: 0.66rem;
+  color: var(--ink-400);
+  overflow-wrap: anywhere;
+}
+
+.position-stale {
+  color: var(--orange-500, #c2410c);
+  font-weight: 700;
+}
+
+.position-note {
+  margin-top: 0.5rem;
+  font-size: 0.68rem;
+  line-height: 1.45;
+  color: var(--ink-500, var(--ink-600));
+  overflow-wrap: anywhere;
+}
+
+.position-error {
+  margin-top: 0.5rem;
+  font-size: 0.68rem;
+  line-height: 1.45;
+  font-weight: 700;
+  color: var(--orange-500, #c2410c);
+  overflow-wrap: anywhere;
+}
+
+/* The dot itself. Sized for a gloved thumb to spot at a glance, with a white
+   collar so it stays visible over both the green route line and satellite
+   imagery. */
+.position-dot {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: #2563eb;
+  border: 2.5px solid #fff;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.55), 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.position-dot--stale {
+  background: var(--ink-400, #94a3b8);
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.6), 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
 /* Land ownership overlay controls. Text wraps rather than clipping: an
    operational rule that is half-visible is worse than one that is absent. */
 /* Stays visible when the HUD is collapsed — it is a primary map control, not

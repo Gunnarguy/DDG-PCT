@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useCallback, useEffect, useState, useMemo, useRef } from "react";
 import Map, {
   FullscreenControl,
   Marker,
@@ -10,6 +10,16 @@ import Map, {
   Layer,
 } from "react-map-gl/maplibre";
 import { normalizeCoordinatePair } from "../utils/coordinates";
+import {
+  formatOffTrail,
+  locateOnRoute,
+  nextStopAhead,
+} from "../utils/trailPosition";
+import useLiveLocation from "../hooks/useLiveLocation";
+
+// Beyond this the "you are here" dot stops being self-explanatory and the map
+// should point at the trail you have wandered off, not just at you.
+const OFF_TRAIL_CONNECTOR_FEET = 150;
 
 const DAY_ROUTE_COLORS = [
   "#2E7D32",
@@ -107,6 +117,31 @@ function TrailMap({
   activeTab,
 }) {
   const mapRef = useRef(null);
+  const panelRef = useRef(null);
+
+  /**
+   * Keep MapLibre's internal viewport in step with the container.
+   *
+   * MapLibre watches its own container, but this map sits between two
+   * user-draggable splitters (sidebar width, elevation-profile height) inside a
+   * shell that resizes as the loading screen gives way to the app, and its
+   * transform was observed lagging behind — 818x200 against a real 921x452
+   * canvas. Every DOM marker (camp, water, connectivity, position) is placed
+   * using that transform, so while it lags they all sit in the wrong place
+   * relative to the map underneath: the position dot was 126 px off. Observing
+   * the panel we actually control closes the gap.
+   */
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!panel || typeof ResizeObserver === "undefined") return undefined;
+
+    const observer = new ResizeObserver(() => {
+      mapRef.current?.getMap?.()?.resize();
+    });
+    observer.observe(panel);
+    return () => observer.disconnect();
+  }, []);
+
   const popupCoordinates = normalizeCoordinatePair(
     popupInfo?.geometry?.coordinates ?? popupInfo?.coordinates,
   );
@@ -283,8 +318,117 @@ function TrailMap({
     };
   }, []);
 
+  // Live GPS position. Satellite-based, so this keeps working in the documented
+  // dead zones where every other live panel in this app goes quiet — which is
+  // exactly when knowing your route mile matters most.
+  const {
+    fix: liveFix,
+    fixAgeSeconds,
+    error: locationError,
+    isWatching: isTracking,
+    isAwaitingFirstFix,
+    unsupportedReason: locationUnsupported,
+    toggle: toggleTracking,
+  } = useLiveLocation();
+
+  const livePosition = useMemo(
+    () => (liveFix ? locateOnRoute(hikingTrail, liveFix.coordinates) : null),
+    [liveFix, hikingTrail],
+  );
+
+  const liveNextStop = useMemo(
+    () =>
+      livePosition ? nextStopAhead(campPoints, livePosition.routeMile) : null,
+    [livePosition, campPoints],
+  );
+
+  // Recentre only when asked: once on the first fix after enabling tracking,
+  // and whenever the Centre button is pressed. Following the dot automatically
+  // would yank the map away every time you panned ahead to read the next climb.
+  const shouldCenterRef = useRef(false);
+  const hudRef = useRef(null);
+
+  /**
+   * The HUD floats over the map, so a plain centre puts the dot underneath it —
+   * on a desktop layout the position lands squarely behind the info panel and
+   * you see nothing. Shift the camera by half the overlap so the dot ends up in
+   * the middle of whatever map is actually visible. Measured at call time
+   * rather than hard-coded, because the panel is a wide sidebar on desktop and
+   * a collapsible top bar on a phone.
+   */
+  const focusOffset = useCallback((map) => {
+    const hud = hudRef.current;
+    const container = map?.getContainer?.();
+    if (!hud || !container) return [0, 0];
+
+    const hudRect = hud.getBoundingClientRect();
+    const mapRect = container.getBoundingClientRect();
+    if (!hudRect.width || !hudRect.height) return [0, 0];
+
+    // A panel spanning most of the width is a top bar; push down instead.
+    if (hudRect.width > mapRect.width * 0.6) {
+      const overlap = Math.max(0, hudRect.bottom - mapRect.top);
+      return overlap > 0 && overlap < mapRect.height - 80
+        ? [0, overlap / 2]
+        : [0, 0];
+    }
+
+    const overlap = Math.max(0, hudRect.right - mapRect.left);
+    return overlap > 0 && overlap < mapRect.width - 80
+      ? [overlap / 2, 0]
+      : [0, 0];
+  }, []);
+
+  const flyToFix = useCallback(
+    (coordinates) => {
+      const map = mapRef.current?.getMap?.();
+      if (!map) return false;
+      map.flyTo({
+        center: coordinates,
+        zoom: Math.max(map.getZoom(), 13),
+        offset: focusOffset(map),
+        duration: 900,
+      });
+      return true;
+    },
+    [focusOffset],
+  );
+
+  const centerOnFix = () => {
+    if (!liveFix || !flyToFix(liveFix.coordinates)) {
+      // No fix yet, or the map has not mounted. Remember the request and act on
+      // it the moment a position lands.
+      shouldCenterRef.current = true;
+    }
+  };
+
+  useEffect(() => {
+    if (!liveFix || !shouldCenterRef.current) return;
+    if (flyToFix(liveFix.coordinates)) shouldCenterRef.current = false;
+  }, [flyToFix, liveFix]);
+
+  const offTrailConnector = useMemo(() => {
+    if (!liveFix || !livePosition) return null;
+    if (!(livePosition.offTrailFeet > OFF_TRAIL_CONNECTOR_FEET)) return null;
+    const snapped = normalizeCoordinatePair(livePosition.coordinates);
+    if (!snapped) return null;
+    return {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "LineString",
+            coordinates: [liveFix.coordinates, snapped],
+          },
+        },
+      ],
+    };
+  }, [liveFix, livePosition]);
+
   return (
-    <div className="map-panel">
+    <div className="map-panel" ref={panelRef}>
       {isOffline && (
         <div className="offline-banner" style={{
           position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
@@ -294,7 +438,10 @@ function TrailMap({
           ⚠️ OFFLINE MODE: Using cached map data
         </div>
       )}
-      <div className={`map-hud ${hudExpanded ? "map-hud--expanded" : ""}`}>
+      <div
+        ref={hudRef}
+        className={`map-hud ${hudExpanded ? "map-hud--expanded" : ""}`}
+      >
         {/* Mobile toggle button */}
         <button
           className="hud-toggle"
@@ -330,6 +477,111 @@ function TrailMap({
             ))}
             <span><i style={{ backgroundColor: DRIVE_HOME_COLOR }} />Drive Home</span>
           </div>
+        </div>
+
+        {/* Outside .hud-content for the same reason as the ownership toggle
+            below: that block is display:none on a collapsed mobile HUD, and
+            "where am I" is the last thing that should be hidden behind a
+            disclosure triangle. */}
+        <div className="position-control">
+          <div className="position-actions">
+            <button
+              type="button"
+              className={`position-btn ${isTracking ? "is-active" : ""}`}
+              onClick={() => {
+                // Turning tracking on implies "and show me where that is", so
+                // queue a centre for whenever the first fix lands.
+                if (!isTracking) shouldCenterRef.current = true;
+                toggleTracking();
+              }}
+              disabled={Boolean(locationUnsupported)}
+              aria-pressed={isTracking}
+            >
+              {isTracking ? "◉ Tracking" : "◎ Show my position"}
+            </button>
+            {isTracking && liveFix && (
+              <button
+                type="button"
+                className="position-btn"
+                onClick={centerOnFix}
+              >
+                Centre
+              </button>
+            )}
+          </div>
+
+          {locationUnsupported && (
+            <p className="position-error">{locationUnsupported}</p>
+          )}
+
+          {locationError && !locationUnsupported && (
+            <p className="position-error">{locationError}</p>
+          )}
+
+          {isTracking && isAwaitingFirstFix && !locationError && (
+            <p className="position-note">
+              Waiting for the first GPS fix. Under canopy this can take a
+              minute; it does not need cell service.
+            </p>
+          )}
+
+          {livePosition && (
+            <div className="position-readout">
+              <p className="position-mile">
+                <strong>PCT mile {livePosition.routeMile.toFixed(2)}</strong>
+                {Number.isFinite(livePosition.elevationFeet) && (
+                  <span>
+                    {" "}
+                    · {Math.round(livePosition.elevationFeet).toLocaleString()}{" "}
+                    ft
+                  </span>
+                )}
+              </p>
+              <p className="position-detail">
+                {livePosition.offTrailFeet <= OFF_TRAIL_CONNECTOR_FEET
+                  ? `On trail (${formatOffTrail(livePosition.offTrailFeet)} from the line)`
+                  : `${formatOffTrail(livePosition.offTrailFeet)} off trail — the dashed line points back to the route`}
+              </p>
+              {liveNextStop && (
+                <p className="position-detail">
+                  Next: {liveNextStop.name} ·{" "}
+                  {liveNextStop.milesAhead.toFixed(2)} mi ahead
+                  {liveNextStop.day !== null ? ` (Day ${liveNextStop.day})` : ""}
+                </p>
+              )}
+              {!liveNextStop && (
+                <p className="position-detail">
+                  Past the last scheduled stop — Ash Camp pickup is behind you.
+                </p>
+              )}
+              <p className="position-meta">
+                {Number.isFinite(liveFix?.accuracyFeet)
+                  ? `±${Math.round(liveFix.accuracyFeet)} ft`
+                  : "accuracy unknown"}
+                {fixAgeSeconds !== null && (
+                  <>
+                    {" · "}
+                    {fixAgeSeconds < 60
+                      ? `${fixAgeSeconds}s ago`
+                      : `${Math.round(fixAgeSeconds / 60)} min ago`}
+                  </>
+                )}
+                {fixAgeSeconds !== null && fixAgeSeconds > 120 && (
+                  <span className="position-stale">
+                    {" "}
+                    — stale, the phone has not had a fix in a while
+                  </span>
+                )}
+              </p>
+            </div>
+          )}
+
+          {isTracking && liveFix && !livePosition && (
+            <p className="position-note">
+              Got a fix, but the route has not finished loading yet, so there is
+              no mile to report.
+            </p>
+          )}
         </div>
 
         {/* Deliberately outside .hud-content. That block is display:none while
@@ -559,6 +811,24 @@ function TrailMap({
             />
           </Source>
         )}
+        {/* Drawn above the route so the way back is never hidden underneath
+            the line it is pointing at. */}
+        {offTrailConnector && (
+          <Source id="off-trail-connector-source" type="geojson" data={offTrailConnector}>
+            <Layer
+              id="off-trail-connector-line"
+              type="line"
+              layout={{ "line-cap": "round" }}
+              paint={{
+                "line-color": "#dc2626",
+                "line-width": 2,
+                "line-dasharray": [2, 2],
+                "line-opacity": 0.9,
+              }}
+            />
+          </Source>
+        )}
+
         <NavigationControl position="top-left" />
         <ScaleControl maxWidth={120} unit="imperial" position="bottom-left" />
         <FullscreenControl position="top-left" />
@@ -657,6 +927,31 @@ function TrailMap({
             anchor="bottom"
           >
             <div className="marker marker--profile">📈</div>
+          </Marker>
+        )}
+
+        {/* Anchored centre, not bottom: this is a position, not a pin dropped
+            on a spot, and a bottom anchor would report you a marker-height
+            north of where you are standing. */}
+        {liveFix && (
+          <Marker
+            longitude={liveFix.coordinates[0]}
+            latitude={liveFix.coordinates[1]}
+            anchor="center"
+          >
+            <div
+              className={`position-dot ${
+                fixAgeSeconds !== null && fixAgeSeconds > 120
+                  ? "position-dot--stale"
+                  : ""
+              }`}
+              role="img"
+              aria-label={
+                livePosition
+                  ? `Your position: PCT mile ${livePosition.routeMile.toFixed(2)}, ${formatOffTrail(livePosition.offTrailFeet)} off trail`
+                  : "Your position"
+              }
+            />
           </Marker>
         )}
 
