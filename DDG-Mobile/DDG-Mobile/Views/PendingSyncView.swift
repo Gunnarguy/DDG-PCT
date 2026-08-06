@@ -179,10 +179,27 @@ struct PendingSyncView: View {
 
         if after == 0 {
             retryResult = "All \(before) record\(before == 1 ? "" : "s") uploaded."
-        } else if after < before {
-            retryResult = "Uploaded \(before - after) of \(before). \(after) still pending — retry when you have a better connection."
-        } else {
-            retryResult = "Nothing uploaded. The records are still safe on this device. This usually means no usable connection, or that sign-in has expired."
+            return
         }
+        if after < before {
+            retryResult = "Uploaded \(before - after) of \(before). \(after) still pending."
+            return
+        }
+
+        // Nothing moved. Report the actual reason rather than guessing at it —
+        // the engine already captured the error, it just was not being shown,
+        // which is what made this look like an unexplained failure.
+        var lines = ["Nothing uploaded. The records are still safe on this device."]
+        if let error = SyncEngine.shared.lastError {
+            lines.append("Server said: \(error)")
+        } else if !SupabaseManager.shared.isConfigured {
+            lines.append("Supabase is not configured in this build, so there is nowhere to upload to.")
+        } else if AuthManager.shared.currentUser == nil {
+            lines.append("No signed-in team member. Row-level security rejects writes without an authenticated session, so sign in and retry.")
+        } else {
+            lines.append("No error was reported, which usually means the request never left the device — most likely no usable connection.")
+        }
+        lines.append("Signed in as: \(AuthManager.shared.currentUser?.name ?? "nobody").")
+        retryResult = lines.joined(separator: "\n\n")
     }
 }
