@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "pct-hike-viz",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:viz"],
+      "port": 4173
+    }
+  ]
+}
