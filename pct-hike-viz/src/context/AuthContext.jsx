@@ -103,6 +103,14 @@ export function AuthProvider({ children }) {
       return;
     }
 
+    // A dev mock user carries its own profile and has no row in
+    // ddg_team_profiles. Asking Supabase for one fails on the fake UUID
+    // ("invalid input syntax for type uuid"), which then clears the profile
+    // that was just restored — so the mock-login buttons appeared to work and
+    // then dropped straight to "Couldn't Verify Team Access" on any machine
+    // with real credentials in .env.
+    if (user.isMock) return undefined;
+
     if (profileCheckedUserId !== user.id) {
       const deferredCheck = window.setTimeout(() => {
         void fetchProfile(user);
@@ -530,8 +538,11 @@ export function AuthProvider({ children }) {
   /**
    * Get display info for current user
    */
+  // A dev mock user carries its own profile and never issues a server-side
+  // authorization check, so it must not be counted as one still in flight —
+  // otherwise the app sits on "Checking authentication..." forever.
   const authorizationLoading = Boolean(
-    user?.id && profileCheckedUserId !== user.id,
+    user?.id && !user.isMock && profileCheckedUserId !== user.id,
   );
   const combinedLoading = loading || authorizationLoading;
 
