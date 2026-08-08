@@ -1,8 +1,8 @@
-import unittest
+from unittest import TestCase, main
 import math
 from calculate_day_elevations import haversine
 
-class TestCalculateDayElevations(unittest.TestCase):
+class TestCalculateDayElevations(TestCase):
     def test_haversine_identical_points(self):
         """Distance between the same point should be 0."""
         self.assertEqual(haversine(0, 0, 0, 0), 0)
@@ -41,4 +41,4 @@ class TestCalculateDayElevations(unittest.TestCase):
         self.assertTrue(342000 < actual_distance < 344500)
 
 if __name__ == '__main__':
-    unittest.main()
+    main()
